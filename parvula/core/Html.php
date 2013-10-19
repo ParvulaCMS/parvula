@@ -38,12 +38,7 @@ class HTML {
 	public static function anchor($value, $href = '#', $attr = array()) {
 		$attr = implode(' ', $attr);
 
-		if(!preg_match('/^https?:\/\//', $href)) {
-			if(!Config::get('URLRewriting')) {
-				$href = 'index.php/' . $href;
-			}
-			$href = Parvula::getRelativeURIToRoot() . $href;
-		}
+		$href = static::linkRel($href);
 
 		return sprintf('<a href="%s" %s>%s</a>', $href, $attr, $value);
 	}
@@ -57,6 +52,17 @@ class HTML {
 	public static function img($src, $attr = array()) {
 		$attr = implode(' ', $attr);
 
+		$src = static::linkRel($src);
+
+		return sprintf('<img src="%s" %s>', $src, $attr);
+	}
+
+	/**
+	 * Get relative link
+	 * @param string $src 
+	 * @return string
+	 */
+	public static function linkRel($src) {
 		if(!preg_match('/^https?:\/\//', $src)) {
 			if(!Config::get('URLRewriting')) {
 				$src = 'index.php/' . $src;
@@ -64,7 +70,7 @@ class HTML {
 			$src = Parvula::getRelativeURIToRoot() . $src;
 		}
 
-		return sprintf('<img src="%s" %s>', $src, $attr);
+		return $src;
 	}
 
 	/**

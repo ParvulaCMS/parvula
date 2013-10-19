@@ -9,6 +9,8 @@ Some markdown
 A subtitle
 ----------
 
+[Home page][page](home)
+
 Some **bold** test.
 
 List :
@@ -31,5 +33,7 @@ An here some `$code($this->field);` with [a link](http://wikipedia.org).
 | zebra stripes | are neat      |    $1 |
 
 ---------------
+
+![A cat][img](cat.jpg)
 
 *End*

@@ -61,8 +61,15 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 
 		$content = $infos[1];
 
-		$page->content = MarkdownExtra::defaultTransform($content);
+		$parser = new MarkdownExtra;
+
+		// Bit hacky but works
+		$content = str_replace('][img](', '](' . HTML::linkRel('data/images/'), $content);
+		$content = str_replace('][page](', '](' . HTML::linkRel(''), $content);
+
+		$page->content = $parser->transform($content);
 
 		return $page;
 	}
+
 }
