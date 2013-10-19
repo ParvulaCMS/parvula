@@ -13,15 +13,25 @@ namespace Parvula\Core;
  */
 class View {
 
+	/**
+	 * @var string
+	 */
 	private $extension;
+
+	/**
+	 * @var string
+	 */
 	private $path;
+
+	/**
+	 * @var array
+	 */
 	private $variables = array();
 
 	/**
 	 * Constructor. You can set the root path for all paths.
 	 *
-	 * @param String Root path (dir)
-	 * @return
+	 * @param string Root path (dir)
 	 */
 	function __construct($path = '/templates', $variables = array()) {
 		$this->path = rtrim($path, '/') . '/';
@@ -38,13 +48,13 @@ class View {
 	 * or<br />
 	 * <code>assign('var1', 'foo')</code>
 	 *
-	 * @param mixed array OR String and array
+	 * @param mixed array OR string and array
 	 * @return
 	 */
 	public function assign($array, $arg2 = NULL) {
-		if (is_array($array)) {
-			$this->variables = array_merge($this->variables, $array);
-		} else if (is_string($array)) {
+		if(is_array($array)) {
+			$this->variables = $array + $this->variables;
+		} else if(is_string($array)) {
 			$this->variables[$array] = $arg2;
 		}
 	}
@@ -56,8 +66,9 @@ class View {
 	/**
 	 * Display final result, after parsing.
 	 *
-	 * @param String|boolean $templateName is the Canonical name of the template (without file extension if it was set). $printBuffer if directly want to print result.
-	 * @return String| return String if $printBuffer is true. Else void.
+	 * @param string $templateName is the Canonical name of the template (without file extension if it was set).
+	 * @param boolean $printBuffer if directly want to print result.
+	 * @return string| return String if $printBuffer is true. Else void.
 	 */
 	public function display($templateName, $printBuffer = true) {
 		if(is_array($printBuffer)) {
@@ -68,12 +79,12 @@ class View {
 
 		$args = func_get_args();
 		$argsLength = sizeof($args);
-		for (; $i < $argsLength; ++$i) {
+		for(; $i < $argsLength; ++$i) {
 			$var = ('page' . $i);
 			$this->variables[$var] = $args[$i];
 		}
 
-		if ($printBuffer) {
+		if($printBuffer) {
 			echo $this->parse($templateName);
 		} else {
 			return $this->parse($templateName);
@@ -84,7 +95,7 @@ class View {
 	 * Set extension type for all files.<br />
 	 * Exemple <code>setExtension('.tpl.html');</code>
 	 *
-	 * @param String $templatePath
+	 * @param string $templatePath
 	 * @return
 	 */
 	public function setExtension($extension) {
@@ -94,7 +105,8 @@ class View {
 	/**
 	 * Secure print. Escape special chars from string.
 	 *
-	 * @param String|String $varName variable to print, $print true if directly print result
+	 * @param string $varName variable to print
+	 * @param string $print true if directly print result
 	 * @return
 	 */
 	private function sprint($varName, $print = true) {
@@ -105,9 +117,7 @@ class View {
 	}
 
 	/**
-	 * Alias of display
-	 *
-	 * @see display
+	 * Alias of {@see display}
 	 */
 	public function view($templateName, $returnBuffer = false) {
 		return $this->display($templateName, $returnBuffer);
@@ -121,15 +131,15 @@ class View {
 	 */
 	private function parse($templateName) {
 		$templatePath = $this->path . $templateName . $this->extension;
-		if (!is_file($templatePath)) {
-			// echo $templatePath;
+		if(!is_file($templatePath)) {
+			//TODO error
+			// throw new Exception("Parse fail with $templatePath", 1);
+			
 			echo "[[VIEW::parse fail ($templatePath)]]\n";
 			return false;
-			//TODO error
 		}
 		extract($this->variables);
 
-		//chdir(dirname($_SERVER['SCRIPT_FILENAME']));
 		//Turn on output buffering
 		ob_start();
 		include_once $templatePath;
@@ -146,7 +156,7 @@ class View {
 	 */
 	private function cleanDirPath($path) {
 		$path = trim($path);
-		if ($path !== '' && $path[strlen($path) - 1] !== '/') {
+		if($path !== '' && $path[strlen($path) - 1] !== '/') {
 			$path .= '/';
 		}
 
@@ -154,7 +164,7 @@ class View {
 	}
 
 	/**
-	 * Alias for {@see display}
+	 * Alias of {@see display}
 	 */
 	public function __invoke($templateName, $returnBuffer = false) {
 		return $this->display($templateName, $returnBuffer);
@@ -162,14 +172,14 @@ class View {
 
 	/**
 	 * Get path
-	 * @return string
+	 * @return string Path
 	 */
 	public function getPath() {
 		return $this->path;
 	}
 
 	/**
-	 * Alias for {@see display}
+	 * Alias of {@see display}
 	 */
 	public function __tostring() {
 		return $this->display($templateName, true);
