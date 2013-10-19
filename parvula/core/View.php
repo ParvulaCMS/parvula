@@ -131,13 +131,12 @@ class View {
 	 */
 	private function parse($templateName) {
 		$templatePath = $this->path . $templateName . $this->extension;
-		if(!is_file($templatePath)) {
-			//TODO error
-			// throw new Exception("Parse fail with $templatePath", 1);
-			
-			echo "[[VIEW::parse fail ($templatePath)]]\n";
+		if(!is_readable($templatePath)) {
+			throw new \Exception("Parse fail. File $templatePath not found.", 1);
+
 			return false;
 		}
+		$view = $this; // ref.
 		extract($this->variables);
 
 		//Turn on output buffering

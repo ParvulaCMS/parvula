@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title><?php echo $_et($meta->title, ' · '), $site->title ?></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<?php if(isset($site->description)) : ?>
+	<meta name="description" content="<?php echo $site->description ?>">
+	<?php endif; ?>
+
+	<?php echo Asset::css('main.css') ?>
+</head>
