@@ -1,8 +1,16 @@
 Parvula CMS
 ===========
 
-Installation with [Composer](http://getcomposer.org/)
------------------------------------------------------
+#### A quick website from markdown files
+![website](http://i.imgur.com/ZkIDNpL.png)
+
+Requirements
+------------
+* PHP 5.3+
+* [Composer](http://getcomposer.org/) is recommended
+
+Installation with Composer
+--------------------------
 1. Download and extract the zip
 2. Run `composer install`
 3. That's it !
