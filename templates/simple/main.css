@@ -1,0 +1,109 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #333;
+	background: #fff;
+	-webkit-font-smoothing: antialiased;
+}
+
+#header h1 {
+	margin: 0;
+	text-align: center;
+	font-size: 22pt;
+	line-height: 150px;
+}
+
+#header {
+	background: rgb(90,150,210);
+	margin-bottom: 20px;
+	font-weight: normal;
+	color: #afe1da;
+	height: 150px;
+}
+#header a {
+	color: #def;
+	text-decoration: none;
+}
+
+#header li a {
+	color: #456;
+}
+
+#header li a:hover {
+	color: #678;
+	text-shadow: 0 0 4px #acf;
+}
+
+#header #nav {
+	width: 100%;
+	background: rgba(0,0,0,.05);
+	height: 35px;
+}
+
+#header ul {
+	margin: 0;
+	padding: 0;
+	line-height: 35px;
+	clear: both;
+}
+	
+#header ul li {
+	display: block;
+	float: left;
+	padding: 0 12px;
+}
+
+h1 {
+	font-size: 25pt;
+	letter-spacing: 1px;
+}
+
+h2 {
+	font-size: 18pt;
+}
+
+a {
+	text-decoration: none;
+}
+
+#main {
+	padding: 15px;
+}
+
+#main {
+	padding: 15px 10%;
+	margin-bottom: 50px;
+}
+
+#main .content {
+	text-align: justify;
+}
+
+table {
+	border-collapse: collapse;
+}
+table, th, td {
+	border: 1px solid #ddd;
+}
+td, th {
+	padding: 4px 6px;
+}
+
+code {
+	font-size: 95%;
+	background: #f8f8f8;
+	padding: 0 4px;
+	border-radius: 3px;
+	white-space: nowrap;
+}
+
+blockquote {
+	background: #f8f8f8;
+	border-left: 5px solid #ccc;
+	margin: 1em 5px;
+	padding: 1px 10px;
+}
