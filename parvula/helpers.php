@@ -28,16 +28,19 @@ function parseConfigData($configData) {
 }
 
 /**
- * Handle exception
- * @param Exception $e 
+ * Handle exceptions
+ * @param Exception $e
  * @return
  */
 function exceptionHandler(Exception $e) {
-	@header("Content-Type:text/plain");
+	// @header("Content-Type:text/plain");
 
-	echo 'Caught ', basename(str_replace('\\', '/', get_class($e))),
-	': "', $e->getMessage(), '" (', $e->getFile(), ':', $e->getLine(), ")\n\n",
-	$e->getTraceAsString();
+	echo "<h1 style='font-size:24px'>Error</h1>\n",
+	"<pre style='background:#f8f8f8;padding:8px'>\n",
+	'<b>Caught ', basename(str_replace('\\', '/', get_class($e))),
+	': "', $e->getMessage(), '"</b> (', $e->getFile(), ':', $e->getLine(), ")\n\n",
+	'<span style="color:#811">', $e->getTraceAsString(), "</span>",
+	"\n</pre>";
 
 	exit;
 }
