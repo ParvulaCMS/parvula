@@ -2,7 +2,7 @@ Parvula CMS
 ===========
 
 #### A quick website from markdown files
-![website](http://i.imgur.com/ZkIDNpL.png)
+![website](http://i.imgur.com/pcShKqy.png)
 
 Requirements
 ------------
