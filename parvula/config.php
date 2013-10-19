@@ -22,7 +22,7 @@ return array(
 	'homePage' => 'home',
 
 	// Error page
-	'errorPage' => '_ 404',
+	'errorPage' => '_404',
 
 	// Extension for files in ./data
 	'fileExtension' => 'md',
