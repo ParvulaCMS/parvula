@@ -14,15 +14,25 @@ use \Michelf\MarkdownExtra;
  */
 class ParvulaPageSerializer implements PageSerializerInterface {
 	
-	// Page $page TODO
+	/**
+	 * Serialize page
+	 * @param Page $page 
+	 * @return boolean
+	 */
 	public function serialize(Page $page) {
 
-		$header = '';
+		$header = PHP_EOL;
 		$header .= 'title: ' . $page->title;
+		$header .= 'description' . $page->$description;
+		$header .= 'author' . $page->$author;
+		$header .= 'date' . $page->$date;
+		$header .= 'robots' . $page->$robots;
 
-		$content = json_encode($page->content);
+		$header .= PHP_EOL . PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
 
-		// return 
+		$content = $page->content;
+
+		return $header . $content;
 	}
 
 	/**
@@ -37,7 +47,6 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 		}
 
 		$infos = preg_split("/\s[-=]{3,}\s/", $data, 2);
-		// print_r($infos);
 
 		$headerData = trim($infos[0]);
 		preg_match_all("/(\w+)[\s:=]+(.+)/", $headerData, $headerMatches);
@@ -52,10 +61,7 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 
 		$content = $infos[1];
 
-		// $markdownParser = new MarkdownExtraParser();
-		// MarkdownExtra::defaultTransform($my_text);
 		$page->content = MarkdownExtra::defaultTransform($content);
-		// $page->content = $markdownParser->transformMarkdown($content);
 
 		return $page;
 	}

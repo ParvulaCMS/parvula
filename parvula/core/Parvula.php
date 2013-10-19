@@ -86,7 +86,7 @@ class Parvula {
 
 			if(!$fs->exists($pageFullPath)) {
 				// Load page error if exists
-				if($fs->exists(Config::errorPage())) {
+				if($fs->exists(Config::errorPage() . $this->fileExtension)) {
 					return $this->getPage(Config::errorPage(), $customSerializer);
 				} else {
 					return false;
@@ -134,7 +134,6 @@ class Parvula {
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::getURI();
 		$postUrl = str_replace(array('//', '\\'), '/', $postUrl);
-		// echo "--> $postUrl <----";//DEBUG
 		$slashNb = substr_count($postUrl, '/');
 
 		// Add a '../' to URL if there is not URL rewriting
