@@ -4,17 +4,10 @@ html, body {
 }
 
 body {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 14px/1.4 "Helvetica Neue", Helvetica, arial, sans-serif;
 	color: #333;
 	background: #fff;
 	-webkit-font-smoothing: antialiased;
-}
-
-#header h1 {
-	margin: 0;
-	text-align: center;
-	font-size: 22pt;
-	line-height: 150px;
 }
 
 #header {
@@ -24,6 +17,15 @@ body {
 	color: #afe1da;
 	height: 150px;
 }
+
+#header h1 {
+	margin: 0;
+	text-align: center;
+	font-size: 24pt;
+	letter-spacing: 3px;
+	line-height: 150px;
+}
+
 #header a {
 	color: #def;
 	text-decoration: none;
@@ -54,20 +56,7 @@ body {
 #header ul li {
 	display: block;
 	float: left;
-	padding: 0 12px;
-}
-
-h1 {
-	font-size: 25pt;
-	letter-spacing: 1px;
-}
-
-h2 {
-	font-size: 18pt;
-}
-
-a {
-	text-decoration: none;
+	padding: 0 15px;
 }
 
 #main {
@@ -83,21 +72,54 @@ a {
 	text-align: justify;
 }
 
+h1 {
+	font-size: 25pt;
+	letter-spacing: 1px;
+}
+
+h2 {
+	font-size: 18pt;
+}
+
+a {
+	text-decoration: none;
+	color: #47a;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
 table {
 	border-collapse: collapse;
+	margin: 10px 0;
 }
+
 table, th, td {
 	border: 1px solid #ddd;
+	border-radius: 3px;
 }
+
 td, th {
-	padding: 4px 6px;
+	padding: 6px 10px;
+}
+
+code, pre {
+	border: 1px solid #eee;
+	border-radius: 3px;
+	background: #fafafa;
+	font-family: Consolas, "Liberation Mono", Courier, monospace, serif;
+	font-size: 95%;
 }
 
 code {
-	background: #f8f8f8;
 	padding: 0 4px;
-	border-radius: 3px;
+	margin: 0 2px;
 	white-space: nowrap;
+}
+
+pre {
+	padding: 6px;
 }
 
 blockquote {
@@ -105,4 +127,12 @@ blockquote {
 	border-left: 5px solid #ccc;
 	margin: 1em 5px;
 	padding: 1px 10px;
+}
+
+hr {
+	border: none;
+	border-bottom: 1px solid #e2e2e2;
+	height: 0;
+	padding: 0;
+	margin: 25px 0;
 }

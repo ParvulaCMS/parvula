@@ -8,6 +8,6 @@ date    24.12.2013
 Home page
 =========
 
-Welcome to *Parvula* CMS.
+Welcome to [*Parvula* CMS](https://github.com/BafS/parvula).
 
-Use [markdown](http://daringfireball.net/projects/markdown/) to write pages !
+Your pages are in `/data/pages`. Use [markdown](http://daringfireball.net/projects/markdown/) syntax to write pages !
