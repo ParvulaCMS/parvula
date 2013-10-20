@@ -6,7 +6,7 @@ use Parvula\Core\Exception\IOException;
 
 /**
  * Parvula
- * 
+ *
  * @package Parvula
  * @version 0.1.0
  * @author Fabien Sa
@@ -33,15 +33,15 @@ class Parvula {
 
 	/**
 	 * Get all pages
-	 * @param string $asc 
 	 * @return array Return an array of 'Page'
 	 */
-	public function getPages($asc = true) {
+	public function getPages() {
 		try {
 			$fs = new FilesSystem(PAGES);
 
 			$pages = array();
-			$files = $fs->getFilesList('', false, function($file, $dir = '') use (&$pages)
+			$that = &$this;
+			$files = $fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
 			{
 				// If files have the right extension
 				$ext = '.' . Config::fileExtension();
@@ -51,7 +51,7 @@ class Parvula {
 					}
 
 					$pagePath = $dir . basename($file, $ext);
-					$pages[] = $this->getPage($pagePath);
+					$pages[] = $that->getPage($pagePath);
 				}
 			});
 
@@ -68,8 +68,8 @@ class Parvula {
 
 	/**
 	 * Get a page object in html string
-	 * @param string $pagePath 
-	 * @param Parvula\Core\PageSerializerInterface $customSerializer 
+	 * @param string $pagePath Page path
+	 * @param Parvula\Core\PageSerializerInterface $customSerializer
 	 * @return Parvula\Core\Page Return the selected page
 	 */
 	public function getPage($pagePath, PageSerializerInterface $customSerializer = null) {
@@ -146,7 +146,7 @@ class Parvula {
 
 	/**
 	 * Use {@see getPage} with current url
-	 * @return Page Return 'Page' object
+	 * @return Parvula\Core\Page Return 'Page' object
 	 */
 	public function run() {
 		// echo $pagePath; //DEBUG
@@ -182,7 +182,7 @@ class Parvula {
 
 	/**
 	 * PSR-0 autoloader to run Parvula without composer
-	 * @param string $className 
+	 * @param string $className
 	 * @return
 	 */
 	public static function autoload($className) {
