@@ -27,8 +27,11 @@ return array(
 	// Extension for files in ./data
 	'fileExtension' => 'md',
 
-	// How to sort pages (see http://www.php.net/manual/en/array.sorting.php)
-	'typeOfSort' => 'natcasesort',
+	// How to sort pages (php.net/manual/en/function.array-multisort.php)
+	'typeOfSort' => SORT_ASC,
+
+	// Sort pages from specific field (like title, index or whatYouWant)
+	'sortField' => 'index',
 
 	// Config file to read
 	'userConfig' => 'site.conf',

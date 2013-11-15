@@ -8,7 +8,7 @@ use Parvula\Core\Exception\IOException;
  * Parvula
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.2
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -34,7 +34,7 @@ class Parvula {
 
 	/**
 	 * Get all pages
-	 * @return array Return an array of 'Page'
+	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function getPages() {
 		try {
@@ -44,7 +44,7 @@ class Parvula {
 			$that = &$this;
 			$files = $fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
 			{
-				// If files have the right extension
+				// If files have the right extension and does not begin with '_'
 				$ext = '.' . Config::fileExtension();
 				if($file[0] !== '_' && substr($file, -3) === $ext) {
 					if($dir !== '') {
@@ -56,15 +56,42 @@ class Parvula {
 				}
 			});
 
+
 			// Sort pages
-			$sort = Config::typeOfSort();
-			$sort($pages);
+			$sortType = Config::typeOfSort();
+			$sortField = Config::sortField();
+
+			if(is_integer($sortType)) {
+				$sortType = SORT_ASC;
+			}
+
+			$this->arraySortByField($pages, $sortField, $sortType);
 
 			return $pages;
 
 		} catch(IOException $e) {
 			echo "Caught IOException: " . $e->getMessage();
 		}
+	}
+
+	/**
+	 * Sort array of objects from a specific field
+	 * @param array<?> &$arr An array of objects
+	 * @param string $field Field name to sort
+	 * @param integer $sortType Sorting type (flag)
+	 * @return boolean
+	 */
+	private function arraySortByField(array &$arr, $field, $sortType = SORT_ASC) {
+		$sortFields = array();
+		foreach ($arr as $key => $obj) {
+			if(isset($obj->$field)) {
+				$sortFields[$key] = $obj->$field;
+			} else {
+				$sortFields[$key] = array();
+			}
+		}
+
+		return array_multisort($sortFields, $sortType, $arr);
 	}
 
 	/**
@@ -150,8 +177,8 @@ class Parvula {
 	 * @return Parvula\Core\Page Return 'Page' object
 	 */
 	public function run() {
-		// echo $pagePath; //DEBUG
 		$uri = rtrim(static::getURI(), '/ \\');
+
 		if(ltrim($uri, '/ \\') === '') {
 			$uri = Config::homePage();
 		}

@@ -21,3 +21,9 @@ Edit pages
 All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
 
 The basic configuration file is in `data/site.conf.md`.
+
+
+Pages
+-----
+* Page beginning with `_` are "secret" pages, not listed.
+* You can order pages with the *index* field (by default).
