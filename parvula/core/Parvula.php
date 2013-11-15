@@ -8,7 +8,7 @@ use Parvula\Core\Exception\IOException;
  * Parvula
  *
  * @package Parvula
- * @version 0.2
+ * @version 0.2.1
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -30,68 +30,6 @@ class Parvula {
 	 */
 	function __construct() {
 		$this->fileExtension =  '.' . Config::fileExtension();
-	}
-
-	/**
-	 * Get all pages
-	 * @return array<Page> Return an array of 'Page'
-	 */
-	public function getPages() {
-		try {
-			$fs = new FilesSystem(PAGES);
-
-			$pages = array();
-			$that = &$this;
-			$files = $fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
-			{
-				// If files have the right extension and does not begin with '_'
-				$ext = '.' . Config::fileExtension();
-				if($file[0] !== '_' && substr($file, -3) === $ext) {
-					if($dir !== '') {
-						$dir = trim($dir, '/\\') . '/';
-					}
-
-					$pagePath = $dir . basename($file, $ext);
-					$pages[] = $that->getPage($pagePath);
-				}
-			});
-
-
-			// Sort pages
-			$sortType = Config::typeOfSort();
-			$sortField = Config::sortField();
-
-			if(is_integer($sortType)) {
-				$sortType = SORT_ASC;
-			}
-
-			$this->arraySortByField($pages, $sortField, $sortType);
-
-			return $pages;
-
-		} catch(IOException $e) {
-			echo "Caught IOException: " . $e->getMessage();
-		}
-	}
-
-	/**
-	 * Sort array of objects from a specific field
-	 * @param array<?> &$arr An array of objects
-	 * @param string $field Field name to sort
-	 * @param integer $sortType Sorting type (flag)
-	 * @return boolean
-	 */
-	private function arraySortByField(array &$arr, $field, $sortType = SORT_ASC) {
-		$sortFields = array();
-		foreach ($arr as $key => $obj) {
-			if(isset($obj->$field)) {
-				$sortFields[$key] = $obj->$field;
-			} else {
-				$sortFields[$key] = array();
-			}
-		}
-
-		return array_multisort($sortFields, $sortType, $arr);
 	}
 
 	/**
@@ -142,6 +80,83 @@ class Parvula {
 	}
 
 	/**
+	 * Get all pages
+	 * @return array<Page> Return an array of 'Page'
+	 */
+	public function getPages() {
+		$pages = array();
+
+		$pagesArr = $this->listPages();
+
+		foreach ($pagesArr as $pagePath) {
+			$pages[] = $this->getPage($pagePath);
+		}
+
+		// Sort pages
+		$sortType = Config::typeOfSort();
+		$sortField = Config::sortField();
+
+		if(is_integer($sortType)) {
+			$sortType = SORT_ASC;
+		}
+
+		$this->arraySortByField($pages, $sortField, $sortType);
+
+		return $pages;
+	}
+
+	/**
+	 * Sort array of objects from a specific field
+	 * @param array<?> &$arr An array of objects
+	 * @param string $field Field name to sort
+	 * @param integer $sortType Sorting type (flag)
+	 * @return boolean
+	 */
+	private function arraySortByField(array &$arr, $field, $sortType = SORT_ASC) {
+		$sortFields = array();
+		foreach ($arr as $key => $obj) {
+			if(isset($obj->$field)) {
+				$sortFields[$key] = $obj->$field;
+			} else {
+				$sortFields[$key] = array();
+			}
+		}
+
+		return array_multisort($sortFields, $sortType, $arr);
+	}
+
+	/**
+	 * List pages and get an array of pages paths
+	 * @return array Array of pages paths
+	 */
+	public function listPages() {
+		$pages = array();
+		$that = &$this;
+
+		try {
+			$fs = new FilesSystem(PAGES);
+
+			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
+			{
+				// If files have the right extension and does not begin with '_'
+				$ext = '.' . Config::fileExtension();
+				if($file[0] !== '_' && substr($file, -3) === $ext) {
+					if($dir !== '') {
+						$dir = trim($dir, '/\\') . '/';
+					}
+
+					$pagePath = $dir . basename($file, $ext);
+					$pages[] = $pagePath;
+				}
+			});
+
+			return $pages;
+		} catch(IOException $e) {
+			echo "Caught IOException: " . $e->getMessage();
+		}
+	}
+
+	/**
 	 * Get current URI
 	 * @return string
 	 */
@@ -173,13 +188,21 @@ class Parvula {
 	}
 
 	/**
+	 * Get request method
+	 * @return string
+	 */
+	public static function getMethod() {
+		return $_SERVER['REQUEST_METHOD'];
+	}
+
+	/**
 	 * Use {@see getPage} with current url
 	 * @return Parvula\Core\Page Return 'Page' object
 	 */
 	public function run() {
 		$uri = rtrim(static::getURI(), '/ \\');
 
-		if(ltrim($uri, '/ \\') === '') {
+		if($uri === '') {
 			$uri = Config::homePage();
 		}
 
