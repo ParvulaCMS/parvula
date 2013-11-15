@@ -4,9 +4,10 @@ namespace Parvula\Core;
 
 /**
  * Page type
- * 
+ *
  * @package Parvula
  * @version 0.1.0
+ * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
@@ -20,7 +21,7 @@ class Page {
 	public $content;
 
 	/**
-	 * Overrid when print this object
+	 * Override "tostring" when print this object
 	 * @return string
 	 */
 	public function __tostring() {

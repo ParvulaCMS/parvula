@@ -6,17 +6,18 @@ use \Michelf\MarkdownExtra;
 
 /**
  * ParvulaPageSerializer class
- * 
+ *
  * @package Parvula
  * @version 0.1.0
+ * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
 class ParvulaPageSerializer implements PageSerializerInterface {
-	
+
 	/**
 	 * Serialize page
-	 * @param Page $page 
+	 * @param Page $page
 	 * @return boolean
 	 */
 	public function serialize(Page $page) {
@@ -37,7 +38,7 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 
 	/**
 	 * Unserialize data
-	 * @param string $data 
+	 * @param string $data
 	 * @return Page
 	 */
 	public function unserialize($filePath, $data = null) {

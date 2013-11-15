@@ -4,14 +4,15 @@ namespace Parvula\Core;
 
 /**
  * Configuration wrapper for config array
- * 
+ *
  * @package Parvula
  * @version 0.1.0
+ * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
 class Config {
-	
+
 	/**
 	 * @var array
 	 */
@@ -19,7 +20,7 @@ class Config {
 
 	/**
 	 * Populate class with config array
-	 * @param array $config 
+	 * @param array $config
 	 * @return
 	 */
 	public static function populate(array $config) {
@@ -28,7 +29,7 @@ class Config {
 
 	/**
 	 * Append config to Config class
-	 * @param array $config 
+	 * @param array $config
 	 * @return
 	 */
 	public static function append(array $config) {
@@ -37,7 +38,7 @@ class Config {
 
 	/**
 	 * Get configuration value from key
-	 * @param mixed $key 
+	 * @param mixed $key
 	 * @return mixed Value from config
 	 */
 	public static function get($key) {
@@ -50,9 +51,9 @@ class Config {
 
 	/**
 	 * Set configuration value from key
-	 * @param mixed $key 
-	 * @param mixed $value 
-	 * @return 
+	 * @param mixed $key
+	 * @param mixed $value
+	 * @return
 	 */
 	public static function set($key, $value) {
 		if(!empty($key)) {
@@ -62,7 +63,7 @@ class Config {
 
 	/**
 	 * Shortcut to {@see Config::get} method
-	 * @param mixed $key 
+	 * @param mixed $key
 	 * @return mixed Value from config
 	 */
 	public static function __callStatic($key, $_) {

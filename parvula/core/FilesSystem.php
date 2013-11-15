@@ -6,9 +6,10 @@ use Parvula\Core\Exception\IOException;
 
 /**
  * Files System
- * 
+ *
  * @package Parvula
  * @version 0.1.0
+ * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
@@ -21,7 +22,7 @@ class FilesSystem {
 
 	/**
 	 * Constructor
-	 * @param string $prefixPath 
+	 * @param string $prefixPath
 	 */
 	function __construct($prefixPath = '.') {
 		$this->prefixPath = rtrim($prefixPath) . '/';
@@ -68,7 +69,7 @@ class FilesSystem {
 	/**
 	 * Write data to file
 	 * @param string $filename File name
-	 * @param mixed $data 
+	 * @param mixed $data
 	 * @param callable ($fn) Apply function to data
 	 * @return boolean
 	 */
@@ -89,7 +90,7 @@ class FilesSystem {
 	 */
 	public function getFilesList($dir = '', $showHiddenFiles = false, $fn = null) {
 		$fnName = __FUNCTION__;
-		
+
 		$items = array();
 		if($handle = opendir($this->prefixPath . $dir)) {
 			while(false !== ($file = readdir($handle))) {

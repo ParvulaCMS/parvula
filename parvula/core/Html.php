@@ -4,9 +4,10 @@ namespace Parvula\Core;
 
 /**
  * HTML utils
- * 
+ *
  * @package Parvula
  * @version 0.1.0
+ * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
@@ -20,7 +21,7 @@ class HTML {
 	/**
 	 * Constructor
 	 * @param string $path Path to prefix all path
-	 * @param array $variables 
+	 * @param array $variables
 	 */
 	function __construct($path = '/template', $variables = array()) {
 		$this->path = rtrim($path, '/') . '/';
@@ -31,8 +32,8 @@ class HTML {
 	/**
 	 * Html anchor
 	 * @param string $value
-	 * @param string $href 
-	 * @param array $attr 
+	 * @param string $href
+	 * @param array $attr
 	 * @return string Html anchor
 	 */
 	public static function anchor($value, $href = '#', $attr = array()) {
@@ -42,7 +43,7 @@ class HTML {
 
 		return sprintf('<a href="%s" %s>%s</a>', $href, $attr, $value);
 	}
-	
+
 	/**
 	 * Html image
 	 * @param string $src Image source
@@ -59,7 +60,7 @@ class HTML {
 
 	/**
 	 * Get relative link
-	 * @param string $src 
+	 * @param string $src
 	 * @return string
 	 */
 	public static function linkRel($src) {
@@ -74,7 +75,7 @@ class HTML {
 	}
 
 	/**
-	 * Secure echo. Return $var if exists, else return $else and encode special 
+	 * Secure echo. Return $var if exists, else return $else and encode special
 	 * html chars.
 	 * @param mixed $var Value to print
 	 * @param mixed ($else) Value to print if variable doesn't exists
@@ -92,8 +93,8 @@ class HTML {
 
 	/**
 	 * Secure echo. Return '$value . $then' if $value exists
-	 * @param mixed &$var 
-	 * @param mixed $then 
+	 * @param mixed &$var
+	 * @param mixed $then
 	 * @return string Secure string from XSS
 	 */
 	public static function sEchoThen(&$var, $then) {
@@ -109,7 +110,7 @@ class HTML {
 	/**
 	 * Create html nav from array [TMP]
 	 * @param array $items
-	 * @param integer $level 
+	 * @param integer $level
 	 * @return string Html nav
 	 */
 	public static function nav($items, $level = 0) {
