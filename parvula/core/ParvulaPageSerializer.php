@@ -2,8 +2,6 @@
 
 namespace Parvula\Core;
 
-use \Michelf\MarkdownExtra;
-
 /**
  * ParvulaPageSerializer class
  *
@@ -55,18 +53,14 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 		$page = new Page();
 		// Set page headers fields
 		$page->url = $filePath;
-		for ($i=0; $i < count($headerMatches[1]); ++$i) {
+		for ($i = 0; $i < count($headerMatches[1]); ++$i) {
 			$key = trim($headerMatches[1][$i]);
 			$page->{$key} = rtrim($headerMatches[2][$i], "\r\n");
 		}
 
 		$content = $infos[1];
 
-		$parser = new MarkdownExtra;
-
-		// Bit hacky but works
-		$content = str_replace('][img](', '](' . HTML::linkRel('data/images/'), $content);
-		$content = str_replace('][page](', '](' . HTML::linkRel(''), $content);
+		$parser = new MarkdownParvula;
 
 		$page->content = $parser->transform($content);
 

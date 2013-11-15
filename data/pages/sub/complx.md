@@ -9,7 +9,7 @@ Some markdown
 A subtitle
 ----------
 
-[Home page][page](home)
+[Home page](home)
 
 Some **bold** test.
 
@@ -34,6 +34,6 @@ An here some `$code($this->field);` with [a link](http://wikipedia.org).
 
 ---------------
 
-![A cat][img](cat.jpg)
+![A cat](cat.jpg)
 
 *End*
