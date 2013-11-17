@@ -8,7 +8,7 @@ use Parvula\Core\MarkdownPageSerializer;
  * ParvulaPageSerializer class
  *
  * @package Parvula
- * @version 0.2.0
+ * @version 0.2.2
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -21,7 +21,10 @@ class ParvulaPageSerializer extends MarkdownPageSerializer implements PageSerial
 	 * @return boolean
 	 */
 	public function serialize(Page $page) {
-		return false;
+
+		$data = parent::serialize($page);
+
+		return $data;
 	}
 
 	/**

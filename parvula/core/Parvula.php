@@ -8,7 +8,7 @@ use Parvula\Core\Exception\IOException;
  * Parvula
  *
  * @package Parvula
- * @version 0.2.1
+ * @version 0.2.2
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -40,7 +40,7 @@ class Parvula {
 	 */
 	public function getPage($pagePath, PageSerializerInterface $customSerializer = null) {
 
-		// If page was always loaded, return page
+		// If page was already loaded, return page
 		if(isset($this->pages[$pagePath])) {
 			return $this->pages[$pagePath];
 		}
@@ -73,6 +73,44 @@ class Parvula {
 			$this->pages[$pagePath] = $page;
 
 			return $page;
+
+		} catch(IOException $e) {
+			error("Caught IOException: " . $e->getMessage());
+		}
+	}
+
+	/**
+	 * Save page object in "pagePath" file
+	 * @param Page $page Page object
+	 * @param string $pagePath Page filename
+	 * @param PageSerializerInterface $customSerializer Page serializer
+	 * @return int|bool Return false if failed
+	 */
+	public function setPage(Page $page, $pagePath, PageSerializerInterface $customSerializer = null) {
+
+		$pageFullPath = $pagePath . $this->fileExtension;
+
+		try {
+			$fs = new FilesSystem(PAGES);
+
+			if(!$fs->exists($pageFullPath)) {
+				// TODO create page
+			}
+
+			if($customSerializer === null) {
+				$defaultSer = Config::defaultPageSerializer();
+				$customSerializer = new $defaultSer;
+			}
+
+			$data = $customSerializer->serialize($page);
+
+			$res = $fs->write($pageFullPath, $data);
+
+			if($res !== false) {
+				$this->pages[$pagePath] = $page;
+			}
+
+			return $res;
 
 		} catch(IOException $e) {
 			error("Caught IOException: " . $e->getMessage());

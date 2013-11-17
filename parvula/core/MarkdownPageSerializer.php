@@ -6,7 +6,7 @@ namespace Parvula\Core;
  * MarkdownPageSerializer class
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.2.2
  * @since 0.2.0
  * @author Fabien Sa
  * @license MIT License
@@ -21,11 +21,11 @@ class MarkdownPageSerializer implements PageSerializerInterface {
 	public function serialize(Page $page) {
 
 		$header = PHP_EOL;
-		$header .= 'title: ' . $page->title;
-		$header .= 'description' . $page->$description;
-		$header .= 'author' . $page->$author;
-		$header .= 'date' . $page->$date;
-		$header .= 'robots' . $page->$robots;
+		$header .= isset($page->title) ? 'title: ' . $page->title : ''; // Error if no title ? TOTO
+		$header .= isset($page->description) ? 'description: ' . $page->description : '';
+		$header .= isset($page->author) ? 'author: ' . $page->author : '';
+		$header .= isset($page->date) ? 'date: ' . $page->date : '';
+		$header .= isset($page->robots) ? 'robots: ' . $page->robots : '';
 
 		$header .= PHP_EOL . PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
 
@@ -45,7 +45,7 @@ class MarkdownPageSerializer implements PageSerializerInterface {
 			$filePath = '';
 		}
 
-		$infos = preg_split("/\s[-=]{3,}\s/", $data, 2);
+		$infos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
 
 		$headerData = trim($infos[0]);
 		preg_match_all("/(\w+)[\s:=]+(.+)/", $headerData, $headerMatches);

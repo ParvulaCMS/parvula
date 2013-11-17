@@ -20,6 +20,18 @@ class Page {
 	public $robots;
 	public $content;
 
+	public static function pageFactory($pageInfo) {
+		$page = new self;
+
+		foreach ($pageInfo as $field => $value) {
+			// if(isset($page->$field)) {
+				$page->$field = $value;
+			// }
+		}
+
+		return $page;
+	}
+
 	/**
 	 * Override "tostring" when print this object
 	 * @return string
