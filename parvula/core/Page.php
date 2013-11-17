@@ -18,15 +18,16 @@ class Page {
 	public $author;
 	public $date;
 	public $robots;
+	public $index;
 	public $content;
 
 	public static function pageFactory($pageInfo) {
 		$page = new self;
 
 		foreach ($pageInfo as $field => $value) {
-			// if(isset($page->$field)) {
+			if(property_exists(get_class(), $field)) {
 				$page->$field = $value;
-			// }
+			}
 		}
 
 		return $page;

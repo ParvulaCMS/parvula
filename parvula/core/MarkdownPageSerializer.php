@@ -21,13 +21,13 @@ class MarkdownPageSerializer implements PageSerializerInterface {
 	public function serialize(Page $page) {
 
 		$header = PHP_EOL;
-		$header .= isset($page->title) ? 'title: ' . $page->title : ''; // Error if no title ? TOTO
-		$header .= isset($page->description) ? 'description: ' . $page->description : '';
-		$header .= isset($page->author) ? 'author: ' . $page->author : '';
-		$header .= isset($page->date) ? 'date: ' . $page->date : '';
-		$header .= isset($page->robots) ? 'robots: ' . $page->robots : '';
+		$header .= isset($page->title) ? 'title: ' . $page->title . PHP_EOL : ''; // Error if no title ? TOTO
+		$header .= isset($page->description) ? 'description: ' . $page->description . PHP_EOL : '';
+		$header .= isset($page->author) ? 'author: ' . $page->author . PHP_EOL : '';
+		$header .= isset($page->date) ? 'date: ' . $page->date . PHP_EOL : '';
+		$header .= isset($page->robots) ? 'robots: ' . $page->robots . PHP_EOL : '';
 
-		$header .= PHP_EOL . PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
+		$header .= PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
 
 		$content = $page->content;
 
@@ -45,20 +45,24 @@ class MarkdownPageSerializer implements PageSerializerInterface {
 			$filePath = '';
 		}
 
-		$infos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
+		$headerInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
 
-		$headerData = trim($infos[0]);
+		$headerData = trim($headerInfos[0]);
 		preg_match_all("/(\w+)[\s:=]+(.+)/", $headerData, $headerMatches);
 
 		$page = new Page();
-		// Set page headers fields
-		$page->url = $filePath;
+
+		$pageInfo = array();
 		for ($i = 0; $i < count($headerMatches[1]); ++$i) {
 			$key = trim($headerMatches[1][$i]);
-			$page->{$key} = rtrim($headerMatches[2][$i], "\r\n");
+			$key = strtolower($key);
+			$pageInfo[$key] = rtrim($headerMatches[2][$i], "\r\n");
 		}
 
-		$page->content = $infos[1];
+		$page = Page::pageFactory($pageInfo);
+
+		$page->url = $filePath;
+		$page->content = $headerInfos[1];
 
 		return $page;
 	}

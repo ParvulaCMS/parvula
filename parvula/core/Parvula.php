@@ -238,7 +238,7 @@ class Parvula {
 	 * @return Parvula\Core\Page Return 'Page' object
 	 */
 	public function run() {
-		$uri = rtrim(static::getURI(), '/ \\');
+		$uri = trim(static::getURI(), '/\\');
 
 		if($uri === '') {
 			$uri = Config::homePage();
