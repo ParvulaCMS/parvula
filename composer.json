@@ -1,5 +1,6 @@
 {
-	"name": "bafs\\parvula",
+	"name": "bafs/parvula",
+	"description": "Simple, Markdown and Fast CMS",
 	"keywords": ["cms", "markdown"],
 	"license": "MIT",
 	"authors": [
