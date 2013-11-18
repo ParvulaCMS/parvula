@@ -2,7 +2,7 @@
 
 /**
  * Load aliases
- * @param array $aliases 
+ * @param array $aliases
  * @return
  */
 function loadAliases(array $aliases) {
@@ -13,14 +13,14 @@ function loadAliases(array $aliases) {
 
 /**
  * Parse configuration data in object
- * @param string $configData 
+ * @param string $configData
  * @return StdClass Config object
  */
 function parseConfigData($configData) {
 	preg_match_all('/([^\s:]+)[\s:]+(.+)/', $configData, $matches);
 
 	$conf = new \StdClass();
-	for ($i = 0; $i <= count($matches); ++$i) { 
+	for ($i = 0; $i <= count($matches); ++$i) {
 		$conf->{$matches[1][$i]} = trim($matches[2][$i]);
 	}
 
@@ -47,3 +47,13 @@ function exceptionHandler(Exception $e) {
 
 set_exception_handler('exceptionHandler');
 
+/**
+ * Unique ID for session
+ * @return string
+ */
+function uidSession() {
+	$ip = $_SERVER["REMOTE_ADDR"];
+	$browser = get_browser(null, true);
+
+	return sha1(sha1('!#;' . $ip) . $browser['browser'] . $browser['platform']);
+}
