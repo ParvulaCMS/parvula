@@ -53,7 +53,6 @@ set_exception_handler('exceptionHandler');
  */
 function uidSession() {
 	$ip = $_SERVER["REMOTE_ADDR"];
-	$browser = get_browser(null, true);
 
-	return sha1(sha1('!#;' . $ip) . $browser['browser'] . $browser['platform']);
+	return sha1(sha1('!#;' . $ip) . $_SERVER['HTTP_USER_AGENT']);
 }
