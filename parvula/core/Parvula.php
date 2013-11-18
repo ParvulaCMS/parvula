@@ -36,6 +36,7 @@ class Parvula {
 	 * Get a page object in html string
 	 * @param string $pagePath Page path
 	 * @param Parvula\Core\PageSerializerInterface $customSerializer
+	 * @throws IOException If the page does not exists
 	 * @return Parvula\Core\Page Return the selected page
 	 */
 	public function getPage($pagePath, PageSerializerInterface $customSerializer = null) {
@@ -75,7 +76,7 @@ class Parvula {
 			return $page;
 
 		} catch(IOException $e) {
-			error("Caught IOException: " . $e->getMessage());
+			exceptionHandler($e);
 		}
 	}
 
@@ -84,6 +85,7 @@ class Parvula {
 	 * @param Page $page Page object
 	 * @param string $pagePath Page filename
 	 * @param PageSerializerInterface $customSerializer Page serializer
+	 * @throws IOException If the page does not exists
 	 * @return int|bool Return false if failed
 	 */
 	public function setPage(Page $page, $pagePath, PageSerializerInterface $customSerializer = null) {
@@ -113,7 +115,24 @@ class Parvula {
 			return $res;
 
 		} catch(IOException $e) {
-			error("Caught IOException: " . $e->getMessage());
+			exceptionHandler($e);
+		}
+	}
+
+	/**
+	 * Delete a page
+	 * @param string $pagePath
+	 * @throws IOException If the page does not exists
+	 * @return boolean If page is deleted
+	 */
+	public function deletePage($pagePath) {
+		$pageFullPath = $pagePath . $this->fileExtension;
+
+		try {
+			$fs = new FilesSystem(PAGES);
+			return $fs->delete($pageFullPath);
+		} catch(IOException $e) {
+			exceptionHandler($e);
 		}
 	}
 
@@ -165,6 +184,7 @@ class Parvula {
 
 	/**
 	 * List pages and get an array of pages paths
+	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
 	public function listPages() {
@@ -190,7 +210,7 @@ class Parvula {
 
 			return $pages;
 		} catch(IOException $e) {
-			echo "Caught IOException: " . $e->getMessage();
+			exceptionHandler($e);
 		}
 	}
 
