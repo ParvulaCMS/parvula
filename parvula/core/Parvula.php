@@ -2,6 +2,7 @@
 
 namespace Parvula\Core;
 
+use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
 
 /**
@@ -26,20 +27,27 @@ class Parvula {
 	private $fileExtention;
 
 	/**
-	 * Constructor
+	 * @var PageSerializerInterface
 	 */
-	function __construct() {
+	private $serializer;
+
+	/**
+	 * Constructor
+	 * @param Parvula\Core\PageSerializerInterface $customSerializer
+	 */
+	function __construct(PageSerializerInterface $customSerializer = null) {
 		$this->fileExtension =  '.' . Config::fileExtension();
+
+		$this->setSerializer($customSerializer);
 	}
 
 	/**
 	 * Get a page object in html string
 	 * @param string $pagePath Page path
-	 * @param Parvula\Core\PageSerializerInterface $customSerializer
 	 * @throws IOException If the page does not exists
 	 * @return Parvula\Core\Page Return the selected page
 	 */
-	public function getPage($pagePath, PageSerializerInterface $customSerializer = null) {
+	public function getPage($pagePath) {
 
 		// If page was already loaded, return page
 		if(isset($this->pages[$pagePath])) {
@@ -49,25 +57,17 @@ class Parvula {
 		$pageFullPath = $pagePath . $this->fileExtension;
 
 		try {
-			$fs = new FilesSystem(PAGES);
+			$fs = new Files(PAGES);
 
 			if(!$fs->exists($pageFullPath)) {
-				// Load page error if exists
-				if($fs->exists(Config::errorPage() . $this->fileExtension)) {
-					return $this->getPage(Config::errorPage(), $customSerializer);
-				} else {
-					return false;
-				}
+				return false;
 			}
 
-			if($customSerializer === null) {
-				$defaultSer = Config::defaultPageSerializer();
-				$customSerializer = new $defaultSer;
-			}
 
 			// Anonymous function to use serializer engine
-			$fn = function($data) use ($pagePath, $customSerializer) {
-				return $customSerializer->unserialize($pagePath, $data);
+			$serializer = $this->serializer;
+			$fn = function($data) use ($pagePath, $serializer) {
+				return $serializer->unserialize($pagePath, $data);
 			};
 
 			$page = $fs->read($pageFullPath, $fn);
@@ -84,27 +84,21 @@ class Parvula {
 	 * Save page object in "pagePath" file
 	 * @param Page $page Page object
 	 * @param string $pagePath Page filename
-	 * @param PageSerializerInterface $customSerializer Page serializer
 	 * @throws IOException If the page does not exists
 	 * @return int|bool Return false if failed
 	 */
-	public function setPage(Page $page, $pagePath, PageSerializerInterface $customSerializer = null) {
+	public function setPage(Page $page, $pagePath) {
 
 		$pageFullPath = $pagePath . $this->fileExtension;
 
 		try {
-			$fs = new FilesSystem(PAGES);
+			$fs = new Files(PAGES);
 
 			if(!$fs->exists($pageFullPath)) {
 				// TODO create page
 			}
 
-			if($customSerializer === null) {
-				$defaultSer = Config::defaultPageSerializer();
-				$customSerializer = new $defaultSer;
-			}
-
-			$data = $customSerializer->serialize($page);
+			$data = $this->serializer->serialize($page);
 
 			$res = $fs->write($pageFullPath, $data);
 
@@ -129,7 +123,7 @@ class Parvula {
 		$pageFullPath = $pagePath . $this->fileExtension;
 
 		try {
-			$fs = new FilesSystem(PAGES);
+			$fs = new Files(PAGES);
 			return $fs->delete($pageFullPath);
 		} catch(IOException $e) {
 			exceptionHandler($e);
@@ -192,7 +186,7 @@ class Parvula {
 		$that = &$this;
 
 		try {
-			$fs = new FilesSystem(PAGES);
+			$fs = new Files(PAGES);
 
 			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
 			{
@@ -264,7 +258,19 @@ class Parvula {
 			$uri = Config::homePage();
 		}
 
-		return $this->getPage($uri);
+		$page = $this->getPage($uri);
+
+		if(false === $page) {
+			$fs = new Files(PAGES);
+
+			if($fs->exists(Config::errorPage() . $this->fileExtension)) {
+				$page = $this->getPage(Config::errorPage());
+			} else {
+				return false;
+			}
+		}
+
+		return $page;
 	}
 
 	/**
@@ -275,12 +281,26 @@ class Parvula {
 	}
 
 	/**
+	 * Set Parvula pages serializer
+	 * @param PageSerializerInterface $customSerializer
+	 * @return void
+	 */
+	public function setSerializer(PageSerializerInterface $customSerializer = null) {
+		if($customSerializer === null) {
+			$defaultSer = Config::defaultPageSerializer();
+			$customSerializer = new $defaultSer;
+		}
+
+		$this->serializer = $customSerializer;
+	}
+
+	/**
 	 * Get user config
 	 * @return array
 	 */
 	public static function getUserConfig() {
 		try {
-			$confFs = new \Parvula\Core\FilesSystem(DATA);
+			$confFs = new Files(DATA);
 			$config = $confFs->read(Config::get('userConfig') . '.' . Config::get('fileExtension'), 'parseConfigData');
 		} catch(IOException $e) {
 			exceptionHandler($e);
