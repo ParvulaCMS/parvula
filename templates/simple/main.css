@@ -13,13 +13,13 @@ body {
 	color: #333;
 	background: #fff;
 	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
 
 /*
  * Header
  */
 #header {
-	background: rgb(90, 150, 210);
 	background: rgb(60, 155, 220);
 	margin-bottom: 22px;
 	font-weight: normal;
@@ -63,7 +63,7 @@ body {
 
 #header li a:hover {
 	color: #eee;
-	border-bottom: 3px solid rgba(90, 150, 210, .6);
+	border-bottom: 3px solid rgba(60, 155, 220, .6);
 }
 
 #header ul li a {
@@ -86,6 +86,11 @@ body {
 
 #main .content {
 	text-align: justify;
+	color: #404448;
+}
+
+#main .content p {
+	color: #50585F;
 }
 
 /*
