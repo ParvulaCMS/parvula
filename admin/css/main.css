@@ -1,0 +1,294 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	text-rendering: optimizeLegibility;
+}
+
+#headbar {
+	background: rgba(250,250,250,.95);
+	left: 0;
+	right: 0;
+	height: 40px;
+	top: 0;
+	position: absolute;
+	z-index: 90;
+	box-shadow: 0 4px 30px rgb(255,255,255);
+	text-align: center;
+	line-height: 40px;
+	font-size: 20px;
+	letter-spacing: 1px;
+	color: #777;
+
+	background: #f9f9f9\9; /* IE */
+}
+
+#preview {
+	position: absolute;
+	width: 49.99%;
+	max-width: 49.99%;
+	right: 0;
+	padding: 20px 0;
+	top: 25px;
+	bottom: 0px;
+	overflow-y: auto;
+}
+
+#preview .inner {
+	margin: 30px;
+}
+
+.admin-btn,
+.admin-btn-s {
+	background: #f2f2f2;
+	padding: 0 15px;
+	text-align: center;
+	height: 40px;
+	border: 0;
+	outline: none;
+	color: #444;
+	font-size: 14px;
+	margin: 0 2px;
+	color: #444;
+	box-sizing: border-box;
+}
+
+.admin-btn-s {
+	padding: 1px 6px;
+	font-size: 13px;
+	height: 20px;
+}
+
+.admin-btn:hover,
+.admin-btn-s:hover {
+	background: #eaeaea;
+	cursor: default;
+	text-decoration: none;
+}
+
+.admin-btn:active,
+.admin-btn-s:active {
+	background: #e4e4e4;
+	text-decoration: none;
+}
+
+.admin-text-s {
+	font-size: 12px;
+}
+
+#headbar .right {
+	float: right;
+}
+
+#headbar .left {
+	float: left;
+}
+
+#headbar .title {
+	width: 30%;
+	margin: auto;
+	position: absolute;
+	left: 35%;
+	min-height: 100%; /* FF */
+	/*height: 40px;*/
+	border: none;
+	background: #fdfdfd;
+
+	padding: 0 5px;
+	color: #6a6a6a;
+	font-size: 16pt;
+	text-align: center;
+
+	box-sizing: border-box;
+}
+
+.anim {
+	-moz-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+
+	display: inline-block;
+}
+
+#pages-list,
+#page-info {
+	z-index: 85;
+	position: absolute;
+	background: #fff;
+	box-shadow: 0 0 2em rgba(0,20,50,0.04);
+	overflow-y: auto;
+	word-wrap: break-word;
+}
+
+#pages-list h2,
+#page-info h2 {
+	font-size: 16pt;
+	margin: 12px 0;
+}
+
+#pages-list ul,
+#page-info ul {
+	list-style: square;
+	padding: 0 24px;
+	margin: 10px 0;
+}
+
+#pages-list {
+	width: 240px;
+	left: -300px;
+	top: 40px;
+	border-right: 1px solid #eee;
+	padding: 5px 15px;
+	bottom: 0;
+}
+
+#pages-list ul {
+	font-size: 12pt;
+}
+
+#page-info {
+	right: 0;
+	margin-top: 40px;
+	width: 360px;
+	max-height: 260px;
+	margin-left: -200px;
+	border: 1px solid #eee;
+	padding: 15px 25px;
+	text-transform: capitalize;
+}
+
+.login {
+	text-align: center;
+	margin: 10% auto;
+	width: 450px;
+	border: 1px solid #e8e8e8;
+	background: #fff;
+	padding: 70px;
+	border-radius: 3px;
+	box-shadow: 0 0 20em rgba(0,20,50,0.12);
+}
+
+.login h1 {
+	font-size: 22pt;
+	color: #444;
+	margin-top: 0;
+}
+
+input {
+	padding: 3px;
+	border: 1px solid #bbb;
+	outline: none;
+	box-sizing: border-box;
+}
+
+input.input-l {
+	height: 38px;
+	padding: 0 10px;
+	font-size: 14px;
+}
+
+div [contenteditable="true"] {
+	outline: none;
+}
+
+input:focus,
+div [contenteditable="true"]:focus {
+	box-shadow: 0 0 8px rgba(0,140,250,.4);
+}
+
+.rotate {
+	-webkit-transform: rotate(-180deg);
+	-moz-transform: rotate(-180deg);
+	-ms-transform: rotate(-180deg);
+	-o-transform: rotate(-180deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+
+.notice {
+	background: rgba(50, 50, 160, .1);
+
+	background: #cce\9;
+}
+
+.ok {
+	background: rgba(20, 250, 100, .3) !important;
+
+	background: #8EFFAE\9 !important;
+}
+
+.error {
+	background: rgba(250, 40, 60, .2) !important;
+
+	background: #FF7372\9 !important;
+}
+
+/* Code mirror */
+
+.CodeMirror {
+	width: 49.99%;
+	height: auto;
+	position: absolute;
+	top: 25px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	font-size: 1em;
+	line-height: 1.3em;
+	color: #606060;
+	border: 0;
+	border-right: 1px solid #eee;
+}
+
+.CodeMirror-lines {
+	padding: 45px 0;
+}
+
+.CodeMirror pre {
+	padding: 0 30px;
+}
+
+/* CodeMirror markdown style */
+.cm-s-default .cm-strong,
+.cm-s-default .cm-quote,
+.cm-s-default .cm-number,
+.cm-s-default .cm-atom,
+.cm-s-default .cm-tag {
+	color: #333;
+	font-weight: bold;
+}
+
+.cm-s-default .cm-string,
+.cm-s-default .cm-link {
+	color: #357;
+}
+.cm-s-default .cm-link {
+	font-weight: bold;
+	text-decoration: none;
+}
+.cm-s-default .cm-string {
+	text-decoration: underline;
+}
+.cm-s-default .cm-tag {
+	color: #364;
+}
+
+.cm-s-default .cm-comment {
+	color: #755;
+}
+
+.cm-s-default .cm-header {
+	color: #222;
+	line-height: 1.5em;
+	font-weight: bold;
+}
+
+.cm-s-default .cm-header1 { font-size: 1.45em; }
+.cm-s-default .cm-header2 { font-size: 1.3em; }
+.cm-s-default .cm-header3 { font-size: 1.1em; }
+.cm-s-default .cm-header4 { font-size: 1.05em; }
+
+.cm-s-default .cm-variable-2,
+.cm-s-default .cm-variable-3,
+.cm-s-default .cm-keyword {
+	color: #333;
+}

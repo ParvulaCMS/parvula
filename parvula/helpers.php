@@ -56,3 +56,28 @@ function uidSession() {
 
 	return sha1(sha1('!#;' . $ip) . $_SERVER['HTTP_USER_AGENT']);
 }
+
+/**
+ * Check if we are admin
+ * @return boolean
+ */
+function isParvulaAdmin() {
+	if(session_id() === '') {
+		session_start();
+	}
+
+	if(isset($_SESSION, $_SESSION['login']) && $_SESSION['login'] === true) {
+		session_regenerate_id(true);
+		$logged = $_SESSION['login'];
+
+		$sid = uidSession();
+		if(isset($_SESSION['id']) && $_SESSION['id'] !== $sid) {
+			session_destroy();
+			return false;
+		}
+
+		return true;
+	} else {
+		return false;
+	}
+}

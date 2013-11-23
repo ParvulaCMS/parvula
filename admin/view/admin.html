@@ -1,0 +1,39 @@
+	<div id="pages-list" class="active">
+		<h2>Pages</h2>
+		<ul class="list">
+		<?php foreach ($pagesList as $pagePath) : ?>
+			<li><a href="#<?php echo $pagePath?>"><?php echo $pagePath?></a> <button class="admin-btn-s delete">x</button></li>
+		<?php endforeach; ?>
+		</ul>
+		<ul>
+			<li><a href="#">New page</a></li>
+		</ul>
+	</div>
+
+	<div id="page-info">
+		<h2>Page info</h2>
+		<ul>
+		</ul>
+	</div>
+
+	<div id="headbar">
+		<button class="admin-btn left toggleList">pages <span class="anim">>></span></button>
+		<input class="title" />
+		<a class="admin-btn right" href="<?php echo $baseUrl?>">website</a>
+		<button class="admin-btn right logout">logout</button>
+		<button class="admin-btn right toggleInfo">page info <span class="anim">v</span></button>
+		<button class="admin-btn right save">save</button>
+	</div>
+
+	<textarea id="editor"></textarea>
+
+	<div id="preview">
+		<div class="inner"></div>
+	</div>
+
+	<script type="text/javascript">
+		baseUrl = '<?php echo $baseUrl;?>';
+	</script>
+	<script src="<?php echo $baseUrl;?>admin/js/marked.js"></script>
+	<script src="<?php echo $baseUrl;?>admin/js/jquery.min.js"></script>
+	<script src="<?php echo $baseUrl;?>admin/js/admin.js"></script>
