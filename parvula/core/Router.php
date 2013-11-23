@@ -44,6 +44,7 @@ class Router {
 			$method = $_SERVER['REQUEST_METHOD'];
 		}
 		$this->method = $method;
+		$this->prefix = '';
 	}
 
 	/**
@@ -101,9 +102,20 @@ class Router {
 	public function on($method, $path, $callback) {
 		$this->routes->push(array(
 			"method" => $method,
-			"path" => $path,
+			"path" => $this->prefix . $path,
 			"callback" => $callback
 		));
+	}
+
+	/**
+	 * Spacename
+	 * @param string $prefix
+	 * @param function $callback
+	 */
+	public function space($prefix, $callback) {
+		$that = clone $this;
+		$that->prefix = $prefix;
+		$callback($that);
 	}
 
 	/**
@@ -133,11 +145,16 @@ class Router {
 				if(preg_match("@^{$regex}@", $this->uri, $matches)) {
 					$callback = $route['callback'];
 
-					parse_str(file_get_contents("php://input"), $data);
-
 					$req = new \ArrayObject;
-					$req->body = $data;
 					$req->params = (object)$matches;
+
+					if($this->method !== 'GET') {
+						if(!isset($data)) {
+							parse_str(file_get_contents("php://input"), $data);
+						}
+						$req->body = $data;
+					}
+
 
 					$that = $this;
 					$next = function() use ($that) {
