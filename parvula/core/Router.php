@@ -82,6 +82,16 @@ class Router {
 		$this->on('DELETE', $path, $callback);
 	}
 
+
+	/**
+	 * Add a new route with all method
+	 * @param string $path
+	 * @param function $callback
+	 */
+	public function any($path, $callback) {
+		$this->on('*', $path, $callback);
+	}
+
 	/**
 	 * Add a new route
 	 * @param string $method Method name (`*` for all methods)
