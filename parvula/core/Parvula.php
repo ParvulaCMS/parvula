@@ -209,13 +209,14 @@ class Parvula {
 	}
 
 	/**
-	 * Get current URI
+	 * Get current URI (without /index.php)
 	 * @return string
 	 */
 	public static function getURI() {
 		//TODO stock URI in field (same for relativeURI)
 		$scriptName = $_SERVER['SCRIPT_NAME'];
-		if(substr($_SERVER['REQUEST_URI'], 0, strlen($scriptName)) !== $scriptName) {
+
+		if(Config::get('URLRewriting')) {
 			$scriptName = dirname($scriptName);
 		}
 
