@@ -25,5 +25,12 @@ The basic configuration file is in `data/site.conf.md`.
 
 Pages
 -----
-* Page beginning with `_` are "secret" pages, not listed.
-* You can order pages with the *index* field (by default).
+* Pages must have a title to be listed
+* Page beginning with `_` are "secret" pages, not listed
+* You can order pages with the *index* field
+
+Administration
+--------------
+You can edit pages online (site.com/_admin/).
+
+Change the default password in `data/admin.conf.php`.
