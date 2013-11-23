@@ -3,9 +3,11 @@
 // Starting point for the magic
 // ----------------------------- //
 
-use Parvula\Core\Parvula;
+use Parvula\Core\Router;
 use Parvula\Core\Config;
-use Parvula\Core\View;
+use Parvula\Core\Parvula;
+
+if(!defined('ROOT')) exit;
 
 // Try to load composer autoloader
 if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
@@ -32,52 +34,16 @@ $config = Parvula::getUserConfig();
 // Append user config to Config wrapper (override if exists)
 Config::append((array) $config);
 
-// Check if template exists (must have index.html)
-$baseTemplate = TMPL . Config::get('template');
-if(!is_readable($baseTemplate . '/index.html')) {
-	die("Error - Template is not readable");
+// Auto set URLRewriting Config
+if(Config::get('URLRewriting') === 'auto') {
+	$scriptName = $_SERVER['SCRIPT_NAME'];
+	if(substr($_SERVER['REQUEST_URI'], 0, strlen($scriptName)) === $scriptName) {
+		Config::set('URLRewriting', false);
+	} else {
+		Config::set('URLRewriting', true);
+	}
 }
 
-Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
-
-$parvula = new Parvula();
-$page = $parvula();
-
-if(false === $page) {
-	// Juste print simple 404 if there is no 404 page
-	die('404 - Page ' . htmlspecialchars($page) . ' not found');
-}
-
-$pages = $parvula->getPages();
-
-
-try {
-	$view = new View(TMPL . Config::get('template'));
-
-	// Assign some variables
-	$view->assign('baseUrl', Parvula::getRelativeURIToRoot());
-	$view->assign('templateUrl', Asset::getBasePath());
-
-	// Register alias for secure echo
-	$view->assign(array(
-		'_e' => function(&$str) {
-			return HTML::sEcho($str);
-		},
-		'_et' => function(&$str, $str2) {
-			return HTML::sEchoThen($str, $str2);
-		}
-	));
-
-	$view->assign(array(
-		'site' => $config,
-		'pages' => $pages,
-		'meta' => $page,
-		'content' => $page->content
-	));
-
-	// Show index template
-	echo $view('index');
-
-} catch(Exception $e) {
-	exceptionHandler($e);
-}
+$router = new Router(Parvula::getURI());
+require 'routes.php';
+$router->run();
