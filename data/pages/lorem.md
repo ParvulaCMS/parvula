@@ -1,10 +1,9 @@
 
-title Lorem Ipsum
+title: Lorem Ipsum
 
----
+-----
 
-Lorem ipsum 
-===========
+# Lorem ipsum
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ac turpis ligula. Aenean blandit mauris nec ipsum volutpat, sed blandit arcu hendrerit. Suspendisse vulputate nulla vitae leo dignissim venenatis. Aliquam quis sapien venenatis, malesuada felis sed, congue felis. Vivamus quis massa nec ipsum vehicula placerat in ut nisl. Donec nibh nunc, sodales in condimentum id, varius in elit. Pellentesque dolor metus, vehicula quis rhoncus non, molestie sit amet velit. Duis vel nibh laoreet, volutpat risus eu, venenatis dolor. Morbi consequat fermentum erat.
 
