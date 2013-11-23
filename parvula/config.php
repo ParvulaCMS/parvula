@@ -15,8 +15,8 @@ return array(
 		'Asset' => 'Parvula\Core\Asset'
 	),
 
-	// You can force this option with a boolean
-	'URLRewriting' => file_exists('.htaccess'),
+	// You can force this option with a boolean or leave it on 'auto' detection
+	'URLRewriting' => 'auto',
 
 	// Home page
 	'homePage' => 'home',
