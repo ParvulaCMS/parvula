@@ -33,7 +33,7 @@ class Parvula {
 
 	/**
 	 * Constructor
-	 * @param Parvula\Core\PageSerializerInterface $customSerializer
+	 * @param Parvula\Core\PageSerializerInterface $customSerializer (optional)
 	 */
 	function __construct(PageSerializerInterface $customSerializer = null) {
 		$this->fileExtension =  '.' . Config::fileExtension();
@@ -246,39 +246,6 @@ class Parvula {
 	 */
 	public static function getMethod() {
 		return $_SERVER['REQUEST_METHOD'];
-	}
-
-	/**
-	 * Use {@see getPage} with current url
-	 * @return Parvula\Core\Page Return 'Page' object
-	 */
-	public function run() {
-		$uri = trim(static::getURI(), '/\\');
-
-		if($uri === '') {
-			$uri = Config::homePage();
-		}
-
-		$page = $this->getPage($uri);
-
-		if(false === $page) {
-			$fs = new Files(PAGES);
-
-			if($fs->exists(Config::errorPage() . $this->fileExtension)) {
-				$page = $this->getPage(Config::errorPage());
-			} else {
-				return false;
-			}
-		}
-
-		return $page;
-	}
-
-	/**
-	 * alias for {@see run}
-	 */
-	public function __invoke() {
-		return $this->run();
 	}
 
 	/**
