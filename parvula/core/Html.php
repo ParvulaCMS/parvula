@@ -11,7 +11,7 @@ namespace Parvula\Core;
  * @author Fabien Sa
  * @license MIT License
  */
-class HTML {
+class Html {
 
 	/**
 	 * @var string

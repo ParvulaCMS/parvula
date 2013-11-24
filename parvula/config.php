@@ -10,7 +10,7 @@ return array(
 
 	// Class aliases
 	'aliases' => array(
-		'HTML' => 'Parvula\Core\HTML',
+		'HTML' => 'Parvula\Core\Html',
 		'Asset' => 'Parvula\Core\Config',
 		'Asset' => 'Parvula\Core\Asset'
 	),
