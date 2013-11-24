@@ -13,8 +13,8 @@ if(!defined('ROOT')) exit;
 if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 	require $autoload;
 } else {
-	die('We can\'t find composer autoloader. Run <code>composer install</code>
-		or read the manual.');
+	require APP . 'Core/Parvula.php';
+	Parvula::registerAutoloader();
 }
 
 require APP . 'helpers.php';
