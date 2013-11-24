@@ -7,6 +7,7 @@ Parvula CMS
 Requirements
 ------------
 * PHP 5.3+
+* URL Rewriting (recommended)
 * [Composer](http://getcomposer.org/) is recommended
 
 Installation with Composer
@@ -14,6 +15,8 @@ Installation with Composer
 1. Download and extract the zip
 2. Run `composer install`
 3. That's it !
+
+Without composer, download [php-markdown](http://michelf.ca/projects/php-markdown/) and put Michelf directory in root.
 
 
 Edit pages
