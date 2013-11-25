@@ -161,7 +161,7 @@ html, body {
 	text-align: center;
 	margin: 10% auto;
 	width: 450px;
-	border: 1px solid #e8e8e8;
+	border: 1px solid #e2ecf0;
 	background: #fff;
 	padding: 70px;
 	border-radius: 3px;
@@ -220,6 +220,20 @@ div [contenteditable="true"]:focus {
 	background: rgba(250, 40, 60, .2) !important;
 
 	background: #FF7372\9 !important;
+}
+
+/* placeholder */
+::-webkit-input-placeholder {
+	color: #bbb
+}
+::-moz-placeholder {
+	color: #bbb
+}
+:-ms-input-placeholder {
+	color: #bbb
+}
+input:-moz-placeholder {
+	color: #bbb
 }
 
 /* Code mirror */
