@@ -7,12 +7,18 @@ use Parvula\Core\Parvula;
 // Admin pages
 $router->any('/_admin/', function() {
 	return require ADMIN . 'admin.php';
+})
+// redirection, need the trailing slash
+->get('/_admin', function() {
+	header("Location: ./_admin/", true, 303);
 });
 
-// Api
+
+// Api namespace
 $router->space('/_api', function($router) {
 	return require APP . 'api.php';
 });
+
 
 // Front
 $router->get('/?:pagename?', function($req) use($config) {
