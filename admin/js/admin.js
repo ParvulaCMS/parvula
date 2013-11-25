@@ -123,38 +123,38 @@ $(function() {
 		refreshPreview();
 	});
 
+
+	// Hide pages list on focus
+	editor.on('focus', function() {
+		$(".toggleList").removeClass("active").find(".anim").removeClass("rotate");
+			listPagesEl.animate({ left: -300 });
+	});
+
+
 	// Pages list panel
 	$(".toggleList").on('click', function() {
 		if($(this).hasClass("active")) {
 			$(this).removeClass("active").find(".anim").removeClass("rotate");
-			listPagesEl.animate({
-				left: -300,
-			});
+			listPagesEl.animate({ left: -300 });
 		} else {
 			$(this).addClass("active").find(".anim").addClass("rotate");
-			listPagesEl.animate({
-				left: 0,
-			});
+			listPagesEl.animate({ left: 0 });
 		}
 	});
-	listPagesEl.css({left: -300});
+	listPagesEl.css({ left: -300 });
 
 
 	// Pages list panel
 	$(".toggleInfo").on('click', function() {
 		if($(this).hasClass("active")) {
 			$(this).removeClass("active").find(".anim").removeClass("rotate");
-			pageInfoEl.animate({
-				top: -320,
-			});
+			pageInfoEl.animate({ top: -320 });
 		} else {
 			$(this).addClass("active").find(".anim").addClass("rotate");
-			pageInfoEl.animate({
-				top: 0,
-			});
+			pageInfoEl.animate({ top: 0 });
 		}
 	});
-	pageInfoEl.css({'top': -320});
+	pageInfoEl.css({ 'top': -320 });
 
 
 	// Save page
