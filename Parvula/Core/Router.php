@@ -51,36 +51,40 @@ class Router {
 	 * Add a new route with "GET" method
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function get($path, $callback) {
-		$this->on('GET', $path, $callback);
+		return $this->on('GET', $path, $callback);
 	}
 
 	/**
 	 * Add a new route with "POST" method
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function post($path, $callback) {
-		$this->on('POST', $path, $callback);
+		return $this->on('POST', $path, $callback);
 	}
 
 	/**
 	 * Add a new route with "PUT" method
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function put($path, $callback) {
-		$this->on('PUT', $path, $callback);
+		return $this->on('PUT', $path, $callback);
 	}
 
 	/**
 	 * Add a new route with "DELETE" method
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function delete($path, $callback) {
-		$this->on('DELETE', $path, $callback);
+		return $this->on('DELETE', $path, $callback);
 	}
 
 
@@ -88,9 +92,10 @@ class Router {
 	 * Add a new route with all method
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function any($path, $callback) {
-		$this->on('*', $path, $callback);
+		return $this->on('*', $path, $callback);
 	}
 
 	/**
@@ -98,6 +103,7 @@ class Router {
 	 * @param string $method Method name (`*` for all methods)
 	 * @param string $path
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function on($method, $path, $callback) {
 		$this->routes->push(array(
@@ -105,17 +111,22 @@ class Router {
 			"path" => $this->prefix . $path,
 			"callback" => $callback
 		));
+
+		return $this;
 	}
 
 	/**
 	 * Spacename
 	 * @param string $prefix
 	 * @param function $callback
+	 * @return Router Self
 	 */
 	public function space($prefix, $callback) {
 		$that = clone $this;
 		$that->prefix = $prefix;
 		$callback($that);
+
+		return $that;
 	}
 
 	/**
