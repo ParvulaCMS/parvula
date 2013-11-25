@@ -127,12 +127,13 @@ $(function() {
 	// Hide pages list on focus
 	editor.on('focus', function() {
 		$(".toggleList").removeClass("active").find(".anim").removeClass("rotate");
-			listPagesEl.animate({ left: -300 });
+		listPagesEl.animate({ left: -300 });
 	});
 
 
 	// Pages list panel
-	$(".toggleList").on('click', function() {
+	$(".toggleList").on('click', function(e) {
+		listPagesEl.clearQueue().stop();
 		if($(this).hasClass("active")) {
 			$(this).removeClass("active").find(".anim").removeClass("rotate");
 			listPagesEl.animate({ left: -300 });
@@ -145,7 +146,8 @@ $(function() {
 
 
 	// Pages list panel
-	$(".toggleInfo").on('click', function() {
+	$(".toggleInfo").on('click', function(e) {
+		pageInfoEl.clearQueue().stop();
 		if($(this).hasClass("active")) {
 			$(this).removeClass("active").find(".anim").removeClass("rotate");
 			pageInfoEl.animate({ top: -320 });
