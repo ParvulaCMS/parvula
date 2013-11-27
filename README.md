@@ -36,4 +36,4 @@ Administration
 --------------
 You can edit pages online (site.com/_admin/).
 
-Change the default password in `data/admin.conf.php`.
+Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
