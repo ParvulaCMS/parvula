@@ -5,7 +5,7 @@
 //| --------------- |\\
 
 define('ROOT', '');
-define('APP', ROOT . 'parvula/');
+define('APP', ROOT . 'Parvula/');
 define('VENDOR', ROOT . 'vendor/');
 define('DATA', ROOT . 'data/');
 define('PAGES', DATA . 'pages/');
