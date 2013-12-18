@@ -107,7 +107,7 @@ class FilesSystem {
 		$fnName = __FUNCTION__;
 
 		if(!$this->existsDir($dir)) {
-			throw new IOException("Directory '$dirFull' not found", 1);
+			throw new IOException("Directory '$dir' not found", 1);
 		}
 
 		$dirFull = $this->prefixPath . $dir;
