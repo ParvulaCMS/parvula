@@ -19,6 +19,9 @@ if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 
 require APP . 'helpers.php';
 
+// Use custom exception handler
+set_exception_handler('exceptionHandler');
+
 // Populate Config wrapper
 Config::populate(require APP . 'config.php');
 
