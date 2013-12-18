@@ -158,6 +158,7 @@ class Router {
 
 					$req = new \ArrayObject;
 					$req->params = (object)$matches;
+					$req->uri = $this->uri;
 
 					if($this->method !== 'GET') {
 						if(!isset($data)) {
@@ -185,7 +186,7 @@ class Router {
 	 * @return string Normalized regex
 	 */
 	private function normalizeRegex($regex) {
-		$regex = preg_replace("/\:(\w+)/", "(?P<$1>.+[^\/])", $regex);
+		$regex = preg_replace("/\:(\w+)/", "(?P<$1>[^\/]+)", $regex);
 		$regex = str_replace("*", "(.*)", $regex);
 
 		return $regex;

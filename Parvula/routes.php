@@ -20,9 +20,14 @@ $router->space('/_api', function($router) {
 });
 
 
-// Front
-$router->get('/?:pagename?', function($req) use($config) {
-	$pagename = isSet($req->params->pagename) ? $req->params->pagename : Config::homePage();
+// Front - Pages
+$router->get('*', function($req) use($config) {
+
+	$pagename = rtrim($req->uri, '/');
+
+	if($pagename === '') {
+		$pagename = Config::homePage();
+	}
 
 	// Check if template exists (must have index.html)
 	$baseTemplate = TMPL . Config::get('template');
