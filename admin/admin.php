@@ -7,15 +7,20 @@ use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
 if(!defined('ROOT')) exit;
+$adminConf = require DATA . 'admin.conf.php';
+
+if($adminConf['password'] === "_Your_Password_") {
+	die('You MUST change the default password in `' . DATA . 'admin.conf.php`.');
+}
 
 $view = new View(ADMIN . 'view');
 
 $view->assign('baseUrl', Parvula::getRelativeURIToRoot());
 $view->assign('templateUrl', Parvula::getRelativeURIToRoot() . TMPL . Config::get('template'));
 
+
 // Check password
 if(isset($_POST, $_POST['password'])) {
-	$adminConf = require DATA . 'admin.conf.php';
 
 	if($_POST['password'] === $adminConf['password']) {
 		if(session_id() === '') {
