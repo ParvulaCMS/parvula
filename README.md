@@ -2,7 +2,9 @@ Parvula CMS
 ===========
 
 #### A quick website from markdown files
-![website](http://i.imgur.com/pcShKqy.png)
+
+![website](http://i.imgur.com/jO3KwHI.png)
+*Example with the fullpage template*
 
 Requirements
 ------------
@@ -23,7 +25,10 @@ Edit pages
 ----------
 All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
 
-The basic configuration file is in `data/site.conf.md`.
+The basic configuration file is in `data/site.conf.md`. There is 2 templates bundle by default: "simple" and "fullpage".
+
+![website](http://i.imgur.com/pcShKqy.png)
+*Default template*
 
 
 Pages
