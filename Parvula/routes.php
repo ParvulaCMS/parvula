@@ -1,4 +1,7 @@
 <?php
+// ----------------------------- //
+// Routes (controller)
+// ----------------------------- //
 
 use Parvula\Core\View;
 use Parvula\Core\Config;

@@ -1,6 +1,6 @@
 <?php
 // ----------------------------- //
-// Starting point for the magic
+// Let the magic begin
 // ----------------------------- //
 
 use Parvula\Core\Router;
