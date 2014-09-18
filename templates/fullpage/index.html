@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<!-- Use fullPage.js http://alvarotrigo.com/fullPage/ -->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<title><?php echo $_et($meta->title, ' · '), $site->title ?></title>
+
+	<?php if(isset($site->description)) : ?>
+	<meta name="description" content="<?php echo $site->description ?>">
+	<?php endif; ?>
+	<meta name="Resource-type" content="Document" />
+
+	<?php
+	echo Asset::css(array('vendor/jquery.fullPage.css', 'fullpage.css'));
+
+	echo Asset::js(
+		array(
+			'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js',
+			'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js',
+			'vendor/jquery.fullPage.min.js'
+		)
+	);
+
+	$anchors = array();
+	$titles = array();
+
+	foreach ($pages as $page) {
+		$anchors[] = str_replace(array('/', '\\', '#'), '-', $page->url);
+		$titles[] = $page->title;
+	}
+	?>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				anchors: <?php echo json_encode($anchors);?>,
+				navigation: true,
+				navigationPosition: 'right',
+				navigationTooltips: <?php echo json_encode($titles);?>
+			});
+		});
+	</script>
+
+</head>
+<body>
+
+	<div id="fullpage">
+		<?php foreach ($pages as $n => $page) : ?>
+		<div class="section " id="section<?php echo $n;?>">
+			<?php echo $page->content ?>
+		</div>
+		</article>
+		<?php endforeach; ?>
+	</div>
+
+</body>
+</html>
