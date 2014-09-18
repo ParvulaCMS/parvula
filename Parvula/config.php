@@ -6,7 +6,7 @@
 
 return array(
 	// Show errors if debug is enabled
-	'debug' => true,
+	'debug' => false,
 
 	// Class aliases
 	'aliases' => array(
