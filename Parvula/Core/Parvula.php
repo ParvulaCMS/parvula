@@ -17,7 +17,7 @@ use Parvula\Core\Exception\IOException;
 class Parvula {
 
 	/**
-	 * @var array
+	 * @var array<Page>
 	 */
 	private $pages;
 

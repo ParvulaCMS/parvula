@@ -19,13 +19,15 @@ class MarkdownPageSerializer implements PageSerializerInterface {
 	 * @return boolean
 	 */
 	public function serialize(Page $page) {
-
 		$header = PHP_EOL;
-		$header .= isset($page->title) ? 'title: ' . $page->title . PHP_EOL : ''; // Error if no title ? TOTO
-		$header .= isset($page->description) ? 'description: ' . $page->description . PHP_EOL : '';
-		$header .= isset($page->author) ? 'author: ' . $page->author . PHP_EOL : '';
-		$header .= isset($page->date) ? 'date: ' . $page->date . PHP_EOL : '';
-		$header .= isset($page->robots) ? 'robots: ' . $page->robots . PHP_EOL : '';
+		
+		// @TODO Error if no title ?
+		foreach ($page as $field => $value) {
+			if($field !== 'content') {
+				// Create header
+				$header .= isset($page->{$field}) ? $field . ': ' . $value . PHP_EOL : '';
+			}
+		}
 
 		$header .= PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
 
