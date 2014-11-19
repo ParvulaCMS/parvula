@@ -186,7 +186,8 @@ class Router {
 	 * @return string Normalized regex
 	 */
 	private function normalizeRegex($regex) {
-		$regex = preg_replace("/\:(\w+)/", "(?P<$1>[^\/]+)", $regex);
+		$regex = preg_replace("/\::(\w+)/", "(?P<$1>.+)", $regex);
+		$regex = preg_replace("/\:(\w+)/", "(?P<$1>[^\/]+)", $regex); // match segments
 		$regex = str_replace("*", "(.*)", $regex);
 
 		return $regex;

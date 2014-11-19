@@ -17,7 +17,7 @@ $parvula = new Parvula(new MarkdownPageSerializer);
 //
 
 // Page object
-$router->get('/pages/:name', function($req) use ($parvula) {
+$router->get('/pages/::name', function($req) use ($parvula) {
 	echo $parvula->getPage($req->params->name);
 });
 
