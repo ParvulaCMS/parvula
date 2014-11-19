@@ -65,7 +65,7 @@ var setPageInfo = function(page) {
 					pageTitleEl.val(page.title);
 				} else {
 					ulEl.append(
-						'<li><span class="field">' + field + '</span>: <input class="title" value="' + page[field] + '" /> <button class="admin-btn-s delete">x</button></li>');
+						'<li><label class="field">' + field + '</label> <input class="title input-m" value="' + page[field] + '" /> <button class="admin-btn-s delete">x</button></li>');
 				}
 
 			}
@@ -84,11 +84,11 @@ var savePage = function(page, pagePath, callback) {
 		url: '../_api/pages/' + pagePath,
 		data: page
 	})
-	.done(function( msg ) {
+	.done(function(msg) {
 		window.location.hash = '#' + pagePath;
 		callback(msg, false);
 	})
-	.fail(function( msg ) {
+	.fail(function(msg) {
 		callback(msg, true);
 	});
 }
@@ -280,3 +280,4 @@ marked.InlineLexer.prototype.outputLink = function(cap, link) {
 			+ '>';
 	}
 };
+

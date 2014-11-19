@@ -5,7 +5,8 @@ html, body {
 }
 
 #headbar {
-	background: rgba(250,250,250,.95);
+	background: #fff;
+	border-bottom: 1px solid #eee;
 	left: 0;
 	right: 0;
 	height: 40px;
@@ -14,12 +15,22 @@ html, body {
 	z-index: 90;
 	box-shadow: 0 4px 30px rgb(255,255,255);
 	text-align: center;
-	line-height: 40px;
+	line-height: 36px;
 	font-size: 20px;
 	letter-spacing: 1px;
 	color: #777;
+	-webkit-transition: all .3s ease-out;
+	-moz-transition: all .3s ease-out;
+	-o-transition: all .3s ease-out;
+	transition: all .3s ease-out;
+}
 
-	background: #f9f9f9\9; /* IE */
+#headbar .admin-btn {
+	border-color: transparent;
+}
+
+#headbar .admin-btn:hover {
+	border-color: rgba(0,0,0,.2);
 }
 
 #preview {
@@ -27,52 +38,78 @@ html, body {
 	width: 49.99%;
 	max-width: 49.99%;
 	right: 0;
-	padding: 20px 0;
-	top: 25px;
+	padding-bottom: 50px;
+	top: 40px;
 	bottom: 0px;
 	overflow-y: auto;
 }
 
 #preview .inner {
-	margin: 30px;
+	margin: 35px;
 }
 
 .admin-btn,
+.admin-btn-m,
 .admin-btn-s {
-	background: #f2f2f2;
+	background: transparent;
 	padding: 0 15px;
 	text-align: center;
 	height: 40px;
+	line-height: 38px;
 	border: 0;
 	outline: none;
-	color: #444;
-	font-size: 14px;
+	color: rgba(0,0,0,.55);
+	font-size: 12px;
 	margin: 0 2px;
-	color: #444;
 	box-sizing: border-box;
+	border-radius: 1px;
+	border: 2px solid rgba(0,0,0,.15);
+	font-weight: bold;
+	text-transform: uppercase;
+	display: inline-block;
+
+	vertical-align: bottom;
+
+	-webkit-transition: all .25s ease-out;
+	-moz-transition: all .25s ease-out;
+	-o-transition: all .25s ease-out;
+	transition: all .25s ease-out;
+}
+
+.admin-btn-m {
+	margin: 0 1px;
+	padding: 0 10px;
+	font-size: 11px;
+	line-height: 26px;
+	height: 28px;
 }
 
 .admin-btn-s {
-	padding: 1px 6px;
-	font-size: 13px;
-	height: 20px;
+	margin: 0;
+	padding: 0 6px;
+	font-size: 10px;
+	height: 24px;
+	line-height: 22px;
 }
 
 .admin-btn:hover,
+.admin-btn-m:hover,
 .admin-btn-s:hover {
-	background: #eaeaea;
 	cursor: default;
 	text-decoration: none;
+	color: rgba(0,0,0,.7);
+	border: 2px solid rgba(0,0,0,.7);
 }
 
 .admin-btn:active,
+.admin-btn-m:active,
 .admin-btn-s:active {
 	background: #e4e4e4;
 	text-decoration: none;
 }
 
 .admin-text-s {
-	font-size: 12px;
+	font-size: 11px;
 }
 
 #headbar .right {
@@ -89,9 +126,10 @@ html, body {
 	position: absolute;
 	left: 35%;
 	min-height: 100%; /* FF */
-	/*height: 40px;*/
 	border: none;
-	background: #fdfdfd;
+
+	border-bottom: 2px solid #eee;
+	background: transparent;
 
 	padding: 0 5px;
 	color: #6a6a6a;
@@ -157,11 +195,24 @@ html, body {
 	text-transform: capitalize;
 }
 
+#page-info li label, #page-info li input, #page-info li button {
+	display: inline-block;
+}
+
+#page-info li button {
+	vertical-align: bottom;
+}
+
+#page-info li label {
+	margin: 2px;
+	min-width: 80px;
+}
+
 .login {
 	text-align: center;
 	margin: 10% auto;
 	width: 450px;
-	border: 1px solid #e2ecf0;
+	border: 1px solid rgba(0,0,0,.05);
 	background: #fff;
 	padding: 70px;
 	border-radius: 3px;
@@ -170,19 +221,26 @@ html, body {
 
 .login h1 {
 	font-size: 22pt;
-	color: #444;
+	color: #666;
 	margin-top: 0;
 }
 
 input {
 	padding: 3px;
-	border: 1px solid #bbb;
+	border: 2px solid rgba(0,0,0,.15);
 	outline: none;
 	box-sizing: border-box;
+	background: transparent;
+}
+
+input.input-m {
+	height: 24px;
+	padding: 0 6px;
+	font-size: 13px;
 }
 
 input.input-l {
-	height: 38px;
+	height: 40px;
 	padding: 0 10px;
 	font-size: 14px;
 }
@@ -193,7 +251,16 @@ div [contenteditable="true"] {
 
 input:focus,
 div [contenteditable="true"]:focus {
-	box-shadow: 0 0 8px rgba(0,140,250,.4);
+	box-shadow: 0 0 0 4px rgba(0,120,240,.1);
+	border: 2px solid rgba(0,0,0,.7);
+}
+
+input,
+div [contenteditable="true"] {
+	-moz-transition: all 0.2s ease-in-out;
+	-webkit-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
 }
 
 .rotate {
@@ -242,7 +309,7 @@ input:-moz-placeholder {
 	width: 49.99%;
 	height: auto;
 	position: absolute;
-	top: 25px;
+	top: 40px;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -254,7 +321,8 @@ input:-moz-placeholder {
 }
 
 .CodeMirror-lines {
-	padding: 45px 0;
+	padding: 50px 0;
+	padding-top: 35px;
 }
 
 .CodeMirror pre {
@@ -291,15 +359,15 @@ input:-moz-placeholder {
 }
 
 .cm-s-default .cm-header {
-	color: #222;
+	color: #333;
 	line-height: 1.5em;
 	font-weight: bold;
 }
 
-.cm-s-default .cm-header1 { font-size: 1.45em; }
-.cm-s-default .cm-header2 { font-size: 1.3em; }
-.cm-s-default .cm-header3 { font-size: 1.1em; }
-.cm-s-default .cm-header4 { font-size: 1.05em; }
+.cm-s-default .cm-header-1 { font-size: 1.45em; }
+.cm-s-default .cm-header-2 { font-size: 1.3em; }
+.cm-s-default .cm-header-3 { font-size: 1.1em; }
+.cm-s-default .cm-header-4 { font-size: 1.05em; }
 
 .cm-s-default .cm-variable-2,
 .cm-s-default .cm-variable-3,
