@@ -37,5 +37,11 @@ return array(
 	'userConfig' => 'site.conf',
 
 	// Class to (un)serialize pages (must implements PageSerializerInterface)
-	'defaultPageSerializer' => 'Parvula\Core\ParvulaPageSerializer'
+	'defaultPageSerializer' => 'Parvula\Core\ParvulaPageSerializer',
+
+	// Administration URL (/parvula-admin by default)
+	'adminURL' => 'parvula-admin',
+
+	// /adminFolderName (/admin by default) will redirect you to administration
+	'adminAliasFolder' => true
 );

@@ -7,13 +7,17 @@ use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
+
+$adminURL = Config::get('adminURL');
+$adminURL = trim($adminURL, '/');
+
 // Admin pages
-$router->any('/_admin/', function() {
+$router->any('/' . $adminURL . '/', function() {
 	return require ADMIN . 'admin.php';
 })
 // redirection, need the trailing slash
-->get('/_admin', function() {
-	header("Location: ./_admin/", true, 303);
+->get('/' . $adminURL, function() use($adminURL) {
+	header('Location: ./' . $adminURL . '/', true, 303);
 });
 
 

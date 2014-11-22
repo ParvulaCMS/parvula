@@ -37,8 +37,9 @@ Pages
 * Page beginning with `_` are "secret" pages, not listed
 * You can order pages with the *index* field
 
+
 Administration
 --------------
-You can edit pages online (site.com/_admin/).
+You can edit pages online at site.com/admin/ (admin url can be edited in Parvula/config.php).
 
 Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
