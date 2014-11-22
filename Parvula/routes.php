@@ -31,6 +31,7 @@ $router->space('/_api', function($router) {
 $router->get('*', function($req) use($config) {
 
 	$pagename = rtrim($req->uri, '/');
+	$pagename = urldecode($pagename);
 
 	if($pagename === '') {
 		$pagename = Config::homePage();
@@ -49,6 +50,7 @@ $router->get('*', function($req) use($config) {
 
 	// 404
 	if(false === $page) {
+		header(' ', true, 404); // Set header to 404
 		$page = $parvula->getPage(Config::errorPage());
 
 		if(false === $page) {

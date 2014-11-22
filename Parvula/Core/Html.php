@@ -21,12 +21,9 @@ class Html {
 	/**
 	 * Constructor
 	 * @param string $path Path to prefix all path
-	 * @param array $variables
 	 */
-	function __construct($path = '/template', $variables = array()) {
+	function __construct($path = '/template') {
 		$this->path = rtrim($path, '/') . '/';
-		$this->variables = $variables;
-		$this->extension = '.html';
 	}
 
 	/**
