@@ -27,7 +27,7 @@ All pages are in `data/pages/`. You can create some sub directories if you want 
 
 The basic configuration file is in `data/site.conf.md`. There is 2 templates bundle by default: "simple" and "fullpage".
 
-![website](http://i.imgur.com/pcShKqy.png)
+![website](http://i.imgur.com/P3Fp24p.png)
 *Default template*
 
 
@@ -40,6 +40,9 @@ Pages
 
 Administration
 --------------
-You can edit pages online at site.com/admin/ (admin url can be edited in Parvula/config.php).
+
+![parvula administration](http://i.imgur.com/WtDfVXu.png)
+
+You can edit pages online at **yoursite.com/admin/** (admin url can be edited in Parvula/config.php).
 
 Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
