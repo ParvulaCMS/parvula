@@ -49,7 +49,8 @@ html, body {
 
 .admin-btn,
 .admin-btn-m,
-.admin-btn-s {
+.admin-btn-s,
+.admin-btn-xs {
 	background: transparent;
 	padding: 0 15px;
 	text-align: center;
@@ -86,12 +87,20 @@ html, body {
 	padding: 0 6px;
 	font-size: 10px;
 	height: 24px;
-	line-height: 22px;
+	line-height: 21px;
+}
+
+.admin-btn-xs {
+	height: 20px;
+	line-height: 17px;
+	font-size: 9px;
+	padding: 0 4px;
 }
 
 .admin-btn:hover,
 .admin-btn-m:hover,
-.admin-btn-s:hover {
+.admin-btn-s:hover,
+.admin-btn-xs:hover {
 	cursor: default;
 	text-decoration: none;
 	color: rgba(0,0,0,.7);
@@ -100,7 +109,8 @@ html, body {
 
 .admin-btn:active,
 .admin-btn-m:active,
-.admin-btn-s:active {
+.admin-btn-s:active,
+.admin-btn-xs:active {
 	background: #e4e4e4;
 	text-decoration: none;
 }
@@ -118,16 +128,14 @@ html, body {
 }
 
 #headbar .title {
-	width: 30%;
+	width: 40%;
 	margin: auto;
 	position: absolute;
-	left: 35%;
+	left: 30%;
 	min-height: 100%; /* FF */
 	border: none;
-
 	border-bottom: 2px solid #eee;
 	background: transparent;
-
 	padding: 0 5px;
 	color: #6a6a6a;
 	font-size: 16pt;
@@ -157,8 +165,11 @@ html, body {
 
 #pages-list h2,
 #page-info h2 {
-	font-size: 16pt;
-	margin: 12px 0;
+	font-size: 14pt;
+	margin: 10px 0;
+	padding-bottom: 0px;
+	text-align: center;
+	color: #6a6a6a;
 }
 
 #pages-list ul,
@@ -179,6 +190,17 @@ html, body {
 
 #pages-list ul {
 	font-size: 12pt;
+	padding-left: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#pages-list li {
+	margin: 1px 0;
+}
+
+#pages-list .admin-btn, #pages-list .admin-btn-m {
+	width: 100%;
 }
 
 #page-info {
@@ -244,6 +266,11 @@ div [contenteditable="true"] {
 	outline: none;
 }
 
+input:hover,
+div [contenteditable="true"]:hover {
+	border: 2px solid rgba(0,0,0,.4);
+}
+
 input:focus,
 div [contenteditable="true"]:focus {
 	box-shadow: 0 0 0 4px rgba(0,120,240,.1);
@@ -256,6 +283,10 @@ div [contenteditable="true"] {
 	-webkit-transition: all 0.2s ease-in-out;
 	-o-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
+}
+
+ul.no-style > li {
+	list-style: none;
 }
 
 .rotate {
