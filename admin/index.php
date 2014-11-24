@@ -5,7 +5,7 @@ ob_clean();
 
 $config = require APP . 'config.php';
 
-$adminURL = $config['adminURL'];
+$adminURL = trim($config['adminURL'], '/');
 
 if($adminURL . '/' === ADMIN) {
 	// Avoid redirection loop

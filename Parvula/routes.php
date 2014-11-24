@@ -8,8 +8,11 @@ use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
 
-$adminURL = Config::get('adminURL');
-$adminURL = trim($adminURL, '/');
+$adminURL = trim(Config::get('adminURL'), '/');
+if($adminURL . '/' === ADMIN) {
+	// Avoid redirection loop
+	$adminURL .= '_';
+}
 
 // Admin pages
 $router->any('/' . $adminURL . '/', function() {
