@@ -78,7 +78,7 @@ class Html {
 	 * @param mixed ($else) Value to print if variable doesn't exists
 	 * @return string Secure string from XSS
 	 */
-	public static function sEcho(&$var, $else = '') {
+	public static function sEcho($var, $else = '') {
 		if(isset($var)) {
 			$varCopy = $var;
 		} else {
@@ -94,7 +94,7 @@ class Html {
 	 * @param mixed $then
 	 * @return string Secure string from XSS
 	 */
-	public static function sEchoThen(&$var, $then) {
+	public static function sEchoThen($var, $then) {
 		if(isset($var)) {
 			$varCopy = $var . $then;
 		} else {
