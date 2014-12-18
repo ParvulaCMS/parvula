@@ -66,23 +66,12 @@ $router->get('*', function($req) use($config) {
 		$view = new View(TMPL . Config::get('template'));
 
 		// Assign some variables
-		$view->assign('baseUrl', Parvula::getRelativeURIToRoot());
-		$view->assign('templateUrl', Asset::getBasePath());
-
-		// Register alias for secure echo
 		$view->assign(array(
-			'_e' => function(&$str) {
-				return HTML::sEcho($str);
-			},
-			'_et' => function(&$str, $str2) {
-				return HTML::sEchoThen($str, $str2);
-			}
-		));
-
-		$pages = $parvula->getPages();
-		$view->assign(array(
+			'baseUrl' => Parvula::getRelativeURIToRoot(),
+			'templateUrl' => Asset::getBasePath(),
+			'parvula' => $parvula,
+			'pages' => function() use($parvula) { return $parvula->getPages(); },
 			'site' => $config,
-			'pages' => $pages,
 			'meta' => $page,
 			'content' => $page->content
 		));
