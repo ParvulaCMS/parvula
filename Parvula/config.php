@@ -39,6 +39,9 @@ return array(
 	// Class to (un)serialize pages (must implements PageSerializerInterface)
 	'defaultPageSerializer' => 'Parvula\Core\MarkdownPageSerializer',
 
+	// API only - Class to (un)serialize pages (must implements PageSerializerInterface)
+	'apiDefaultPageSerializer' => 'Parvula\Core\ParvulaPageSerializer',
+
 	// Administration URL (/parvula-admin by default)
 	'adminURL' => 'parvula-admin',
 
