@@ -20,6 +20,7 @@ class Page {
 	public $robots;
 	public $index;
 	public $content;
+	public $hidden;
 
 	public static function pageFactory($pageInfo) {
 		$page = new self;
