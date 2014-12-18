@@ -5,11 +5,11 @@
 	<!-- Use fullPage.js http://alvarotrigo.com/fullPage/ -->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<title><?php echo $_et($meta->title, ' · '), $site->title ?></title>
+	<title><?php echo sEcho($meta->title . ' · ' . $site->title) ?></title>
 
 	<?php if(isset($site->description)) : ?>
 	<meta name="description" content="<?php echo $site->description ?>">
-	<?php endif; ?>
+	<?php endif ?>
 	<meta name="Resource-type" content="Document" />
 
 	<?php
@@ -26,7 +26,7 @@
 	$anchors = array();
 	$titles = array();
 
-	foreach ($pages as $page) {
+	foreach ($parvula->getPages() as $page) {
 		$anchors[] = str_replace(array('/', '\\', '#'), '-', $page->url);
 		$titles[] = $page->title;
 	}
@@ -35,10 +35,10 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#fullpage').fullpage({
-				anchors: <?php echo json_encode($anchors);?>,
+				anchors: <?php echo json_encode($anchors) ?>,
 				navigation: true,
 				navigationPosition: 'right',
-				navigationTooltips: <?php echo json_encode($titles);?>
+				navigationTooltips: <?php echo json_encode($titles) ?>
 			});
 		});
 	</script>
@@ -47,12 +47,12 @@
 <body>
 
 	<div id="fullpage">
-		<?php foreach ($pages as $n => $page) : ?>
+		<?php foreach ($parvula->getPages() as $n => $page) : ?>
 		<div class="section " id="section<?php echo $n;?>">
 			<?php echo $page->content ?>
 		</div>
 		</article>
-		<?php endforeach; ?>
+		<?php endforeach ?>
 	</div>
 
 </body>
