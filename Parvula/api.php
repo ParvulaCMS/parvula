@@ -5,11 +5,11 @@ namespace Parvula;
 use Parvula\Core\Page;
 use Parvula\Core\Router;
 use Parvula\Core\Parvula;
-use Parvula\Core\MarkdownPageSerializer;
+use Parvula\Core\ParvulaPageSerializer;
 
 if(!defined('ROOT')) exit;
 
-$parvula = new Parvula(new MarkdownPageSerializer);
+$parvula = new Parvula(new ParvulaPageSerializer);
 
 
 //
@@ -49,7 +49,7 @@ if(true === isParvulaAdmin()) {
 		}
 
 		$page = Page::pageFactory($req->body);
-		echo json_encode($parvula->setPage($page, $req->params->name, new MarkdownPageSerializer));
+		echo json_encode($parvula->setPage($page, $req->params->name, new ParvulaPageSerializer));
 	});
 
 	// Logout
