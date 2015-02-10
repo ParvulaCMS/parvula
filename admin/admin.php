@@ -24,6 +24,7 @@ if(isset($_POST, $_POST['password'])) {
 
 	if($_POST['password'] === $adminConf['password']) {
 		if(session_id() === '') {
+			session_id(uniqid());
 			session_start();
 		}
 		$_SESSION['id'] = uidSession();
