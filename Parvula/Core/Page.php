@@ -22,7 +22,7 @@ class Page {
 	public $content;
 	public $hidden;
 
-	public static function pageFactory($pageInfo) {
+	public static function pageFactory(array $pageInfo) {
 		$page = new self;
 
 		foreach ($pageInfo as $field => $value) {
