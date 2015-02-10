@@ -43,6 +43,6 @@ Administration
 
 ![parvula administration](http://i.imgur.com/WtDfVXu.png)
 
-You can edit pages online at **yoursite.com/admin/** (admin url can be edited in Parvula/config.php).
+You can edit pages online at **yoursite.com/parvula-admin/** (admin url can be edited in Parvula/config.php).
 
 Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
