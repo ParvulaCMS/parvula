@@ -2,8 +2,6 @@
 
 namespace Parvula\Core;
 
-use Parvula\Core\MarkdownPageSerializer;
-
 /**
  * MarkdownPageSerializer class
  *
