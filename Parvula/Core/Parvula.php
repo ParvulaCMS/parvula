@@ -192,7 +192,8 @@ class Parvula {
 			{
 				// If files have the right extension and does not begin with '_'
 				$ext = '.' . Config::fileExtension();
-				if($file[0] !== '_' && substr($file, -3) === $ext) {
+				$len = - strlen($ext);
+				if($file[0] !== '_' && substr($file, $len) === $ext) {
 					if($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
