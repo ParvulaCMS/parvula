@@ -178,15 +178,20 @@ class Parvula {
 
 	/**
 	 * List pages and get an array of pages paths
+	 * @param string ($pagesPath) Pages path
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function listPages() {
+	public function listPages($pagesPath = null) {
 		$pages = array();
 		$that = &$this;
 
 		try {
-			$fs = new Files(PAGES);
+			if($pagesPath === null) {
+				$pagesPath = PAGES;
+			}
+
+			$fs = new Files($pagesPath);
 
 			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
 			{
