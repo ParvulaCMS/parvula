@@ -44,10 +44,11 @@ class Parvula {
 	/**
 	 * Get a page object in html string
 	 * @param string $pagePath Page path
+	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
 	 * @return Parvula\Core\Page Return the selected page
 	 */
-	public function getPage($pagePath) {
+	public function getPage($pagePath, $eval = false) {
 
 		// If page was already loaded, return page
 		if(isset($this->pages[$pagePath])) {
@@ -70,7 +71,7 @@ class Parvula {
 				return $serializer->unserialize($pagePath, $data);
 			};
 
-			$page = $fs->read($pageFullPath, $fn);
+			$page = $fs->read($pageFullPath, $fn, $eval);
 			$this->pages[$pagePath] = $page;
 
 			return $page;
