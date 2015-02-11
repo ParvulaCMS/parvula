@@ -50,15 +50,22 @@ class FilesSystem {
 	 * Read data from file
 	 * @param string $filename File name
 	 * @param callable ($fn) Apply function to file data
+	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the file does not exists
 	 * @return mixed File data
 	 */
-	public function read($filename, $fn = null) {
+	public function read($filename, $fn = null, $eval = false) {
 		if(!$this->exists($filename)) {
 			throw new IOException("File '$filename' not found", 1);
 		}
 
-		$data = file_get_contents($this->prefixPath . $filename);
+		if($eval) {
+			ob_start();
+			include $this->prefixPath . $filename;
+			$data = ob_get_clean();
+		} else {
+			$data = file_get_contents($this->prefixPath . $filename);
+		}
 
 		if($fn !== null) {
 			return $fn($data);
