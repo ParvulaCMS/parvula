@@ -200,7 +200,7 @@ class Parvula {
 					}
 
 					// If directory is not secret
-					if($dir[0] !== '_') {
+					if(strlen($dir) > 0 && $dir[0] !== '_') {
 						$pagePath = $dir . basename($file, $ext);
 						$pages[] = $pagePath;
 					}
