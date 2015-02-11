@@ -20,12 +20,19 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 	 */
 	public function serialize(Page $page) {
 		$header = PHP_EOL;
-		
+
 		// @TODO Error if no title ?
 		foreach ($page as $field => $value) {
 			if($field !== 'content') {
 				// Create header
-				$header .= isset($page->{$field}) ? $field . ': ' . $value . PHP_EOL : '';
+				if(isset($page->{$field})) {
+					if(is_array($value)) {
+						$field .= '[]';
+						$value = implode($value);
+					}
+
+					$header .= $field . ': ' . $value . PHP_EOL;
+				}
 			}
 		}
 
@@ -50,7 +57,7 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 		$headerInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
 
 		$headerData = trim($headerInfos[0]);
-		preg_match_all("/(\w+)[\s:=]+(.+)/", $headerData, $headerMatches);
+		preg_match_all("/(\w+(?:\[\])?)[\s:=]+(.+)/", $headerData, $headerMatches);
 
 		$page = new Page();
 
@@ -58,7 +65,11 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 		for ($i = 0; $i < count($headerMatches[1]); ++$i) {
 			$key = trim($headerMatches[1][$i]);
 			$key = strtolower($key);
-			$pageInfo[$key] = rtrim($headerMatches[2][$i], "\r\n");
+			$val = rtrim($headerMatches[2][$i], "\r\n");
+			if(strlen($key) > 2 && substr($key, -2) === '[]') {
+				$val = preg_split("/[\s,]+/", $val);
+			}
+			$pageInfo[$key] = $val;
 		}
 
 		$page = Page::pageFactory($pageInfo);
