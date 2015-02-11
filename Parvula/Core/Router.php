@@ -25,6 +25,16 @@ class Router {
 	/**
 	 * @var string
 	 */
+	private $path;
+
+	/**
+	 * @var string
+	 */
+	private $query;
+
+	/**
+	 * @var string
+	 */
 	private $method;
 
 	/**
@@ -39,6 +49,14 @@ class Router {
 			$uri = $_SERVER['SCRIPT_NAME'];
 		}
 		$this->uri = $uri;
+		$this->query = $_SERVER['QUERY_STRING'];
+
+		$queryLen = strlen($this->query);
+		if($queryLen > 0) {
+			++$queryLen;
+		}
+
+		$this->path = substr($uri, 0 , strlen($uri) - $queryLen);
 
 		if($method === null) {
 			$method = $_SERVER['REQUEST_METHOD'];
@@ -159,6 +177,8 @@ class Router {
 					$req = new \ArrayObject;
 					$req->params = (object)$matches;
 					$req->uri = $this->uri;
+					$req->path = $this->path;
+					$req->query = $this->query;
 
 					if($this->method !== 'GET') {
 						if(!isset($data)) {
