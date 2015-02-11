@@ -240,6 +240,15 @@ class Parvula {
 	 */
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::getURI();
+
+		//TODO use Router
+		$query = $_SERVER['QUERY_STRING'];
+		$queryLen = strlen($query);
+		if($queryLen > 0) {
+			++$queryLen;
+		}
+		$postUrl = substr($postUrl, 0 , strlen($postUrl) - $queryLen);
+
 		$postUrl = str_replace(array('//', '\\'), '/', $postUrl);
 		$slashNb = substr_count($postUrl, '/');
 
