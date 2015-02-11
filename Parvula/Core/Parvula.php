@@ -190,7 +190,8 @@ class Parvula {
 
 			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
 			{
-				// If files have the right extension and does not begin with '_'
+				// If files have the right extension and file not secret
+				// (does not begin with '_')
 				$ext = '.' . Config::fileExtension();
 				$len = - strlen($ext);
 				if($file[0] !== '_' && substr($file, $len) === $ext) {
@@ -198,8 +199,12 @@ class Parvula {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
-					$pagePath = $dir . basename($file, $ext);
-					$pages[] = $pagePath;
+					// If directory is not secret
+					if($dir[0] !== '_') {
+						$pagePath = $dir . basename($file, $ext);
+						$pages[] = $pagePath;
+					}
+
 				}
 			});
 
