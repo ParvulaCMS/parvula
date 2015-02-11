@@ -33,7 +33,7 @@ $router->space('/_api', function($router) {
 // Front - Pages
 $router->get('*', function($req) use($config) {
 
-	$pagename = rtrim($req->uri, '/');
+	$pagename = rtrim($req->path, '/');
 	$pagename = urldecode($pagename);
 
 	if($pagename === '') {
