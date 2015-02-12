@@ -11,8 +11,9 @@ define('APP',        ROOT . 'Parvula/');
 define('VENDOR',     ROOT . 'vendor/');
 define('DATA',       ROOT . 'data/');
 define('PAGES',      DATA . 'pages/');
+define('IMAGES',     DATA . 'images/');
 define('TMPL',       ROOT . 'templates/');
 define('ADMIN',      ROOT . 'admin/');
-define('VERSION',    '0.3.2');
+define('VERSION',    '0.4.0a');
 
 require APP . 'bootstrap.php';
