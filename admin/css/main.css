@@ -155,6 +155,7 @@ html, body {
 
 #pages-list,
 #page-info {
+	font: 15px/1.4 "Helvetica Neue", Helvetica, arial, sans-serif;
 	z-index: 85;
 	position: absolute;
 	background: #fff;
@@ -199,7 +200,13 @@ html, body {
 	margin: 1px 0;
 }
 
+#pages-list li a {
+	text-decoration: none;
+	color: #47a;
+}
+
 #pages-list .admin-btn, #pages-list .admin-btn-m {
+	color: #666;
 	width: 100%;
 }
 
