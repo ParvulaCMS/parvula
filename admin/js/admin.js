@@ -53,7 +53,7 @@ var onHashChange = function() {
 }
 
 var setPageInfo = function(page) {
-	var ulEl = pageInfoEl.find("ul");
+	var ulEl = pageInfoEl.find("#infos");
 
 	ulEl.html(''); // Clean previous fields
 
@@ -65,7 +65,7 @@ var setPageInfo = function(page) {
 					pageTitleEl.val(page.title);
 				} else {
 					ulEl.append(
-						'<li><label class="field">' + field + '</label> <input class="title input-m" value="' + page[field] + '" /> <button class="admin-btn-s delete">x</button></li>');
+						'<li><label class="field">' + field + '</label> <input class="input-m" value="' + page[field] + '" /> <button class="admin-btn-s delete">x</button></li>');
 				}
 
 			}
@@ -165,7 +165,7 @@ $(function() {
 		page.content = editor.getValue();
 		page.title = pageTitleEl.val();
 
-		pageInfoEl.find("ul li").each(function(a, li) {
+		pageInfoEl.find("ul#infos li").each(function(a, li) {
 			var curr = $(this);
 			var key = curr.find(".field").html();
 			var val = curr.find("input").val();
@@ -214,6 +214,14 @@ $(function() {
 		if (confirm('Delete this field ?')) {
 			$(this).parent().remove();
 		}
+	});
+
+
+	// Add new field
+	$("#page-info").on('click', ".plus", function() {
+		var field = $(this).parent().find("input");
+		$("#infos").append('<li><label class="field">' + field.val() + '</label> <input class="input-m" /> <button class="admin-btn-s delete">x</button></li>');
+		field.val("");
 	});
 
 
