@@ -136,7 +136,7 @@ class Parvula {
 	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function getPages() {
-		$pages = array();
+		$pages = [];
 
 		$pagesArr = $this->listPages();
 
@@ -165,12 +165,12 @@ class Parvula {
 	 * @return boolean
 	 */
 	private function arraySortByField(array &$arr, $field, $sortType = SORT_ASC) {
-		$sortFields = array();
+		$sortFields = [];
 		foreach ($arr as $key => $obj) {
 			if(isset($obj->$field)) {
 				$sortFields[$key] = $obj->$field;
 			} else {
-				$sortFields[$key] = array();
+				$sortFields[$key] = [];
 			}
 		}
 
@@ -185,7 +185,7 @@ class Parvula {
 	 * @return array Array of pages paths
 	 */
 	public function listPages($listHidden = false, $pagesPath = null) {
-		$pages = array();
+		$pages = [];
 		$that = &$this;
 
 		try {
@@ -251,7 +251,7 @@ class Parvula {
 		}
 		$postUrl = substr($postUrl, 0 , strlen($postUrl) - $queryLen);
 
-		$postUrl = str_replace(array('//', '\\'), '/', $postUrl);
+		$postUrl = str_replace(['//', '\\'], '/', $postUrl);
 		$slashNb = substr_count($postUrl, '/');
 
 		// Add a '../' to URL if there is not URL rewriting

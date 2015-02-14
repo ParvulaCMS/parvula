@@ -77,7 +77,7 @@ class Asset {
 	 */
 	private static function renderTag($files, $pattern) {
 		if(is_string($files)) {
-			$files = array($files);
+			$files = [$files];
 		}
 
 		$output = '';

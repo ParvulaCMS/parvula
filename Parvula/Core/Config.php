@@ -16,7 +16,7 @@ class Config {
 	/**
 	 * @var array
 	 */
-	private static $config = array();
+	private static $config = [];
 
 	/**
 	 * Populate class with config array
@@ -45,8 +45,6 @@ class Config {
 		if(isset(static::$config[$key])) {
 			return static::$config[$key];
 		}
-
-		return;
 	}
 
 	/**

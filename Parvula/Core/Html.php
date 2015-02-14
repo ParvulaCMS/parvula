@@ -33,7 +33,7 @@ class Html {
 	 * @param array $attr
 	 * @return string Html anchor
 	 */
-	public static function anchor($value, $href = '#', $attr = array()) {
+	public static function anchor($value, $href = '#', $attr = []) {
 		$attr = implode(' ', $attr);
 
 		$href = static::linkRel($href);
@@ -47,7 +47,7 @@ class Html {
 	 * @param array $attr Image attributs
 	 * @return string Html image
 	 */
-	public static function img($src, $attr = array()) {
+	public static function img($src, $attr = []) {
 		$attr = implode(' ', $attr);
 
 		$src = static::linkRel($src);

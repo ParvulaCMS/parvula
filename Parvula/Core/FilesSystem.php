@@ -119,7 +119,7 @@ class FilesSystem {
 
 		$dirFull = $this->prefixPath . $dir;
 
-		$items = array();
+		$items = [];
 		if($handle = opendir($dirFull)) {
 			while(false !== ($file = readdir($handle))) {
 				if(($showHiddenFiles || $file[0] !== '.') && ($file !== '.' && $file !== '..')) {
