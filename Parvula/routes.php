@@ -79,7 +79,11 @@ $router->get('*', function($req) use($config, $med) {
 			'content' => $page->content
 		]);
 
-		$layout = 'index';
+		if(isset($page->layout)) {
+			$layout = $page->layout;
+		} else {
+			$layout = 'index';
+		}
 
 		$med->trigger('BeforeRender');
 
