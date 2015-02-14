@@ -6,6 +6,7 @@
 use Parvula\Core\Router;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
+use Parvula\Core\Mediator;
 
 if(!defined('ROOT')) exit;
 
@@ -37,6 +38,11 @@ $config = Parvula::getUserConfig();
 // Append user config to Config wrapper (override if exists)
 Config::append((array) $config);
 
+// Load plugins
+$med = new Mediator;
+$med->attach(Config::get('plugins'));
+$med->trigger('Load');
+
 // Auto set URLRewriting Config
 if(Config::get('URLRewriting') === 'auto') {
 	$scriptName = $_SERVER['SCRIPT_NAME'];
@@ -51,3 +57,4 @@ if(Config::get('URLRewriting') === 'auto') {
 $router = new Router(Parvula::getURI());
 require 'routes.php';
 $router->run();
+$med->trigger('End');

@@ -4,16 +4,21 @@
 // # Core config
 // ----------------------------- //
 
-return array(
+return [
 	// Show errors if debug is enabled
-	'debug' => false,
+	'debug' => true,
 
 	// Class aliases
-	'aliases' => array(
+	'aliases' => [
 		'HTML' => 'Parvula\Core\Html',
 		'Asset' => 'Parvula\Core\Config',
 		'Asset' => 'Parvula\Core\Asset'
-	),
+	],
+
+	// Plugins to load
+	'plugins' => [
+		// 'Plugin\Gallery\Gallery'
+	],
 
 	// You can force this option with a boolean or leave it on 'auto' detection
 	'URLRewriting' => 'auto',
@@ -47,4 +52,4 @@ return array(
 
 	// /adminFolderName (/admin by default) will redirect you to administration
 	'adminAliasFolder' => true
-);
+];

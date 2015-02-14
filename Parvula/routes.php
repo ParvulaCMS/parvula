@@ -31,7 +31,8 @@ $router->space('/_api', function($router) {
 
 
 // Front - Pages
-$router->get('*', function($req) use($config) {
+$router->get('*', function($req) use($config, $med) {
+	$med->trigger('path', [$req->path]);
 
 	$pagename = rtrim($req->path, '/');
 	$pagename = urldecode($pagename);
@@ -49,12 +50,14 @@ $router->get('*', function($req) use($config) {
 	Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
 
 	$parvula = new Parvula;
-	$page = $parvula->getPage($pagename);
+	$page = $parvula->getPage($pagename, true);
+	$med->trigger('Page', [$page]);
 
 	// 404
 	if(false === $page) {
 		header(' ', true, 404); // Set header to 404
 		$page = $parvula->getPage(Config::errorPage());
+		$med->trigger('404', [$page]);
 
 		if(false === $page) {
 			// Juste print simple 404 if there is no 404 page
@@ -66,7 +69,7 @@ $router->get('*', function($req) use($config) {
 		$view = new View(TMPL . Config::get('template'));
 
 		// Assign some variables
-		$view->assign(array(
+		$view->assign([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
 			'templateUrl' => Asset::getBasePath(),
 			'parvula' => $parvula,
@@ -74,10 +77,16 @@ $router->get('*', function($req) use($config) {
 			'site' => $config,
 			'meta' => $page,
 			'content' => $page->content
-		));
+		]);
+
+		$layout = 'index';
+
+		$med->trigger('BeforeRender');
 
 		// Show index template
-		echo $view('index');
+		$out = $view($layout);
+		$med->trigger('AfterRender', [$out]);
+		echo $out;
 
 	} catch(Exception $e) {
 		exceptionHandler($e);
