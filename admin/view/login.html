@@ -5,7 +5,7 @@
 		<h1>Administration - Sign In</h1>
 		<input type="password" name="password" id="password" class="input-l" placeholder="Password" autofocus="">
 		<button class="admin-btn" type="submit"> Sign In </button>
-		<a class="admin-btn" href="<?php echo $baseUrl?>">back to site</a>
+		<a class="admin-btn" href="<?= $baseUrl ?>">back to site</a>
 	</form>
 	<?php if(isset($notice)) echo "<p>bad password</p>\n";?>
 

@@ -2,14 +2,14 @@
 		<h2>Pages</h2>
 		<ul class="list">
 		<?php foreach ($pagesList as $pagePath) : ?>
-			<li><a href="#<?php echo $pagePath?>"><?php echo htmlspecialchars($pagePath)?></a> <button class="admin-btn-xs delete">x</button></li>
+			<li><a href="#<?= $pagePath ?>"><?= htmlspecialchars($pagePath)?></a> <button class="admin-btn-xs delete">x</button></li>
 		<?php endforeach; ?>
 		</ul>
 		<ul class="no-style">
 			<li><a href="#" class="admin-btn-m">New page</a></li>
 		</ul>
 		<ul class="no-style">
-			<li><a class="admin-btn-m right" href="<?php echo $baseUrl?>">website</a></li>
+			<li><a class="admin-btn-m right" href="<?= $baseUrl ?>">website</a></li>
 			<li><button class="admin-btn-m right logout">logout</button></li>
 		</ul>
 	</div>
@@ -38,8 +38,8 @@
 	</div>
 
 	<script type="text/javascript">
-		baseUrl = '<?php echo $baseUrl;?>';
+		baseUrl = '<?= $baseUrl;?>';
 	</script>
-	<script src="<?php echo $baseUrl . ADMIN;?>js/marked.js"></script>
-	<script src="<?php echo $baseUrl . ADMIN;?>js/jquery.min.js"></script>
-	<script src="<?php echo $baseUrl . ADMIN;?>js/admin.js"></script>
+	<script src="<?= $baseUrl . ADMIN ?>js/marked.js"></script>
+	<script src="<?= $baseUrl . ADMIN ?>js/jquery.min.js"></script>
+	<script src="<?= $baseUrl . ADMIN ?>js/admin.js"></script>
