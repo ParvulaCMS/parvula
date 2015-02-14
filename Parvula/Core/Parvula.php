@@ -179,11 +179,12 @@ class Parvula {
 
 	/**
 	 * List pages and get an array of pages paths
+	 * @param boolean ($listHidden) List hidden files & folders
 	 * @param string ($pagesPath) Pages path
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function listPages($pagesPath = null) {
+	public function listPages($listHidden = false, $pagesPath = null) {
 		$pages = array();
 		$that = &$this;
 
@@ -194,19 +195,19 @@ class Parvula {
 
 			$fs = new Files($pagesPath);
 
-			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that)
+			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension and file not secret
 				// (does not begin with '_')
 				$ext = '.' . Config::fileExtension();
 				$len = - strlen($ext);
-				if($file[0] !== '_' && substr($file, $len) === $ext) {
+				if(($listHidden || $file[0] !== '_') && substr($file, $len) === $ext) {
 					if($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
 					// If directory is not secret (or root)
-					if($dir === '' || $dir[0] !== '_') {
+					if($listHidden || $dir === '' || $dir[0] !== '_') {
 						$pagePath = $dir . basename($file, $ext);
 						$pages[] = $pagePath;
 					}

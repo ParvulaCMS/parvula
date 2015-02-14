@@ -40,7 +40,7 @@ if(isset($_POST, $_POST['password'])) {
 
 if(true === isParvulaAdmin()) {
 	$parvula = new Parvula;
-	$pagesList = $parvula->listPages();
+	$pagesList = $parvula->listPages(true);
 	$view->assign('pagesList', $pagesList);
 
 	$view->assign('_page', 'admin');
