@@ -26,9 +26,7 @@ class Page {
 		$page = new self;
 
 		foreach ($pageInfo as $field => $value) {
-			if(property_exists(get_class(), $field)) {
 				$page->$field = $value;
-			}
 		}
 
 		return $page;
