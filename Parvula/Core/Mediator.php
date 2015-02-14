@@ -2,6 +2,8 @@
 
 namespace Parvula\Core;
 
+use Parvula\Core\Exception\BadObjectCallException;
+
 /**
  * Mediator class to handle plugins
  *
@@ -16,7 +18,7 @@ class Mediator {
 	/**
 	 * Plugins container
 	 */
-	protected $plugins = array();
+	protected $plugins = [];
 
 	/**
 	 * Attach a new plugin
@@ -25,6 +27,13 @@ class Mediator {
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {
+			if(is_string($plugin)) {
+				if(!class_exists($plugin)) {
+					throw new BadObjectCallException(
+						'Plugin class \''.$plugin.'\' not found');
+				}
+				$plugin = new $plugin;
+			}
 			if(is_object($plugin)) {
 				$id = spl_object_hash($plugin);
 				if (!isset($this->plugins[$id])) {
@@ -40,7 +49,7 @@ class Mediator {
 	 * @param array ($args) Arguments
 	 * @return
 	 */
-	public function trigger($event, array $args = array()) {
+	public function trigger($event, array $args = []) {
 		$event = 'on' . $event;
 		foreach ($this->plugins as $plugin) {
 			if(method_exists($plugin, $event)) {
