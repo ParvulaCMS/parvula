@@ -13,7 +13,8 @@ define('DATA',       ROOT . 'data/');
 define('PAGES',      DATA . 'pages/');
 define('IMAGES',     DATA . 'images/');
 define('TMPL',       ROOT . 'templates/');
+define('PLUGINS',    ROOT . 'plugins/');
 define('ADMIN',      ROOT . 'admin/');
-define('VERSION',    '0.4.0a');
+define('VERSION',    '0.4.0');
 
 require APP . 'bootstrap.php';
