@@ -51,13 +51,13 @@ $router->get('*', function($req) use($config, $med) {
 
 	$parvula = new Parvula;
 	$page = $parvula->getPage($pagename, true);
-	$med->trigger('Page', [$page]);
+	$med->trigger('Page', [&$page]);
 
 	// 404
 	if(false === $page) {
 		header(' ', true, 404); // Set header to 404
 		$page = $parvula->getPage(Config::errorPage());
-		$med->trigger('404', [$page]);
+		$med->trigger('404', [&$page]);
 
 		if(false === $page) {
 			// Juste print simple 404 if there is no 404 page
@@ -85,11 +85,11 @@ $router->get('*', function($req) use($config, $med) {
 			$layout = 'index';
 		}
 
-		$med->trigger('BeforeRender');
+		$med->trigger('BeforeRender', [&$layout]);
 
 		// Show index template
 		$out = $view($layout);
-		$med->trigger('AfterRender', [$out]);
+		$med->trigger('AfterRender', [&$out]);
 		echo $out;
 
 	} catch(Exception $e) {
