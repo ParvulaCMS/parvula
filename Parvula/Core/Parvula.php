@@ -114,6 +114,21 @@ class Parvula {
 		}
 	}
 
+	// TODO
+	public function updatePage(Page $page, $pagePath) {
+
+		$pageOld = $this->getPage($pagePath);
+
+		foreach ($page as $key => $value) {
+			//TODO bug si on veut supprimer un variable...
+			if(!empty($value)) {
+				$pageOld->{$key} = $value;
+			}
+		}
+
+		return $this->setPage($page, $pagePath);
+	}
+
 	/**
 	 * Delete a page
 	 * @param string $pagePath
@@ -244,7 +259,7 @@ class Parvula {
 		$postUrl = static::getURI();
 
 		//TODO use Router
-		$query = $_SERVER['QUERY_STRING'];
+		$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 		$queryLen = strlen($query);
 		if($queryLen > 0) {
 			++$queryLen;

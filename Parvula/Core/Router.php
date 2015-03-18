@@ -49,7 +49,7 @@ class Router {
 			$uri = $_SERVER['SCRIPT_NAME'];
 		}
 		$this->uri = $uri;
-		$this->query = $_SERVER['QUERY_STRING'];
+		$this->query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 
 		$queryLen = strlen($this->query);
 		if($queryLen > 0) {
