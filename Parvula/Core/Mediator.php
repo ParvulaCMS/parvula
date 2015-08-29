@@ -35,12 +35,14 @@ class Mediator {
 				$plugin = new $plugin;
 			}
 			if(is_object($plugin)) {
-				$id = spl_object_hash($plugin);
+				$id = get_class($plugin);
 				if (!isset($this->plugins[$id])) {
 					$this->plugins[$id] = $plugin;
 				}
 			}
 		}
+
+		return $this;
 	}
 
 	/**
@@ -58,6 +60,10 @@ class Mediator {
 		}
 	}
 
+	public function &getPlugin($className) {
+		return $this->plugins[$className];
+	}
+
 	/**
 	 * Call function (alias for call_user_func_array)
 	 * @param Object $obj Object
@@ -71,7 +77,7 @@ class Mediator {
 			case 1: $obj->{$fun}($args[0]); break; 
 			case 2: $obj->{$fun}($args[0], $args[1]); break; 
 			case 3: $obj->{$fun}($args[0], $args[1], $args[2]); break; 
-			default: call_user_func_array(array($obj, $fun), $args);  break; 
+			default: call_user_func_array([$obj, $fun], $args);  break; 
 		}
 	}
 }
