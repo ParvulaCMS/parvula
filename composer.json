@@ -3,7 +3,7 @@
 	"description": "Simple, Markdown and Fast CMS",
 	"keywords": ["cms", "markdown"],
 	"license": "MIT",
-	"homepage": "https://github.com/BafS/parvula",	
+	"homepage": "https://github.com/BafS/parvula",
 	"authors": [
 		{
 			"name": "BafS",
@@ -11,8 +11,8 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3",
-		"michelf/php-markdown": "1.4.*"
+		"php": ">=5.4",
+		"michelf/php-markdown": "1.5.*"
 	},
 	"autoload": {
 		"psr-4": {
