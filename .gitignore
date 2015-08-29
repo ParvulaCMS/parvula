@@ -1,8 +1,21 @@
-*~
-*.bak
-.DS_Store
-vendor/*
-__*
-*.sublime-project
+# Parvula
+plugins/*
+components/*
+
+# Composer
 composer.lock
 composer.phar
+vendor/*
+
+# OS
+__*
+*.bak
+*.lnk
+.DS_Store
+Thumbs.db
+.Trash-*
+
+# IDE
+*~
+*.sublime-project
+.idea
