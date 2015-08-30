@@ -27,18 +27,22 @@ class Parvula {
 	private $fileExtention;
 
 	/**
-	 * @var PageSerializerInterface
+	 * @var Serializer\PageSerializerInterface
 	 */
 	private $serializer;
 
+	private $parser;
+
 	/**
 	 * Constructor
-	 * @param Parvula\Core\PageSerializerInterface $customSerializer (optional)
+	 * @param Parvula\Core\Serializer\PageSerializerInterface $customSerializer (optional)
 	 */
-	function __construct(PageSerializerInterface $customSerializer = null) {
+	function __construct(Serializer\PageSerializerInterface $customSerializer = null,
+		ContentParserInterface $customParser = null) {
 		$this->fileExtension =  '.' . Config::fileExtension();
 
 		$this->setSerializer($customSerializer);
+		$this->setParser($customParser);
 	}
 
 	/**
@@ -67,8 +71,13 @@ class Parvula {
 
 			// Anonymous function to use serializer engine
 			$serializer = $this->serializer;
-			$fn = function($data) use ($pagePath, $serializer) {
-				return $serializer->unserialize($pagePath, $data);
+			$parser = $this->parser;
+			$fn = function($data) use ($pagePath, $serializer, $parser) {
+				$page = $serializer->unserialize($pagePath, $data);
+				if($parser !== null) {
+					$page->content = $parser->parse($page->content);
+				}
+				return $page;
 			};
 
 			$page = $fs->read($pageFullPath, $fn, $eval);
@@ -148,12 +157,18 @@ class Parvula {
 
 	/**
 	 * Get all pages
+	 * @param boolean ($listHidden) List hidden files & folders
+	 * @param string ($pagesPath) Pages path
 	 * @return array<Page> Return an array of 'Page'
 	 */
-	public function getPages() {
+	public function getPages($listHidden = false, $pagesPath = null) {
 		$pages = [];
 
-		$pagesArr = $this->listPages();
+		if($pagesPath !== null) {
+			$pagesPath = PAGES . $pagesPath;
+		}
+
+		$pagesArr = $this->listPages($listHidden, $pagesPath);
 
 		foreach ($pagesArr as $pagePath) {
 			$pages[] = $this->getPage($pagePath);
@@ -209,7 +224,6 @@ class Parvula {
 			}
 
 			$fs = new Files($pagesPath);
-
 			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension and file not secret
@@ -277,6 +291,20 @@ class Parvula {
 		return str_repeat('../', max($slashNb - 1, 0));
 	}
 
+	public static function redirectIfTrailingSlash() {
+		$postUrl = static::getURI();
+
+		$lastChar = substr($postUrl, -1);
+
+		$newUrl = substr($postUrl, 1);
+
+		if($lastChar === '/') {
+			header('Location: ../' . $newUrl, true, 303);
+		}
+
+		// echo $postUrl;
+	}
+
 	/**
 	 * Get request method
 	 * @return string
@@ -287,16 +315,32 @@ class Parvula {
 
 	/**
 	 * Set Parvula pages serializer
-	 * @param PageSerializerInterface $customSerializer
+	 * @param Serializer\PageSerializerInterface $customSerializer
 	 * @return void
 	 */
-	public function setSerializer(PageSerializerInterface $customSerializer = null) {
+	public function setSerializer(Serializer\PageSerializerInterface $customSerializer = null) {
 		if($customSerializer === null) {
 			$defaultSer = Config::defaultPageSerializer();
 			$customSerializer = new $defaultSer;
 		}
 
 		$this->serializer = $customSerializer;
+	}
+
+	/**
+	 * Set Parvula pages serializer
+	 * @param Serializer\PageSerializerInterface $customSerializer
+	 * @return void
+	 */
+	public function setParser(ContentParserInterface $customParser = null) {
+		if($customParser === null) {
+			$defaultParser = Config::defaultContentParser();
+			if($defaultParser !== null) {
+				$customParser = new $defaultParser;
+			}
+		}
+
+		$this->parser = $customParser;
 	}
 
 	/**
