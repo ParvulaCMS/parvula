@@ -11,6 +11,21 @@ function loadAliases(array $aliases) {
 	}
 }
 
+//@TODO cleaner
+function getPlugin() {
+	$plugins = [];
+	if ($handle = opendir(PLUGINS)) {
+	    while (false !== ($entry = readdir($handle))) {
+	        if ($entry[0] !== ".") {
+				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
+	        }
+	    }
+	    closedir($handle);
+	}
+
+	return $plugins;
+}
+
 /**
  * Parse configuration data in object
  * @param string $configData
@@ -84,6 +99,6 @@ function isParvulaAdmin() {
  * Alias for HTML::sEcho
  * @return string
  */
-function sEcho() { 
+function sEcho() {
 	return call_user_func_array("HTML::sEcho", func_get_args());
 }
