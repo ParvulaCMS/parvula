@@ -1,20 +1,20 @@
-<?php echo $view('header') ?>
+<?= $view('header') ?>
 
 <body>
 
 	<header id="header">
-		<h1><?php echo HTML::anchor($site->title, '.') ?></h1>
+		<h1><?= HTML::anchor($site->title, '.') ?></h1>
 
 		<ul id="nav">
 		<?php foreach ($pages() as $page) : ?>
-			<li><?php echo HTML::anchor($page->title, $page->url) ?></li>
+			<li><?= HTML::anchor($page->title, $page->url) ?></li>
 		<?php endforeach ?>
 		</ul>
 	</header>
 
 	<section id="main">
 		<article class="content">
-			<?php echo $content ?>
+			<?= $content ?>
 		</article>
 	</section>
 
