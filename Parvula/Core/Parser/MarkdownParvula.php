@@ -1,9 +1,6 @@
 <?php
 
-namespace Parvula\Core;
-
-// This is needed to load the temporary implementation class.
-\Michelf\Markdown::MARKDOWNLIB_VERSION;
+namespace Parvula\Core\Parser;
 
 /**
  * MarkdownParvula class
@@ -14,7 +11,7 @@ namespace Parvula\Core;
  * @author Fabien Sa
  * @license MIT License
  */
-class MarkdownParvula extends \Michelf\_MarkdownExtra_TmpImpl {
+class MarkdownParvula extends \Michelf\MarkdownExtra {
 
 	/**
 	 * inline_callback for doImages
@@ -55,7 +52,7 @@ class MarkdownParvula extends \Michelf\_MarkdownExtra_TmpImpl {
 		$title			=& $matches[7];
 
 		if(!preg_match('/^(https?|ftp):\/\//', $url)) {
-			$url = HTML::linkRel('') . $url;
+			$url = \HTML::linkRel('') . $url;
 		}
 		$url = $this->encodeAttribute($url);
 

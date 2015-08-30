@@ -1,6 +1,8 @@
 <?php
 
-namespace Parvula\Core;
+namespace Parvula\Core\Serializer;
+
+use Parvula\Core\Page;
 
 /**
  * ParvulaPageSerializer class
