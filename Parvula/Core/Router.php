@@ -124,11 +124,11 @@ class Router {
 	 * @return Router Self
 	 */
 	public function on($method, $path, $callback) {
-		$this->routes->push(array(
+		$this->routes->push([
 			"method" => $method,
 			"path" => $this->prefix . $path,
 			"callback" => $callback
-		));
+		]);
 
 		return $this;
 	}

@@ -27,14 +27,14 @@ class View {
 	/**
 	 * @var array
 	 */
-	private $variables = array();
+	private $variables = [];
 
 	/**
 	 * Constructor. You can set the root path for all paths.
 	 *
 	 * @param string Root path (dir)
 	 */
-	function __construct($path = '/templates', $variables = array()) {
+	function __construct($path = '/templates', $variables = []) {
 		$this->path = rtrim($path, '/') . '/';
 		$this->variables = $variables;
 		$this->extension = '.html';

@@ -63,7 +63,7 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 
 		$page = new Page();
 
-		$pageInfo = array();
+		$pageInfo = [];
 		for ($i = 0; $i < count($headerMatches[1]); ++$i) {
 			$key = trim($headerMatches[1][$i]);
 			$key = strtolower($key);
