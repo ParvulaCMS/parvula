@@ -17,7 +17,7 @@ return [
 
 	// List of disabled plugins @TODO
 	'disabledPlugins' => [
-
+		'FrontendAdmin'
 	],
 
 	// You can force this option with a boolean or leave it on 'auto' detection
@@ -30,7 +30,7 @@ return [
 	'errorPage' => '_404',
 
 	// Extension for files in ./data/pages
-	'fileExtension' => 'md',
+	'fileExtension' => 'html',
 
 	// How to sort pages (php.net/manual/en/function.array-multisort.php)
 	'typeOfSort' => SORT_ASC,
@@ -42,12 +42,12 @@ return [
 	'userConfig' => 'site.conf.php',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
-	// 'defaultContentParser' => null,
-	'defaultContentParser' => 'Parvula\Core\Parser\MarkdownContentParser',
+	'defaultContentParser' => null,
+	// 'defaultContentParser' => 'Parvula\Core\Parser\MarkdownContentParser',
 
 	// Class to (un)serialize pages (must implements PageSerializerInterface)
-	'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaPageSerializer',
-	// 'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaJsonPageSerializer',
+	// 'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaPageSerializer',
+	'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaJsonPageSerializer',
 
 	// Administration URL (/parvula-admin by default)
 	'adminURL' => 'parvula-admin',
