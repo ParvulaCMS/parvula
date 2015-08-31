@@ -18,6 +18,8 @@ if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 	Parvula::registerAutoloader();
 }
 
+// Parvula::redirectIfTrailingSlash(); //@FIXME
+
 require APP . 'helpers.php';
 
 // Use custom exception handler
@@ -38,9 +40,12 @@ $config = Parvula::getUserConfig();
 // Append user config to Config wrapper (override if exists)
 Config::append((array) $config);
 
+// Set asset path
+Asset::setBasePath(Parvula::getRelativeURIToRoot());
+
 // Load plugins
 $med = new Mediator;
-$med->attach(Config::get('plugins'));
+$med->attach(getPlugin()); // print_r(Config::get('disabledPlugins')); //@TODO
 $med->trigger('Load');
 
 // Auto set URLRewriting Config
