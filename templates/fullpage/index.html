@@ -5,26 +5,26 @@
 	<!-- Use fullPage.js http://alvarotrigo.com/fullPage/ -->
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<title><?php echo sEcho($meta->title . ' · ' . $site->title) ?></title>
+	<title><?= sEcho($meta->title . ' · ' . $site->title) ?></title>
 
 	<?php if(isset($site->description)) : ?>
-	<meta name="description" content="<?php echo $site->description ?>">
+	<meta name="description" content="<?= $site->description ?>">
 	<?php endif ?>
 	<meta name="Resource-type" content="Document" />
 
 	<?php
-	echo Asset::css(array('vendor/jquery.fullPage.css', 'fullpage.css'));
+	echo Asset::css(['vendor/jquery.fullPage.css', 'fullpage.css']);
 
 	echo Asset::js(
-		array(
+		[
 			'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js',
 			'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js',
 			'vendor/jquery.fullPage.min.js'
-		)
+		]
 	);
 
-	$anchors = array();
-	$titles = array();
+	$anchors = [];
+	$titles = [];
 
 	foreach ($parvula->getPages() as $page) {
 		$anchors[] = str_replace(array('/', '\\', '#'), '-', $page->url);
@@ -35,10 +35,10 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#fullpage').fullpage({
-				anchors: <?php echo json_encode($anchors) ?>,
+				anchors: <?= json_encode($anchors) ?>,
 				navigation: true,
 				navigationPosition: 'right',
-				navigationTooltips: <?php echo json_encode($titles) ?>
+				navigationTooltips: <?= json_encode($titles) ?>
 			});
 		});
 	</script>
@@ -48,8 +48,8 @@
 
 	<div id="fullpage">
 		<?php foreach ($parvula->getPages() as $n => $page) : ?>
-		<div class="section " id="section<?php echo $n;?>">
-			<?php echo $page->content ?>
+		<div class="section " id="section<?= $n ?>">
+			<?= $page->content ?>
 		</div>
 		<?php endforeach ?>
 	</div>
