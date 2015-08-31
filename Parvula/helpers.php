@@ -12,12 +12,11 @@ function loadAliases(array $aliases) {
 }
 
 //@TODO cleaner
-function getPluginList(array $except = []) {
+function getPlugin() {
 	$plugins = [];
 	if (is_dir(PLUGINS) && $handle = opendir(PLUGINS)) {
 	    while (false !== ($entry = readdir($handle))) {
-	        if (strlen($entry) > 1 && $entry[0] !== "." && substr($entry, 0, 2) !== '__'
-				&& !in_array($entry, $except)) {
+	        if (strlen($entry) > 1 && $entry[0] !== "." && substr($entry, 0, 2) !== '__') {
 				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
 	        }
 	    }

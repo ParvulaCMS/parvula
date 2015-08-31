@@ -45,7 +45,7 @@ Asset::setBasePath(Parvula::getRelativeURIToRoot());
 
 // Load plugins
 $med = new Mediator;
-$med->attach(getPluginList(Config::get('disabledPlugins')));
+$med->attach(getPlugin()); // print_r(Config::get('disabledPlugins')); //@TODO
 $med->trigger('Load');
 
 // Auto set URLRewriting Config
