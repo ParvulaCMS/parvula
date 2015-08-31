@@ -16,7 +16,7 @@ function getPlugin() {
 	$plugins = [];
 	if ($handle = opendir(PLUGINS)) {
 	    while (false !== ($entry = readdir($handle))) {
-	        if ($entry[0] !== ".") {
+	        if (strlen($entry) > 1 && $entry[0] !== "." && substr($entry, 0, 2) !== '__') {
 				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
 	        }
 	    }
@@ -75,11 +75,11 @@ function uidSession() {
  * @return boolean
  */
 function isParvulaAdmin() {
-	if(session_id() === '') {
+	if (session_id() === '') {
 		session_start();
 	}
 
-	if(isset($_SESSION, $_SESSION['login']) && $_SESSION['login'] === true) {
+	if (isset($_SESSION, $_SESSION['login']) && $_SESSION['login'] === true) {
 		session_regenerate_id(true);
 		$logged = $_SESSION['login'];
 
