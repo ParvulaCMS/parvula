@@ -44,6 +44,8 @@ abstract class Plugin {
 	}
 
 	private function appendToElement($element, $html, $append) {
+		// @TODO a bit hacky, need to clean and find correctly the `</head>`
+		
 		libxml_use_internal_errors(true); // html5 ok
 		$dom = new \DOMDocument();
 		$dom->loadHTML($html);
@@ -52,7 +54,10 @@ abstract class Plugin {
 
 		$outArr = explode("\n", $html);
 
-		$outArr[($lineNo - 1)] .= PHP_EOL . $append;
+		// Lines to skip to go to the end of the node
+		$n = substr_count($node->nodeValue, "\n");
+
+		$outArr[($lineNo - 1) + $n] .= PHP_EOL . $append;
 
 		return implode($outArr, "\n");
 	}
