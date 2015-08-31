@@ -15,7 +15,7 @@ return [
 		'Asset' => 'Parvula\Core\Asset'
 	],
 
-	// List of disabled plugins @TODO
+	// List of disabled plugins
 	'disabledPlugins' => [
 
 	],
