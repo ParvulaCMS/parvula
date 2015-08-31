@@ -26,7 +26,7 @@ class MarkdownParvula extends \Michelf\MarkdownExtra {
 		$alt_text = $this->encodeAttribute($alt_text);
 
 		if(!preg_match('/^(https?|ftp):\/\//', $url)) {
-			$url = HTML::linkRel('data/images/') . $url;
+			$url = \HTML::linkRel(IMAGES) . $url;
 		}
 		$url = $this->encodeAttribute($url);
 
