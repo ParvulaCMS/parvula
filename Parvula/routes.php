@@ -31,7 +31,7 @@ $router->space('/_api', function($router) {
 
 
 // Front - Pages
-$router->get('*', function($req) use($config, $med) {
+$router->any('*', function($req) use($config, $med) {
 	$med->trigger('path', [$req->path]);
 
 	$pagename = rtrim($req->path, '/');
@@ -42,9 +42,9 @@ $router->get('*', function($req) use($config, $med) {
 	}
 
 	// Check if template exists (must have index.html)
-	$baseTemplate = TMPL . Config::get('template');
+	$baseTemplate = htmlspecialchars(TMPL . Config::get('template'));
 	if(!is_readable($baseTemplate . '/index.html')) {
-		die("Error - Template is not readable");
+		die("Error - Template `{$baseTemplate}` is not readable");
 	}
 
 	Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
@@ -73,9 +73,17 @@ $router->get('*', function($req) use($config, $med) {
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
 			'templateUrl' => Asset::getBasePath(),
 			'parvula' => $parvula,
-			'pages' => function() use($parvula) { return $parvula->getPages(); },
+			'pages' =>
+			function($listHidden = false, $pagesPath = null) use($parvula) {
+				return $parvula->getPages($listHidden, $pagesPath);
+			},
+			'plugin' =>
+			function($name) use($med) {
+				return $med->getPlugin($name);
+			},
 			'site' => $config,
 			'meta' => $page,
+			'self' => $page,
 			'content' => $page->content
 		]);
 
@@ -86,7 +94,6 @@ $router->get('*', function($req) use($config, $med) {
 		}
 
 		$med->trigger('BeforeRender', [&$layout]);
-
 		// Show index template
 		$out = $view($layout);
 		$med->trigger('AfterRender', [&$out]);
