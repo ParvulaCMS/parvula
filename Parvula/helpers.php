@@ -14,7 +14,7 @@ function loadAliases(array $aliases) {
 //@TODO cleaner
 function getPlugin() {
 	$plugins = [];
-	if ($handle = opendir(PLUGINS)) {
+	if (is_dir(PLUGINS) && $handle = opendir(PLUGINS)) {
 	    while (false !== ($entry = readdir($handle))) {
 	        if (strlen($entry) > 1 && $entry[0] !== "." && substr($entry, 0, 2) !== '__') {
 				$plugins[] =  "Plugin\\" . $entry . "\\$entry";

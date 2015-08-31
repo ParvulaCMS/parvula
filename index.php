@@ -5,7 +5,7 @@
 //| --------------- |\\
 
 
-// Define some constants
+// Define some useful constants
 define('ROOT',       '');
 define('APP',        ROOT . 'Parvula/');
 define('VENDOR',     ROOT . 'vendor/');
@@ -15,6 +15,6 @@ define('IMAGES',     DATA . 'images/');
 define('TMPL',       ROOT . 'templates/');
 define('PLUGINS',    ROOT . 'plugins/');
 define('ADMIN',      ROOT . 'admin/');
-define('VERSION',    '0.4.0');
+define('VERSION',    '0.5.0');
 
-require APP . 'bootstrap.php';
+require_once APP . 'bootstrap.php';
