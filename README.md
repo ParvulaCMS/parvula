@@ -1,45 +1,44 @@
-Parvula CMS
-===========
+# ![PARVULA](https://i.imgur.com/hhFGOV9.png)
 
 #### A quick website from markdown files
 
 ![website](http://i.imgur.com/jO3KwHI.png)
 *Example with the fullpage template*
 
-Requirements
-------------
+### Requirements
+
 * PHP 5.4+
 * URL Rewriting (recommended)
 * [Composer](http://getcomposer.org/) is recommended
 
-Installation with Composer
---------------------------
+### Installation with Composer
+
 1. Download and extract the zip
 2. Run `composer install`
 3. That's it !
 
 Without composer, download [php-markdown](http://michelf.ca/projects/php-markdown/) and put Michelf directory in root.
 
+## Usage
 
-Edit pages
-----------
+### Edit pages
+
 All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
 
-The basic configuration file is in `data/site.conf.md`. There is 2 templates bundle by default: "simple" and "fullpage".
+The basic configuration file is in `data/site.conf.php`. There is 2 templates bundle by default: "simple" and "fullpage".
 
 ![website](http://i.imgur.com/P3Fp24p.png)
 *Default template*
 
 
-Pages
------
+### Pages
+
 * Pages must have a title to be listed
 * Page beginning with `_` are "secret" pages, not listed
 * You can order pages with the *index* field
 
 
-Administration
---------------
+### Administration
 
 ![parvula administration](http://i.imgur.com/WtDfVXu.png)
 
