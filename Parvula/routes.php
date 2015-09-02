@@ -47,7 +47,7 @@ $router->any('*', function($req) use($config, $med) {
 		die("Error - Template `{$baseTemplate}` is not readable");
 	}
 
-	Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
+	// Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
 
 	$parvula = new Parvula;
 	$page = $parvula->getPage($pagename, true);
@@ -66,12 +66,13 @@ $router->any('*', function($req) use($config, $med) {
 	}
 
 	try {
-		$view = new View(TMPL . Config::get('template'));
+		$view = new View($baseTemplate);
 
 		// Assign some variables
 		$view->assign([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
-			'templateUrl' => Asset::getBasePath(),
+			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
+			// 'templateUrl' => Asset::getBasePath(),
 			'parvula' => $parvula,
 			'pages' =>
 			function($listHidden = false, $pagesPath = null) use($parvula) {

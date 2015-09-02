@@ -40,9 +40,6 @@ $config = Parvula::getUserConfig();
 // Append user config to Config wrapper (override if exists)
 Config::append((array) $config);
 
-// Set asset path
-Asset::setBasePath(Parvula::getRelativeURIToRoot());
-
 // Load plugins
 $med = new Mediator;
 $med->attach(getPluginList(Config::get('disabledPlugins')));
