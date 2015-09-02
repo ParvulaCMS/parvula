@@ -11,8 +11,9 @@ return [
 	// Class aliases
 	'aliases' => [
 		'HTML' => 'Parvula\Core\Html',
-		'Asset' => 'Parvula\Core\Config',
-		'Asset' => 'Parvula\Core\Asset'
+		'Conf' => 'Parvula\Core\Config',
+		'Asset' => 'Parvula\Core\Asset',
+		'Component' => 'Parvula\Core\Component'
 	],
 
 	// List of disabled plugins
