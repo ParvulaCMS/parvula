@@ -5,7 +5,7 @@ namespace Parvula\Core;
 use Parvula\Core\Exception\BadObjectCallException;
 
 /**
- * Mediator class to handle plugins
+ * Plugin Mediator class to handle plugins
  *
  * @package Parvula
  * @version 0.4.0
@@ -13,7 +13,7 @@ use Parvula\Core\Exception\BadObjectCallException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Mediator {
+class PluginMediator {
 
 	/**
 	 * Plugins container
@@ -47,7 +47,7 @@ class Mediator {
 
 	/**
 	 * Trigger an event
-	 * @param string $event Event name 
+	 * @param string $event Event name
 	 * @param array ($args) Arguments
 	 * @return
 	 */
@@ -72,12 +72,12 @@ class Mediator {
 	 * @return
 	 */
 	private function callFunctionArray($obj, $fun, array $args) {
-		switch(count($args)) { 
-			case 0: $obj->{$fun}(); break; 
-			case 1: $obj->{$fun}($args[0]); break; 
-			case 2: $obj->{$fun}($args[0], $args[1]); break; 
-			case 3: $obj->{$fun}($args[0], $args[1], $args[2]); break; 
-			default: call_user_func_array([$obj, $fun], $args);  break; 
+		switch(count($args)) {
+			case 0: $obj->{$fun}(); break;
+			case 1: $obj->{$fun}($args[0]); break;
+			case 2: $obj->{$fun}($args[0], $args[1]); break;
+			case 3: $obj->{$fun}($args[0], $args[1], $args[2]); break;
+			default: call_user_func_array([$obj, $fun], $args);  break;
 		}
 	}
 }
