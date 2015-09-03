@@ -6,7 +6,7 @@
 use Parvula\Core\Router;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
-use Parvula\Core\Mediator;
+use Parvula\Core\PluginMediator;
 
 if(!defined('ROOT')) exit;
 
@@ -41,7 +41,7 @@ $config = Parvula::getUserConfig();
 Config::append((array) $config);
 
 // Load plugins
-$med = new Mediator;
+$med = new PluginMediator;
 $med->attach(getPluginList(Config::get('disabledPlugins')));
 $med->trigger('Load');
 

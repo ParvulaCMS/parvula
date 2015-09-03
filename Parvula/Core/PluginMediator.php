@@ -21,7 +21,7 @@ class PluginMediator {
 	protected $plugins = [];
 
 	/**
-	 * Attach a new plugin
+	 * Attach new plugins
 	 * @param array $plugins
 	 * @return
 	 */
@@ -34,6 +34,7 @@ class PluginMediator {
 				}
 				$plugin = new $plugin;
 			}
+
 			if(is_object($plugin)) {
 				$id = get_class($plugin);
 				if (!isset($this->plugins[$id])) {
