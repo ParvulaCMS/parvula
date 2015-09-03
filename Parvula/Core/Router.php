@@ -66,6 +66,22 @@ class Router {
 	}
 
 	/**
+	 * Get the current method (GET, POST, PUT, ...)
+	 * @return String Current method
+	 */
+	public function getMethod() {
+		return $this->method;
+	}
+
+	/**
+	 * Get the current URI (/my/uri)
+	 * @return String Current URI
+	 */
+	public function getUri() {
+		return $this->uri;
+	}
+
+	/**
 	 * Add a new route with "GET" method
 	 * @param string $path
 	 * @param function $callback
@@ -171,7 +187,7 @@ class Router {
 				$regex = $this->normalizeRegex($route['path']);
 
 				// if path is OK
-				if(preg_match("@^{$regex}@", $this->uri, $matches)) {
+				if(preg_match("@^{$regex}@", $this->path, $matches)) {
 					$callback = $route['callback'];
 
 					$req = new \ArrayObject;
