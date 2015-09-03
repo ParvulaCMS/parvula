@@ -45,12 +45,17 @@ abstract class Plugin {
 
 	private function appendToElement($element, $html, $append) {
 		// @TODO a bit hacky, need to clean and find correctly the `</head>`
-		
+
 		libxml_use_internal_errors(true); // html5 ok
 		$dom = new \DOMDocument();
 		$dom->loadHTML($html);
 		$node = $dom->getElementsByTagName($element)->item(0);
-		$lineNo = $node->lastChild->getLineNo();
+
+		if ($node) {
+			$lineNo = $node->lastChild->getLineNo();
+		} else {
+			$lineNo = 0;
+		}
 
 		$outArr = explode("\n", $html);
 
