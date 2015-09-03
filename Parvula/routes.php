@@ -8,20 +8,8 @@ use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
 
-$adminURL = trim(Config::get('adminURL'), '/');
-if($adminURL . '/' === ADMIN) {
-	// Avoid redirection loop
-	$adminURL .= '_';
-}
-
-// Admin pages
-$router->any('/' . $adminURL . '/', function() {
-	return require ADMIN . 'admin.php';
-})
-// redirection, need the trailing slash
-->get('/' . $adminURL, function() use($adminURL) {
-	header('Location: ./' . $adminURL . '/', true, 303);
-});
+$med->trigger('router', [&$router]);
+$med->trigger('route', [$router->getMethod(), $router->getUri()]);
 
 
 // Api namespace
@@ -72,16 +60,15 @@ $router->any('*', function($req) use($config, $med) {
 		$view->assign([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
 			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
-			// 'templateUrl' => Asset::getBasePath(),
 			'parvula' => $parvula,
 			'pages' =>
-			function($listHidden = false, $pagesPath = null) use($parvula) {
-				return $parvula->getPages($listHidden, $pagesPath);
-			},
+				function($listHidden = false, $pagesPath = null) use($parvula) {
+					return $parvula->getPages($listHidden, $pagesPath);
+				},
 			'plugin' =>
-			function($name) use($med) {
-				return $med->getPlugin($name);
-			},
+				function($name) use($med) {
+					return $med->getPlugin($name);
+				},
 			'site' => $config,
 			'meta' => $page,
 			'self' => $page,
@@ -95,8 +82,7 @@ $router->any('*', function($req) use($config, $med) {
 		}
 
 		$med->trigger('BeforeRender', [&$layout]);
-		// Show index template
-		$out = $view($layout);
+		$out = $view($layout); // Show index template
 		$med->trigger('AfterRender', [&$out]);
 		echo $out;
 

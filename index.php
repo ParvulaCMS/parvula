@@ -14,7 +14,6 @@ define('PAGES',      DATA . 'pages/');
 define('IMAGES',     DATA . 'images/');
 define('TMPL',       ROOT . 'templates/');
 define('PLUGINS',    ROOT . 'plugins/');
-define('ADMIN',      ROOT . 'admin/');
 define('VERSION',    '0.5.0');
 
 require_once APP . 'bootstrap.php';

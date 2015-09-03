@@ -50,9 +50,4 @@ return [
 	'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaPageSerializer',
 	// 'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaJsonPageSerializer',
 
-	// Administration URL (/parvula-admin by default)
-	'adminURL' => 'parvula-admin',
-
-	// /adminFolderName (/admin by default) will redirect you to administration
-	'adminAliasFolder' => true
 ];
