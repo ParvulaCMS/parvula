@@ -13,7 +13,18 @@ $defaultPageSerializer = Config::defaultPageSerializer();
 
 $parvula = new Parvula(new $defaultPageSerializer);
 
-$apiSerializer = 'json_encode'; //@TODO
+// @TODO
+function apiSerializer($data) {
+	return json_encode($data);
+}
+
+function apiMessage($res) {
+	if($res) {
+		return '{"status": "ok"}';
+	} else {
+		return '{"status": "error"}';
+	}
+}
 
 //
 // Public API
@@ -36,13 +47,16 @@ if(true === isParvulaAdmin()) {
 
 	// List of pages. Array<string> of pages paths
 	$router->get('/pageslist', function($req) use ($parvula) {
-		echo $apiSerializer($parvula->listPages());
+		echo apiSerializer($parvula->listPages());
 	});
 
 	// Delete page
 	$router->delete('/pages/::name', function($req) use ($parvula) {
-		echo $apiSerializer($parvula->deletePage($req->params->name));
+		$res = $parvula->deletePage($req->params->name);
+		echo apiMessage($res);
 	});
+
+	//https://stackoverflow.com/questions/630453/put-vs-post-in-rest
 
 	// Save page
 	$router->put('/pages/::name', function($req) use ($parvula, $defaultPageSerializer) {
@@ -51,7 +65,8 @@ if(true === isParvulaAdmin()) {
 		}
 
 		$page = Page::pageFactory($req->body);
-		echo $apiSerializer($parvula->setPage($page, $req->params->name, new $defaultPageSerializer));
+		$res = $parvula->setPage($page, $req->params->name, new $defaultPageSerializer);
+		echo apiMessage($res);
 	});
 
 	// Update page @TODO TEST
@@ -66,13 +81,14 @@ if(true === isParvulaAdmin()) {
 			$page->{$key} = $value;
 		}
 
-		echo $apiSerializer($parvula->updatePage($page, $req->params->name, new $defaultPageSerializer));
+		$res = $parvula->updatePage($page, $req->params->name, new $defaultPageSerializer);
+		echo apiMessage($res);
 	});
 
 	// Logout
 	$router->any('/logout', function() {
 		session_destroy();
-		echo $apiSerializer(session_unset());
+		echo apiMessage(session_unset());
 	});
 
 } else {
