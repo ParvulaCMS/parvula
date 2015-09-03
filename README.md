@@ -1,8 +1,8 @@
-# ![PARVULA](https://i.imgur.com/hhFGOV9.png)
+# ![PARVULA](http://i.imgur.com/R2niLC2.png)
 
-#### A quick website from markdown files
+#### A quick website from markdown files (or the syntax you want)
 
-![website](http://i.imgur.com/jO3KwHI.png)
+![example](http://i.imgur.com/dvi75Mq.png)
 *Example with the fullpage template*
 
 ### Requirements
@@ -25,16 +25,16 @@ Without composer, download [php-markdown](http://michelf.ca/projects/php-markdow
 
 All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
 
-The basic configuration file is in `data/site.conf.php`. There is 2 templates bundle by default: "simple" and "fullpage".
+The basic configuration file is `data/site.conf.php`. There is 2 templates bundle by default: "simple" and "fullpage".
 
 ![website](http://i.imgur.com/P3Fp24p.png)
-*Default template*
+*Example with the default template*
 
 
 ### Pages
 
 * Pages must have a title to be listed
-* Page beginning with `_` are "secret" pages, not listed
+* Pages beginning with `_` are *hidden* pages, not listed
 * You can order pages with the *index* field
 
 
@@ -42,6 +42,6 @@ The basic configuration file is in `data/site.conf.php`. There is 2 templates bu
 
 ![parvula administration](http://i.imgur.com/WtDfVXu.png)
 
-You can edit pages online at **yoursite.com/parvula-admin/** (admin url can be edited in Parvula/config.php).
+You can edit pages online at **yoursite.com/admin/** (admin url can be edited in `plugins/Admin/config.php`).
 
-Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
+Don't forget to *chmod 755* `data/pages` and *change the default password* in `plugins/Admin/config.php` !
