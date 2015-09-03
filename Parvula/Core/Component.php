@@ -22,6 +22,8 @@ class Component {
 
     private static $isLoaded = [];
 
+	// private static $bowerPackages = 'https://bower.herokuapp.com/packages/';
+
 	// Component::registerCDN('jquery', 'http://lala.com/jq.js');
 	// Component::register('jquery', $plugin . "jq.js"); // no ../.. to avoid hack
 
@@ -30,7 +32,7 @@ class Component {
 	public static function register($name, $file) {
 		$name = self::parseName($name);
 
-		if(!file_exists($basePath . $name)) {
+		if(!file_exists(static::$basePath . $name)) {
 			// echo ">> $basePath - $name";
             mkdir($pathname . $name);
 			$data = file_get_contents($file);
@@ -44,40 +46,50 @@ class Component {
 		self::$components[$name] = $url;
 	}
 
-    public static function loadCDN($name, $pattern = null) {
+    public static function loadCDN($name) {
 		$name = self::parseName($name);
 
 		if(!isset(self::$isLoaded[$name], self::$components[$name])) {
             $ext = pathinfo(self::$basePath . $name, PATHINFO_EXTENSION);
 
             self::$isLoaded[$name] = true;
-            if($ext === 'js') {
-                return Asset::js(self::$components[$name], $pattern);
-            } else if($ext === 'css') {
-                return Asset::css(self::$components[$name], $pattern);
-            }
 
             return $components[$name];
         }
 	}
 
-    public static function load($name, $pattern = null) {
-		$name = self::parseName($name);
+	private static function readBowerConf($packageName) {
+		$filePath = static::$basePath . $packageName . '/bower.json';
 
-        if(!isset(self::$isLoaded[$name])) {
-            $ext = pathinfo(self::$basePath . $name, PATHINFO_EXTENSION);
+		if(!is_file($filePath)) {
+			return false;
+		}
 
-            Asset::setBasePath(Parvula::getRelativeURIToRoot() . self::$basePath);
-            self::$isLoaded[$name] = true;
-            if($ext === 'js') {
-                return Asset::js($name, $pattern);
-            } else if($ext === 'css') {
-                return Asset::css($name, $pattern);
-            }
+		$bowerJson = file_get_contents($filePath);
+		return json_decode($bowerJson);
+	}
 
-            return Parvula::getRelativeURIToRoot() . self::$basePath . '/' . $name;
-        }
-    }
+	public static function load($packageName, $path = null) {
+		$packageName = strtolower($packageName);
+
+		if ($path === null) {
+			$conf = static::readBowerConf($packageName);
+			if (!$conf) {
+				return false;
+			}
+			$path = '/' . $conf->main;
+		}
+
+		// $nameFolder = self::parseName($name);
+
+		if (!isset(static::$isLoaded[$packageName])) {
+			static::$isLoaded[$packageName] = true;
+
+			return './' . Parvula::getRelativeURIToRoot() . self::$basePath . $packageName . $path;
+		}
+
+		return false;
+	}
 
 	private static function parseName($name) {
 		$token = explode(':', $name, 2);
@@ -89,6 +101,13 @@ class Component {
 
 		return $name;
 	}
+
+	public static function exists($packageName) {
+		return is_readable(static::$basePath . $packageName);
+	}
+
+	// public static function install($packageName, $source = true) {
+	// }
 
     // unload
 
