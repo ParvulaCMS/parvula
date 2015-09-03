@@ -1,21 +1,19 @@
 <?php
 
-namespace Admin;
-
 use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
-if(!defined('ROOT')) exit;
-$adminConf = require DATA . 'admin.conf.php';
+$adminConf = require __DIR__ . '/conf.php';
 
 if($adminConf['password'] === "_Your_Password_") {
-	die('You MUST change the default password in `' . DATA . 'admin.conf.php`.');
+	die('You MUST change the default password in `' . __DIR__ . '/conf.php`.');
 }
 
-$view = new View(ADMIN . 'view');
+$view = new View(__DIR__ . '/view');
 
 $view->assign('baseUrl', Parvula::getRelativeURIToRoot());
+$view->assign('pluginUrl', Parvula::getRelativeURIToRoot() . $pluginPath);
 $view->assign('templateUrl', Parvula::getRelativeURIToRoot() . TMPL . Config::get('template'));
 
 
