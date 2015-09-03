@@ -16,7 +16,6 @@ $view->assign('baseUrl', Parvula::getRelativeURIToRoot());
 $view->assign('pluginUrl', Parvula::getRelativeURIToRoot() . $pluginPath);
 $view->assign('templateUrl', Parvula::getRelativeURIToRoot() . TMPL . Config::get('template'));
 
-
 // Check password
 if(isset($_POST, $_POST['password'])) {
 
@@ -29,7 +28,9 @@ if(isset($_POST, $_POST['password'])) {
 		$_SESSION['login'] = true;
 
 		// Post/Redirect/Get pattern
-		header("Location: ./", true, 303);
+		header(
+			'Location: ./' . Parvula::getRelativeURIToRoot() . trim($adminConf['adminRoute'], '/'),
+			true, 303);
 
 	} else {
 		$view->assign('notice', true);
