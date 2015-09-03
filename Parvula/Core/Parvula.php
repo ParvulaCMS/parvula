@@ -9,7 +9,7 @@ use Parvula\Core\Exception\IOException;
  * Parvula
  *
  * @package Parvula
- * @version 0.2.2
+ * @version 0.5
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -52,7 +52,7 @@ class Parvula {
 	 * @throws IOException If the page does not exists
 	 * @return Parvula\Core\Page Return the selected page
 	 */
-	public function getPage($pagePath, $eval = false) {
+	public function getPage($pagePath, $parseContent = true, $eval = false) {
 
 		// If page was already loaded, return page
 		if(isset($this->pages[$pagePath])) {
@@ -71,7 +71,9 @@ class Parvula {
 
 			// Anonymous function to use serializer engine
 			$serializer = $this->serializer;
-			$parser = $this->parser;
+			if ($parseContent) {
+				$parser = $this->parser;
+			}
 			$fn = function($data) use ($pagePath, $serializer, $parser) {
 				$page = $serializer->unserialize($pagePath, $data);
 				if($parser !== null) {

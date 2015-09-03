@@ -30,9 +30,9 @@ function apiMessage($res) {
 // Public API
 //
 
-// Page object
+// Page object (`?raw` to not parse the content)
 $router->get('/pages/::name', function($req) use ($parvula) {
-	echo $parvula->getPage($req->params->name);
+	echo $parvula->getPage($req->params->name, $req->query !== 'raw');
 });
 
 // Array<Page> of Pages
