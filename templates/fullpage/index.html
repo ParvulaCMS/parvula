@@ -13,13 +13,13 @@
 	<meta name="Resource-type" content="Document" />
 
 	<?php
-	echo Asset::css(['vendor/jquery.fullPage.css', 'fullpage.css']);
+	echo Asset::css([$templateUrl . 'vendor/jquery.fullPage.css', $templateUrl . 'fullpage.css']);
 
 	echo Asset::js(
 		[
 			'http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js',
 			'http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js',
-			'vendor/jquery.fullPage.min.js'
+			$templateUrl . 'vendor/jquery.fullPage.min.js'
 		]
 	);
 
