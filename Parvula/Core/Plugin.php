@@ -4,6 +4,14 @@ namespace Parvula\Core;
 
 /**
  * Plugin class @TODO
+ * Abstract class, need to be inherited to create a new plugin
+ *
+ * Minimal exemple :
+ * <pre>
+ * namespace Plugin\Slider;
+ *
+ * class Slider extends \Parvula\Core\Plugin { ... }
+ * </pre>
  *
  * @package Parvula
  * @version 0.5.0
@@ -13,24 +21,25 @@ namespace Parvula\Core;
  */
 abstract class Plugin {
 
-	protected $asset;
+	/**
+	 * @var string Plugin path
+	 */
+	protected $pluginPath;
+
+	/**
+	 * @var string Plugin URI
+	 */
+	protected $pluginUri;
 
 	function __construct() {
-		// $this->asset = Asset;
-		// $this->asset::setBasePath('qweqwe');
-		// // facade
-		// $class = get_called_class();
-		// // $a = static::$asset;
-		// // $a::setBasePath("qweqwe");
-		// // static::$asset = $a;
-		// // echo $a::css('as');
-
-		// Asset::setBasePath($this->getPluginPath());
-
-		// // $as = Asset;
-		// // self::$asset = $as;
+		$this->pluginPath = $this->getPluginPath();
+		$this->pluginUri = $this->getPluginUri();
 	}
 
+	/**
+	 * Get the current plugin path, useful for the backend part
+	 * @return string the current plugin path
+	 */
 	protected function getPluginPath() {
 		$class = get_called_class();
 		$class = str_replace('\\', '/', $class);
@@ -39,7 +48,11 @@ abstract class Plugin {
 		return PLUGINS . $class . '/';
 	}
 
-	protected function getRelativePluginPath() {
+	/**
+	 * Get the current plugin URI, useful for the client part
+	 * @return string the current URI path
+	 */
+	protected function getPluginUri() {
 		return Parvula::getRelativeURIToRoot() . $this->getPluginPath();
 	}
 
