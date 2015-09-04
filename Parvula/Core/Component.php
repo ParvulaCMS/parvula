@@ -6,7 +6,7 @@ namespace Parvula\Core;
  * Component manager [@TODO]
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.5.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
@@ -14,18 +14,53 @@ namespace Parvula\Core;
 class Component {
 
 	/**
-	 * @var string
+	 * @var string Components folder
 	 */
 	private static $basePath = 'components/';
 
-    private static $components = [];
-
+	/**
+	 * @var array<string, boolean> If the package is loaded
+	 */
     private static $isLoaded = [];
 
-	// private static $bowerPackages = 'https://bower.herokuapp.com/packages/';
+    private static $components = [];
 
-	// Component::registerCDN('jquery', 'http://lala.com/jq.js');
-	// Component::register('jquery', $plugin . "jq.js"); // no ../.. to avoid hack
+	/**
+	 * Get the URI of a package from the component folder
+	 *
+	 * <code>Component::load('jquery'); will return .../components/jquery/dist/jquery.js</code>
+	 *
+	 * @param string $packageName Package name
+	 * @param string ($path) The path to the main source (try to read bower.json if no path)
+	 * @return string|boolean The main package source or false if nothing is load
+	 */
+	public static function load($packageName, $path = null) {
+		$packageName = strtolower($packageName);
+
+		if ($path === null) {
+			$conf = static::readBowerConf($packageName);
+			if (!$conf) {
+				return false;
+			}
+			$path = '/' . $conf->main;
+		} else {
+			$path = '/' . ltrim($path, '/');
+		}
+
+		// $nameFolder = self::parseName($name);
+
+		if (!isset(static::$isLoaded[$packageName])) {
+			static::$isLoaded[$packageName] = true;
+
+			return './' . Parvula::getRelativeURIToRoot() . static::$basePath . $packageName . $path;
+		}
+
+		return false;
+	}
+
+	public static function exists($packageName) {
+		return is_readable(static::$basePath . $packageName);
+	}
 
 	//TODO
 	// If zip -> save in folder ?
@@ -58,6 +93,11 @@ class Component {
         }
 	}
 
+	/**
+	 * Read bower configuration (bower.json)
+	 * @param string $packageName Package name
+	 * @return object|boolean The configuration or false if the package does not exists
+	 */
 	private static function readBowerConf($packageName) {
 		$filePath = static::$basePath . $packageName . '/bower.json';
 
@@ -67,28 +107,6 @@ class Component {
 
 		$bowerJson = file_get_contents($filePath);
 		return json_decode($bowerJson);
-	}
-
-	public static function load($packageName, $path = null) {
-		$packageName = strtolower($packageName);
-
-		if ($path === null) {
-			$conf = static::readBowerConf($packageName);
-			if (!$conf) {
-				return false;
-			}
-			$path = '/' . $conf->main;
-		}
-
-		// $nameFolder = self::parseName($name);
-
-		if (!isset(static::$isLoaded[$packageName])) {
-			static::$isLoaded[$packageName] = true;
-
-			return './' . Parvula::getRelativeURIToRoot() . self::$basePath . $packageName . $path;
-		}
-
-		return false;
 	}
 
 	private static function parseName($name) {
@@ -102,14 +120,16 @@ class Component {
 		return $name;
 	}
 
-	public static function exists($packageName) {
-		return is_readable(static::$basePath . $packageName);
-	}
+
+		// private static $bowerPackages = 'https://bower.herokuapp.com/packages/';
+
+		// Component::registerCDN('jquery', 'http://lala.com/jq.js');
+		// Component::register('jquery', $plugin . "jq.js"); // no ../.. to avoid hack
+
 
 	// public static function install($packageName, $source = true) {
 	// }
 
     // unload
-
     // loadMultiple
 }
