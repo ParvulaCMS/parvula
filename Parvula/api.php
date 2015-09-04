@@ -18,11 +18,11 @@ function apiSerializer($data) {
 	return json_encode($data);
 }
 
-function apiMessage($res) {
+function apiMessage($res, $message = '') {
 	if($res) {
-		return '{"status": "ok"}';
+		return '{"status": "ok", "message": "'.$message.'"}';
 	} else {
-		return '{"status": "error"}';
+		return '{"status": "error", "message": "'.$message.'"}';
 	}
 }
 
@@ -37,7 +37,7 @@ $router->get('/pages/::name', function($req) use ($parvula) {
 
 // Array<Page> of Pages
 $router->get('/pages', function($req) use ($parvula) {
-	echo $apiSerializer($parvula->getPages());
+	echo apiSerializer($parvula->getPages());
 });
 
 //
