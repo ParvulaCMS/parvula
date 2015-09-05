@@ -24,7 +24,7 @@ return [
 	// You can force this option with a boolean or leave it on 'auto' detection
 	'URLRewriting' => 'auto',
 
-	// Home page
+	// Default home page
 	'homePage' => 'home',
 
 	// Error page
@@ -39,8 +39,8 @@ return [
 	// Sort pages from specific field (like title, index or whatYouWant)
 	'sortField' => 'index',
 
-	// Config file to read
-	'userConfig' => 'site.conf.php',
+	// User config file to read
+	'userConfig' => 'site.conf.json',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
 	// 'defaultContentParser' => null,

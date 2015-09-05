@@ -351,7 +351,8 @@ class Parvula {
 	 */
 	public static function getUserConfig() {
 		try {
-			$config = (object) require DATA . Config::get('userConfig');
+			$configRaw = file_get_contents(DATA . Config::get('userConfig'));
+			$config = json_decode($configRaw);
 		} catch(IOException $e) {
 			exceptionHandler($e);
 		}
