@@ -85,6 +85,21 @@ if(true === isParvulaAdmin()) {
 		echo apiMessage($res);
 	});
 
+	// Upload file
+	//TODO test - Security, etc.
+	$router->post('/upload/images', function() {
+		$uploadfile = IMAGES . basename($_FILES['file']['name']);
+
+		// echo $uploadfile;
+		// print_r($_FILES);
+
+		if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
+			echo apiMessage(true, 'image was successfully uploaded');
+		} else {
+			echo apiMessage(false);
+		}
+	});
+
 	// Logout
 	$router->any('/logout', function() {
 		session_destroy();
