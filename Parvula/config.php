@@ -33,7 +33,7 @@ return [
 	// Extension for files in ./data/pages
 	'fileExtension' => 'md',
 
-	// How to sort pages (php.net/manual/en/function.array-multisort.php)
+	// How to sort pages (SORT_ASC, SORT_DESC) (php.net/manual/en/function.array-multisort.php)
 	'typeOfSort' => SORT_ASC,
 
 	// Sort pages from specific field (like title, index or whatYouWant)

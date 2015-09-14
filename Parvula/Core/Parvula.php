@@ -180,7 +180,7 @@ class Parvula {
 		$sortType = Config::typeOfSort();
 		$sortField = Config::sortField();
 
-		if(is_integer($sortType)) {
+		if (!is_integer($sortType)) {
 			$sortType = SORT_ASC;
 		}
 
