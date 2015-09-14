@@ -8,7 +8,7 @@ use Parvula\Core\Page;
  * ParvulaPageSerializer class
  *
  * @package Parvula
- * @version 0.3.0
+ * @version 0.5.0
  * @since 0.2.0
  * @author Fabien Sa
  * @license MIT License
@@ -38,31 +38,24 @@ class ParvulaJsonPageSerializer implements PageSerializerInterface {
 	/**
 	 * Unserialize data
 	 * @param string $data
+	 * @param array $options Default page field(s), must have the `slug` field
 	 * @return Page
 	 */
-	public function unserialize($filePath, $data = null) {
-		if($data === null) {
-			$data = $filePath;
-			$filePath = '';
-		}
-
-		$headerInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
-		$headerData = trim($headerInfos[0]);
+	public function unserialize($data, array $options = []) {
+		$pageInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
+		$headerData = trim($pageInfos[0]);
 		$pageInfo = json_decode($headerData, true);
 
-		$page = new Page();
-		$page = Page::pageFactory($pageInfo);
-
-		$page->url = ltrim($filePath, '/');
-		if(!empty($headerInfos[1])) {
-			$page->content = $headerInfos[1];
+		if(!empty($pageInfos[1])) {
+			$pageInfo['content'] = $pageInfos[1];
 		} else {
-			$page->content = '';
+			$pageInfo['content'] = '';
 		}
 
-		// print_r($this->serialize($page));
+		// Append $options to $pageInfo
+		$pageInfo = $pageInfo + $options;
 
-		return $page;
+		return Page::pageFactory($pageInfo);
 	}
 
 }
