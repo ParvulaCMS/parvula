@@ -5,10 +5,10 @@ namespace Parvula\Core\Serializer;
 use Parvula\Core\Page;
 
 /**
- * PageSerilizer interface
+ * PageSerializer interface
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -24,8 +24,9 @@ interface PageSerializerInterface {
 
 	/**
 	 * Unserialize data to get Page
-	 * @param string $data
+	 * @param mixed $data Data using to create the page
+	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */
-	public function unserialize($data);
+	public function unserialize($data, array $options = []);
 }

@@ -64,10 +64,9 @@ class Parvula {
 		try {
 			$fs = new Files(PAGES);
 
-			if(!$fs->exists($pageFullPath)) {
+			if (!$fs->exists($pageFullPath)) {
 				return false;
 			}
-
 
 			// Anonymous function to use serializer engine
 			$serializer = $this->serializer;
@@ -75,8 +74,8 @@ class Parvula {
 				$parser = $this->parser;
 			}
 			$fn = function($data) use ($pagePath, $serializer, $parser) {
-				$page = $serializer->unserialize($pagePath, $data);
-				if($parser !== null) {
+				$page = $serializer->unserialize($data, ['slug' => trim($pagePath, '/')]);
+				if ($parser !== null) {
 					$page->content = $parser->parse($page->content);
 				}
 				return $page;

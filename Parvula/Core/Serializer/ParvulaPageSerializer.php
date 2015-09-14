@@ -3,12 +3,13 @@
 namespace Parvula\Core\Serializer;
 
 use Parvula\Core\Page;
+use Parvula\Core\Exception\PageException;
 
 /**
  * ParvulaPageSerializer class
  *
  * @package Parvula
- * @version 0.3.0
+ * @version 0.5.0
  * @since 0.2.0
  * @author Fabien Sa
  * @license MIT License
@@ -18,15 +19,18 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 	/**
 	 * Serialize page
 	 * @param Page $page
+	 * @throws PageException if $page does not have `title`
 	 * @return boolean
 	 */
 	public function serialize(Page $page) {
-		$header = PHP_EOL;
+		if(!isset($page->title)) {
+			throw new PageException('Page MUST have a `title` to be serialized');
+		}
 
-		// @TODO Error if no title ?
+		// Create the header
+		$header = PHP_EOL;
 		foreach ($page as $field => $value) {
 			if($field !== 'content') {
-				// Create header
 				if(isset($page->{$field})) {
 					if(is_array($value)) {
 						$field .= '[]';
@@ -37,33 +41,30 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 				}
 			}
 		}
-
 		$header .= PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
 
-		$content = $page->content;
-
-		return $header . $content;
+		return $header . $page->content;
 	}
 
 	/**
 	 * Unserialize data
 	 * @param string $data
+	 * @param array $options Default page field(s), must have the `slug` field
+	 * @throws InvalidArgumentException if $options does not have field `slug`
 	 * @return Page
 	 */
-	public function unserialize($filePath, $data = null) {
-		if($data === null) {
-			$data = $filePath;
-			$filePath = '';
+	public function unserialize($data, array $options = []) {
+		if (!isset($options['slug'])) {
+			throw new \InvalidArgumentException('$options MUST have the `slug` field');
 		}
 
-		$headerInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
+		$pageInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
 
-		$headerData = trim($headerInfos[0]);
-		preg_match_all("/(\w+(?:\[\])?)[\s:=]+(.+)/", $headerData, $headerMatches);
+		$headerStr = trim($pageInfos[0]);
+		preg_match_all("/(\w+(?:\[\])?)[\s:=]+(.+)/", $headerStr, $headerMatches);
 
-		$page = new Page();
+		$pageInfo = ['content' => $pageInfos[1]];
 
-		$pageInfo = [];
 		for ($i = 0; $i < count($headerMatches[1]); ++$i) {
 			$key = trim($headerMatches[1][$i]);
 			$key = strtolower($key);
@@ -74,12 +75,13 @@ class ParvulaPageSerializer implements PageSerializerInterface {
 			$pageInfo[$key] = $val;
 		}
 
-		$page = Page::pageFactory($pageInfo);
+		// Use the `slug` field from $options
+		unset($pageInfo['slug']);
 
-		$page->url = $filePath;
-		$page->content = $headerInfos[1];
+		// Append $options to $pageInfo
+		$pageInfo = $pageInfo + $options;
 
-		return $page;
+		return Page::pageFactory($pageInfo);
 	}
 
 }

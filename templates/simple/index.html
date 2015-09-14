@@ -7,13 +7,13 @@
 
 		<ul id="nav">
 		<?php foreach ($pages() as $page) : ?>
-			<li><?= HTML::anchor($page->title, $page->url) ?></li>
+			<li><?= HTML::anchor($page->title, $page->slug) ?></li>
 		<?php endforeach ?>
 		</ul>
 	</header>
 
 	<section id="main">
-		<article class="content">
+		<article class="content" fe-editable="<?= $self->slug ?>">
 			<?= $self->content ?>
 		</article>
 	</section>
