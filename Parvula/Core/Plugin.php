@@ -59,6 +59,10 @@ abstract class Plugin {
 	private function appendToElement($element, $html, $append) {
 		// @TODO a bit hacky, need to clean and find correctly the `</head>`
 
+		if(strlen($html) < 10) {
+			return false;
+		}
+
 		libxml_use_internal_errors(true); // html5 ok
 		$dom = new \DOMDocument();
 		$dom->loadHTML($html);
