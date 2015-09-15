@@ -8,7 +8,7 @@ use Parvula\Core\Exception\IOException;
  * Files System
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -22,6 +22,7 @@ class FilesSystem {
 
 	/**
 	 * Constructor
+	 *
 	 * @param string $prefixPath
 	 */
 	function __construct($prefixPath = '.') {
@@ -30,24 +31,27 @@ class FilesSystem {
 
 	/**
 	 * Check if file exists
+	 *
 	 * @param string $filename File name
 	 * @return boolean If file exists
 	 */
 	public function exists($filename) {
-		return is_file($this->prefixPath . $filename);
+		return file_exists($this->prefixPath . $filename);
 	}
 
 	/**
-	 * Check if directory exists
+	 * Check if it is a directory
+	 *
 	 * @param string $dirname Directory name
 	 * @return boolean If direcorty exists
 	 */
-	public function existsDir($dirname) {
+	public function isDir($dirname) {
 		return is_dir($this->prefixPath . $dirname);
 	}
 
 	/**
 	 * Read data from file
+	 *
 	 * @param string $filename File name
 	 * @param callable ($fn) Apply function to file data
 	 * @param boolean ($eval) Evaluate PHP
@@ -56,7 +60,7 @@ class FilesSystem {
 	 */
 	public function read($filename, $fn = null, $eval = false) {
 		if(!$this->exists($filename)) {
-			throw new IOException("File '$filename' not found", 1);
+			throw new IOException("File '$filename' does not exist.");
 		}
 
 		if($eval) {
@@ -76,21 +80,25 @@ class FilesSystem {
 
 	/**
 	 * Write data to file
+	 *
 	 * @param string $filename File name
 	 * @param mixed $data
 	 * @param callable ($fn) Apply function to data
-	 * @return boolean
+	 * @throws IOException if file is not writable
 	 */
 	public function write($filename, $data, $fn = null) {
 		if($fn !== null) {
 			$data = $fn($data);
 		}
 
-		return file_put_contents($this->prefixPath . $filename, $data);
+		if(false === @file_put_contents($this->prefixPath . $filename, $data)) {
+			throw new IOException("File '$filename' is not writable.");
+		}
 	}
 
 	/**
 	 * Delete file
+	 *
 	 * @param string $filename File to delete
 	 * @throws IOException If the file does not exists
 	 * @return boolean If filename is deleted
@@ -104,7 +112,18 @@ class FilesSystem {
 	}
 
 	/**
+	 * Check if file is writable
+	 *
+	 * @param string $filename File name
+	 * @return boolean If file is writable
+	 */
+	public function isWritable($filename) {
+		return is_writable($this->prefixPath . $filename);
+	}
+
+	/**
 	 * List files recursively in a directory
+	 *
 	 * @param string $directory Directory to list recursively
 	 * @param boolean $showHiddenFiles True to list hidden files
 	 * @param callable $fn Callback function for each item $fn($key, $val)
@@ -113,7 +132,7 @@ class FilesSystem {
 	public function getFilesList($dir = '', $showHiddenFiles = false, $fn = null) {
 		$fnName = __FUNCTION__;
 
-		if(!$this->existsDir($dir)) {
+		if(!$this->isDir($dir)) {
 			throw new IOException("Directory '$dir' not found", 1);
 		}
 
