@@ -6,6 +6,7 @@
 use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
+use Parvula\Core\PageManager;
 
 
 $med->trigger('router', [&$router]);
@@ -37,14 +38,15 @@ $router->any('*', function($req) use($config, $med) {
 
 	// Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
 
+	$pages = new PageManager;
 	$parvula = new Parvula;
-	$page = $parvula->getPage($pagename, true);
+	$page = $pages->get($pagename, true);
 	$med->trigger('Page', [&$page]);
 
 	// 404
 	if(false === $page) {
 		header(' ', true, 404); // Set header to 404
-		$page = $parvula->getPage(Config::errorPage());
+		$page = $parvula->get(Config::errorPage());
 		$med->trigger('404', [&$page]);
 
 		if(false === $page) {
@@ -62,8 +64,8 @@ $router->any('*', function($req) use($config, $med) {
 			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
 			'parvula' => $parvula,
 			'pages' =>
-				function($listHidden = false, $pagesPath = null) use($parvula) {
-					return $parvula->getPages($listHidden, $pagesPath);
+				function($listHidden = false, $pagesPath = null) use($pages) {
+					return $pages->getAll($listHidden, $pagesPath);
 				},
 			'plugin' =>
 				function($name) use($med) {

@@ -3,6 +3,7 @@
 use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
+use Parvula\Core\PageManager;
 
 $adminConf = require __DIR__ . '/conf.php';
 
@@ -38,8 +39,8 @@ if(isset($_POST, $_POST['password'])) {
 }
 
 if(true === isParvulaAdmin()) {
-	$parvula = new Parvula;
-	$pagesList = $parvula->listPages(true);
+	$pages = new PageManager;
+	$pagesList = $pages->index(true);
 	$view->assign('pagesList', $pagesList);
 
 	$view->assign('_page', 'admin');
