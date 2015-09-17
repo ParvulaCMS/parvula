@@ -58,11 +58,10 @@ $router->any('*', function($req) use($config, $med) {
 	try {
 		$view = new View($baseTemplate);
 
-		// Assign some variables
+		// Assign some useful variables
 		$view->assign([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
 			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
-			'parvula' => $parvula,
 			'pages' =>
 				function($listHidden = false, $pagesPath = null) use($pages) {
 					return $pages->getAll($listHidden, $pagesPath);
@@ -72,9 +71,7 @@ $router->any('*', function($req) use($config, $med) {
 					return $med->getPlugin($name);
 				},
 			'site' => $config,
-			'meta' => $page,
-			'self' => $page,
-			'content' => $page->content
+			'self' => $page
 		]);
 
 		if(isset($page->layout)) {
