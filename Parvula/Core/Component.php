@@ -3,7 +3,7 @@
 namespace Parvula\Core;
 
 /**
- * Component manager [@TODO]
+ * Component manager ALPHA [@TODO]
  *
  * @package Parvula
  * @version 0.5.0
@@ -21,7 +21,14 @@ class Component {
 	/**
 	 * @var array<string, boolean> If the package is loaded
 	 */
-    private static $isLoaded = [];
+	public static $isLoaded = [];
+
+	/**
+	 * @var Aliases. Keys can be /regex/ or simple string
+	 */
+	private static $aliases = [
+		'/(\w+?)-dist/' => '$1'
+	];
 
     private static $components = [];
 
@@ -49,8 +56,10 @@ class Component {
 
 		// $nameFolder = self::parseName($name);
 
-		if (!isset(static::$isLoaded[$packageName])) {
-			static::$isLoaded[$packageName] = true;
+		// Check if the package is already loaded
+		$packageNameAliased = static::resolveAliases($packageName);
+		if (!isset(static::$isLoaded[$packageNameAliased])) {
+			static::$isLoaded[$packageNameAliased] = true;
 
 			return './' . Parvula::getRelativeURIToRoot() . static::$basePath . $packageName . $path;
 		}
@@ -58,6 +67,11 @@ class Component {
 		return false;
 	}
 
+	/**
+	 * Check if the given package exists in the component folder
+	 *
+	 * @return boolean If the package folder exists
+	 */
 	public static function exists($packageName) {
 		return is_readable(static::$basePath . $packageName);
 	}
@@ -94,14 +108,32 @@ class Component {
 	}
 
 	/**
+	 * Check if there is an alias for a given package
+	 *
+	 * @param string $packageName The packageName to alias
+	 * @return string The aliased package name or original one if no alias found
+	 */
+	private static function resolveAliases($packageName) {
+		foreach (static::$aliases as $regex => $newPackageName) {
+			if ($packageName === $regex || $regex[0] === '/'
+			    && false !== ($newPackageName = preg_replace($regex, $newPackageName, $packageName))) {
+				return $newPackageName;
+			}
+		}
+
+		return $packageName;
+	}
+
+	/**
 	 * Read bower configuration (bower.json)
+	 *
 	 * @param string $packageName Package name
 	 * @return object|boolean The configuration or false if the package does not exists
 	 */
 	private static function readBowerConf($packageName) {
 		$filePath = static::$basePath . $packageName . '/bower.json';
 
-		if(!is_file($filePath)) {
+		if (!is_file($filePath)) {
 			return false;
 		}
 
@@ -120,7 +152,6 @@ class Component {
 		return $name;
 	}
 
-
 		// private static $bowerPackages = 'https://bower.herokuapp.com/packages/';
 
 		// Component::registerCDN('jquery', 'http://lala.com/jq.js');
@@ -130,6 +161,6 @@ class Component {
 	// public static function install($packageName, $source = true) {
 	// }
 
-    // unload
-    // loadMultiple
+	// unload
+	// loadMultiple
 }
