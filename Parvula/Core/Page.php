@@ -14,9 +14,26 @@ use Parvula\Core\Exception\PageException;
  * @license MIT License
  */
 class Page {
+
+	/**
+	 * @var string
+	 */
 	public $title;
+
+	/**
+	 * @var string
+	 */
 	public $slug;
+
+	/**
+	 * @var string
+	 */
 	public $content;
+
+	/**
+	 * @var string
+	 */
+	private $id;
 	// public $hidden;
 	// public $index;
 
@@ -39,7 +56,13 @@ class Page {
 			$page->$field = $value;
 		}
 
+		$page->id = hash('crc32b', trim($page->slug, ' /'));
+
 		return $page;
+	}
+
+	public function is(Page $page2) {
+		return $this->id === $page2->id;
 	}
 
 	/**
