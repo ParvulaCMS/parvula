@@ -2,17 +2,17 @@
 
 <body>
 
-	<header id="header">
+	<header class="header">
 		<h1><?= HTML::anchor($site->title, '.') ?></h1>
 
-		<ul id="nav">
+		<ul class="nav">
 		<?php foreach ($pages() as $page) : ?>
 			<li><?= HTML::anchor($page->title, $page->slug) ?></li>
 		<?php endforeach ?>
 		</ul>
 	</header>
 
-	<section id="main">
+	<section class="main">
 		<article class="content" fe-editable="<?= $self->slug ?>">
 			<?= $self->content ?>
 		</article>

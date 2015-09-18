@@ -9,7 +9,7 @@ html, body {
 }
 
 body {
-	font: 15px/1.4 "Helvetica Neue", Helvetica, arial, sans-serif;
+	font: 16px/1.4 "Helvetica Neue", Helvetica, arial, sans-serif;
 	color: #333;
 	background: #fff;
 	-webkit-font-smoothing: antialiased;
@@ -19,78 +19,69 @@ body {
 /*
  * Header
  */
-#header {
+.header {
 	background: rgb(60, 155, 220);
 	margin-bottom: 22px;
 	font-weight: normal;
-	color: #afe1da;
 	height: 150px;
 	line-height: 150px;
 	text-align: center;
 }
 
-#header h1, #header h1 a {
-	padding: 0;
+.header h1, .header h1 a {
+	padding: 0 10px;
 	margin: 0;
-	font-size: 28pt;
-	letter-spacing: 4px;
-	text-shadow: 0 -1px 1px #68a;
-	color: #fcfeff;
+	font-weight: 400;
+	font-size: 40pt;
+	letter-spacing: 6px;
+	color: #fbfbfb;
 }
 
-#header a {
+.header a {
 	color: #def;
 	text-decoration: none;
 }
 
 /* Navigation */
-#header #nav {
+.header .nav {
 	width: 100%;
 	background: rgb(60, 90, 110);
-	height: 40px;
+	height: 45px;
 }
 
-#header ul {
+.header ul {
 	margin: 0;
 	padding: 0;
-	line-height: 40px;
+	line-height: 45px;
 	clear: both;
 	list-style-type: none;
 }
 
-#header li a {
-	color: #f6fcff;
+.header li a:hover {
+	border-bottom: 4px solid rgb(60, 155, 220);
 }
 
-#header li a:hover {
-	color: #eee;
-	border-bottom: 3px solid rgba(60, 155, 220, .6);
-}
-
-#header ul li a {
+.header ul li a {
+	font-weight: bold;
+	color: #fbfbfb;
 	float: left;
-	padding: 0 18px;
-	margin: 0 2px;
+	padding: 0 22px;
 }
 
 /*
  * Main
  */
-#main {
-	padding: 15px;
-}
-
-#main {
-	padding: 15px 10%;
+.main {
+	padding: 20px 10%;
 	margin-bottom: 50px;
 }
 
-#main .content {
+.main .content {
 	text-align: justify;
 	color: #404448;
 }
 
-#main .content p {
+.main .content p {
 	color: #50585F;
 }
 
@@ -130,21 +121,20 @@ td, th {
 }
 
 code, pre {
-	border: 1px solid #eee;
 	border-radius: 3px;
-	background: #fafafa;
-	font-family: Consolas, "Liberation Mono", Courier, monospace, serif;
-	font-size: 90%;
+	background: #f8f8f9;
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	font-size: 85%;
 }
 
 code {
-	padding: 0 4px;
+	padding: 3px 5px;
 	margin: 0 2px;
 	white-space: nowrap;
 }
 
 pre {
-	padding: 6px;
+	padding: 12px;
 }
 
 blockquote {
