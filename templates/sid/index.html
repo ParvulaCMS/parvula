@@ -1,0 +1,30 @@
+<?= $view('header') ?>
+
+<body>
+
+	<header class="header cf" role="banner">
+		<?= HTML::anchor($site->title, '.', ['class="logo"']) ?>
+
+		<nav role="navigation">
+			<ul class="nav cf">
+			<?php foreach ($pages() as $page) : ?>
+				<li class="<?= $self->is($page) ? 'active' : '' ?>">
+					<?= HTML::anchor($page->title, $page->slug) ?>
+				</li>
+			<?php endforeach ?>
+			</ul>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<article class="content">
+			<?= $self->content ?>
+		</article>
+	</main>
+
+	<footer class="footer" role="contentinfo">
+		Made with <a href="https://github.com/BafS/parvula">Parvula</a></a>
+	</footer>
+
+</body>
+</html>
