@@ -39,14 +39,13 @@ $router->any('*', function($req) use($config, $med) {
 	// Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
 
 	$pages = new PageManager;
-	$parvula = new Parvula;
 	$page = $pages->get($pagename, true);
 	$med->trigger('Page', [&$page]);
 
 	// 404
 	if(false === $page) {
 		header(' ', true, 404); // Set header to 404
-		$page = $parvula->get(Config::errorPage());
+		$page = $pages->get(Config::errorPage());
 		$med->trigger('404', [&$page]);
 
 		if(false === $page) {
