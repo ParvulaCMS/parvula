@@ -268,9 +268,9 @@ class PageManager {
 	}
 
 	/**
-	 * Set Parvula pages serializer
+	 * Set Parvula pages parser
 	 *
-	 * @param Serializer\PageSerializerInterface $customSerializer
+	 * @param Parser\ContentParserInterface $customParser
 	 * @return void
 	 */
 	public function setParser(ContentParserInterface $customParser = null) {
