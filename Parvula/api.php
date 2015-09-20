@@ -74,7 +74,7 @@ if(true === isParvulaAdmin()) {
 	});
 
 	// Create page @TODO TEST
-	$router->post('/pages/::name', function($req) use ($pages, $defaultPageSerializer) {
+	$router->post('/pages/::name', function($req) use ($pages) {
 		if(!isset($req->params->name) || trim($req->params->name) === '') {
 			return false;
 		}
@@ -82,7 +82,7 @@ if(true === isParvulaAdmin()) {
 		$page = Page::pageFactory($req->body);
 
 		try {
-			$res = $pages->set($page, $req->params->name, new $defaultPageSerializer);
+			$res = $pages->set($page, $req->params->name);
 		} catch(IOException $e) {
 			return apiMessage(404, $e->getMessage());
 		}
@@ -91,7 +91,7 @@ if(true === isParvulaAdmin()) {
 	});
 
 	// Update page
-	$router->put('/pages/::name', function($req) use ($pages, $defaultPageSerializer) {
+	$router->put('/pages/::name', function($req) use ($pages) {
 		if(!isset($req->params->name) || trim($req->params->name) === '') {
 			return false;
 		}
