@@ -3,7 +3,6 @@
 // Routes (controller)
 // ----------------------------- //
 
-use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 use Parvula\Core\PageManager;
@@ -55,10 +54,11 @@ $router->any('*', function($req) use($config, $med) {
 	}
 
 	try {
-		$view = new View($baseTemplate);
+		// Create new Plates instance to render template html files
+		$templates = new League\Plates\Engine($baseTemplate, 'html');
 
 		// Assign some useful variables
-		$view->assign([
+		$templates->addData([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
 			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
 			'pages' =>
@@ -80,7 +80,7 @@ $router->any('*', function($req) use($config, $med) {
 		}
 
 		$med->trigger('BeforeRender', [&$layout]);
-		$out = $view($layout); // Show index template
+		$out = $templates->render($layout);
 		$med->trigger('AfterRender', [&$out]);
 		echo $out;
 
