@@ -1,6 +1,5 @@
 <?php
 
-use Parvula\Core\View;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 use Parvula\Core\PageManager;
@@ -11,11 +10,13 @@ if($adminConf['password'] === "_Your_Password_") {
 	die('You MUST change the default password in `' . __DIR__ . '/conf.php`.');
 }
 
-$view = new View(__DIR__ . '/view');
+$templates = new League\Plates\Engine(__DIR__ . '/view', 'html');
 
-$view->assign('baseUrl', Parvula::getRelativeURIToRoot());
-$view->assign('pluginUrl', Parvula::getRelativeURIToRoot() . $pluginPath);
-$view->assign('templateUrl', Parvula::getRelativeURIToRoot() . TMPL . Config::get('template'));
+$templates->addData([
+	'baseUrl' => Parvula::getRelativeURIToRoot(),
+	'pluginUrl' => Parvula::getRelativeURIToRoot() . $pluginPath,
+	'templateUrl' => Parvula::getRelativeURIToRoot() . TMPL . Config::get('template')
+]);
 
 // Check password
 if(isset($_POST, $_POST['password'])) {
@@ -34,18 +35,19 @@ if(isset($_POST, $_POST['password'])) {
 			true, 303);
 
 	} else {
-		$view->assign('notice', true);
+		$templates->addData('notice', true);
 	}
 }
 
 if(true === isParvulaAdmin()) {
 	$pages = new PageManager;
 	$pagesList = $pages->index(true);
-	$view->assign('pagesList', $pagesList);
-
-	$view->assign('_page', 'admin');
+	$templates->addData([
+		'pagesList' => $pagesList,
+		'_page' => 'admin'
+	]);
 } else {
-	$view->assign('_page', 'login');
+	$templates->addData(['_page' => 'login']);
 }
 
-echo $view('base');
+echo $templates->render('base');
