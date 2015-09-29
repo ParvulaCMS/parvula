@@ -19,7 +19,7 @@ body {
 	font: 18px/1.4 "Helvetica Neue", Helvetica, arial, sans-serif;
 	color: #333;
 	background: #fff;
-	max-width: 1000px;
+	max-width: 1200px;
 	margin: 0 auto;
 	padding: 12px;
 	-webkit-font-smoothing: antialiased;
@@ -174,7 +174,7 @@ hr {
 	border-bottom: 2px solid #ddd;
 	height: 0;
 	padding: 0;
-	margin: 25px 0;
+	margin: 30px 0;
 }
 
 /* Misc */
