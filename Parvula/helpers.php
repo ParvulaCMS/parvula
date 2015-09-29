@@ -95,11 +95,3 @@ function isParvulaAdmin() {
 		return false;
 	}
 }
-
-/**
- * Alias for HTML::sEcho
- * @return string
- */
-function sEcho() {
-	return call_user_func_array("HTML::sEcho", func_get_args());
-}
