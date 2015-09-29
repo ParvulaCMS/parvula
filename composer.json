@@ -1,6 +1,7 @@
 {
 	"name": "bafs/parvula",
 	"description": "Simple, Markdown and Fast CMS",
+	"type": "project",
 	"keywords": ["cms", "markdown"],
 	"license": "MIT",
 	"homepage": "https://github.com/BafS/parvula",
@@ -10,6 +11,11 @@
 			"email": "fabacrans@gmail.com"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/BafS/parvula/issues",
+		"source": "https://github.com/BafS/parvula"
+	},
+	"minimum-stability": "stable",
 	"require": {
 		"php": ">=5.4",
 		"league/plates": "3.*",
