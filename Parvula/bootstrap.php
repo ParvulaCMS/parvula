@@ -21,15 +21,19 @@ if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 // Parvula::redirectIfTrailingSlash(); //@FIXME
 
 require APP . 'helpers.php';
-
-// Use custom exception handler
-set_exception_handler('exceptionHandler');
+$container = require APP . 'services.php';
 
 // Populate Config wrapper
 Config::populate(require APP . 'config.php');
 
+$debug = (bool) Config::get('debug');
+
+if ($debug) {
+	$container->get('errorHandler');
+}
+
 // Display or not errors
-ini_set('display_errors', (bool) Config::get('debug'));
+ini_set('display_errors', $debug);
 
 // Load class aliases
 loadAliases(Config::get('aliases'));
