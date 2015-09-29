@@ -15,26 +15,33 @@ $defaultPageSerializer = Config::defaultPageSerializer();
 
 $pages = new PageManager(new $defaultPageSerializer);
 
-// @TODO
-function apiSerializer($data) {
-	return json_encode($data);
-}
-
 // Send API message @TODO Temp
-function apiMessage($responseCode = 200, $message = '') {
+function apiResponse($responseCode = 200, $data = null) {
+
+	if (is_array($responseCode)) {
+		$data = $responseCode;
+		$responseCode = true;
+	}
+
 	if($responseCode === true) {
 		$responseCode = 200;
 	} else if($responseCode == false) {
 		$responseCode = 400;
 	}
 
+	$res = [];
+	if($responseCode >= 300) {
+		$res['status'] = 'error';
+		$res['message'] = $data;
+	} else {
+		$res['status'] = 'success';
+		$res['data'] = $data;
+	}
+
 	header('Content-Type: application/json');
 	http_response_code($responseCode);
-	if($responseCode < 300) {
-		return '{"status": "ok", "message": "'.$message.'"}';
-	} else {
-		return '{"status": "error", "message": "'.$message.'"}';
-	}
+
+	return json_encode($res);
 }
 
 //
@@ -43,12 +50,12 @@ function apiMessage($responseCode = 200, $message = '') {
 
 // Page object (`?raw` to not parse the content)
 $router->get('/pages/::name', function($req) use ($pages) {
-	echo $pages->get($req->params->name, $req->query !== 'raw');
+	return apiResponse(true, $pages->get($req->params->name, $req->query !== 'raw'));
 });
 
 // Array<Page> of Pages
 $router->get('/pages', function($req) use ($pages) {
-	echo apiSerializer($pages->getAll());
+	return apiResponse(true, $pages->getAll());
 });
 });
 
@@ -59,7 +66,7 @@ if(true === isParvulaAdmin()) {
 
 	// List of pages. Array<string> of pages paths
 	$router->get('/pageslist', function($req) use ($pages) {
-		return apiSerializer($pages->listPages());
+		return apiResponse(true, $pages->listPages());
 	});
 
 	// Delete page
@@ -67,10 +74,10 @@ if(true === isParvulaAdmin()) {
 		try {
 			$res = $pages->delete($req->params->name);
 		} catch(\Exception $e) {
-			return apiMessage(404, $e->getMessage());
+			return apiResponse(404, $e->getMessage());
 		}
 
-		return apiMessage($res);
+		return apiResponse($res);
 	});
 
 	// Create page @TODO TEST
@@ -84,10 +91,10 @@ if(true === isParvulaAdmin()) {
 		try {
 			$res = $pages->set($page, $req->params->name);
 		} catch(IOException $e) {
-			return apiMessage(404, $e->getMessage());
+			return apiResponse(404, $e->getMessage());
 		}
 
-		return apiMessage(201);
+		return apiResponse(201);
 	});
 
 	// Update page
@@ -103,7 +110,7 @@ if(true === isParvulaAdmin()) {
 		}
 
 		$res = $pages->update($page, $req->params->name, new $defaultPageSerializer);
-		return apiMessage($res);
+		return apiResponse($res);
 	});
 
 	// Upload file
@@ -115,9 +122,9 @@ if(true === isParvulaAdmin()) {
 		// print_r($_FILES);
 
 		if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
-			return apiMessage(true, 'image was successfully uploaded');
+			return apiResponse(true, 'image was successfully uploaded');
 		} else {
-			return apiMessage(false);
+			return apiResponse(false);
 		}
 	});
 
@@ -166,14 +173,15 @@ if(true === isParvulaAdmin()) {
 		if($siteConf) {
 			return json_encode(['status' => 'ok', 'template' => $siteConf->template]);
 		} else {
-			return apiMessage(false, 'system error');
+			return apiResponse(false, 'system error');
 		}
 	});
 
 	// Logout
 	$router->any('/logout', function() {
-		session_destroy();
-		return apiMessage(session_unset());
+		$res = session_destroy();
+		session_unset();
+		return apiResponse($res);
 	});
 
 } else {
