@@ -6,14 +6,15 @@ use Parvula\Core\Page;
 use Parvula\Core\Router;
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
-use Parvula\Core\PageManager;
+use Parvula\Core\Model\Pages;
+use Parvula\Core\Response;
 use Parvula\Core\Exception\IOException;
 
 if(!defined('ROOT')) exit;
 
 $defaultPageSerializer = Config::defaultPageSerializer();
 
-$pages = new PageManager(new $defaultPageSerializer);
+$pages = new Pages(new $defaultPageSerializer);
 
 // Send API message @TODO Temp
 function apiResponse($responseCode = 200, $data = null) {
@@ -57,6 +58,45 @@ $router->get('/pages/::name', function($req) use ($pages) {
 $router->get('/pages', function($req) use ($pages) {
 	return apiResponse(true, $pages->getAll());
 });
+
+
+$router->post('/login', function($req) {
+	// print_r($req->body);
+	//YYYYMMDD
+
+	$username = $req->body['username'];
+	$password = $req->body['password'];
+
+	if($password === 'qwe') {
+		createASession();
+		echo apiResponse(true, 'login ok');
+		// echo '{"status": "ok", "message": "login ok"}';
+	} else {
+		echo apiResponse(false, 'wrong login/password');
+		// echo '{"status": "nok", "message": "wrong login/password'.$password.'"}';
+	}
+
+
+	//
+	// $contentHash = $req->body['hash'];
+	//
+	// $public = $req->body['public'];
+	//
+	// $content = hash_hmac('sha256', $username, $contentHash);
+	//
+	// $secureHash = hash_hmac('sha256', $content, $password);
+
+
+	// $publicHash  = $req->body['pub-hash'];
+    // $contentHash = $req->body['hash'];
+    // $privateHash  = 'qweqwe';
+    // $content     = $request->getBody();
+
+    // $hash = hash_hmac('sha256', $content, $privateHash);
+
+    // if ($hash == $contentHash){
+        // echo "match!\n";
+    // }
 });
 
 //
@@ -175,6 +215,23 @@ if(true === isParvulaAdmin()) {
 		} else {
 			return apiResponse(false, 'system error');
 		}
+	});
+
+	// @todo -> get available layout for template
+	// ...
+
+	// ANTHO change template
+	// @todo check if it exists
+	$router->post('/template', function($req) {
+
+		$tmpl = basename($req->body['template']);
+
+		$siteConf = Parvula::getUserConfig();
+		$siteConf->template = $tmpl;
+
+		file_put_contents(DATA . 'site.conf.json', json_encode($siteConf, JSON_PRETTY_PRINT));
+
+		return apiResponse(true, 'template changed');
 	});
 
 	// Logout
