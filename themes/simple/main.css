@@ -20,8 +20,7 @@ body {
  * Header
  */
 .header {
-	background: rgb(60, 155, 220);
-	margin-bottom: 22px;
+	margin-bottom: 28px;
 	font-weight: normal;
 	height: 150px;
 	line-height: 150px;
@@ -31,21 +30,20 @@ body {
 .header h1, .header h1 a {
 	padding: 0 10px;
 	margin: 0;
-	font-weight: 400;
+	font-weight: 200;
 	font-size: 40pt;
-	letter-spacing: 6px;
-	color: #fbfbfb;
+	letter-spacing: 8px;
 }
 
 .header a {
-	color: #def;
 	text-decoration: none;
 }
 
 /* Navigation */
 .header .nav {
 	width: 100%;
-	background: rgb(60, 90, 110);
+	border-bottom: 1px solid rgb(60, 155, 220);
+	border-top: 1px solid rgb(60, 155, 220);
 	height: 45px;
 }
 
@@ -58,14 +56,14 @@ body {
 }
 
 .header li a:hover {
-	border-bottom: 4px solid rgb(60, 155, 220);
+	margin-top: -2px;
+	border-top: 2px solid rgb(60, 155, 220);
+	border-bottom: 2px solid rgb(60, 155, 220);
 }
 
 .header ul li a {
-	font-weight: bold;
-	color: #fbfbfb;
 	float: left;
-	padding: 0 22px;
+	padding: 0 25px;
 }
 
 /*
@@ -77,6 +75,8 @@ body {
 }
 
 .main .content {
+	margin: 0 auto;
+	max-width: 1100px;
 	text-align: justify;
 	color: #404448;
 }
@@ -88,13 +88,17 @@ body {
 /*
  * Global
  */
+h1, h2, h3, h4 {
+	font-weight: normal;
+}
+
 h1 {
-	font-size: 25pt;
+	font-size: 26pt;
 	letter-spacing: 1px;
 }
 
 h2 {
-	font-size: 18pt;
+	font-size: 20pt;
 }
 
 a {
@@ -121,13 +125,13 @@ td, th {
 }
 
 code, pre {
-	border-radius: 3px;
 	background: #f8f8f9;
 	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 	font-size: 85%;
 }
 
 code {
+	border-radius: 3px;
 	padding: 3px 5px;
 	margin: 0 2px;
 	white-space: nowrap;
@@ -138,10 +142,9 @@ pre {
 }
 
 blockquote {
-	background: #f8f8f8;
-	border-left: 5px solid #ccc;
-	margin: 1em 5px;
-	padding: 1px 10px;
+	border-left: 4px solid #ddd;
+	margin: 1.5em 4px;
+	padding: 8px 20px;
 }
 
 hr {
@@ -149,5 +152,5 @@ hr {
 	border-bottom: 1px solid #e2e2e2;
 	height: 0;
 	padding: 0;
-	margin: 25px 0;
+	margin: 35px 0;
 }

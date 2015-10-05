@@ -224,10 +224,10 @@ if(true === isParvulaAdmin()) {
 	// @todo check if it exists
 	$router->post('/template', function($req) {
 
-		$tmpl = basename($req->body['template']);
+		$theme = basename($req->body['template']);
 
 		$siteConf = Parvula::getUserConfig();
-		$siteConf->template = $tmpl;
+		$siteConf->template = $theme;
 
 		file_put_contents(DATA . 'site.conf.json', json_encode($siteConf, JSON_PRETTY_PRINT));
 
