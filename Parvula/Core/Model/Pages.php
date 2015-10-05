@@ -1,9 +1,12 @@
 <?php
 
-namespace Parvula\Core;
+namespace Parvula\Core\Model;
 
+use Parvula\Core\Config;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
+use Parvula\Core\Parser\ContentParserInterface;
+use Parvula\Core\Serializer\PageSerializerInterface;
 
 /**
  * Page Manager
@@ -14,7 +17,7 @@ use Parvula\Core\Exception\IOException;
  * @author Fabien Sa
  * @license MIT License
  */
-class PageManager {
+class Pages {
 
 	/**
 	 * @var array<Page>
@@ -27,7 +30,7 @@ class PageManager {
 	private $fileExtention;
 
 	/**
-	 * @var Serializer\PageSerializerInterface
+	 * @var PageSerializerInterface
 	 */
 	private $serializer;
 
@@ -35,9 +38,9 @@ class PageManager {
 
 	/**
 	 * Constructor
-	 * @param Parvula\Core\Serializer\PageSerializerInterface $customSerializer (optional)
+	 * @param PageSerializerInterface $customSerializer (optional)
 	 */
-	function __construct(Serializer\PageSerializerInterface $customSerializer = null,
+	function __construct(PageSerializerInterface $customSerializer = null,
 		ContentParserInterface $customParser = null) {
 		$this->fileExtension =  '.' . Config::fileExtension();
 
@@ -51,7 +54,7 @@ class PageManager {
 	 * @param string $pageUID Page unique ID
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
-	 * @return Parvula\Core\Page Return the selected page
+	 * @return Page Return the selected page
 	 */
 	public function get($pageUID, $parseContent = true, $eval = false) {
 
@@ -255,10 +258,10 @@ class PageManager {
 	/**
 	 * Set Parvula pages serializer
 	 *
-	 * @param Serializer\PageSerializerInterface $customSerializer
+	 * @param PageSerializerInterface $customSerializer
 	 * @return void
 	 */
-	public function setSerializer(Serializer\PageSerializerInterface $customSerializer = null) {
+	public function setSerializer(PageSerializerInterface $customSerializer = null) {
 		if($customSerializer === null) {
 			$defaultSer = Config::defaultPageSerializer();
 			$customSerializer = new $defaultSer;
@@ -270,7 +273,7 @@ class PageManager {
 	/**
 	 * Set Parvula pages parser
 	 *
-	 * @param Parser\ContentParserInterface $customParser
+	 * @param ContentParserInterface $customParser
 	 * @return void
 	 */
 	public function setParser(ContentParserInterface $customParser = null) {
