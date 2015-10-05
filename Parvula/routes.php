@@ -5,8 +5,7 @@
 
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
-use Parvula\Core\PageManager;
-
+use Parvula\Core\Model\Pages;
 
 $med->trigger('router', [&$router]);
 $med->trigger('route', [$router->getMethod(), $router->getUri()]);
@@ -14,7 +13,7 @@ $med->trigger('route', [$router->getMethod(), $router->getUri()]);
 
 // Api namespace
 $router->space('/_api', function($router) {
-	return require APP . 'api.php';
+	return require APP . 'routes/api.php';
 });
 
 
@@ -30,14 +29,14 @@ $router->any('*', function($req) use($config, $med) {
 	}
 
 	// Check if template exists (must have index.html)
-	$baseTemplate = htmlspecialchars(TMPL . Config::get('template'));
+	$baseTemplate = htmlspecialchars(THEMES . Config::get('template'));
 	if(!is_readable($baseTemplate . '/index.html')) {
 		die("Error - Template `{$baseTemplate}` is not readable");
 	}
 
 	// Asset::setBasePath(Parvula::getRelativeURIToRoot() . $baseTemplate);
 
-	$pages = new PageManager;
+	$pages = new Pages;
 	$page = $pages->get($pagename, true);
 	$med->trigger('Page', [&$page]);
 
