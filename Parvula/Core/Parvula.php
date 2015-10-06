@@ -24,12 +24,13 @@ class Parvula {
 	public static function getURI() {
 		//TODO stock URI in field (same for relativeURI)
 		$scriptName = $_SERVER['SCRIPT_NAME'];
+		$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 		if(Config::get('URLRewriting')) {
 			$scriptName = dirname($scriptName);
 		}
 
-		return implode(explode($scriptName, $_SERVER['REQUEST_URI'], 2));
+		return implode(explode($scriptName, $uri, 2));
 	}
 
 	/**
