@@ -15,10 +15,11 @@ $router->any('*', function($req) use($config, $med) {
 		$pagename = Config::homePage();
 	}
 
-	// Check if template exists (must have index.html)
-	$baseTemplate = htmlspecialchars(THEMES . Config::get('template'));
-	if(!is_readable($baseTemplate . '/index.html')) {
-		die("Error - Template `{$baseTemplate}` is not readable");
+	// Check if theme exists (must have index.html)
+	$baseTheme = htmlspecialchars(THEMES . Config::get('theme'));
+
+	if(!is_readable($baseTheme . '/index.html')) {
+		die("Error - Theme `{$baseTheme}` is not readable");
 	}
 
 	$pages = new Pages;
@@ -38,13 +39,13 @@ $router->any('*', function($req) use($config, $med) {
 	}
 
 	try {
-		// Create new Plates instance to render template html files
-		$templates = new League\Plates\Engine($baseTemplate, 'html');
+		// Create new Plates instance to render theme html files
+		$templates = new League\Plates\Engine($baseTheme, 'html');
 
 		// Assign some useful variables
 		$templates->addData([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
-			'templateUrl' => Parvula::getRelativeURIToRoot() . $baseTemplate . '/',
+			'themeUrl' => Parvula::getRelativeURIToRoot() . $baseTheme . '/',
 			'pages' =>
 				function($listHidden = false, $pagesPath = null) use($pages) {
 					return $pages->getAll($listHidden, $pagesPath);

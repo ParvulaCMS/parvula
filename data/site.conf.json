@@ -1,6 +1,6 @@
 {
     "title": "Site title",
     "description": "My description",
-    "template": "simple",
+    "theme": "sid",
     "homePage": "home"
 }
