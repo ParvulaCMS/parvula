@@ -60,7 +60,7 @@ if(Config::get('URLRewriting') === 'auto') {
 }
 
 // Load routes
-$router = new Router(Parvula::getURI());
+$router = new Router();
 require 'routes.php';
-echo $router->run();
+echo $router->run(Parvula::getMethod(), Parvula::getURI());
 $med->trigger('End');

@@ -6,6 +6,7 @@ namespace Parvula\Core;
  * A quick, simple router
  *
  * @package Parvula
+ * @version 0.5.0
  * @since 0.3.0
  * @author Fabien Sa
  * @license MIT License
@@ -13,55 +14,33 @@ namespace Parvula\Core;
 class Router {
 
 	/**
-	 * @var \SplDoublyLinkedList
+	 * @var \SplDoublyLinkedList Routes
 	 */
 	private $routes;
 
 	/**
-	 * @var string
+	 * @var string URI
 	 */
 	private $uri;
 
 	/**
-	 * @var string
-	 */
-	private $path;
-
-	/**
-	 * @var string
-	 */
-	private $query;
-
-	/**
-	 * @var string
+	 * @var string Method
 	 */
 	private $method;
+
+	/**
+	 * @var string Prefix used for groups
+	 */
+	private $prefix;
 
 	/**
 	 * Constructor
 	 * @param string $uri (optional) If you want to override server URI
 	 * @param string $method (optional) If you want to override server method
 	 */
-	public function __construct($uri = null, $method = null) {
+	public function __construct() {
 		$this->routes = new \SplDoublyLinkedList;
 
-		if($uri === null) {
-			$uri = $_SERVER['SCRIPT_NAME'];
-		}
-		$this->uri = $uri;
-		$this->query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-
-		$queryLen = strlen($this->query);
-		if($queryLen > 0) {
-			++$queryLen;
-		}
-
-		$this->path = substr($uri, 0 , strlen($uri) - $queryLen);
-
-		if($method === null) {
-			$method = $_SERVER['REQUEST_METHOD'];
-		}
-		$this->method = $method;
 		$this->prefix = '';
 	}
 
@@ -87,7 +66,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function get($path, $callback) {
 		return $this->on('GET', $path, $callback);
 	}
 
@@ -97,7 +75,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function post($path, $callback) {
 		return $this->on('POST', $path, $callback);
 	}
 
@@ -107,7 +84,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function put($path, $callback) {
 		return $this->on('PUT', $path, $callback);
 	}
 
@@ -117,7 +93,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function delete($path, $callback) {
 		return $this->on('DELETE', $path, $callback);
 	}
 
@@ -128,7 +103,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function any($path, $callback) {
 		return $this->on('*', $path, $callback);
 	}
 
@@ -139,7 +113,6 @@ class Router {
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function on($method, $path, $callback) {
 		$this->routes->push([
 			"method" => $method,
 			"path" => $this->prefix . $path,
@@ -150,12 +123,10 @@ class Router {
 	}
 
 	/**
-	 * Spacename
 	 * @param string $prefix
 	 * @param function $callback
 	 * @return Router Self
 	 */
-	public function space($prefix, $callback) {
 		$that = clone $this;
 		$that->prefix = $prefix;
 		$callback($that);
@@ -167,7 +138,6 @@ class Router {
 	 * Run the router
 	 * @return mixed
 	 */
-	public function run() {
 		$this->routes->rewind();
 		return $this->dispatch();
 	}
@@ -187,13 +157,11 @@ class Router {
 				$regex = $this->normalizeRegex($route['path']);
 
 				// if path is OK
-				if(preg_match("@^{$regex}@", $this->path, $matches)) {
 					$callback = $route['callback'];
 
 					$req = new \ArrayObject;
 					$req->params = (object)$matches;
 					$req->uri = $this->uri;
-					$req->path = $this->path;
 					$req->query = $this->query;
 
 					if($this->method !== 'GET') {
@@ -203,11 +171,9 @@ class Router {
 						$req->body = $data;
 					}
 
-
 					$that = $this;
 					$next = function() use ($that) {
 						$that->routes->next();
-						$that->dispatch();
 					};
 
 					return $callback($req, $next);

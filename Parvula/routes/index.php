@@ -6,9 +6,9 @@ use Parvula\Core\Model\Pages;
 
 // Front - Pages
 $router->any('*', function($req) use($config, $med) {
-	$med->trigger('path', [$req->path]);
+	$med->trigger('uri', [$req->uri]);
 
-	$pagename = rtrim($req->path, '/');
+	$pagename = rtrim($req->uri, '/');
 	$pagename = urldecode($pagename);
 
 	if($pagename === '') {
