@@ -3,10 +3,6 @@
 // Routes (controller)
 // ----------------------------- //
 
-use Parvula\Core\Config;
-use Parvula\Core\Parvula;
-use Parvula\Core\Model\Pages;
-
 $med->trigger('router', [&$router]);
 $med->trigger('route', [$router->getMethod(), $router->getUri()]);
 

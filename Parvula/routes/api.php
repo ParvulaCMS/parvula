@@ -3,11 +3,7 @@
 namespace Parvula;
 
 use Parvula\Core\Page;
-use Parvula\Core\Router;
-use Parvula\Core\Config;
-use Parvula\Core\Parvula;
 use Parvula\Core\Model\Pages;
-use Parvula\Core\Response;
 use Parvula\Core\Exception\IOException;
 
 if(!defined('ROOT')) exit;
