@@ -52,7 +52,7 @@ $router->any('*', function($req) use($config, $med) {
 			'themeUrl' => Parvula::getRelativeURIToRoot() . $baseTheme . '/',
 			'pages' =>
 				function($listHidden = false, $pagesPath = null) use($pages) {
-					return $pages->getAll($listHidden, $pagesPath);
+					return $pages->all($pagesPath)->visible()->order(SORT_ASC)->toArray();
 				},
 			'plugin' =>
 				function($name) use($med) {

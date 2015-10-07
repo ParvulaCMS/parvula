@@ -5,7 +5,7 @@ namespace Parvula\Core;
 use Parvula\Core\Exception\PageException;
 
 /**
- * Page type
+ * This class represents a Page
  *
  * @package Parvula
  * @version 0.5.0

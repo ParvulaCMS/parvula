@@ -50,7 +50,7 @@ $router->get('/pages/::name', function($req) use ($pages) {
 
 // Array<Page> of Pages
 $router->get('/pages', function($req) use ($pages) {
-	return apiResponse(true, $pages->getAll());
+	return apiResponse(true, $pages->all()->order(SORT_ASC, 'slug')->toArray());
 });
 
 
