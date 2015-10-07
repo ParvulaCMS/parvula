@@ -1,6 +1,7 @@
 <?php
 
-use Parvula\Core\Config;
+// use Parvula\Core\Config;
+use Parvula\Core\Model\Themes;
 use Parvula\Core\Parvula;
 use Parvula\Core\Model\Pages;
 
@@ -12,24 +13,27 @@ $router->any('*', function($req) use($config, $med) {
 	$pagename = urldecode($pagename);
 
 	if($pagename === '') {
-		$pagename = Config::homePage();
+		$pagename = $config->get('homePage');
 	}
 
+	$themes = new Themes(THEMES);
+	$themes->read($config->get('theme'));
+
 	// Check if theme exists (must have index.html)
-	$baseTheme = htmlspecialchars(THEMES . Config::get('theme'));
+	$baseTheme = htmlspecialchars(THEMES . $config->get('theme'));
 
 	if(!is_readable($baseTheme . '/index.html')) {
 		die("Error - Theme `{$baseTheme}` is not readable");
 	}
 
-	$pages = new Pages;
+	$pages = new Pages($config);
 	$page = $pages->get($pagename, true);
-	$med->trigger('Page', [&$page]);
+	$med->trigger('page', [&$page]);
 
 	// 404
 	if(false === $page) {
-		header(' ', true, 404); // Set header to 404
-		$page = $pages->get(Config::errorPage());
+		// header(' ', true, 404); // Set header to 404
+		$page = $pages->get($config->get('errorPage'));
 		$med->trigger('404', [&$page]);
 
 		if(false === $page) {

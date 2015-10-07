@@ -18,15 +18,17 @@ if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 	Parvula::registerAutoloader();
 }
 
+$parvula = Parvula::getInstance();
+
 // Parvula::redirectIfTrailingSlash(); //@FIXME
 
 require APP . 'helpers.php';
 $container = require APP . 'services.php';
 
 // Populate Config wrapper
-Config::populate(require APP . 'config.php');
+$config = new Config(require APP . 'config.php');
 
-$debug = (bool) Config::get('debug');
+$debug = (bool) $config->get('debug', false);
 
 if ($debug) {
 	$container->get('errorHandler');
@@ -36,26 +38,26 @@ if ($debug) {
 ini_set('display_errors', $debug);
 
 // Load class aliases
-loadAliases(Config::get('aliases'));
+loadAliases($config->get('aliases'));
 
 // Load user config
 $config = Parvula::getUserConfig();
 
 // Append user config to Config wrapper (override if exists)
-Config::append((array) $config);
+$config->append((array) $parvula->getUserConfig());
 
 // Load plugins
 $med = new PluginMediator;
-$med->attach(getPluginList(Config::get('disabledPlugins')));
+$med->attach(getPluginList($config->get('disabledPlugins')));
 $med->trigger('Load');
 
 // Auto set URLRewriting Config
-if(Config::get('URLRewriting') === 'auto') {
+if($config->get('URLRewriting') === 'auto') {
 	$scriptName = $_SERVER['SCRIPT_NAME'];
 	if(substr($_SERVER['REQUEST_URI'], 0, strlen($scriptName)) === $scriptName) {
-		Config::set('URLRewriting', false);
+		$config->set('URLRewriting', false);
 	} else {
-		Config::set('URLRewriting', true);
+		$config->set('URLRewriting', true);
 	}
 }
 

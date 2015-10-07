@@ -12,9 +12,7 @@ use Parvula\Core\Exception\IOException;
 
 if(!defined('ROOT')) exit;
 
-$defaultPageSerializer = Config::defaultPageSerializer();
-
-$pages = new Pages(new $defaultPageSerializer);
+$pages = new Pages($config);
 
 // Send API message @TODO Temp
 function apiResponse($responseCode = 200, $data = null) {

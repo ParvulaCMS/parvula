@@ -36,16 +36,21 @@ class Pages {
 
 	private $parser;
 
+	private $config;
+
 	/**
 	 * Constructor
-	 * @param PageSerializerInterface $customSerializer (optional)
+	 * @param Config $config
 	 */
-	function __construct(PageSerializerInterface $customSerializer = null,
-		ContentParserInterface $customParser = null) {
-		$this->fileExtension =  '.' . Config::fileExtension();
+	 function __construct(\Parvula\Core\Config $config) {
+		$this->config = $config;
+		$this->fileExtension =  '.' . $config->get('fileExtension');
 
-		$this->setSerializer($customSerializer);
-		$this->setParser($customParser);
+		$pageSerializer = $config->get('pageSerializer');
+		$this->setSerializer(new $pageSerializer);
+
+		$contentParser = $config->get('contentParser');
+		$this->setParser(new $contentParser);
 	}
 
 	/**
@@ -178,8 +183,8 @@ class Pages {
 		}
 
 		// Sort pages
-		$sortType = Config::typeOfSort();
-		$sortField = Config::sortField();
+		$sortType = $this->config->get('typeOfSort');
+		$sortField = $this->config->get('sortField');
 
 		if (!is_integer($sortType)) {
 			$sortType = SORT_ASC;
@@ -201,10 +206,10 @@ class Pages {
 	private function arraySortByField(array &$arr, $field, $sortType = SORT_ASC) {
 		$sortFields = [];
 		foreach ($arr as $key => $obj) {
+			$sortFields[$key] = [];
+
 			if(isset($obj->$field)) {
 				$sortFields[$key] = $obj->$field;
-			} else {
-				$sortFields[$key] = [];
 			}
 		}
 
@@ -233,16 +238,15 @@ class Pages {
 			{
 				// If files have the right extension and file not secret
 				// (does not begin with '_')
-				$ext = '.' . Config::fileExtension();
-				$len = - strlen($ext);
-				if(($listHidden || $file[0] !== '_') && substr($file, $len) === $ext) {
+				$len = - strlen($that->fileExtension);
+				if(($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
 					if($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
 					// If directory is not secret (or root)
 					if($listHidden || $dir === '' || $dir[0] !== '_') {
-						$pagePath = $dir . basename($file, $ext);
+						$pagePath = $dir . basename($file, $that->fileExtension);
 						$pages[] = $pagePath;
 					}
 
@@ -261,12 +265,7 @@ class Pages {
 	 * @param PageSerializerInterface $customSerializer
 	 * @return void
 	 */
-	public function setSerializer(PageSerializerInterface $customSerializer = null) {
-		if($customSerializer === null) {
-			$defaultSer = Config::defaultPageSerializer();
-			$customSerializer = new $defaultSer;
-		}
-
+	public function setSerializer(PageSerializerInterface $customSerializer) {
 		$this->serializer = $customSerializer;
 	}
 
@@ -277,13 +276,6 @@ class Pages {
 	 * @return void
 	 */
 	public function setParser(ContentParserInterface $customParser = null) {
-		if($customParser === null) {
-			$defaultParser = Config::defaultContentParser();
-			if($defaultParser !== null) {
-				$customParser = new $defaultParser;
-			}
-		}
-
 		$this->parser = $customParser;
 	}
 
