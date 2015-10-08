@@ -210,30 +210,38 @@ class Pages {
 	/**
 	 * Show visible pages
 	 *
-	 * @return Page
+	 * @return Pages
 	 */
 	public function visible() {
 		return $this->filter(function($page) {
-			return !$page->hidden;
+			return !isset($page->hidden) || $page->hidden === 'false';
 		});
 	}
 
 	/**
 	 * Show hidden pages
 	 *
-	 * @return Page
+	 * @return Pages
 	 */
 	public function hidden() {
 		return $this->filter(function($page) {
-			return isset($page->hidden) && $page->hidden != flase;
+			return isset($page->hidden) && $page->hidden !== 'false';
 		});
 	}
 
 	/**
 	 * Filter pages
 	 *
+	 * Exemple:
+	 * ```
+	 * // Will just keep pages with a title < 10 characters
+	 * $pages->filter(function ($page) {
+	 *     return strlen($page->title) < 10;
+	 * })
+	 * ```
+	 *
 	 * @param callable $fn
-	 * @return Page
+	 * @return Pages A clone of current object with filtered pages
 	 */
 	public function filter(callable $fn) {
 		$that = clone $this;
