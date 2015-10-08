@@ -57,12 +57,29 @@ class Config {
 	 *
 	 * @param mixed $key
 	 * @param mixed $value
-	 * @return
 	 */
 	public function set($key, $value) {
 		if (!empty($key)) {
 			$this->config[$key] = $value;
 		}
+	}
+
+	/**
+	 * Get the configuration as an array
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		return $this->config;
+	}
+
+	/**
+	 * Get the configuration as an object
+	 *
+	 * @return object
+	 */
+	public function toObject() {
+		return (object) $this->config;
 	}
 
 }
