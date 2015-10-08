@@ -163,28 +163,27 @@ class Pages {
 	}
 
 	/**
-	 * Get all pages
+	 * Fetch all pages
+	 * This method will read each pages
+	 * If you want an array of Page use `toArray()` method
+	 * Exemple: `$pages->all()->toArray();`
 	 *
-	 * @param boolean ($listHidden) List hidden files & folders
-	 * @param string ($pagesPath) Pages path
+	 * @param string ($path) Pages in a specific sub path
 	 * @return Pages
 	 */
-	public function all($pagesPath = null) {
+	public function all($path = null) {
 		$that = clone $this;
+		$that->pages = [];
 
-		$pages = [];
-
-		if($pagesPath !== null) {
-			$pagesPath = PAGES . $pagesPath;
+		if($path !== null) {
+			$path = PAGES . $path;
 		}
 
-		$pagesArr = $this->index(true, $pagesPath);
+		$pagesIndex = $this->index(true, $path);
 
-		foreach ($pagesArr as $pageUID) {
-			$pages[] = $this->get($pageUID);
+		foreach ($pagesIndex as $pageUID) {
+			$that->pages[] = $this->get($pageUID);
 		}
-
-		$that->pages = $pages;
 
 		return $that;
 	}
