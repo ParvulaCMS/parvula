@@ -3,15 +3,16 @@
 namespace Plugin\Admin;
 
 use Parvula\Core\Plugin;
+use Parvula\Core\Config;
 
-class Admin extends Plugin {
+class Admin extends Plugin
+{
 	function onRouter(&$router) {
 
-		$conf = require 'conf.php';
-		$pluginPath = $this->getPluginPath();
+		$configAdmin = new Config(require 'config.php');
 
-		$router->any($conf['adminRoute'], function() use ($pluginPath) {
-			require 'main.php';
+		$router->any($configAdmin->get('adminRoute'), function() use ($configAdmin) {
+			require_once 'main.php';
 		});
 	}
 }

@@ -2,11 +2,9 @@
 
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
-use Parvula\Core\PageManager;
+use Parvula\Core\Model\Pages;
 
-$adminConf = require __DIR__ . '/conf.php';
-
-if($adminConf['password'] === "_Your_Password_") {
+if($configAdmin->get('password') === "_Your_Password_") {
 	die('You MUST change the default password in `' . __DIR__ . '/conf.php`.');
 }
 
@@ -14,8 +12,8 @@ $templates = new League\Plates\Engine(__DIR__ . '/view', 'html');
 
 $templates->addData([
 	'baseUrl' => Parvula::getRelativeURIToRoot(),
-	'pluginUrl' => Parvula::getRelativeURIToRoot() . $pluginPath,
-	'templateUrl' => Parvula::getRelativeURIToRoot() . TMPL . Config::get('template')
+	'pluginUrl' => Parvula::getRelativeURIToRoot() . $this->getPluginPath(),
+	'templateUrl' => Parvula::getRelativeURIToRoot() . THEMES . $this->app['config']->get('theme')
 ]);
 
 // Check password
@@ -40,7 +38,7 @@ if(isset($_POST, $_POST['password'])) {
 }
 
 if(true === isParvulaAdmin()) {
-	$pages = new PageManager;
+	$pages = $this->app['pages'];
 	$pagesList = $pages->index(true);
 	$templates->addData([
 		'pagesList' => $pagesList,
