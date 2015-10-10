@@ -31,9 +31,21 @@ abstract class Plugin {
 	 */
 	protected $pluginUri;
 
+	/**
+	 * @var Parvula Application to avoid global variables or static class
+	 */
+	protected $app;
+
 	function __construct() {
 		$this->pluginPath = $this->getPluginPath();
 		$this->pluginUri = $this->getPluginUri();
+	}
+
+	/**
+	 * Bootstrap plugin to pass the $app
+	 */
+	public function onBootstrap(Parvula $app) {
+		$this->app = $app;
 	}
 
 	/**

@@ -55,7 +55,7 @@ $med->trigger('load');
 $router = new Router();
 require 'routes.php';
 echo $router->run(Parvula::getMethod(), Parvula::getURI());
-$med->trigger('End');
+$med->trigger('end');
 
 
 
