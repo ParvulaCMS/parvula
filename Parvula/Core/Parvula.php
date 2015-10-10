@@ -14,7 +14,10 @@ use Parvula\Core\Exception\IOException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Parvula {
+class Parvula extends Container
+{
+
+	private static $URL_REWRITING = true;
 
 	/**
 	 * Get current URI (without /index.php)
@@ -26,7 +29,7 @@ class Parvula {
 		$scriptName = $_SERVER['SCRIPT_NAME'];
 		$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-		if(Config::get('URLRewriting')) {
+		if(static::$URL_REWRITING) {
 			$scriptName = dirname($scriptName);
 		}
 
@@ -41,7 +44,6 @@ class Parvula {
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::getURI();
 
-		//TODO use Router
 		$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 		$queryLen = strlen($query);
 		if($queryLen > 0) {
@@ -53,7 +55,7 @@ class Parvula {
 		$slashNb = substr_count($postUrl, '/');
 
 		// Add a '../' to URL if there is not URL rewriting
-		if(!Config::get('URLRewriting')) {
+		if(!static::$URL_REWRITING) {
 			++$slashNb;
 		}
 
@@ -70,7 +72,6 @@ class Parvula {
 		if($lastChar === '/') {
 			header('Location: ../' . $newUrl, true, 303);
 		}
-
 		// echo $postUrl;
 	}
 
@@ -88,9 +89,10 @@ class Parvula {
 	 *
 	 * @return array
 	 */
-	public static function getUserConfig() {
+	public function getUserConfig() {
 		try {
-			$configRaw = file_get_contents(DATA . Config::get('userConfig'));
+			$configRaw = file_get_contents(DATA . 'site.conf.json');
+			// $configRaw = file_get_contents(DATA . Config::get('userConfig'));
 			$config = json_decode($configRaw);
 		} catch(IOException $e) {
 			exceptionHandler($e);
@@ -129,5 +131,4 @@ class Parvula {
 	public static function registerAutoloader() {
 		spl_autoload_register(__NAMESPACE__ . "\\Parvula::autoload");
 	}
-
 }

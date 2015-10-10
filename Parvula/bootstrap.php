@@ -4,7 +4,6 @@
 // ----------------------------- //
 
 use Parvula\Core\Router;
-use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 use Parvula\Core\PluginMediator;
 
@@ -18,20 +17,22 @@ if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
 	Parvula::registerAutoloader();
 }
 
-$parvula = Parvula::getInstance();
+$app = new Parvula;
 
 // Parvula::redirectIfTrailingSlash(); //@FIXME
 
 require APP . 'helpers.php';
-$container = require APP . 'services.php';
 
-// Populate Config wrapper
-$config = new Config(require APP . 'config.php');
+// Register services
+require APP . 'services.php';
+
+$config = $app['config'];
 
 $debug = (bool) $config->get('debug', false);
 
 if ($debug) {
-	$container->get('errorHandler');
+	error_reporting(E_ALL);
+	$app->get('errorHandler');
 }
 
 // Display or not errors
@@ -41,25 +42,13 @@ ini_set('display_errors', $debug);
 loadAliases($config->get('aliases'));
 
 // Load user config
-$config = Parvula::getUserConfig();
-
 // Append user config to Config wrapper (override if exists)
-$config->append((array) $parvula->getUserConfig());
+$config->append((array) $app->getUserConfig());
 
 // Load plugins
 $med = new PluginMediator;
 $med->attach(getPluginList($config->get('disabledPlugins')));
 $med->trigger('Load');
-
-// Auto set URLRewriting Config
-if($config->get('URLRewriting') === 'auto') {
-	$scriptName = $_SERVER['SCRIPT_NAME'];
-	if(substr($_SERVER['REQUEST_URI'], 0, strlen($scriptName)) === $scriptName) {
-		$config->set('URLRewriting', false);
-	} else {
-		$config->set('URLRewriting', true);
-	}
-}
 
 // Load routes
 $router = new Router();

@@ -1,8 +1,8 @@
 <?php
 
-$container = new League\Container\Container;
+// Register services
 
-$container->add('errorHandler', function() {
+$app->add('errorHandler', function() {
 	if (class_exists('\\Whoops\\Run')) {
 		$whoops = new Whoops\Run();
 		$whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
@@ -17,4 +17,7 @@ $container->add('errorHandler', function() {
 	}
 });
 
-return $container;
+$app->share('config', function() {
+	// Populate Config wrapper
+	return new Parvula\Core\Config(require APP . 'config.php');
+});
