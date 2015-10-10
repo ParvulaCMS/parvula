@@ -8,29 +8,30 @@ use Parvula\Core\Exception\BadObjectCallException;
  * Plugin Mediator class to handle plugins
  *
  * @package Parvula
- * @version 0.4.0
+ * @version 0.5.0
  * @since 0.4.0
  * @author Fabien Sa
  * @license MIT License
  */
-class PluginMediator {
-
+class PluginMediator
+{
 	/**
-	 * Plugins container
+	 * @var array Plugins container
 	 */
 	protected $plugins = [];
 
 	/**
 	 * Attach new plugins
+	 *
 	 * @param array $plugins
+	 * @throws BadObjectCallException
 	 * @return
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {
 			if(is_string($plugin)) {
 				if(!class_exists($plugin)) {
-					throw new BadObjectCallException(
-						'Plugin class \''.$plugin.'\' not found');
+					throw new BadObjectCallException('Plugin class \''.$plugin.'\' not found');
 				}
 				$plugin = new $plugin;
 			}
@@ -48,12 +49,12 @@ class PluginMediator {
 
 	/**
 	 * Trigger an event
+	 *
 	 * @param string $event Event name
 	 * @param array ($args) Arguments
-	 * @return
 	 */
 	public function trigger($event, array $args = []) {
-		$event = 'on' . $event;
+		$event = 'on' . ucfirst($event);
 		foreach ($this->plugins as $plugin) {
 			if(method_exists($plugin, $event)) {
 				$this->callFunctionArray($plugin, $event, $args);
@@ -61,16 +62,22 @@ class PluginMediator {
 		}
 	}
 
+	/**
+	 * Get specific plugin
+	 *
+	 * @param string $className
+	 * @return Plugin Specific plugin
+	 */
 	public function &getPlugin($className) {
 		return $this->plugins[$className];
 	}
 
 	/**
 	 * Call function (alias for call_user_func_array)
+	 *
 	 * @param Object $obj Object
-	 * @param Function $fun Function
+	 * @param callable|string $fun Function
 	 * @param array $args Arguments
-	 * @return
 	 */
 	private function callFunctionArray($obj, $fun, array $args) {
 		switch(count($args)) {

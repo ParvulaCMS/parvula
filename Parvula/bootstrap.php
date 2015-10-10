@@ -48,10 +48,16 @@ $config->append((array) $app->getUserConfig());
 // Load plugins
 $med = new PluginMediator;
 $med->attach(getPluginList($config->get('disabledPlugins')));
-$med->trigger('Load');
+$med->trigger('bootstrap', [$app]);
+$med->trigger('load');
 
 // Load routes
 $router = new Router();
 require 'routes.php';
 echo $router->run(Parvula::getMethod(), Parvula::getURI());
 $med->trigger('End');
+
+
+
+
+//
