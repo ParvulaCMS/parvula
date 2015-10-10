@@ -21,3 +21,12 @@ $app->share('config', function() {
 	// Populate Config wrapper
 	return new Parvula\Core\Config(require APP . 'config.php');
 });
+
+$app->add('pages', function() use ($app) {
+	$fileExtension =  '.' . $app['config']->get('fileExtension');
+	$pageSerializer = $app['config']->get('pageSerializer');
+	$contentParser = $app['config']->get('contentParser');
+
+	return new Parvula\Core\Model\PagesFlatFiles(
+		new $contentParser, new $pageSerializer, $fileExtension);
+});

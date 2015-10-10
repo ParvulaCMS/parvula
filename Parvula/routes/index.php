@@ -3,10 +3,10 @@
 // use Parvula\Core\Config;
 use Parvula\Core\Model\Themes;
 use Parvula\Core\Parvula;
-use Parvula\Core\Model\Pages;
+use Parvula\Core\Model\PagesFlatFiles;
 
 // Front - Pages
-$router->any('*', function($req) use($config, $med) {
+$router->any('*', function($req) use($app, $config, $med) {
 	$med->trigger('uri', [$req->uri]);
 
 	$pagename = rtrim($req->uri, '/');
@@ -26,7 +26,8 @@ $router->any('*', function($req) use($config, $med) {
 		die("Error - Theme `{$baseTheme}` is not readable");
 	}
 
-	$pages = new Pages($config);
+	$pages = $app['pages'];
+
 	$page = $pages->get($pagename, true);
 	$med->trigger('page', [&$page]);
 
@@ -58,7 +59,7 @@ $router->any('*', function($req) use($config, $med) {
 				function($name) use($med) {
 					return $med->getPlugin($name);
 				},
-			'site' => $config,
+			'site' => $config->toObject(),
 			'self' => $page
 		]);
 

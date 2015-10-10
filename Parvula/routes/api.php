@@ -3,12 +3,12 @@
 namespace Parvula;
 
 use Parvula\Core\Page;
-use Parvula\Core\Model\Pages;
+use Parvula\Core\Model\PagesFlatFiles;
 use Parvula\Core\Exception\IOException;
 
 if(!defined('ROOT')) exit;
 
-$pages = new Pages($config);
+$pages = $app['pages'];
 
 // Send API message @TODO Temp
 function apiResponse($responseCode = 200, $data = null) {

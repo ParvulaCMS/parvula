@@ -2,11 +2,7 @@
 
 namespace Parvula\Core\Model;
 
-use Parvula\Core\Config;
-use Parvula\Core\FilesSystem as Files;
-use Parvula\Core\Exception\IOException;
 use Parvula\Core\Parser\ContentParserInterface;
-use Parvula\Core\Serializer\PageSerializerInterface;
 
 /**
  * Page Manager
@@ -17,40 +13,24 @@ use Parvula\Core\Serializer\PageSerializerInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-class Pages {
-
+abstract class Pages
+{
 	/**
 	 * @var array<Page>
 	 */
-	private $pages;
+	protected $pages;
 
 	/**
-	 * @var string
+	 * @var ContentParserInterface
 	 */
-	private $fileExtention;
-
-	/**
-	 * @var PageSerializerInterface
-	 */
-	private $serializer;
-
-	private $parser;
-
-	private $config;
+	protected $parser;
 
 	/**
 	 * Constructor
 	 * @param Config $config
 	 */
-	 function __construct(\Parvula\Core\Config $config) {
-		$this->config = $config;
-		$this->fileExtension =  '.' . $config->get('fileExtension');
-
-		$pageSerializer = $config->get('pageSerializer');
-		$this->setSerializer(new $pageSerializer);
-
-		$contentParser = $config->get('contentParser');
-		$this->setParser(new $contentParser);
+	 function __construct(ContentParserInterface $contentParser = null) {
+		$this->setParser($contentParser);
 	}
 
 	/**
@@ -61,44 +41,7 @@ class Pages {
 	 * @throws IOException If the page does not exists
 	 * @return Page Return the selected page
 	 */
-	public function get($pageUID, $parseContent = true, $eval = false) {
-
-		// If page was already loaded, return page
-		if(isset($this->pages[$pageUID])) {
-			return $this->pages[$pageUID];
-		}
-
-		$pageFullPath = $pageUID . $this->fileExtension;
-
-		try {
-			$fs = new Files(PAGES);
-
-			if (!$fs->exists($pageFullPath)) {
-				return false;
-			}
-
-			// Anonymous function to use serializer engine
-			$serializer = $this->serializer;
-			if ($parseContent) {
-				$parser = $this->parser;
-			}
-			$fn = function($data) use ($pageUID, $serializer, $parser) {
-				$page = $serializer->unserialize($data, ['slug' => trim($pageUID, '/')]);
-				if ($parser !== null) {
-					$page->content = $parser->parse($page->content);
-				}
-				return $page;
-			};
-
-			$page = $fs->read($pageFullPath, $fn, $eval);
-			$this->pages[$pageUID] = $page;
-
-			return $page;
-
-		} catch(IOException $e) {
-			exceptionHandler($e);
-		}
-	}
+	public abstract function get($pageUID, $parseContent = true, $eval = false);
 
 	/**
 	 * Create page object in "pageUID" file
@@ -108,45 +51,10 @@ class Pages {
 	 * @throws IOException If the page does not exists
 	 * @return string|bool Return true if ok, string if error
 	 */
-	public function set(Page $page, $pageUID) {
-
-		$pageFullPath = $pageUID . $this->fileExtension;
-
-		// try {
-		$fs = new Files(PAGES);
-
-		if(!$fs->exists($pageFullPath)) {
-			// TODO create page
-		}
-
-		$data = $this->serializer->serialize($page);
-
-		$fs->write($pageFullPath, $data);
-
-		// } catch(IOException $e) {
-			// exceptionHandler($e);
-			// return $e->getMessage();
-		// }
-
-		$this->pages[$pageUID] = $page;
-
-		// return true;
-	}
+	public abstract function set(Page $page, $pageUID);
 
 	// TODO
-	public function update(Page $page, $pageUID) {
-
-		$pageOld = $this->get($pageUID);
-
-		foreach ($page as $key => $value) {
-			//TODO bug si on veut supprimer un variable...
-			if(!empty($value)) {
-				$pageOld->{$key} = $value;
-			}
-		}
-
-		return $this->set($page, $pageUID);
-	}
+	public abstract function update(Page $page, $pageUID);
 
 	/**
 	 * Delete a page
@@ -155,12 +63,7 @@ class Pages {
 	 * @throws IOException If the page does not exists
 	 * @return boolean If page is deleted
 	 */
-	public function delete($pageUID) {
-		$pageFullPath = $pageUID . $this->fileExtension;
-
-		$fs = new Files(PAGES);
-		return $fs->delete($pageFullPath);
-	}
+	public abstract function delete($pageUID);
 
 	/**
 	 * Fetch all pages
@@ -171,22 +74,7 @@ class Pages {
 	 * @param string ($path) Pages in a specific sub path
 	 * @return Pages
 	 */
-	public function all($path = null) {
-		$that = clone $this;
-		$that->pages = [];
-
-		if($path !== null) {
-			$path = PAGES . $path;
-		}
-
-		$pagesIndex = $this->index(true, $path);
-
-		foreach ($pagesIndex as $pageUID) {
-			$that->pages[] = $this->get($pageUID);
-		}
-
-		return $that;
-	}
+	public abstract function all($path = null);
 
 	/**
 	 * Order pages
@@ -294,50 +182,7 @@ class Pages {
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function index($listHidden = false, $pagesPath = null) {
-		$pages = [];
-		$that = &$this;
-
-		try {
-			if($pagesPath === null) {
-				$pagesPath = PAGES;
-			}
-
-			$fs = new Files($pagesPath);
-			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
-			{
-				// If files have the right extension and file not secret
-				// (does not begin with '_')
-				$len = - strlen($that->fileExtension);
-				if(($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
-					if($dir !== '') {
-						$dir = trim($dir, '/\\') . '/';
-					}
-
-					// If directory is not secret (or root)
-					if($listHidden || $dir === '' || $dir[0] !== '_') {
-						$pagePath = $dir . basename($file, $that->fileExtension);
-						$pages[] = $pagePath;
-					}
-
-				}
-			});
-
-			return $pages;
-		} catch(IOException $e) {
-			exceptionHandler($e);
-		}
-	}
-
-	/**
-	 * Set Parvula pages serializer
-	 *
-	 * @param PageSerializerInterface $customSerializer
-	 * @return void
-	 */
-	public function setSerializer(PageSerializerInterface $customSerializer) {
-		$this->serializer = $customSerializer;
-	}
+	public abstract function index($listHidden = false, $pagesPath = null);
 
 	/**
 	 * Set Parvula pages parser
