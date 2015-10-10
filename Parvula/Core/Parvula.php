@@ -85,14 +85,13 @@ class Parvula extends Container
 	}
 
 	/**
-	 * Get user config
+	 * Get user config //TODO
 	 *
 	 * @return array
 	 */
 	public function getUserConfig() {
 		try {
-			$configRaw = file_get_contents(DATA . 'site.conf.json');
-			// $configRaw = file_get_contents(DATA . Config::get('userConfig'));
+			$configRaw = file_get_contents(DATA . $this['config']->get('userConfig'));
 			$config = json_decode($configRaw);
 		} catch(IOException $e) {
 			exceptionHandler($e);
