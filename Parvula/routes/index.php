@@ -1,26 +1,25 @@
 <?php
 
-// use Parvula\Core\Config;
-use Parvula\Core\Model\Themes;
 use Parvula\Core\Parvula;
+use Parvula\Core\Model\Themes;
 use Parvula\Core\Model\PagesFlatFiles;
 
 // Front - Pages
-$router->any('*', function($req) use($app, $config, $med) {
+$router->any('*', function($req) use($app, $med) {
 	$med->trigger('uri', [$req->uri]);
 
 	$pagename = rtrim($req->uri, '/');
 	$pagename = urldecode($pagename);
 
 	if($pagename === '') {
-		$pagename = $config->get('homePage');
+		$pagename = $app['config']->get('homePage');
 	}
 
-	$themes = new Themes(THEMES);
-	$themes->read($config->get('theme'));
+	// $themes = new Themes(THEMES);
+	// $themes->read($app['config']->get('theme'));
 
 	// Check if theme exists (must have index.html)
-	$baseTheme = htmlspecialchars(THEMES . $config->get('theme'));
+	$baseTheme = htmlspecialchars(THEMES . $app['config']->get('theme'));
 
 	if(!is_readable($baseTheme . '/index.html')) {
 		die("Error - Theme `{$baseTheme}` is not readable");
@@ -34,7 +33,7 @@ $router->any('*', function($req) use($app, $config, $med) {
 	// 404
 	if(false === $page) {
 		// header(' ', true, 404); // Set header to 404
-		$page = $pages->get($config->get('errorPage'));
+		$page = $pages->get($app['config']->get('errorPage'));
 		$med->trigger('404', [&$page]);
 
 		if(false === $page) {
@@ -59,7 +58,7 @@ $router->any('*', function($req) use($app, $config, $med) {
 				function($name) use($med) {
 					return $med->getPlugin($name);
 				},
-			'site' => $config->toObject(),
+			'site' => $app['config']->toObject(),
 			'self' => $page
 		]);
 

@@ -7,7 +7,7 @@ $med->trigger('router', [&$router]);
 $med->trigger('route', [$router->getMethod(), $router->getUri()]);
 
 // Api namespace
-$router->group('/_api', function($router) use ($app, $config) {
+$router->group('/_api', function($router) use ($app) {
 	return require APP . 'routes/api.php';
 });
 
