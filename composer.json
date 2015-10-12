@@ -30,5 +30,8 @@
 			"Parvula\\": "Parvula",
 			"Plugin\\": "plugins"
 		}
+	},
+	"config": {
+		"preferred-install": "dist"
 	}
 }
