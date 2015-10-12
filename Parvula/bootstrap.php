@@ -46,13 +46,12 @@ loadAliases($config->get('aliases'));
 $config->append((array) $app->getUserConfig());
 
 // Load plugins
-$med = new PluginMediator;
-$med->attach(getPluginList($config->get('disabledPlugins')));
-$med->trigger('bootstrap', [$app]);
-$med->trigger('load');
+$plugins = $app['plugins'];
+$plugins->trigger('bootstrap', [$app]);
+$plugins->trigger('load');
 
 // Load routes
 $router = new Router();
 require 'routes.php';
 echo $router->run(Parvula::getMethod(), Parvula::getURI());
-$med->trigger('end');
+$plugins->trigger('end');

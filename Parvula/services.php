@@ -22,6 +22,12 @@ $app->share('config', function() {
 	return new Parvula\Core\Config(require APP . 'config.php');
 });
 
+$app->share('plugins', function() use($app) {
+	$pluginMediator = new Parvula\Core\PluginMediator;
+	$pluginMediator->attach(getPluginList($app['config']->get('disabledPlugins')));
+	return $pluginMediator;
+});
+
 $app->add('pages', function() use ($app) {
 	$fileExtension =  '.' . $app['config']->get('fileExtension');
 	$pageSerializer = $app['config']->get('pageSerializer');

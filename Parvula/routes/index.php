@@ -7,6 +7,8 @@ use Parvula\Core\Model\PagesFlatFiles;
 // Front - Pages
 $router->any('*', function($req) use($app, $med) {
 	$med->trigger('uri', [$req->uri]);
+	$plugins = $app['plugins'];
+	$plugins->trigger('uri', [$req->uri]);
 
 	$pagename = rtrim($req->uri, '/');
 	$pagename = urldecode($pagename);
@@ -28,13 +30,13 @@ $router->any('*', function($req) use($app, $med) {
 	$pages = $app['pages'];
 
 	$page = $pages->get($pagename, true);
-	$med->trigger('page', [&$page]);
+	$plugins->trigger('page', [&$page]);
 
 	// 404
 	if(false === $page) {
 		// header(' ', true, 404); // Set header to 404
 		$page = $pages->get($app['config']->get('errorPage'));
-		$med->trigger('404', [&$page]);
+		$plugins->trigger('404', [&$page]);
 
 		if(false === $page) {
 			// Juste print simple 404 if there is no 404 page
@@ -55,8 +57,8 @@ $router->any('*', function($req) use($app, $med) {
 					return $pages->all($pagesPath)->visible()->order(SORT_ASC)->toArray();
 				},
 			'plugin' =>
-				function($name) use($med) {
-					return $med->getPlugin($name);
+				function($name) use($plugins) {
+					return $plugins->getPlugin($name);
 				},
 			'site' => $app['config']->toObject(),
 			'self' => $page
@@ -68,9 +70,9 @@ $router->any('*', function($req) use($app, $med) {
 			$layout = 'index';
 		}
 
-		$med->trigger('BeforeRender', [&$layout]);
+		$plugins->trigger('BeforeRender', [&$layout]);
 		$out = $templates->render($layout);
-		$med->trigger('AfterRender', [&$out]);
+		$plugins->trigger('AfterRender', [&$out]);
 		echo $out;
 
 	} catch(Exception $e) {
