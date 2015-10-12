@@ -37,17 +37,15 @@ return [
 	'typeOfSort' => SORT_ASC,
 
 	// Sort pages from specific field (like title, index or whatYouWant)
-	'sortField' => 'index',
+	'sortField' => 'slug',
 
 	// User config file to read
 	'userConfig' => 'site.conf.json',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
-	// 'defaultContentParser' => null,
-	'defaultContentParser' => 'Parvula\Core\Parser\MarkdownContentParser',
+	'contentParser' => '\Parvula\Core\Parser\MarkdownContentParser',
 
 	// Class to (un)serialize pages (must implements PageSerializerInterface)
-	'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaPageSerializer',
-	// 'defaultPageSerializer' => 'Parvula\Core\Serializer\ParvulaJsonPageSerializer',
+	'pageSerializer' => '\Parvula\Core\Serializer\ParvulaPageSerializer',
 
 ];
