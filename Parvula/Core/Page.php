@@ -53,7 +53,7 @@ class Page {
 			$pageInfo['content'] = '';
 		}
 
-		if (!preg_match('/^[a-z0-9@-_\+\.\/]+$/', $pageInfo['slug'])) {
+		if (!preg_match('/^[a-z0-9@\-_\+\.\/]+$/', $pageInfo['slug'])) {
 			throw new PageException('Page cannot be created, $pageInfo[slug] (' .
 				htmlspecialchars($pageInfo['slug']) . ') value is not normalized');
 		}
