@@ -44,15 +44,14 @@ function apiResponse($responseCode = 200, $data = null) {
 //
 
 // Page object (`?raw` to not parse the content)
-$router->get('/pages/::name', function($req) use ($pages) {
-	return apiResponse(true, $pages->get($req->params->name, $req->query !== 'raw'));
+$router->get('/pages/{name:.+}', function($req) use ($pages) {
+	return apiResponse(true, $pages->get($req->params->name, !isset($req->query->raw)));
 });
 
 // Array<Page> of Pages
 $router->get('/pages', function($req) use ($pages) {
 	return apiResponse(true, $pages->all()->order(SORT_ASC, 'slug')->toArray());
 });
-
 
 $router->post('/login', function($req) {
 	// print_r($req->body);
@@ -98,13 +97,17 @@ $router->post('/login', function($req) {
 //
 if(true === isParvulaAdmin()) {
 
+	// $router->get('/pageslist', function($req) use ($pages) {
+	// 	return apiResponse(true, $pages->listPages());
+	// });
+
 	// List of pages. Array<string> of pages paths
-	$router->get('/pageslist', function($req) use ($pages) {
+	$router->head('/pages', function($req) use ($pages) {
 		return apiResponse(true, $pages->listPages());
 	});
 
 	// Delete page
-	$router->delete('/pages/::name', function($req) use ($pages) {
+	$router->delete('/pages/{name:.+}', function($req) use ($pages) {
 		try {
 			$res = $pages->delete($req->params->name);
 		} catch(\Exception $e) {
@@ -115,7 +118,7 @@ if(true === isParvulaAdmin()) {
 	});
 
 	// Create page @TODO TEST
-	$router->post('/pages/::name', function($req) use ($pages) {
+	$router->post('/pages/{name:.+}', function($req) use ($pages) {
 		if(!isset($req->params->name) || trim($req->params->name) === '') {
 			return false;
 		}
@@ -132,7 +135,7 @@ if(true === isParvulaAdmin()) {
 	});
 
 	// Update page
-	$router->put('/pages/::name', function($req) use ($pages) {
+	$router->put('/pages/{name:.+}', function($req) use ($pages) {
 		if(!isset($req->params->name) || trim($req->params->name) === '') {
 			return false;
 		}
@@ -229,7 +232,7 @@ if(true === isParvulaAdmin()) {
 	});
 
 	// Logout
-	$router->any('/logout', function() {
+	$router->map('GET|POST', '/logout', function() {
 		$res = session_destroy();
 		session_unset();
 		return apiResponse($res);

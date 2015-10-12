@@ -3,9 +3,7 @@
 // Let the magic begin
 // ----------------------------- //
 
-use Parvula\Core\Router;
 use Parvula\Core\Parvula;
-use Parvula\Core\PluginMediator;
 
 if(!defined('ROOT')) exit;
 $time = -microtime(true);
@@ -53,7 +51,5 @@ $plugins->trigger('bootstrap', [$app]);
 $plugins->trigger('load');
 
 // Load routes
-$router = new Router();
 require 'routes.php';
-echo $router->run(Parvula::getMethod(), Parvula::getURI());
 $plugins->trigger('end');

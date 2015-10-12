@@ -5,16 +5,17 @@ use Parvula\Core\Model\Themes;
 use Parvula\Core\Model\PagesFlatFiles;
 
 // Front - Pages
-$router->any('*', function($req) use($app, $med) {
-	$med->trigger('uri', [$req->uri]);
+$router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
+
+	$slug = rtrim($req->params->slug, '/');
+	$slug = urldecode($slug);
+
 	$plugins = $app['plugins'];
-	$plugins->trigger('uri', [$req->uri]);
+	$plugins->trigger('uri', [$req->params->slug]);
+	$plugins->trigger('slug', [$slug]);
 
-	$pagename = rtrim($req->uri, '/');
-	$pagename = urldecode($pagename);
-
-	if($pagename === '') {
-		$pagename = $app['config']->get('homePage');
+	if($slug === '') {
+		$slug = $app['config']->get('homePage');
 	}
 
 	// $themes = new Themes(THEMES);
@@ -29,7 +30,7 @@ $router->any('*', function($req) use($app, $med) {
 
 	$pages = $app['pages'];
 
-	$page = $pages->get($pagename, true);
+	$page = $pages->get($slug, true);
 	$plugins->trigger('page', [&$page]);
 
 	// 404
