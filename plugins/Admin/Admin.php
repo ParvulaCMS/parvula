@@ -11,7 +11,7 @@ class Admin extends Plugin
 
 		$configAdmin = new Config(require 'config.php');
 
-		$router->any($configAdmin->get('adminRoute'), function() use ($configAdmin) {
+		$router->map('GET|POST', $configAdmin->get('adminRoute'), function() use ($configAdmin) {
 			require_once 'main.php';
 		});
 	}

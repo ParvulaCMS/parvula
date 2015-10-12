@@ -19,7 +19,7 @@ $templates->addData([
 // Check password
 if(isset($_POST, $_POST['password'])) {
 
-	if($_POST['password'] === $adminConf['password']) {
+	if($_POST['password'] === $configAdmin->get('password')) {
 		if(session_id() === '') {
 			session_id(uniqid());
 			session_start();
@@ -29,11 +29,11 @@ if(isset($_POST, $_POST['password'])) {
 
 		// Post/Redirect/Get pattern
 		header(
-			'Location: ./' . Parvula::getRelativeURIToRoot() . trim($adminConf['adminRoute'], '/'),
+			'Location: ./' . Parvula::getRelativeURIToRoot() . trim($configAdmin->get('adminRoute'), '/'),
 			true, 303);
 
 	} else {
-		$templates->addData('notice', true);
+		$templates->addData(['notice', true]);
 	}
 }
 
