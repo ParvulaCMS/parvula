@@ -8,6 +8,7 @@ use Parvula\Core\Parvula;
 use Parvula\Core\PluginMediator;
 
 if(!defined('ROOT')) exit;
+$time = -microtime(true);
 
 // Try to load composer autoloader
 if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
@@ -27,6 +28,7 @@ require APP . 'helpers.php';
 require APP . 'services.php';
 
 $config = $app['config'];
+$config->set('__time__', $time);
 
 $debug = (bool) $config->get('debug', false);
 

@@ -61,7 +61,11 @@ $router->any('*', function($req) use($app, $med) {
 					return $plugins->getPlugin($name);
 				},
 			'site' => $app['config']->toObject(),
-			'self' => $page
+			'self' => $page,
+			'__time__' => function() use($app) {
+				// useful to benchmark
+				return sprintf('%.4f', $app['config']->get('__time__') + microtime(true));
+			}
 		]);
 
 		if(isset($page->layout)) {
