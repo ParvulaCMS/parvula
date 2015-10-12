@@ -28,6 +28,16 @@ $app->share('plugins', function() use($app) {
 	return $pluginMediator;
 });
 
+$app->share('request', function() use($app) {
+	return new Parvula\Core\Router\Request(
+		$_SERVER,
+		$_GET,
+		$_POST,
+		$_COOKIE,
+		$_FILES
+	);
+});
+
 $app->add('pages', function() use ($app) {
 	$fileExtension =  '.' . $app['config']->get('fileExtension');
 	$pageSerializer = $app['config']->get('pageSerializer');
