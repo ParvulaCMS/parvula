@@ -30,7 +30,10 @@ class PagesFlatFiles extends Pages
 
 	/**
 	 * Constructor
-	 * @param Config $config
+	 *
+	 * @param ContentParserInterface $contentParser
+	 * @param PageSerializerInterface $pageSerializer
+	 * @param string $fileExtension
 	 */
 	function __construct(ContentParserInterface $contentParser,
 		PageSerializerInterface $pageSerializer, $fileExtension) {
@@ -68,6 +71,7 @@ class PagesFlatFiles extends Pages
 
 			// Anonymous function to use serializer engine
 			$serializer = $this->serializer;
+			$parser = null;
 			if ($parseContent) {
 				$parser = $this->parser;
 			}
