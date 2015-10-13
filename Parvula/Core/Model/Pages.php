@@ -2,6 +2,7 @@
 
 namespace Parvula\Core\Model;
 
+use Parvula\Core\Page;
 use Parvula\Core\Parser\ContentParserInterface;
 
 /**
@@ -27,34 +28,43 @@ abstract class Pages
 
 	/**
 	 * Constructor
-	 * @param Config $config
+	 *
+	 * @param ContentParserInterface $contentParser
 	 */
 	 function __construct(ContentParserInterface $contentParser = null) {
 		$this->setParser($contentParser);
 	}
 
 	/**
-	 * Get a page object in html string
+	 * Get a page object with parsed content
 	 *
 	 * @param string $pageUID Page unique ID
-	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
 	 * @return Page Return the selected page
 	 */
-	public abstract function get($pageUID, $parseContent = true, $eval = false);
+	public abstract function read($pageUID);
+	// public abstract function get($pageUID, $parseContent = true, $eval = false);
 
 	/**
-	 * Create page object in "pageUID" file
+	 * Create page object
 	 *
 	 * @param Page $page Page object
 	 * @param string $pageUID Page unique ID
 	 * @throws IOException If the page does not exists
 	 * @return string|bool Return true if ok, string if error
 	 */
-	public abstract function set(Page $page, $pageUID);
+	public abstract function create($pageUID, Page $page);
 
 	// TODO
-	public abstract function update(Page $page, $pageUID);
+	/**
+	 * Update page object
+	 *
+	 * @param Page $page Page object
+	 * @param string $pageUID Page unique ID
+	 * @throws IOException If the page does not exists
+	 * @return string|bool Return true if ok, string if error
+	 */
+	public abstract function update($pageUID, Page $page);
 
 	/**
 	 * Delete a page
@@ -64,6 +74,13 @@ abstract class Pages
 	 * @return boolean If page is deleted
 	 */
 	public abstract function delete($pageUID);
+
+	/**
+	 * Index pages and get an array of pages slug
+	 *
+	 * @return array Array of pages paths
+	 */
+	public abstract function index();
 
 	/**
 	 * Fetch all pages
@@ -173,16 +190,6 @@ abstract class Pages
 
 		return array_multisort($sortFields, $sortType, $arr);
 	}
-
-	/**
-	 * Index pages and get an array of pages paths
-	 *
-	 * @param boolean ($listHidden) List hidden files & folders
-	 * @param string ($pagesPath) Pages path
-	 * @throws IOException If the pages directory does not exists
-	 * @return array Array of pages paths
-	 */
-	public abstract function index($listHidden = false, $pagesPath = null);
 
 	/**
 	 * Set Parvula pages parser

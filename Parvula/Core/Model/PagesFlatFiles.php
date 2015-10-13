@@ -2,8 +2,10 @@
 
 namespace Parvula\Core\Model;
 
+use Parvula\Core\Page;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
+use Parvula\Core\Exception\PageException;
 use Parvula\Core\Parser\ContentParserInterface;
 use Parvula\Core\Serializer\PageSerializerInterface;
 
@@ -41,7 +43,6 @@ class PagesFlatFiles extends Pages
 
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
 
-		// $pageSerializer = $config->get('pageSerializer');
 		$this->setSerializer(new $pageSerializer);
 	}
 
@@ -51,9 +52,9 @@ class PagesFlatFiles extends Pages
 	 * @param string $pageUID Page unique ID
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
-	 * @return Page Return the selected page
+	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function get($pageUID, $parseContent = true, $eval = false) {
+	public function read($pageUID, $parseContent = true, $eval = false) {
 
 		// If page was already loaded, return page
 		if(isset($this->pages[$pageUID])) {
@@ -96,49 +97,95 @@ class PagesFlatFiles extends Pages
 	/**
 	 * Create page object in "pageUID" file
 	 *
-	 * @param Page $page Page object
 	 * @param string $pageUID Page unique ID
+	 * @param Page $page Page object
 	 * @throws IOException If the page does not exists
 	 * @return string|bool Return true if ok, string if error
 	 */
-	public function set(Page $page, $pageUID) {
+	public function create($pageUID, Page $page) {
 
 		$pageFullPath = $pageUID . $this->fileExtension;
 
-		// try {
-		$fs = new Files(PAGES);
+		try {
+			$fs = new Files(PAGES);
 
-		if(!$fs->exists($pageFullPath)) {
-			// TODO create page
+			if ($fs->exists($pageFullPath)) {
+				// TODO create page
+				return false;
+			}
+
+			// if (!$fs->isWritable()) {
+				// throw new PageException('Page is not writable');
+			// }
+
+			$data = $this->serializer->serialize($page);
+
+			$fs->write($pageFullPath, $data);
+
+		} catch(IOException $e) {
+			throw new PageException('Error Processing Request');
 		}
-
-		$data = $this->serializer->serialize($page);
-
-		$fs->write($pageFullPath, $data);
-
-		// } catch(IOException $e) {
-			// exceptionHandler($e);
-			// return $e->getMessage();
-		// }
 
 		$this->pages[$pageUID] = $page;
 
 		// return true;
 	}
 
-	// TODO
-	public function update(Page $page, $pageUID) {
+	public function update($pageUID, Page $page) {
 
-		$pageOld = $this->get($pageUID);
+		$fs = new Files(PAGES);
+		$pageFile = $pageUID . $this->fileExtension;
+		if (!$fs->exists($pageFile)) {
+			throw new PageException('Page `' . $pageUID . '` does not exists');
+		}
+
+		if (!isset($page->title, $page->slug)) {
+			throw new PageException('Page is not valid. Must have at lease a `title` and a `slug`');
+		}
+
+		// New slug, need to rename
+		if ($pageUID !== $page->slug) {
+			$pageFileNew = $page->slug . $this->fileExtension;
+
+			if ($fs->exists($pageFileNew)) {
+				throw new PageException('Cannot rename, page ' . $page->slug . ' already exists');
+			}
+
+			$fs->rename($pageFile, $pageFileNew);
+			$pageFile = $pageFileNew;
+		}
+
+		$data = $this->serializer->serialize($page);
+
+		$fs->write($pageFile, $data);
+
+		$this->pages[$page->slug] = $page;
+	}
+
+	public function patch($pageUID, array $page) {
+
+		$fs = new Files(PAGES);
+		$pageFile = $pageUID . $this->fileExtension;
+		if (!$fs->exists($pageFile)) {
+			throw new PageException('Page `' . $pageUID . '` does not exists');
+		}
+
+		$pageOld = $this->read($pageUID, false);
 
 		foreach ($page as $key => $value) {
-			//TODO bug si on veut supprimer un variable...
-			if(!empty($value)) {
+			if ($value === null) {
+				if (isset($pageOld->{$key})) {
+					unset($pageOld->{$key});
+				}
+			}
+			else if (!empty($value)) {
 				$pageOld->{$key} = $value;
 			}
 		}
 
-		return $this->set($page, $pageUID);
+		$page = Page::pageFactory((array) $pageOld);
+
+		return $this->update($pageUID, $page);
 	}
 
 	/**
@@ -156,33 +203,7 @@ class PagesFlatFiles extends Pages
 	}
 
 	/**
-	 * Fetch all pages
-	 * This method will read each pages
-	 * If you want an array of Page use `toArray()` method
-	 * Exemple: `$pages->all()->toArray();`
-	 *
-	 * @param string ($path) Pages in a specific sub path
-	 * @return Pages
-	 */
-	public function all($path = null) {
-		$that = clone $this;
-		$that->pages = [];
-
-		if($path !== null) {
-			$path = PAGES . $path;
-		}
-
-		$pagesIndex = $this->index(true, $path);
-
-		foreach ($pagesIndex as $pageUID) {
-			$that->pages[] = $this->get($pageUID);
-		}
-
-		return $that;
-	}
-
-	/**
-	 * Index pages and get an array of pages paths
+	 * Index pages and get an array of pages slug
 	 *
 	 * @param boolean ($listHidden) List hidden files & folders
 	 * @param string ($pagesPath) Pages path
@@ -222,6 +243,32 @@ class PagesFlatFiles extends Pages
 		} catch(IOException $e) {
 			exceptionHandler($e);
 		}
+	}
+
+	/**
+	 * Fetch all pages
+	 * This method will read each pages
+	 * If you want an array of Page use `toArray()` method
+	 * Exemple: `$pages->all()->toArray();`
+	 *
+	 * @param string ($path) Pages in a specific sub path
+	 * @return Pages
+	 */
+	public function all($path = null) {
+		$that = clone $this;
+		$that->pages = [];
+
+		if($path !== null) {
+			$path = PAGES . $path;
+		}
+
+		$pagesIndex = $this->index(true, $path);
+
+		foreach ($pagesIndex as $pageUID) {
+			$that->pages[] = $this->read($pageUID);
+		}
+
+		return $that;
 	}
 
 	/**

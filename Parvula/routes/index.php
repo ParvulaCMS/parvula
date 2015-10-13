@@ -30,13 +30,13 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 
 	$pages = $app['pages'];
 
-	$page = $pages->get($slug, true);
+	$page = $pages->read($slug, true);
 	$plugins->trigger('page', [&$page]);
 
 	// 404
 	if(false === $page) {
 		// header(' ', true, 404); // Set header to 404
-		$page = $pages->get($app['config']->get('errorPage'));
+		$page = $pages->read($app['config']->get('errorPage'));
 		$plugins->trigger('404', [&$page]);
 
 		if(false === $page) {
