@@ -90,6 +90,16 @@ class RouteCollection extends RouteCollector {
 	}
 
 	/**
+	 * Add a new route with "PATCH" method
+	 *
+	 * @param string $route
+	 * @param Closure $handler
+	 */
+	public function patch($route, Closure $handler) {
+		$this->addRoute('PATCH', $this->prefix . $route, $handler);
+	}
+
+	/**
 	 * Add a new route
 	 *
 	 * @param string $method
