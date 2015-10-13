@@ -5,41 +5,62 @@
 
 var API_URL = baseUrl + '_api';
 
-var apiPages = {
-	get: function(pagePath, callback) {
-		if(pagePath === '') {
+var api = {};
+
+api.pages = {
+	read: function(slug, callback) {
+		if(slug === '') {
 			return;
 		}
-		$.getJSON(API_URL + '/pages/' + pagePath + '?raw', function(data) {
-			callback(data);
+		$.getJSON(API_URL + '/pages/' + slug + '?raw', function(res) {
+			callback(res.data);
 		});
 	},
 
-	save: function(page, pagePath, callback) {
+	create: function(page, callback) {
 		$.ajax({
-			type: 'PUT',
-			url: API_URL + '/pages/' + pagePath,
+			type: 'POST',
+			url: API_URL + '/pages',
 			data: page
 		})
-		.done(function(msg) {
-			window.location.hash = '#' + pagePath;
-			callback(msg, false);
+		.done(function(res) {
+			callback(res.message, false);
 		})
-		.fail(function(msg) {
-			callback(msg, true);
+		.fail(function(res) {
+			callback(res.responseJSON.message, true);
 		});
 	},
 
-	delete: function(pagePath, callback) {
+	update: function(slug, page, callback) {
+		$.ajax({
+			type: 'PUT',
+			url: API_URL + '/pages/' + slug,
+			data: page
+		})
+		.done(function(res) {
+			window.location.hash = '#' + page.slug;
+			callback(res.message, false);
+
+			if (page.slug !== slug) {
+				// Reload if new slug
+				location.reload();
+			}
+		})
+		.fail(function(res) {
+			callback(res.responseJSON.message, true);
+		});
+	},
+
+	delete: function(slug, callback) {
 		$.ajax({
 			type: 'DELETE',
-			url: API_URL + '/pages/' + pagePath
+			url: API_URL + '/pages/' + slug
 		})
-		.done(function(msg) {
-			callback(msg, false);
+		.done(function(res) {
+			callback(res.message, false);
 		})
-		.fail(function(msg) {
-			callback(msg, true);
+		.fail(function(res) {
+			callback(res.responseJSON.message, true);
 		});
 	}
 };
@@ -56,7 +77,7 @@ var onHashChange = function() {
 
 	if(url !== '') {
 		pageTitleEl.val(url).removeClass('notice');
-		apiPages.get(url, function(page) {
+		api.pages.read(url, function(page) {
 			editor.setValue(page.content || '');
 			setPageInfo(page);
 			refreshPreview();
@@ -171,30 +192,38 @@ jQuery(function() {
 			page[key] = val;
 		});
 
-		var url = window.location.hash.substr(1);
+		var slug = window.location.hash.substr(1);
 
-		var isNewPage = false;
-		if(url === '') {
+		if(slug === '') {
+			// New page
+
 			// Sanitize filename
-			url = page.title.replace(/[^a-z0-9_\-\[\]\(\)!\'~\|\+=&,]/gi, '_').toLowerCase();
-			isNewPage = true;
-		}
+			page.slug = page.title.toLowerCase().replace(/[^a-z0-9@\-_\+\.\/]/g, '_').toLowerCase();
+			window.location.hash = '#' + page.slug;
 
-		apiPages.save(page, url, function(msg, err) {
-			if(err || msg === 'false' || msg[0] !== '{') {
-				toggleClassEffect(headbarEl, 'error', 1000);
-				console.log('Error: ' + msg);
-			} else {
-				toggleClassEffect(headbarEl, 'ok', 1000);
-				console.log(msg);
+			api.pages.create(page, function(msg, err) {
+				if(err) {
+					toggleClassEffect(headbarEl, 'error', 1000);
+					console.log('Error: ' + msg);
+				} else {
+					toggleClassEffect(headbarEl, 'ok', 1000);
 
-				if(isNewPage) {
-					// pages-list
-					listPagesEl.find('ul.list').append(
-						'<li><a href="#'+url+'">'+url+'</a> <button class="admin-btn-s delete">x</button></li>');
+					location.reload();
 				}
-			}
-		});
+			});
+		}
+		else {
+			// Update page
+			api.pages.update(slug, page, function(msg, err) {
+				if(err) {
+					toggleClassEffect(headbarEl, 'error', 1000);
+					console.log('Error: ' + msg);
+				} else {
+					toggleClassEffect(headbarEl, 'ok', 1000);
+					console.log(msg);
+				}
+			});
+		}
 	});
 
 	// Logout
@@ -225,8 +254,8 @@ jQuery(function() {
 		var pageName = $(this).parent().find('a').html();
 
 		if (confirm('Delete page "' + pageName + '" ?')) {
-			apiPages.delete(pageName, function(msg, err) {
-				if(err || msg === 'false' || msg === '') {
+			api.pages.delete(pageName, function(msg, err) {
+				if(err) {
 					toggleClassEffect(headbarEl, 'error', 1000);
 					console.log('Error: ' + msg);
 				} else {
@@ -237,7 +266,6 @@ jQuery(function() {
 		}
 	});
 
-
 	pageTitleEl.on('keyup | blur', function(e) {
 		var title = stripHtml(pageTitleEl.val());
 		if(title === '') {
@@ -246,9 +274,7 @@ jQuery(function() {
 			pageTitleEl.removeClass('notice');
 		}
 	});
-
 });
-
 
 marked.InlineLexer.prototype.outputLink = function(cap, link) {
 	var patt = /^(https?|ftp):\/\//;
