@@ -2,13 +2,10 @@
 
 namespace Parvula;
 
-use Parvula\Core\Page;
-use Parvula\Core\Model\PagesFlatFiles;
+use Exception;
 use Parvula\Core\Exception\IOException;
 
 if(!defined('ROOT')) exit;
-
-$pages = $app['pages'];
 
 // Send API message @TODO Temp
 function apiResponse($responseCode = 200, $data = null) {
@@ -39,19 +36,11 @@ function apiResponse($responseCode = 200, $data = null) {
 	return json_encode($res);
 }
 
+require 'api/pages.php';
+
 //
 // Public API
 //
-
-// Page object (`?raw` to not parse the content)
-$router->get('/pages/{name:.+}', function($req) use ($pages) {
-	return apiResponse(true, $pages->get($req->params->name, !isset($req->query->raw)));
-});
-
-// Array<Page> of Pages
-$router->get('/pages', function($req) use ($pages) {
-	return apiResponse(true, $pages->all()->order(SORT_ASC, 'slug')->toArray());
-});
 
 $router->post('/login', function($req) {
 	// print_r($req->body);
@@ -96,59 +85,6 @@ $router->post('/login', function($req) {
 // Admin API
 //
 if(true === isParvulaAdmin()) {
-
-	// $router->get('/pageslist', function($req) use ($pages) {
-	// 	return apiResponse(true, $pages->listPages());
-	// });
-
-	// List of pages. Array<string> of pages paths
-	$router->head('/pages', function($req) use ($pages) {
-		return apiResponse(true, $pages->listPages());
-	});
-
-	// Delete page
-	$router->delete('/pages/{name:.+}', function($req) use ($pages) {
-		try {
-			$res = $pages->delete($req->params->name);
-		} catch(\Exception $e) {
-			return apiResponse(404, $e->getMessage());
-		}
-
-		return apiResponse($res);
-	});
-
-	// Create page @TODO TEST
-	$router->post('/pages/{name:.+}', function($req) use ($pages) {
-		if(!isset($req->params->name) || trim($req->params->name) === '') {
-			return false;
-		}
-
-		$page = Page::pageFactory($req->body);
-
-		try {
-			$res = $pages->set($page, $req->params->name);
-		} catch(IOException $e) {
-			return apiResponse(404, $e->getMessage());
-		}
-
-		return apiResponse(201);
-	});
-
-	// Update page
-	$router->put('/pages/{name:.+}', function($req) use ($pages) {
-		if(!isset($req->params->name) || trim($req->params->name) === '') {
-			return false;
-		}
-
-		// Get old page and update new fields
-		$page = $pages->get($req->params->name);
-		foreach ($req->body as $key => $value) {
-			$page->{$key} = $value;
-		}
-
-		$res = $pages->update($page, $req->params->name, new $defaultPageSerializer);
-		return apiResponse($res);
-	});
 
 	// Upload file
 	//TODO test - Security, etc.
