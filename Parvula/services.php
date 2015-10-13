@@ -29,10 +29,12 @@ $app->share('plugins', function() use($app) {
 });
 
 $app->share('request', function() use($app) {
+	parse_str(file_get_contents("php://input"), $post_vars);
+
 	return new Parvula\Core\Router\Request(
 		$_SERVER,
 		$_GET,
-		$_POST,
+		$post_vars,
 		$_COOKIE,
 		$_FILES
 	);
