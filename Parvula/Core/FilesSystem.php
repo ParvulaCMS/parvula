@@ -26,7 +26,7 @@ class FilesSystem {
 	 * @param string $prefixPath
 	 */
 	function __construct($prefixPath = '.') {
-		$this->prefixPath = rtrim($prefixPath) . '/';
+		$this->prefixPath = rtrim($prefixPath, '/') . '/';
 	}
 
 	/**
@@ -122,6 +122,16 @@ class FilesSystem {
 	}
 
 	/**
+	 * Rename file
+	 *
+	 * @param string $oldName Old file name
+	 * @param string $newName New file name
+	 * @return boolean
+	 */
+	public function rename($oldName, $newName) {
+		return rename($this->prefixPath . $oldName, $this->prefixPath . $newName);
+	}
+
 	 * List files recursively in a directory
 	 *
 	 * @param string $directory Directory to list recursively
