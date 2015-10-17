@@ -57,7 +57,7 @@ class PagesFlatFiles extends Pages
 	public function read($pageUID, $parseContent = true, $eval = false) {
 
 		// If page was already loaded, return page
-		if(isset($this->pages[$pageUID])) {
+		if (isset($this->pages[$pageUID])) {
 			return $this->pages[$pageUID];
 		}
 
@@ -215,23 +215,23 @@ class PagesFlatFiles extends Pages
 		$that = &$this;
 
 		try {
-			if($pagesPath === null) {
+			if ($pagesPath === null) {
 				$pagesPath = PAGES;
 			}
 
 			$fs = new Files($pagesPath);
-			$fs->getFilesList('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
+			$fs->index('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension and file not secret
 				// (does not begin with '_')
 				$len = - strlen($that->fileExtension);
-				if(($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
-					if($dir !== '') {
+				if (($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
+					if ($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
 					// If directory is not secret (or root)
-					if($listHidden || $dir === '' || $dir[0] !== '_') {
+					if ($listHidden || $dir === '' || $dir[0] !== '_') {
 						$pagePath = $dir . basename($file, $that->fileExtension);
 						$pages[] = $pagePath;
 					}
@@ -258,7 +258,7 @@ class PagesFlatFiles extends Pages
 		$that = clone $this;
 		$that->pages = [];
 
-		if($path !== null) {
+		if ($path !== null) {
 			$path = PAGES . $path;
 		}
 
