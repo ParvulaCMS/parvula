@@ -18,15 +18,15 @@ class FilesSystem {
 	/**
 	 * @var string
 	 */
-	private $prefixPath;
+	private $workingDirectory;
 
 	/**
 	 * Constructor
 	 *
-	 * @param string $prefixPath
+	 * @param string $workingDirectory
 	 */
-	function __construct($prefixPath = '.') {
-		$this->prefixPath = rtrim($prefixPath, '/') . '/';
+	function __construct($workingDirectory = '.') {
+		$this->workingDirectory = rtrim($workingDirectory, '/') . '/';
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FilesSystem {
 	 * @return boolean If file exists
 	 */
 	public function exists($filename) {
-		return file_exists($this->prefixPath . $filename);
+		return file_exists($this->workingDirectory . $filename);
 	}
 
 	/**
@@ -46,7 +46,7 @@ class FilesSystem {
 	 * @return boolean If direcorty exists
 	 */
 	public function isDir($dirname) {
-		return is_dir($this->prefixPath . $dirname);
+		return is_dir($this->workingDirectory . $dirname);
 	}
 
 	/**
@@ -65,10 +65,10 @@ class FilesSystem {
 
 		if ($eval) {
 			ob_start();
-			include $this->prefixPath . $filename;
+			include $this->workingDirectory . $filename;
 			$data = ob_get_clean();
 		} else {
-			$data = file_get_contents($this->prefixPath . $filename);
+			$data = file_get_contents($this->workingDirectory . $filename);
 		}
 
 		if ($fn !== null) {
@@ -91,7 +91,7 @@ class FilesSystem {
 			$data = $fn($data);
 		}
 
-		if (false === @file_put_contents($this->prefixPath . $filename, $data)) {
+		if (false === @file_put_contents($this->workingDirectory . $filename, $data)) {
 			throw new IOException("File '$filename' is not writable.");
 		}
 	}
@@ -108,7 +108,7 @@ class FilesSystem {
 			throw new IOException("File '$filename' not found", 1);
 		}
 
-		return unlink($this->prefixPath . $filename);
+		return unlink($this->workingDirectory . $filename);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class FilesSystem {
 	 * @return boolean If file is writable
 	 */
 	public function isWritable($filename) {
-		return is_writable($this->prefixPath . $filename);
+		return is_writable($this->workingDirectory . $filename);
 	}
 
 	/**
@@ -129,7 +129,7 @@ class FilesSystem {
 	 * @return boolean
 	 */
 	public function rename($oldName, $newName) {
-		return rename($this->prefixPath . $oldName, $this->prefixPath . $newName);
+		return rename($this->workingDirectory . $oldName, $this->workingDirectory . $newName);
 	}
 
 	/**
@@ -147,7 +147,7 @@ class FilesSystem {
 		}
 
 		$fnName = __FUNCTION__;
-		$dirFull = $this->prefixPath . $dir;
+		$dirFull = $this->workingDirectory . $dir;
 
 		$items = [];
 		if ($handle = opendir($dirFull)) {
@@ -166,6 +166,31 @@ class FilesSystem {
 			closedir($handle);
 		}
 		return $items;
+	}
+
+	/**
+	 * Get working directory
+	 *
+	 * @return string Current working directory
+	 */
+	public function getCurrentWorkingDirectory() {
+		return $this->workingDirectory;
+	}
+
+	/*
+	 * Alias for {getCurrentWorkingDirectory}
+	 */
+	public function getCWD() {
+		return $this->workingDirectory;
+	}
+
+	/**
+	 * Set working directory
+	 *
+	 * @param string $workingDirectory
+	 */
+	public function setCurrentWorkingDirectory($workingDirectory) {
+		$this->workingDirectory = $workingDirectory;
 	}
 
 }
