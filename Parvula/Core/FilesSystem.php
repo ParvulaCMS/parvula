@@ -58,12 +58,12 @@ class FilesSystem {
 	 * @throws IOException If the file does not exists
 	 * @return mixed File data
 	 */
-	public function read($filename, $fn = null, $eval = false) {
-		if(!$this->exists($filename)) {
+	public function read($filename, callable $fn = null, $eval = false) {
+		if (!$this->exists($filename)) {
 			throw new IOException("File '$filename' does not exist.");
 		}
 
-		if($eval) {
+		if ($eval) {
 			ob_start();
 			include $this->prefixPath . $filename;
 			$data = ob_get_clean();
@@ -71,7 +71,7 @@ class FilesSystem {
 			$data = file_get_contents($this->prefixPath . $filename);
 		}
 
-		if($fn !== null) {
+		if ($fn !== null) {
 			return $fn($data);
 		} else {
 			return $data;
@@ -86,12 +86,12 @@ class FilesSystem {
 	 * @param callable ($fn) Apply function to data
 	 * @throws IOException if file is not writable
 	 */
-	public function write($filename, $data, $fn = null) {
-		if($fn !== null) {
+	public function write($filename, $data, callable $fn = null) {
+		if ($fn !== null) {
 			$data = $fn($data);
 		}
 
-		if(false === @file_put_contents($this->prefixPath . $filename, $data)) {
+		if (false === @file_put_contents($this->prefixPath . $filename, $data)) {
 			throw new IOException("File '$filename' is not writable.");
 		}
 	}
@@ -104,7 +104,7 @@ class FilesSystem {
 	 * @return boolean If filename is deleted
 	 */
 	public function delete($filename) {
-		if(!$this->exists($filename)) {
+		if (!$this->exists($filename)) {
 			throw new IOException("File '$filename' not found", 1);
 		}
 
@@ -132,6 +132,7 @@ class FilesSystem {
 		return rename($this->prefixPath . $oldName, $this->prefixPath . $newName);
 	}
 
+	/**
 	 * List files recursively in a directory
 	 *
 	 * @param string $directory Directory to list recursively
@@ -139,23 +140,23 @@ class FilesSystem {
 	 * @param callable $fn Callback function for each item $fn($key, $val)
 	 * @return array Return array of files
 	 */
-	public function getFilesList($dir = '', $showHiddenFiles = false, $fn = null) {
-		$fnName = __FUNCTION__;
+	public function index($dir = '', $showHiddenFiles = false, callable $fn = null) {
 
-		if(!$this->isDir($dir)) {
+		if (!$this->isDir($dir)) {
 			throw new IOException("Directory '$dir' not found", 1);
 		}
 
+		$fnName = __FUNCTION__;
 		$dirFull = $this->prefixPath . $dir;
 
 		$items = [];
-		if($handle = opendir($dirFull)) {
-			while(false !== ($file = readdir($handle))) {
-				if(($showHiddenFiles || $file[0] !== '.') && ($file !== '.' && $file !== '..')) {
-					if(is_dir($dirFull . '/' . $file)) {
+		if ($handle = opendir($dirFull)) {
+			while (false !== ($file = readdir($handle))) {
+				if (($showHiddenFiles || $file[0] !== '.') && ($file !== '.' && $file !== '..')) {
+					if (is_dir($dirFull . '/' . $file)) {
 						$items[$file] = $this->$fnName($dir . '/' . $file, $showHiddenFiles, $fn);
 					} else {
-						if($fn !== null) {
+						if ($fn !== null) {
 							$fn($file, $dir);
 						}
 						$items[] = $file;
