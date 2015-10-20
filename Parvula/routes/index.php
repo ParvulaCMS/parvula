@@ -18,14 +18,12 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 		$slug = $app['config']->get('homePage');
 	}
 
-	// $themes = new Themes(THEMES);
-	// $themes->read($app['config']->get('theme'));
+	$themes = new Themes(THEMES);
 
-	// Check if theme exists (must have index.html)
-	$baseTheme = htmlspecialchars(THEMES . $app['config']->get('theme'));
-
-	if(!is_readable($baseTheme . '/index.html')) {
-		die("Error - Theme `{$baseTheme}` is not readable");
+	if ($themes->has($themeName = $app['config']->get('theme'))) {
+		$theme = $themes->read($themeName);
+	} else {
+		throw new Exception('Theme does not exists');
 	}
 
 	$pages = $app['pages'];
@@ -47,12 +45,12 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 
 	try {
 		// Create new Plates instance to render theme html files
-		$templates = new League\Plates\Engine($baseTheme, 'html');
+		$view = new League\Plates\Engine($theme->getPath(), 'html');
 
 		// Assign some useful variables
-		$templates->addData([
+		$view->addData([
 			'baseUrl' => Parvula::getRelativeURIToRoot(),
-			'themeUrl' => Parvula::getRelativeURIToRoot() . $baseTheme . '/',
+			'themeUrl' => Parvula::getRelativeURIToRoot() . $theme->getPath() . '/',
 			'pages' =>
 				function($listHidden = false, $pagesPath = null) use($pages) {
 					return $pages->all($pagesPath)->visible()->order(SORT_ASC)->toArray();
@@ -76,7 +74,7 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 		}
 
 		$plugins->trigger('BeforeRender', [&$layout]);
-		$out = $templates->render($layout);
+		$out = $view->render($layout);
 		$plugins->trigger('AfterRender', [&$out]);
 		echo $out;
 
