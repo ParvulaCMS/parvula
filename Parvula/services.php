@@ -48,3 +48,7 @@ $app->add('pages', function() use ($app) {
 	return new Parvula\Core\Model\PagesFlatFiles(
 		new $contentParser, new $pageSerializer, $fileExtension);
 });
+
+$app->add('themes', function() use ($app) {
+	return new Parvula\Core\Model\Themes(THEMES);
+});

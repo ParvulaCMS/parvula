@@ -1,7 +1,6 @@
 <?php
 
 use Parvula\Core\Parvula;
-use Parvula\Core\Model\Themes;
 use Parvula\Core\Model\PagesFlatFiles;
 
 // Front - Pages
@@ -18,7 +17,7 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 		$slug = $app['config']->get('homePage');
 	}
 
-	$themes = new Themes(THEMES);
+	$themes = $app['themes'];
 
 	if ($themes->has($themeName = $app['config']->get('theme'))) {
 		$theme = $themes->read($themeName);
