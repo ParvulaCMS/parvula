@@ -62,9 +62,6 @@ class Html {
 	 */
 	public static function linkRel($src) {
 		if(!preg_match('/^https?:\/\//', $src)) {
-			if(!Config::get('URLRewriting')) {
-				$src = 'index.php/' . $src;
-			}
 			$src = Parvula::getRelativeURIToRoot() . $src;
 		}
 
@@ -78,7 +75,7 @@ class Html {
 	 * @param mixed ($else) Value to print if variable doesn't exists
 	 * @return string Secure string from XSS
 	 */
-	public static function sEcho($var, $else = '') {
+	public static function escape($var, $else = '') {
 		if(isset($var)) {
 			$varCopy = $var;
 		} else {
@@ -94,7 +91,7 @@ class Html {
 	 * @param mixed $then
 	 * @return string Secure string from XSS
 	 */
-	public static function sEchoThen($var, $then) {
+	public static function escapeThen($var, $then) {
 		if(isset($var)) {
 			$varCopy = $var . $then;
 		} else {
