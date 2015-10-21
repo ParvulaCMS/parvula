@@ -45,23 +45,85 @@ class Config {
 	 * @return mixed Value from config
 	 */
 	public function get($key, $default = null) {
-		if (isset($this->config[$key])) {
-			return $this->config[$key];
+		$pieces = explode('.', $key);
+		// $key = $pieces[0];
+
+		// if (isset($this->config[$key])) {
+			// return $this->config[$key];
+		// }
+
+		$ptr = &$this->config;
+
+		foreach($pieces as $step) {
+			if (!isset($ptr[$step])) {
+				return $default;
+			}
+			$ptr = &$ptr[$step];
 		}
 
-		return $default;
+		return $ptr;
 	}
 
 	/**
-	 * Set configuration value from key
+	 * Set configuration value from key (create a new key if needed)
 	 *
 	 * @param mixed $key
 	 * @param mixed $value
+	 * @param bool True if value is set
 	 */
 	public function set($key, $value) {
-		if (!empty($key)) {
-			$this->config[$key] = $value;
+		$pieces = explode('.', $key);
+		$ptr = &$this->config;
+
+		foreach($pieces as $step) {
+			if (!isset($ptr[$step])) {
+				$ptr = [];
+			}
+			$ptr = &$ptr[$step];
 		}
+
+		return $ptr = $value;
+	}
+
+	/**
+	 * Edit configuration value from key (without creating a new key)
+	 *
+	 * @param mixed $key
+	 * @param mixed $value
+	 * @param bool False if the value does not exists
+	 */
+	public function edit($key, $value) {
+		$pieces = explode('.', $key);
+		$ptr = &$this->config;
+
+		foreach($pieces as $step) {
+			if (!isset($ptr[$step])) {
+				return false;
+			}
+			$ptr = &$ptr[$step];
+		}
+
+		$ptr = $value;
+		return true;
+	}
+
+	/**
+	 * Check if key exists
+	 *
+	 * @return bool
+	 */
+	public function has($key) {
+		$pieces = explode('.', $key);
+		$ptr = &$this->config;
+
+		foreach($pieces as $step) {
+			if (!isset($ptr[$step])) {
+				return false;
+			}
+			$ptr = &$ptr[$step];
+		}
+
+		return true;
 	}
 
 	/**
