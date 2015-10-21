@@ -1,9 +1,8 @@
 <?php
 
-namespace Parvula\Core\Serializer;
+namespace Parvula\Core\PageSerializer;
 
 use Parvula\Core\Page;
-use Parvula\Core\Config;
 
 /**
  * HtmlPageSerializer class
@@ -13,7 +12,7 @@ use Parvula\Core\Config;
  * @author Fabien Sa
  * @license MIT License
  */
-class HtmlPageSerializer extends JsonPageSerializer implements PageSerializerInterface {
+class Html extends JsonPageSerializer implements PageSerializerInterface {
 
 	private $data = [];
 	private $parvula = null;
@@ -37,7 +36,7 @@ class HtmlPageSerializer extends JsonPageSerializer implements PageSerializerInt
 	 */
 	public function unserialize($filePath, $data = null) {
 		// echo "<h1>A</h1>\n";
-		// 
+		//
 		if($this->parvula === null) {
 			$this->parvula = new Parvula;
 		}
@@ -67,7 +66,7 @@ class HtmlPageSerializer extends JsonPageSerializer implements PageSerializerInt
 		// 		return '<div file="' . $page->url . '" editable="true">' . $page->content . '</div>';
 		// 	},
 		// 	$page->content
-		// );	
+		// );
 
 		// foreach ($page as $key => $value) {
 		// 	$page->content = str_replace('{{' . $key . '}}', $value, $page->content);
@@ -85,23 +84,23 @@ class HtmlPageSerializer extends JsonPageSerializer implements PageSerializerInt
 // $contentB = $parvula->getPage('home');
 // 		$page->content = str_replace('{{include ' . 'home' . '}}', $contentB, $page->content);
 
-		// 
+		//
 		// INCLUDE PAGE
 		// -> iseditable sera en js (?)
 
 		return $page;
 	}
 
-	private function replaceInclude($matches) {
-
-		// str_replace("", replace, subject)
-
-		// $parvula = new Parvula();
-		$page = $this->parvula->getPage($matches[1]);
-		$this->data += (array)$page;
-		// $page = parent::unserialize($filePath, $data);
-
-		return $page->content;
-	}
+	// private function replaceInclude($matches) {
+	//
+	// 	// str_replace("", replace, subject)
+	//
+	// 	// $parvula = new Parvula();
+	// 	$page = $this->parvula->getPage($matches[1]);
+	// 	$this->data += (array)$page;
+	// 	// $page = parent::unserialize($filePath, $data);
+	//
+	// 	return $page->content;
+	// }
 
 }

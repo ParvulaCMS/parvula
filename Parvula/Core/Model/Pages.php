@@ -3,7 +3,7 @@
 namespace Parvula\Core\Model;
 
 use Parvula\Core\Page;
-use Parvula\Core\Parser\ContentParserInterface;
+use Parvula\Core\ContentParser\ContentParserInterface;
 
 /**
  * Page Manager

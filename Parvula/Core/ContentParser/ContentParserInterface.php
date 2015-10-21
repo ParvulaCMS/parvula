@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Core\Parser;
+namespace Parvula\Core\ContentParser;
 
 /**
  * ContentParser interface

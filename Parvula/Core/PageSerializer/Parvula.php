@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Core\Serializer;
+namespace Parvula\Core\PageSerializer;
 
 use Parvula\Core\Page;
 use Parvula\Core\Exception\PageException;
@@ -14,7 +14,7 @@ use Parvula\Core\Exception\PageException;
  * @author Fabien Sa
  * @license MIT License
  */
-class ParvulaPageSerializer implements PageSerializerInterface {
+class Parvula implements PageSerializerInterface {
 
 	/**
 	 * Serialize page

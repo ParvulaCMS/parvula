@@ -13,7 +13,7 @@ use Parvula\Core\Page;
  * @author Fabien Sa
  * @license MIT License
  */
-class ParvulaJsonPageSerializer implements PageSerializerInterface {
+class ParvulaJson implements PageSerializerInterface {
 
 	/**
 	 * Serialize page

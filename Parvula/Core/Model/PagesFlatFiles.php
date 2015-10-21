@@ -6,8 +6,8 @@ use Parvula\Core\Page;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
 use Parvula\Core\Exception\PageException;
-use Parvula\Core\Parser\ContentParserInterface;
-use Parvula\Core\Serializer\PageSerializerInterface;
+use Parvula\Core\ContentParser\ContentParserInterface;
+use Parvula\Core\PageSerializer\PageSerializerInterface;
 
 /**
  * Flat file pages

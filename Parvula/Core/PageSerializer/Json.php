@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Core\Serializer;
+namespace Parvula\Core\PageSerializer;
 
 use Parvula\Core\Page;
 
@@ -13,7 +13,7 @@ use Parvula\Core\Page;
  * @author Fabien Sa
  * @license MIT License
  */
-class JsonPageSerializer implements PageSerializerInterface {
+class Json implements PageSerializerInterface {
 
 	/**
 	 * Serialize page
@@ -37,12 +37,11 @@ class JsonPageSerializer implements PageSerializerInterface {
 
 		$dataArr = json_decode($data);
 
-		$page = new Page();
 		$page = Page::pageFactory((array)$dataArr);
 
 		$page->url = ltrim($filePath, '/');
 		// $page->content = $headerInfos[1];
-		// 
+		//
 		// print_r($page);
 
 		return $page;
