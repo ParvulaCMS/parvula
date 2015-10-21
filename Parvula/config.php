@@ -43,6 +43,7 @@ return [
 	'userConfig' => 'site.conf.json',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
+	'contentParser' => '\Parvula\Core\ContentParser\Markdown',
 
 	// Class to (un)serialize pages (must implements PageSerializerInterface)
 	'pageSerializer' => '\Parvula\Core\PageSerializer\Parvula',
