@@ -46,12 +46,6 @@ class Config {
 	 */
 	public function get($key, $default = null) {
 		$pieces = explode('.', $key);
-		// $key = $pieces[0];
-
-		// if (isset($this->config[$key])) {
-			// return $this->config[$key];
-		// }
-
 		$ptr = &$this->config;
 
 		foreach($pieces as $step) {
@@ -76,10 +70,10 @@ class Config {
 		$ptr = &$this->config;
 
 		foreach($pieces as $step) {
+			$ptr = &$ptr[$step];
 			if (!isset($ptr[$step])) {
 				$ptr = [];
 			}
-			$ptr = &$ptr[$step];
 		}
 
 		return $ptr = $value;
