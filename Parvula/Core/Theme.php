@@ -18,9 +18,12 @@ class Theme {
 	/**
 	 * @var string The theme path
 	 */
-	private $path;
+	public $path;
 
-	private $info;
+	/**
+	 * @var string[] Theme info
+	 */
+	public $info;
 
 	private static $THEME_INFO_FILE = 'theme.json';
 
@@ -30,16 +33,15 @@ class Theme {
 	 * @param string $themesPath
 	 */
 	public function __construct($themePath) {
-		if(!file_exists($themePath . '/' . self::$THEME_INFO_FILE)) {
+		$this->path = rtrim($themePath, '/') . '/';
+
+		if(!file_exists($this->path . self::$THEME_INFO_FILE)) {
 			throw new NotFoundException(
-				'`' . self::$THEME_INFO_FILE . '` does not exists for theme ` ' . $themePath . '`');
+				'`' . self::$THEME_INFO_FILE . '` does not exists for theme ` ' . $this->path . '`');
 		}
 
-		$this->path = $themePath;
-
-		$data = file_get_contents($themePath);
+		$data = file_get_contents($this->path . self::$THEME_INFO_FILE);
 		$info = json_decode($data);
-
 		$this->info = $info;
 	}
 
