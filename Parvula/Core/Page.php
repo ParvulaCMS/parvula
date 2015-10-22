@@ -36,7 +36,7 @@ class Page {
 	/**
 	 * Page factory, create a new page from an array
 	 * The parameter $pageInfo must contain, at least, the `title` and `slug` fields.
-	 * The `slug` need to be normalized (a-z0-9@-_+./).
+	 * The `slug` need to be normalized (a-z0-9-_+/).
 	 *
 	 * @param array $pageInfo Array with page information (must contain `title` and `slug` fields)
 	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
@@ -53,7 +53,7 @@ class Page {
 			$pageInfo['content'] = '';
 		}
 
-		if (!preg_match('/^[a-z0-9@\-_\+\.\/]+$/', $pageInfo['slug'])) {
+		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $pageInfo['slug'])) {
 			throw new PageException('Page cannot be created, $pageInfo[slug] (' .
 				htmlspecialchars($pageInfo['slug']) . ') value is not normalized');
 		}

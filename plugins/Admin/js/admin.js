@@ -198,7 +198,7 @@ jQuery(function() {
 			// New page
 
 			// Sanitize filename
-			page.slug = page.title.toLowerCase().replace(/[^a-z0-9@\-_\+\.\/]/g, '_').toLowerCase();
+			page.slug = page.title.toLowerCase().replace(/[^a-z0-9\-_\+\/]/g, '_').toLowerCase();
 			window.location.hash = '#' + page.slug;
 
 			api.pages.create(page, function(msg, err) {
