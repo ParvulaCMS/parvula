@@ -1,7 +1,7 @@
 <?php
 
 // ----------------------------- //
-// # Core config
+//  System config
 // ----------------------------- //
 
 return [
@@ -38,6 +38,9 @@ return [
 
 	// Sort pages from specific field (like title, index or whatYouWant)
 	'sortField' => 'slug',
+
+	// File extensions in 'media' folder
+	'mediaExtensions' => ['jpg', 'jpeg', 'png', 'gif'],
 
 	// User config file to read
 	'userConfig' => 'site.conf.json',

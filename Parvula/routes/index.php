@@ -3,8 +3,8 @@
 use Parvula\Core\Parvula;
 use Parvula\Core\Model\PagesFlatFiles;
 
-// Front - Pages
-$router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
+// Pages handler (slug must be `a-z0-9-_+/`)
+$router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 
 	$slug = rtrim($req->params->slug, '/');
 	$slug = urldecode($slug);
@@ -32,7 +32,8 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 
 	// 404
 	if(false === $page) {
-		// header(' ', true, 404); // Set header to 404
+		// header(' ', true, 404);
+		header('HTTP/1.0 404 Not Found'); // Set header to 404
 		$page = $pages->read($app['config']->get('errorPage'));
 		$plugins->trigger('404', [&$page]);
 
@@ -66,18 +67,42 @@ $router->map('GET|POST', '/{slug:.*}', function($req) use($app) {
 			}
 		]);
 
-		if(isset($page->layout)) {
+		if(isset($page->layout) && $theme->hasLayout($page->layout)) {
 			$layout = $page->layout;
 		} else {
 			$layout = 'index';
 		}
 
-		$plugins->trigger('BeforeRender', [&$layout]);
+		$plugins->trigger('beforeRender', [&$layout]);
 		$out = $view->render($layout);
-		$plugins->trigger('AfterRender', [&$out]);
-		echo $out;
+		$plugins->trigger('afterRender', [&$out]);
+		return $out;
 
 	} catch(Exception $e) {
-		exceptionHandler($e);
+		exceptionHandler($e); // TODO
 	}
+});
+
+// Files handler (media or uploads) (must have an extension)
+$router->get('/{file:.+\.[^.]{2,8}}', function($req) use($app) {
+
+	$filePath = str_replace('..', '', $req->params->file);
+	$ext  = pathinfo($filePath, PATHINFO_EXTENSION);
+
+	if (in_array($ext, $app['config']->get('mediaExtensions'))) {
+		$filePath = IMAGES . $filePath;
+	} else {
+		$filePath = UPLOADS . $filePath;
+	}
+
+	if (!is_file($filePath)) {
+		header('HTTP/1.0 404 Not Found');
+		die('404');
+	}
+
+	$info = new finfo(FILEINFO_MIME_TYPE);
+	$contentType = $info->file($filePath);
+
+	header('Content-Type: ' . $contentType);
+	readfile($filePath);
 });
