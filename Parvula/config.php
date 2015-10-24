@@ -43,7 +43,7 @@ return [
 	'mediaExtensions' => ['jpg', 'jpeg', 'png', 'gif'],
 
 	// User config file to read
-	'userConfig' => 'site.conf.json',
+	'userConfig' => 'site.conf.yaml',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
 	'contentParser' => '\Parvula\Core\ContentParser\Markdown',
