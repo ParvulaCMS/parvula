@@ -2,7 +2,7 @@
 
 // Register services
 
-$app->add('errorHandler', function() {
+$app->share('errorHandler', function () {
 	if (class_exists('\\Whoops\\Run')) {
 		$whoops = new Whoops\Run();
 		$whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
@@ -17,18 +17,27 @@ $app->add('errorHandler', function() {
 	}
 });
 
-$app->share('config', function() {
+$app->share('config', function () {
 	// Populate Config wrapper
 	return new Parvula\Core\Config(require APP . 'config.php');
 });
 
-$app->share('plugins', function() use($app) {
+$app->add('fileParser', function() {
+	$parsers = [
+		'json' => new \Parvula\Core\Parser\Json,
+		'yaml' => new \Parvula\Core\Parser\Yaml
+	];
+
+	return new Parvula\Core\Model\FileParser($parsers);
+});
+
+$app->share('plugins', function () use($app) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
 	$pluginMediator->attach(getPluginList($app['config']->get('disabledPlugins')));
 	return $pluginMediator;
 });
 
-$app->share('request', function() use($app) {
+$app->share('request', function () {
 	parse_str(file_get_contents("php://input"), $post_vars);
 
 	return new Parvula\Core\Router\Request(
@@ -40,7 +49,7 @@ $app->share('request', function() use($app) {
 	);
 });
 
-$app->add('pages', function() use ($app) {
+$app->add('pages', function () use ($app) {
 	$fileExtension =  '.' . $app['config']->get('fileExtension');
 	$pageSerializer = $app['config']->get('pageSerializer');
 	$contentParser = $app['config']->get('contentParser');
@@ -49,6 +58,6 @@ $app->add('pages', function() use ($app) {
 		new $contentParser, new $pageSerializer, $fileExtension);
 });
 
-$app->add('themes', function() use ($app) {
+$app->add('themes', function () {
 	return new Parvula\Core\Model\Themes(THEMES);
 });
