@@ -28,22 +28,6 @@ function getPluginList(array $except = []) {
 }
 
 /**
- * Parse configuration data in object
- * @param string $configData
- * @return StdClass Config object
- */
-function parseConfigData($configData) {
-	preg_match_all('/([^\s:]+)[\s:]+(.+)/', $configData, $matches);
-
-	$conf = new \StdClass();
-	for ($i = 0; $i <= count($matches); ++$i) {
-		$conf->{$matches[1][$i]} = trim($matches[2][$i]);
-	}
-
-	return $conf;
-}
-
-/**
  * Handle exceptions
  * @param Exception $e
  * @return
