@@ -45,7 +45,12 @@ class FileParser implements CRUDInterface
 
 		$parser = $this->getParser($filePath);
 
-		$raw = file_get_contents($filePath);
+		// Read method
+		if (isset($parser->include) && $parser->include === true) {
+			$raw = require $filePath;
+		} else {
+			$raw = file_get_contents($filePath);
+		}
 
 		return $this->decode($parser, $raw);
 	}

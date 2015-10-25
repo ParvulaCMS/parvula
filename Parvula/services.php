@@ -26,7 +26,8 @@ $app->share('config', function () {
 $app->add('fileParser', function() {
 	$parsers = [
 		'json' => new \Parvula\Core\Parser\Json,
-		'yaml' => new \Parvula\Core\Parser\Yaml
+		'yaml' => new \Parvula\Core\Parser\Yaml,
+		'php' => new \Parvula\Core\Parser\Php
 	];
 
 	return new Parvula\Core\Model\FileParser($parsers);
