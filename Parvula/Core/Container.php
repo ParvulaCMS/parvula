@@ -38,13 +38,13 @@ class Container implements ArrayAccess
 	public function get($id) {
 		if(isset($this->sharedInstances[$id])) {
 			if($this->sharedInstances[$id] === true) {
-				$this->sharedInstances[$id] = $this->instances[$id]();
+				$this->sharedInstances[$id] = $this->instances[$id]($this);
 			}
 
 			return $this->sharedInstances[$id];
 		}
 		else if (isset($this->instances[$id])) {
-			return $this->instances[$id]();
+			return $this->instances[$id]($this);
 		}
 
 		throw new NotFoundException(
