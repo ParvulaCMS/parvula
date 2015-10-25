@@ -1,6 +1,7 @@
 <?php
-
+// ----------------------------- //
 // Register services
+// ----------------------------- //
 
 $app->share('errorHandler', function () {
 	if (class_exists('\\Whoops\\Run')) {
@@ -31,9 +32,9 @@ $app->add('fileParser', function() {
 	return new Parvula\Core\Model\FileParser($parsers);
 });
 
-$app->share('plugins', function () use($app) {
+$app->share('plugins', function ($this) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
-	$pluginMediator->attach(getPluginList($app['config']->get('disabledPlugins')));
+	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
 	return $pluginMediator;
 });
 
@@ -49,10 +50,10 @@ $app->share('request', function () {
 	);
 });
 
-$app->add('pages', function () use ($app) {
-	$fileExtension =  '.' . $app['config']->get('fileExtension');
-	$pageSerializer = $app['config']->get('pageSerializer');
-	$contentParser = $app['config']->get('contentParser');
+$app->add('pages', function ($this) {
+	$fileExtension =  '.' . $this['config']->get('fileExtension');
+	$pageSerializer = $this['config']->get('pageSerializer');
+	$contentParser = $this['config']->get('contentParser');
 
 	return new Parvula\Core\Model\PagesFlatFiles(
 		new $contentParser, new $pageSerializer, $fileExtension);
