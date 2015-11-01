@@ -1,9 +1,10 @@
 <?php
 
-namespace Parvula\Core\Model;
+namespace Parvula\Core\Model\Mapper;
 
-use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Theme;
+use Parvula\Core\Model\CRUDInterface;
+use Parvula\Core\FilesSystem as Files;
 
 /**
  * Themes Manager
@@ -62,12 +63,14 @@ class Themes implements CRUDInterface
 	}
 
 	public function update($theme, $data) {
+		return false;
 	}
 
 	public function create($data) {
+		return false;
 	}
 
 	public function delete($data) {
+		return false;
 	}
-
 }

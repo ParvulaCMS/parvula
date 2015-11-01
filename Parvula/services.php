@@ -61,5 +61,5 @@ $app->add('pages', function ($this) {
 });
 
 $app->add('themes', function () {
-	return new Parvula\Core\Model\Themes(THEMES);
+	return new Parvula\Core\Model\Mapper\Themes(THEMES);
 });
