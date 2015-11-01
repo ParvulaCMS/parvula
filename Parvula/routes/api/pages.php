@@ -3,7 +3,7 @@
 namespace Parvula;
 
 use Exception;
-use Parvula\Core\Page;
+use Parvula\Core\Model\Page;
 use Parvula\Core\Model\PagesFlatFiles;
 use Parvula\Core\Exception\IOException;
 

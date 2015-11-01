@@ -2,7 +2,7 @@
 
 namespace Parvula\Core\PageSerializer;
 
-use Parvula\Core\Page;
+use Parvula\Core\Model\Page;
 
 /**
  * JsonPageSerializer class

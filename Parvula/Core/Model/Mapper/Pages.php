@@ -2,7 +2,7 @@
 
 namespace Parvula\Core\Model\Mapper;
 
-use Parvula\Core\Page;
+use Parvula\Core\Model\Page;
 use Parvula\Core\ContentParser\ContentParserInterface;
 use Parvula\Core\Model\CRUDInterface;
 

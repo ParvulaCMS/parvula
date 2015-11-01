@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Core;
+namespace Parvula\Core\Model;
 
 use Parvula\Core\Exception\PageException;
 

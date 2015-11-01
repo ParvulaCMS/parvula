@@ -2,7 +2,7 @@
 
 namespace Parvula\Core\Serializer;
 
-use Parvula\Core\Page;
+use Parvula\Core\Model\Page;
 
 /**
  * ParvulaPageSerializer class
@@ -25,7 +25,7 @@ class ParvulaJson implements PageSerializerInterface {
 
 		$content = $page->content;
 		unset($page->content);
-		unset($page->url);
+		unset($page->slug);
 
 		$header =  json_encode($page, JSON_PRETTY_PRINT);
 

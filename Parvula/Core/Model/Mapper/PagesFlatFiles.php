@@ -2,7 +2,7 @@
 
 namespace Parvula\Core\Model\Mapper;
 
-use Parvula\Core\Page;
+use Parvula\Core\Model\Page;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
 use Parvula\Core\Exception\PageException;
