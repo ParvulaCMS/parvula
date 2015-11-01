@@ -1,9 +1,10 @@
 <?php
 
-namespace Parvula\Core\Model;
+namespace Parvula\Core\Model\Mapper;
 
 use Parvula\Core\Page;
 use Parvula\Core\ContentParser\ContentParserInterface;
+use Parvula\Core\Model\CRUDInterface;
 
 /**
  * Page Manager
@@ -14,7 +15,7 @@ use Parvula\Core\ContentParser\ContentParserInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Pages
+abstract class Pages implements CRUDInterface
 {
 	/**
 	 * @var array<Page>
@@ -45,42 +46,7 @@ abstract class Pages
 	public abstract function read($pageUID);
 	// public abstract function get($pageUID, $parseContent = true, $eval = false);
 
-	/**
-	 * Create page object
-	 *
-	 * @param Page $page Page object
-	 * @param string $pageUID Page unique ID
-	 * @throws IOException If the page does not exists
-	 * @return string|bool Return true if ok, string if error
-	 */
-	public abstract function create($pageUID, Page $page);
-
-	// TODO
-	/**
-	 * Update page object
-	 *
-	 * @param Page $page Page object
-	 * @param string $pageUID Page unique ID
-	 * @throws IOException If the page does not exists
-	 * @return string|bool Return true if ok, string if error
-	 */
-	public abstract function update($pageUID, Page $page);
-
-	/**
-	 * Delete a page
-	 *
-	 * @param string $pageUID
-	 * @throws IOException If the page does not exists
-	 * @return boolean If page is deleted
-	 */
-	public abstract function delete($pageUID);
-
-	/**
-	 * Index pages and get an array of pages slug
-	 *
-	 * @return array Array of pages paths
-	 */
-	public abstract function index();
+	public abstract function patch($pageUID, array $page);
 
 	/**
 	 * Fetch all pages

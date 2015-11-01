@@ -23,7 +23,7 @@ $app->share('config', function () {
 	return new Parvula\Core\Config(require APP . 'config.php');
 });
 
-$app->add('fileParser', function() {
+$app->add('fileParser', function () {
 	$parsers = [
 		'json' => new \Parvula\Core\Parser\Json,
 		'yaml' => new \Parvula\Core\Parser\Yaml,
@@ -56,7 +56,7 @@ $app->add('pages', function ($this) {
 	$pageSerializer = $this['config']->get('pageSerializer');
 	$contentParser = $this['config']->get('contentParser');
 
-	return new Parvula\Core\Model\PagesFlatFiles(
+	return new Parvula\Core\Model\Mapper\PagesFlatFiles(
 		new $contentParser, new $pageSerializer, $fileExtension);
 });
 

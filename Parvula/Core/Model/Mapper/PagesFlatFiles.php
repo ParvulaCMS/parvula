@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Core\Model;
+namespace Parvula\Core\Model\Mapper;
 
 use Parvula\Core\Page;
 use Parvula\Core\FilesSystem as Files;
@@ -102,9 +102,9 @@ class PagesFlatFiles extends Pages
 	 * @throws IOException If the page does not exists
 	 * @return string|bool Return true if ok, string if error
 	 */
-	public function create($pageUID, Page $page) {
+	public function create($page) {
 
-		$pageFullPath = $pageUID . $this->fileExtension;
+		$pageFullPath = $page->slug . $this->fileExtension;
 
 		try {
 			$fs = new Files(PAGES);
@@ -115,6 +115,7 @@ class PagesFlatFiles extends Pages
 			}
 
 			// if (!$fs->isWritable()) {
+				// TODO
 				// throw new PageException('Page is not writable');
 			// }
 
@@ -126,12 +127,20 @@ class PagesFlatFiles extends Pages
 			throw new PageException('Error Processing Request');
 		}
 
-		$this->pages[$pageUID] = $page;
+		$this->pages[$page->slug] = $page;
 
 		// return true;
 	}
 
-	public function update($pageUID, Page $page) {
+	/**
+	 * Update page object
+	 *
+	 * @param Page $page Page object
+	 * @param string $pageUID Page unique ID
+	 * @throws IOException If the page does not exists
+	 * @return string|bool Return true if ok, string if error
+	 */
+	public function update($pageUID, $page) {
 
 		$fs = new Files(PAGES);
 		$pageFile = $pageUID . $this->fileExtension;
