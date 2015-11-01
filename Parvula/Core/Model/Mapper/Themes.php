@@ -2,7 +2,7 @@
 
 namespace Parvula\Core\Model\Mapper;
 
-use Parvula\Core\Theme;
+use Parvula\Core\Model\Theme;
 use Parvula\Core\Model\CRUDInterface;
 use Parvula\Core\FilesSystem as Files;
 
