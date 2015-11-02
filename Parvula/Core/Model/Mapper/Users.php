@@ -7,13 +7,18 @@ use Parvula\Core\ArrayTrait;
 use Parvula\Core\FileParser;
 use Parvula\Core\Model\Mapper\AbstractDataMapper;
 
-class Users extends AbstractDataMapper
+class Users
 {
 
 	/**
 	 * @var array Array of User
 	 */
 	private $parser;
+
+	/**
+	 * @var array User[]
+	 */
+	protected $data;
 
 	public function __construct(FileParser $parser, $usersFile) {
 		$this->parser = $parser;
