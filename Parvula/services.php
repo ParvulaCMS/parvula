@@ -51,6 +51,12 @@ $app->share('request', function () {
 	);
 });
 
+//-- ModelMapper --
+
+$app->add('users', function ($this) {
+	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], DATA . 'users/users.php');
+});
+
 $app->add('pages', function ($this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 	$pageSerializer = $this['config']->get('pageSerializer');
