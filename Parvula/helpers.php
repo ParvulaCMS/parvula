@@ -45,37 +45,22 @@ function exceptionHandler(Exception $e) {
 	exit;
 }
 
-/**
- * Unique ID for session
- * @return string
- */
-function uidSession() {
-	$ip = $_SERVER["REMOTE_ADDR"];
+// $content = hash_hmac('sha256', $username, $publicHash);
+// $hash = hash_hmac('sha256', $content, $password);
+// $hash = hash_hmac('sha256', $message . $timestamp, $apiSecretKey);
+function login($username = 'a', $publicHash, $hash) {
+	// print_r($req->body);
+	//YYYYMMDD
 
-	return sha1(sha1('!#;' . $ip) . $_SERVER['HTTP_USER_AGENT']);
-}
+	// $username = $req->body['username'];
+	// $contentHash = $req->body['hash'];
 
-/**
- * Check if we are admin
- * @return boolean
- */
-function isParvulaAdmin() {
-	if (session_id() === '') {
-		session_start();
-	}
+	// $public = $req->body['public'];
 
-	if (isset($_SESSION, $_SESSION['login']) && $_SESSION['login'] === true) {
-		session_regenerate_id(true);
-		$logged = $_SESSION['login'];
+	$passwordDb = 'qweqwe';
 
-		$sid = uidSession();
-		if(isset($_SESSION['id']) && $_SESSION['id'] !== $sid) {
-			session_destroy();
-			return false;
-		}
+	$content = hash_hmac('sha256', $username, $publicHash);
+	$secureHash = hash_hmac('sha256', $content, $passwordDb);
 
-		return true;
-	} else {
-		return false;
-	}
+	return $secureHash === $hash;
 }
