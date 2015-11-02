@@ -51,6 +51,12 @@ $app->share('request', function () {
 	);
 });
 
+$app->share('session', function () {
+	$session = new Parvula\Core\Session('parvula.');
+	$session->start();
+	return $session;
+});
+
 //-- ModelMapper --
 
 $app->add('users', function ($this) {
