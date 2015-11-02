@@ -29,4 +29,14 @@ class User {
 		}
 	}
 
+	/**
+	 * Check if it is the right password
+	 * 
+	 * @param  string $password Password
+	 * @return bool If the password is ok
+	 */
+	public function login($password) {
+		return password_verify($password, $this->password);
+	}
+
 }
