@@ -35,9 +35,9 @@ class Users extends AbstractDataMapper
 	/**
 	 * Read a user from ID
 	 *
-	 * @param string $id ID (login)
-	 * @throws Exception If the ressource does not exists
-	 * @return mixed The ressource
+	 * @param  string $id ID (login)
+	 * //@throws Exception If the ressource does not exists
+	 * @return User|bool The user or false if user not found
 	 */
 	public function read($id) {
 		foreach ($this->data as $user) {
@@ -45,6 +45,8 @@ class Users extends AbstractDataMapper
 				return new User($user);
 			}
 		}
+
+		return false;
 	}
 
 	/**
