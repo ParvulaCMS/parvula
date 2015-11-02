@@ -64,7 +64,7 @@ $router->get('/pages/{slug:.+}', function($req) use ($pages) {
 //
 // Admin API
 //
-// if(true === isParvulaAdmin()) {
+if($isAdmin()) {
 
 	/**
 	 * @api {post} /pages Create a new page
@@ -230,4 +230,4 @@ $router->get('/pages/{slug:.+}', function($req) use ($pages) {
 // } else {
 	// @TODO
 	// echo '{"message": "Not found or not logged"}';
-// }
+}
