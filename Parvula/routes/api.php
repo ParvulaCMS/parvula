@@ -122,6 +122,10 @@ if($isAdmin()) {
 		return apiResponse($res);
 	});
 
+	$router->group('/_api/themes', function($router) use ($app) {
+		require 'api/themes.php';
+	});
+
 // } else {
 	// @TODO
 	// echo '{"message": "Not found or not logged"}';
