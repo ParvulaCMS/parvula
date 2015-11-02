@@ -15,16 +15,22 @@ $pages = $app['pages'];
 
 /**
  * @api {get} /pages Get all pages
- * @apiName Get pages
+ * @apiName Get all pages
  * @apiGroup Page
  *
  * @apiParam {string} [index] Optional You can pass `?index` at the end to just have the slugs
  *
- * @apiSuccess {array} An array of Page
+ * @apiSuccess {Page[]} pages An array of pages
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     [TODO]
+ *     {
+ *       "status":"success",
+ *       "data":[
+ *         {"title": "home", "slug": "home", "content": "<h1>My home page</h1>..."},
+ *         {"title": "about me", "slug": "about", "content": "..."}
+ *       ]
+*      }
  */
 $router->get('/pages', function($req) use ($pages) {
 	if (isset($req->query->index)) {
@@ -42,7 +48,7 @@ $router->get('/pages', function($req) use ($pages) {
  * @apiParam {string} slug The slug of the page
  * @apiParam {string} [raw] Optional You can pass `?raw` to not parse the content.
  *
- * @apiSuccess {Page} A Page
+ * @apiSuccess {Page} page A Page
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -58,22 +64,23 @@ $router->get('/pages/{slug:.+}', function($req) use ($pages) {
 //
 // Admin API
 //
-if(true === isParvulaAdmin()) {
+// if(true === isParvulaAdmin()) {
 
 	/**
 	 * @api {post} /pages Create a new page
-	 * @apiDescription Page MUST NOT exists
+	 * @apiDescription Page **must not** exists
 	 * @apiName Create page
 	 * @apiGroup Page
 	 *
-	 * @apiParam {string} title
-	 * @apiParam {string} slug
-	 * @apiParam {string} [fieldName] Optional Custom(s) field(s)
+	 * @apiParam {string} title Page title
+	 * @apiParam {string} slug Page slug (eg. `/my-slug`)
+	 * @apiParam {string} [content] Optional Page content
+	 * @apiParam {mixed} [field] Optional Custom(s) field(s)
 	 *
 	 * @apiParamExample Request-Example:
 	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
-	 * @apiSuccess
+	 * @apiSuccess PageCreated
 	 *     HTTP/1.1 201 Created
 	 *
 	 * @apiError BadField No `title` or `slug`
@@ -84,6 +91,20 @@ if(true === isParvulaAdmin()) {
 	 *
 	 * @apiError PageAlreadyExists Page already exists
 	 *      HTTP/1.1 409
+	 *
+	 * @apiErrorExample Error-Response:
+	 *     HTTP/1.1 400
+	 *     {
+	 *       "status": "error"
+	 *       "message": "This page need at least a slug and a title"
+	 *     }
+	 *
+	 * @apiErrorExample Error-Response:
+	 *     HTTP/1.1 409
+	 *     {
+	 *       "status": "error"
+	 *       "message": "This page already exists"
+	 *     }
 	 */
 	// TODO 'Location' header with link to /customers/{id} containing new ID.
 	$router->post('/pages', function($req) use ($pages) {
@@ -114,19 +135,27 @@ if(true === isParvulaAdmin()) {
 	});
 
 	/**
-	 * api {put} /pages/:slug Update a page
+	 * @api {put} /pages/:slug Update a page
 	 * @apiDescription Page MUST exists
 	 * @apiName Update page
 	 * @apiGroup Page
 	 *
-	 * Need at least a `title` and a `slug`
+	 * @apiParam {string} title Page title
+	 * @apiParam {string} slug Page slug (eg. `/my-slug`)
+	 * @apiParam {string} [content] Optional Page content
+	 * @apiParam {mixed} [field] Optional Custom(s) field(s)
 	 *
-	 * PUT /pages/mypage
-	 * title=My new title&slug=my_new_slug&content=Some content
+	 * @apiParamExample Request-Example:
+	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
-	 * 200 if success
-	 * 400 if no `title` or `slug`
-	 * 404 if page does not exists or exception
+	 * @apiSuccess PageCreated
+	 *     HTTP/1.1 200 OK
+	 *
+	 * @apiError BadField No `title` or `slug`
+	 *      HTTP/1.1 400
+	 *
+	 * @apiError PageAlreadyExists If page does not exists or exception
+	 *      HTTP/1.1 404
 	 */
 	$router->put('/pages/{slug:.+}', function($req) use ($pages) {
 
@@ -148,13 +177,21 @@ if(true === isParvulaAdmin()) {
 	});
 
 	/**
-	 * api {patch} /pages/:slug Update specific field(s) of a page
+	 * @api {patch} /pages/:slug Update specific field(s) of a page
+	 * @apiName Patch page
+	 * @apiGroup Page
 	 *
-	 * PATCH /pages/mypage
-	 * title=My new title
+	 * @apiParamExample Request-Example:
+	 *     title=My new title
 	 *
-	 * 200 if success
-	 * 404 if exception
+	 * @apiParamExample Request-Example:
+	 *     title=My new title&content=new content
+	 *
+	 * @apiSuccess PagePatched
+	 *     HTTP/1.1 200 OK
+	 *
+	 * @apiError Exception If exception
+	 *      HTTP/1.1 404
 	 */
 	$router->patch('/pages/{slug:.+}', function($req) use ($pages) {
 
@@ -171,11 +208,14 @@ if(true === isParvulaAdmin()) {
 
 	/*
 	 * @api {delete} /page/:slug Delete a page.
+	 * @apiName Delete page
+	 * @apiGroup Page
 	 *
-	 * DELETE /pages/mypage
+	 * @apiSuccess PagePatched
+	 *     HTTP/1.1 200 OK
 	 *
-	 * 200 if success
-	 * 404 if not ok or exception
+	 * @apiError Exception If not ok or exception
+	 *      HTTP/1.1 404
 	 */
 	$router->delete('/pages/{slug:.+}', function($req) use ($pages) {
 		try {
@@ -190,4 +230,4 @@ if(true === isParvulaAdmin()) {
 // } else {
 	// @TODO
 	// echo '{"message": "Not found or not logged"}';
-}
+// }

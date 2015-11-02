@@ -5,8 +5,6 @@ namespace Parvula;
 use Exception;
 use Parvula\Core\Exception\IOException;
 
-if(!defined('ROOT')) exit;
-
 // Send API message @TODO Temp
 function apiResponse($responseCode = 200, $data = null) {
 
@@ -36,145 +34,97 @@ function apiResponse($responseCode = 200, $data = null) {
 	return json_encode($res);
 }
 
-require 'api/pages.php';
+// TODO
+// Temporary version
+$isAdmin = function () use ($app) {
+	$session = $app['session'];
+	return $session->get('login');
+};
 
 //
 // Public API
 //
 
-$router->post('/login', function($req) {
-	// print_r($req->body);
-	//YYYYMMDD
+/**
+ * @api {post} /login
+ * @apiName Login
+ * @apiGroup Login
+ *
+ * @apiParam {String} username User unique username
+ * @apiParam {String} password User password
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200
+ *     {
+ *       "status": "success",
+ *       "message": "Login ok"
+ *     }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404
+ *     {
+ *       "status": "error",
+ *       "message": "you need to give at a username and a password"
+ *     }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404
+ *     {
+ *       "status": "error",
+ *       "message": "user or password not ok"
+ *     }
+ */
+$router->post('/login', function ($req) use ($app) {
 
-	$username = $req->body['username'];
-	$password = $req->body['password'];
+	$users = $app['users'];
 
-	if($password === 'qwe') {
-		createASession();
-		echo apiResponse(true, 'login ok');
-		// echo '{"status": "ok", "message": "login ok"}';
-	} else {
-		echo apiResponse(false, 'wrong login/password');
-		// echo '{"status": "nok", "message": "wrong login/password'.$password.'"}';
+	if (!isset($req->body->username, $req->body->password)) {
+		return apiResponse(false, 'you need to give at a username and a password');
 	}
 
+	// TODO Tests !
+	if ($app['config']->get('forceLoginOnTLS') === true && $req->secureLayer !== true) {
+		if ($req->scheme !== 'https') {
+			// Try to redirect to https
+			header('Location: https://' . $req->host . $req->uri);
+			exit;
+		}
+	}
 
-	//
-	// $contentHash = $req->body['hash'];
-	//
-	// $public = $req->body['public'];
-	//
-	// $content = hash_hmac('sha256', $username, $contentHash);
-	//
-	// $secureHash = hash_hmac('sha256', $content, $password);
+	$password = $req->body->password;
 
+	if (!($user = $users->read($req->body->username))) {
+		return apiResponse(false, 'user or password not ok');
+	}
 
-	// $publicHash  = $req->body['pub-hash'];
-    // $contentHash = $req->body['hash'];
-    // $privateHash  = 'qweqwe';
-    // $content     = $request->getBody();
+	if (!$user->login($password)) {
+		return apiResponse(false, 'user or password not ok');
+	}
 
-    // $hash = hash_hmac('sha256', $content, $privateHash);
+	// Create a session
+	$app['session']->set('login', true);
+	$app['session']->set('username', $req->body->username);
+	$app['session']->set('token', hash('sha1', $req->ip . $req->userAgent));
 
-    // if ($hash == $contentHash){
-        // echo "match!\n";
-    // }
+	return apiResponse(true, 'Login ok');
 });
 
 //
 // Admin API
 //
-if(true === isParvulaAdmin()) {
-
-	// Upload file
-	//TODO test - Security, etc.
-	$router->post('/upload/images', function() {
-		$uploadfile = IMAGES . basename($_FILES['file']['name']);
-
-		// echo $uploadfile;
-		// print_r($_FILES);
-
-		if (move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)) {
-			return apiResponse(true, 'image was successfully uploaded');
-		} else {
-			return apiResponse(false);
-		}
-	});
-
-	// ANTHO
-	// return images
-	$router->get('/upload/images', function() {
-
-		$files = [];
-		foreach (glob(DATA . 'images' . '/*') as $file) {
-
-			// !! absolute URLs for src attr.
-			$name = $_SERVER['SERVER_NAME'];
-			if($name === 'localhost') $name = 'http://' . $name;
-
-			$files[] = $name . dirname($_SERVER['PHP_SELF']) . '/' . $file;
-		}
-
-		echo json_encode(['status' => 'ok', 'files' => $files]);
-	});
-
-	// ANTHO
-	// delete image
-	$router->delete('/upload/images', function($req) {
-
-		$filename = basename($req->body['filename']);
-		$res = ['status' => 'error', 'message' => 'fail'];
-
-		foreach (glob(DATA . 'images' . '/*') as $file) {
-
-			if(basename($file) === $filename) {
-
-				unlink($file);
-				$res = ['status' => 'ok', 'message' => 'file deleted'];
-				break;
-			}
-		}
-
-		echo json_encode($res);
-	});
-
-	// ANTHO get template
-	// @todo get preferences? Template, etc?
-	$router->get('/template', function() {
-
-		$siteConf = Parvula::getUserConfig();
-		if($siteConf) {
-			return json_encode(['status' => 'ok', 'template' => $siteConf->template]);
-		} else {
-			return apiResponse(false, 'system error');
-		}
-	});
-
-	// @todo -> get available layout for template
-	// ...
-
-	// ANTHO change template
-	// @todo check if it exists
-	$router->post('/template', function($req) {
-
-		$theme = basename($req->body['template']);
-
-		$siteConf = Parvula::getUserConfig();
-		$siteConf->template = $theme;
-
-		file_put_contents(DATA . 'site.conf.json', json_encode($siteConf, JSON_PRETTY_PRINT));
-
-		return apiResponse(true, 'template changed');
-	});
+if($isAdmin()) {
 
 	// Logout
-	$router->map('GET|POST', '/logout', function() {
-		$res = session_destroy();
-		session_unset();
+	$router->map('GET|POST', '/logout', function() use ($app) {
+		$res = $app['session']->destroy();
+		// $res = session_destroy();
+		// session_unset();
 		return apiResponse($res);
 	});
 
-} else {
+// } else {
 	// @TODO
 	// echo '{"message": "Not found or not logged"}';
 }
+
+require 'api/pages.php';
