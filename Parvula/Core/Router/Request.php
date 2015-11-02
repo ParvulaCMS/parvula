@@ -39,6 +39,11 @@ class Request
 	 */
 	public $secureLayer;
 
+	/**
+	 * @var string User agent
+	 */
+	public $userAgent;
+
 
 	/**
 	 * Constructor
@@ -71,6 +76,8 @@ class Request
 		$this->scheme = isset($server['REQUEST_SCHEME']) ? $server['REQUEST_SCHEME'] : '';
 
 		$this->secureLayer = isset($server['HTTPS']) ? $server['HTTPS'] === 'on' : false;
+
+		$this->userAgent = isset($server['HTTP_USER_AGENT']) ? $server['HTTP_USER_AGENT'] : '';
 
 		// Body
 		$this->body = (object) $post;
