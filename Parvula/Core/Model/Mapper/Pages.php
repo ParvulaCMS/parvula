@@ -30,21 +30,11 @@ abstract class Pages implements CRUDInterface
 	/**
 	 * Constructor
 	 *
-	 * @param ContentParserInterface $contentParser
+	 * @param ContentParserInterface $contentParser (optiona)
 	 */
 	 function __construct(ContentParserInterface $contentParser = null) {
 		$this->setParser($contentParser);
 	}
-
-	/**
-	 * Get a page object with parsed content
-	 *
-	 * @param string $pageUID Page unique ID
-	 * @throws IOException If the page does not exists
-	 * @return Page Return the selected page
-	 */
-	public abstract function read($pageUID);
-	// public abstract function get($pageUID, $parseContent = true, $eval = false);
 
 	public abstract function patch($pageUID, array $page);
 
@@ -103,7 +93,7 @@ abstract class Pages implements CRUDInterface
 	/**
 	 * Filter pages
 	 *
-	 * Exemple:
+	 * Example:
 	 * ```
 	 * // Will just keep pages with a title < 10 characters
 	 * $pages->filter(function ($page) {
@@ -160,8 +150,7 @@ abstract class Pages implements CRUDInterface
 	/**
 	 * Set Parvula pages parser
 	 *
-	 * @param ContentParserInterface $customParser
-	 * @return void
+	 * @param ContentParserInterface $customParser (optional) Set a content parser, null if nothing
 	 */
 	public function setParser(ContentParserInterface $customParser = null) {
 		$this->parser = $customParser;

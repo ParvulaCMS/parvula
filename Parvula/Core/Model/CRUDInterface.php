@@ -2,6 +2,15 @@
 
 namespace Parvula\Core\Model;
 
+/**
+ * CRUDI Interface
+ *
+ * @package Parvula
+ * @version 0.5.0
+ * @since 0.5.0
+ * @author Fabien Sa
+ * @license MIT License
+ */
 interface CRUDInterface {
 
 	/**
