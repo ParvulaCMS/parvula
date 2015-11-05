@@ -3,6 +3,8 @@
 // Register services
 // ----------------------------- //
 
+use Parvula\Core\Container;
+
 $app->share('errorHandler', function () {
 	if (class_exists('\\Whoops\\Run')) {
 		$whoops = new Whoops\Run();
@@ -33,7 +35,7 @@ $app->add('fileParser', function () {
 	return new Parvula\Core\Model\FileParser($parsers);
 });
 
-$app->share('plugins', function ($this) {
+$app->share('plugins', function (Container $this) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
 	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
 	return $pluginMediator;
@@ -59,11 +61,11 @@ $app->share('session', function () {
 
 //-- ModelMapper --
 
-$app->add('users', function ($this) {
+$app->add('users', function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], DATA . 'users/users.php');
 });
 
-$app->add('pages', function ($this) {
+$app->add('pages', function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 	$pageSerializer = $this['config']->get('pageSerializer');
 	$contentParser = $this['config']->get('contentParser');
