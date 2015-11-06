@@ -13,7 +13,7 @@ use Parvula\Core\Exception\IOException;
  * @author Fabien Sa
  * @license MIT License
  */
-class FilesSystem {
+class FilesSystem implements IOInterface {
 
 	/**
 	 * @var string
@@ -140,6 +140,7 @@ class FilesSystem {
 	 * @param callable $fn Callback function for each item $fn($key, $val)
 	 * @return array Return array of files
 	 */
+	// TODO flag -> hidden file, recusive
 	public function index($dir = '', $showHiddenFiles = false, callable $fn = null) {
 
 		if (!$this->isDir($dir)) {
