@@ -29,7 +29,7 @@ class Theme {
 	/**
 	 * @var string[] Theme layouts
 	 */
-	private $layouts;
+	public $layouts;
 
 	/**
 	 * @var string Folder of layouts
