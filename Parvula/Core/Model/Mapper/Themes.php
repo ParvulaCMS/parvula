@@ -2,9 +2,10 @@
 
 namespace Parvula\Core\Model\Mapper;
 
+use Parvula\Core\IOInterface;
+use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Model\Theme;
 use Parvula\Core\Model\CRUDInterface;
-use Parvula\Core\FilesSystem as Files;
 
 /**
  * Themes Manager
@@ -17,15 +18,24 @@ use Parvula\Core\FilesSystem as Files;
  */
 class Themes implements CRUDInterface
 {
+
 	private $fs;
+
+	private $parser;
+
+	/**
+	 * @var string Theme config // TODO
+	 */
+	private static $THEME_INFO_FILE = 'theme.yaml';
 
 	/**
 	 * Constructor
 	 *
 	 * @param string $themesPath
 	 */
-	public function __construct($themesPath) {
+	public function __construct($themesPath, IOInterface $configSystem) {
 		$this->fs = new Files($themesPath);
+		$this->parser = $configSystem;
 	}
 
 	/**
@@ -40,7 +50,17 @@ class Themes implements CRUDInterface
 			return false;
 		}
 
-		return new Theme($this->fs->getCWD() . $themeName);
+		$path = $this->fs->getCWD() . $themeName . '/';
+
+		if(!file_exists($path . self::$THEME_INFO_FILE)) {
+			throw new NotFoundException('Invalid theme: `' . self::$THEME_INFO_FILE .
+				'` does not exists for theme ` ' . $path . '`');
+		}
+
+		// Read theme config
+		$infos = $this->parser->read($path . self::$THEME_INFO_FILE);
+
+		return new Theme($path, $infos);
 	}
 
 	/**

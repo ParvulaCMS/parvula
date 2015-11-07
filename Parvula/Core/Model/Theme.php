@@ -2,6 +2,7 @@
 
 namespace Parvula\Core\Model;
 
+use StdClass;
 use Parvula\Core\Exception\NotFoundException;
 
 /**
@@ -23,12 +24,22 @@ class Theme {
 	/**
 	 * @var
 	 */
-	private $extension = 'html';
+	private $extension;
 
 	/**
 	 * @var string[] Theme layouts
 	 */
-	public $layouts;
+	private $layouts;
+
+	/**
+	 * @var string Folder of layouts
+	 */
+	private $layoutsFolder;
+
+	/**
+	 * @var string Default layout name
+	 */
+	private $defaultLayout;
 
 	/**
 	 * @var string Theme name
@@ -41,49 +52,46 @@ class Theme {
 	public $infos;
 
 	/**
-	 * @var string Theme config // TODO
-	 */
-	private static $THEME_INFO_FILE = 'theme.json';
-
-	/**
 	 * Constructor
 	 *
-	 * @param string $themesPath
+	 * @param string $path
+	 * @param object|array $infos
 	 */
-	public function __construct($themePath) {
-		$this->path = rtrim($themePath, '/') . '/';
+	public function __construct($path, $infos) {
+		$this->path = $path;
 
-		if(!file_exists($this->path . self::$THEME_INFO_FILE)) {
-			throw new NotFoundException(
-				'Invalid theme: `' . self::$THEME_INFO_FILE . '` does not exists for theme ` ' . $this->path . '`');
-		}
+		$this->infos = new StdClass;
 
-		// Read theme config
-		$data = file_get_contents($this->path . self::$THEME_INFO_FILE);
-		$infos = json_decode($data);
-		$this->infos = new \StdClass;
+		$defaultInfos = [
+			'layouts' => '',
+			'extension' => 'html',
+			'defaultLayout' => 'default'
+		];
+		$infos += $defaultInfos;
 
 		foreach ($infos as $key => $value) {
 			if (property_exists($this, $key)) {
-				// echo $key;
-				// if (in_array($key, ['name', 'layouts'])) {
 				$this->{$key} = $value;
 			} else {
 				$this->infos->{$key} = $value;
 			}
 		}
 
-		// if (empty($this->layouts)) {
-			// $this->layouts = ['index' => 'index.' . ]
-		// }
+		$this->layoutsFolder = rtrim($this->layouts, '/') . '/';
 
-		// 	$files = glob($this->path . '*.html');
-		// 	print_r($files);
-		// if (empty($this->layouts)) {
-		// 	// $this->layouts = ['index' => 'index.html'];
-		// }
+		if (!is_dir($this->path . $this->layoutsFolder)) {
+			throw new \Exception('Layouts folder `' . $this->layoutsFolder . '` is not valid.');
+		}
 
+		$glob = glob($this->path . $this->layoutsFolder . '*.' . $this->extension, GLOB_NOSORT);
 
+		$this->layouts = new StdClass;
+		foreach ($glob as $layout) {
+			$layout = basename($layout);
+			$name = substr($layout, 0, - strlen($this->extension) - 1);
+			$layout = $this->layoutsFolder . $name;
+			$this->layouts->{$name} = $layout;
+		}
 	}
 
 	/**
@@ -96,6 +104,24 @@ class Theme {
 	}
 
 	/**
+	 * Get file extensions for template files
+	 *
+	 * @return string Extension
+	 */
+	public function getExtension() {
+		return $this->extension;
+	}
+
+	/**
+	 * Return layout folder
+	 *
+	 * @return string
+	 */
+	public function getLayoutFolder() {
+		return $this->layoutsFolder;
+	}
+
+	/**
 	 * Return theme layouts
 	 *
 	 * @return array Array of avalible layouts
@@ -105,9 +131,27 @@ class Theme {
 	}
 
 	/**
+	 * Return the path of the given layout
+	 *
+	 * @param string [$layoutName] Optional layout name. If nothing, use the default layout
+	 * @return bool|string Return false if the layout does not exists
+	 */
+	public function getLayout($layoutName = false) {
+		if (!$layoutName) {
+			$layoutName = $this->defaultLayout;
+		}
+
+		if (!$this->hasLayout($layoutName)) {
+			return false;
+		}
+
+		return $this->layouts->{$layoutName};
+	}
+
+	/**
 	 * Check if given layout is available
 	 *
-	 * @param string $layoutName
+	 * @param string $layoutName Layout name
 	 * @return bool If layout is available
 	 */
 	public function hasLayout($layoutName) {
