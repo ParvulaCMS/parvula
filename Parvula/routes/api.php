@@ -5,7 +5,7 @@ namespace Parvula;
 use Exception;
 use Parvula\Core\Exception\IOException;
 
-// Send API message @TODO Temp
+// Send API message @TODO Temporary
 function apiResponse($responseCode = 200, $data = null) {
 
 	if (is_array($responseCode)) {
@@ -34,16 +34,11 @@ function apiResponse($responseCode = 200, $data = null) {
 	return json_encode($res);
 }
 
-// TODO
-// Temporary version
+// TODO Temporary version
 $isAdmin = function () use ($app) {
 	$session = $app['session'];
 	return $session->get('login');
 };
-
-//
-// Public API
-//
 
 /**
  * @api {post} /login
@@ -109,16 +104,13 @@ $router->post('/login', function ($req) use ($app) {
 	return apiResponse(true, 'Login ok');
 });
 
-//
-// Admin API
-//
-if($isAdmin()) {
+require 'api/pages.php';
+
+if ($isAdmin()) {
 
 	// Logout
 	$router->map('GET|POST', '/logout', function() use ($app) {
 		$res = $app['session']->destroy();
-		// $res = session_destroy();
-		// session_unset();
 		return apiResponse($res);
 	});
 
@@ -131,8 +123,6 @@ if($isAdmin()) {
 	});
 
 // } else {
-	// @TODO
-	// echo '{"message": "Not found or not logged"}';
+// 	// @TODO
+	// echo apiResponse(false, 'API route not found or not logged');
 }
-
-require 'api/pages.php';
