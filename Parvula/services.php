@@ -32,7 +32,7 @@ $app->add('fileParser', function () {
 		'php' => new \Parvula\Core\Parser\Php
 	];
 
-	return new Parvula\Core\Model\FileParser($parsers);
+	return new Parvula\Core\FileParser($parsers);
 });
 
 $app->share('plugins', function (Container $this) {

@@ -2,11 +2,11 @@
 
 // TODO Doc
 
-namespace Parvula\Core\Model;
+namespace Parvula\Core;
 
 use Parvula\Core\Parser\ParserInterface;
 use Parvula\Core\FilesSystem as Files;
-use Parvula\Core\Config;
+use Parvula\Core\IOInterface;
 
 /**
  * File Parser
@@ -17,13 +17,18 @@ use Parvula\Core\Config;
  * @author Fabien Sa
  * @license MIT License
  */
-class FileParser implements CRUDInterface
+class FileParser implements IOInterface
 {
 
 	/**
 	 * @var array<string, ParserInterface>
 	 */
 	private $parsers;
+
+	/**
+	 * @var string Prefix paths
+	 */
+	private $folder;
 
 	/**
 	 * Constructor
@@ -33,50 +38,44 @@ class FileParser implements CRUDInterface
 	 *
 	 * @param array $parser Extensions associated to the right parser
 	 *                      (the parser must implements ParserInterface)
+	 * @param string $folder To prefix all paths
 	 */
-	public function __construct(array $parsers) {
+	public function __construct(array $parsers, $folder = '') {
 		$this->parsers = $parsers;
+		$this->folder = $folder;
 	}
 
 	public function read($filePath) {
-		if (!is_file($filePath)) {
+		if (!is_file($this->folder. $filePath)) {
 			return false;
 		}
 
-		$parser = $this->getParser($filePath);
+		$parser = $this->getParser($this->folder. $filePath);
 
 		// Read method
 		if (isset($parser->include) && $parser->include === true) {
-			$raw = require $filePath;
+			$raw = require $this->folder. $filePath;
 		} else {
-			$raw = file_get_contents($filePath);
+			$raw = file_get_contents($this->folder. $filePath);
 		}
 
 		return $this->decode($parser, $raw);
 	}
 
-	public function index() {
-		return false;
-	}
+	public function write($filePath, $data) {
+		// if (!is_file($this->folder . $filePath)) {
+			// return false;
+		// }
 
-	public function update($filePath, $data) {
-		if (!is_file($filePath)) {
-			return false;
-		}
-
-		$parser = $this->getParser($filePath);
+		$parser = $this->getParser($this->folder . $filePath);
 
 		$dataStr = $this->encode($parser, $data);
 
-		return file_put_contents($filePath, $dataStr);
-	}
-
-	public function create($data) {
-		return false;
+		return file_put_contents($this->folder . $filePath, $dataStr);
 	}
 
 	public function delete($filePath) {
-		return unlink($filePath); // TODO or empty file ?
+		return unlink($this->folder . $filePath); // TODO or empty file ?
 	}
 
 	/**
@@ -85,7 +84,7 @@ class FileParser implements CRUDInterface
 	 */
 	private function getParser($filePath) {
 
-		$ext = pathinfo($filePath, PATHINFO_EXTENSION);
+		$ext = pathinfo($this->folder. $filePath, PATHINFO_EXTENSION);
 
 		if (!isset($this->parsers[$ext])) {
 			throw new ParseException('`' . htmlspecialchars($ext) . '` files cannot be parsed');
