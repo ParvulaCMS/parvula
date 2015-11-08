@@ -2,7 +2,6 @@
 
 namespace Parvula\Core\Router;
 
-use Closure;
 use FastRoute\DataGenerator;
 use FastRoute\DataGenerator\GroupCountBased as GroupCountBasedDataGenerator;
 use FastRoute\RouteCollector;
@@ -43,9 +42,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "GET" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function get($route, Closure $handler) {
+	public function get($route, callable $handler) {
 		$this->addRoute('GET', $this->prefix . $route, $handler);
 	}
 
@@ -53,9 +52,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "POST" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function post($route, Closure $handler) {
+	public function post($route, callable $handler) {
 		$this->addRoute('POST', $this->prefix . $route, $handler);
 	}
 
@@ -63,9 +62,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "PUT" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function put($route, Closure $handler) {
+	public function put($route, callable $handler) {
 		$this->addRoute('PUT', $this->prefix . $route, $handler);
 	}
 
@@ -73,9 +72,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "DELETE" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function delete($route, Closure $handler) {
+	public function delete($route, callable $handler) {
 		$this->addRoute('DELETE', $this->prefix . $route, $handler);
 	}
 
@@ -83,9 +82,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "HEAD" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function head($route, Closure $handler) {
+	public function head($route, callable $handler) {
 		$this->addRoute('HEAD', $this->prefix . $route, $handler);
 	}
 
@@ -93,9 +92,9 @@ class RouteCollection extends RouteCollector {
 	 * Add a new route with "PATCH" method
 	 *
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function patch($route, Closure $handler) {
+	public function patch($route, callable $handler) {
 		$this->addRoute('PATCH', $this->prefix . $route, $handler);
 	}
 
@@ -104,9 +103,9 @@ class RouteCollection extends RouteCollector {
 	 *
 	 * @param string $method
 	 * @param string $route
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function map($method, $route, Closure $handler) {
+	public function map($method, $route, callable $handler) {
 		if (is_string($method)) {
 			$method = explode('|', $method);
 		}
@@ -117,9 +116,9 @@ class RouteCollection extends RouteCollector {
 	 * Group, to prefix a group of routes
 	 *
 	 * @param string $prefix
-	 * @param Closure $handler
+	 * @param callable $handler
 	 */
-	public function group($prefix, Closure $handler) {
+	public function group($prefix, callable $handler) {
 		$that = clone $this;
 		$that->prefix = $prefix;
 		$handler($that);
