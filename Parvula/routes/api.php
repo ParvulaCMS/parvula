@@ -41,15 +41,16 @@ $isAdmin = function () use ($app) {
 };
 
 /**
- * @api {post} /login
+ * @api {post} /login Login
  * @apiName Login
- * @apiGroup Login
+ * @apiGroup Authentication
+ * @apiDescription Create a new session if the login is OK
  *
  * @apiParam {String} username User unique username
  * @apiParam {String} password User password
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200
+ *     HTTP/1.1 200 OK
  *     {
  *       "status": "success",
  *       "message": "Login ok"
@@ -104,15 +105,27 @@ $router->post('/login', function ($req) use ($app) {
 	return apiResponse(true, 'Login ok');
 });
 
+/**
+ * @api {post} /logout Logout
+ * @apiName Logout
+ * @apiGroup Authentication
+ * @apiDescription Delete the current session
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": "success",
+ *       "data": null
+ *     }
+ */
+$router->map('GET|POST', '/logout', function() use ($app) {
+	$res = $app['session']->destroy();
+	return apiResponse($res);
+});
+
 require 'api/pages.php';
 
 if ($isAdmin()) {
-
-	// Logout
-	$router->map('GET|POST', '/logout', function() use ($app) {
-		$res = $app['session']->destroy();
-		return apiResponse($res);
-	});
 
 	$router->group('/_api/themes', function($router) use ($app) {
 		require 'api/themes.php';
@@ -122,7 +135,9 @@ if ($isAdmin()) {
 		require 'api/users.php';
 	});
 
-// } else {
-// 	// @TODO
-	// echo apiResponse(false, 'API route not found or not logged');
 }
+
+// If nothing match in the api group
+$router->map('GET|POST|PUT|DELETE|PATCH', '/{r:.*}', function() use ($app) {
+	return apiResponse(false, 'API route not found or bad credentials');
+});
