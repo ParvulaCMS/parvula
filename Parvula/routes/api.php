@@ -25,7 +25,9 @@ function apiResponse($responseCode = 200, $data = null) {
 		$res['message'] = $data;
 	} else {
 		$res['status'] = 'success';
-		$res['data'] = $data;
+		if ($data !== null) {
+			$res['data'] = $data;
+		}
 	}
 
 	header('Content-Type: application/json');
@@ -44,7 +46,7 @@ $isAdmin = function () use ($app) {
  * @api {post} /login Login
  * @apiName Login
  * @apiGroup Authentication
- * @apiDescription Create a new session if the login is OK
+ * @apiDescription Create a new session if the credentials are OK
  *
  * @apiParam {String} username User unique username
  * @apiParam {String} password User password
@@ -52,8 +54,7 @@ $isAdmin = function () use ($app) {
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "status": "success",
- *       "message": "Login ok"
+ *       "status": "success"
  *     }
  *
  * @apiErrorExample Error-Response:
@@ -102,11 +103,11 @@ $router->post('/login', function ($req) use ($app) {
 	$app['session']->set('username', $req->body->username);
 	$app['session']->set('token', hash('sha1', $req->ip . $req->userAgent));
 
-	return apiResponse(true, 'Login ok');
+	return apiResponse(true);
 });
 
 /**
- * @api {post} /logout Logout
+ * @api {get} /logout Logout
  * @apiName Logout
  * @apiGroup Authentication
  * @apiDescription Delete the current session
@@ -114,13 +115,34 @@ $router->post('/login', function ($req) use ($app) {
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "status": "success",
- *       "data": null
+ *       "status": "success"
  *     }
  */
 $router->map('GET|POST', '/logout', function() use ($app) {
 	$res = $app['session']->destroy();
 	return apiResponse($res);
+});
+
+/**
+ * @api {get} /islogged Is logged
+ * @apiName Is logged
+ * @apiGroup Authentication
+ * @apiDescription Check if is the current session is logged
+ *
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "status": "success",
+ *       "data": true
+ *     }
+ *
+ * @apiSuccessExample Success-Response:
+ *     {
+ *       "status": "success",
+ *       "data": false
+ *     }
+ */
+$router->map('GET|POST', '/islogged', function() use ($isAdmin) {
+	return apiResponse(true, (bool) $isAdmin());
 });
 
 require 'api/pages.php';
@@ -137,7 +159,7 @@ if ($isAdmin()) {
 
 }
 
-// If nothing match in the api group
+// If nothing match in the api group and not loged
 $router->map('GET|POST|PUT|DELETE|PATCH', '/{r:.*}', function() use ($app) {
-	return apiResponse(false, 'API route not found or bad credentials');
+	return apiResponse(400, 'API route not found or bad credentials');
 });
