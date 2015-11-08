@@ -1,7 +1,5 @@
 <?php
 
-// TODO Doc
-
 namespace Parvula\Core;
 
 use Parvula\Core\Parser\ParserInterface;
@@ -23,12 +21,12 @@ class FileParser implements IOInterface
 	/**
 	 * @var array<string, ParserInterface>
 	 */
-	private $parsers;
+	protected $parsers;
 
 	/**
 	 * @var string Prefix paths
 	 */
-	private $folder;
+	protected $folder;
 
 	/**
 	 * Constructor
@@ -45,6 +43,12 @@ class FileParser implements IOInterface
 		$this->folder = $folder;
 	}
 
+	/**
+	 * Read the given file
+	 *
+	 * @param  string $filePath File path
+	 * @return mixed Returns data if the file was parsed, false on failure
+	 */
 	public function read($filePath) {
 		if (!is_file($this->folder. $filePath)) {
 			return false;
@@ -62,6 +66,13 @@ class FileParser implements IOInterface
 		return $this->decode($parser, $raw);
 	}
 
+	/**
+	 * Write the given data to filePath
+	 *
+	 * @param  string $filePath File path
+	 * @param  mixed $data Data
+	 * @return int|bool Returns the number of bytes that were written or false on failure
+	 */
 	public function write($filePath, $data) {
 		// if (!is_file($this->folder . $filePath)) {
 			// return false;
@@ -74,13 +85,12 @@ class FileParser implements IOInterface
 		return file_put_contents($this->folder . $filePath, $dataStr);
 	}
 
-	public function delete($filePath) {
-		return unlink($this->folder . $filePath); // TODO or empty file ?
-	}
-
 	/**
-	 * TODO
-	 * @throws ParseException
+	 * Get the right parser (given the file extension)
+	 *
+	 * @param  string $filePath File path
+	 * @throws ParseException If file type cannot be parsed
+	 * @return ParserInterface Parser
 	 */
 	private function getParser($filePath) {
 
@@ -94,10 +104,24 @@ class FileParser implements IOInterface
 		return $this->parsers[$ext];
 	}
 
+	/**
+	 * Decode serialized data
+	 *
+	 * @param  ParserInterface $parser
+	 * @param  string $raw Raw data
+	 * @return mixed Decoded raw data
+	 */
 	private function decode(ParserInterface $parser, $raw) {
 		return $parser->decode($raw);
 	}
 
+	/**
+	 * Encode structured data
+	 *
+	 * @param  ParserInterface $parser
+	 * @param  mixed $data Structured data
+	 * @return string Encoded data
+	 */
 	private function encode(ParserInterface $parser, $data) {
 		return $parser->encode($data);
 	}
