@@ -38,8 +38,7 @@ function apiResponse($responseCode = 200, $data = null) {
 
 // TODO Temporary version
 $isAdmin = function () use ($app) {
-	$session = $app['session'];
-	return $session->get('login');
+	return $app['usersession'] && $app['usersession']->hasRole('admin');
 };
 
 /**
@@ -99,11 +98,9 @@ $router->post('/login', function ($req) use ($app) {
 	}
 
 	// Create a session
-	$app['session']->set('login', true);
-	$app['session']->set('username', $req->body->username);
-	$app['session']->set('token', hash('sha1', $req->ip . $req->userAgent));
+	$app['auth']->log($user->username);
 
-	return apiResponse(true);
+	return apiResponse(204);
 });
 
 /**
@@ -142,7 +139,7 @@ $router->map('GET|POST', '/logout', function() use ($app) {
  *     }
  */
 $router->map('GET|POST', '/islogged', function() use ($isAdmin) {
-	return apiResponse(true, (bool) $isAdmin());
+	return apiResponse(200, (bool) $isAdmin());
 });
 
 require 'api/pages.php';

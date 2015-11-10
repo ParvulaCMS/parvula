@@ -55,8 +55,24 @@ $app->share('request', function () {
 
 $app->share('session', function () {
 	$session = new Parvula\Core\Session('parvula.');
-	$session->start();
+	$session->start(true);
 	return $session;
+});
+
+$app->share('auth', function (Container $this) {
+	return new Parvula\Core\Authentication('parvula.', hash('sha1', $this['request']->ip . $this['request']->userAgent));
+});
+
+// Get current logged User if available
+$app->share('usersession', function (Container $this) {
+	$sess = $this['session'];
+	if ($username = $sess->get('username')) {
+		if ($this['auth']->isLogged($username)) {
+			return $this['users']->read($username);
+		}
+	}
+
+	return false;
 });
 
 //-- ModelMapper --
