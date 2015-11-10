@@ -31,22 +31,22 @@ class Users
 	 * @return array List of ressources
 	 */
 	public function index() {
-		// Return users login
+		// Return users username
 		return array_map(function($user) {
-			return $user['login'];
+			return $user['username'];
 		}, $this->data);
 	}
 
 	/**
 	 * Read a user from ID
 	 *
-	 * @param  string $id ID (login)
+	 * @param  string $id ID (username)
 	 * //@throws Exception If the ressource does not exists
 	 * @return User|bool The user or false if user not found
 	 */
 	public function read($id) {
 		foreach ($this->data as $user) {
-			if ($user['login'] === $id) {
+			if ($user['username'] === $id) {
 				return new User($user);
 			}
 		}
@@ -61,9 +61,9 @@ class Users
 	 * @param mixed $data Data
 	 * @return bool
 	 */
-	public function update($login, $user) {
+	public function update($username, $user) {
 		// ovveride ?
-		if ($userOld = $parser->read($user->login)) {
+		if ($userOld = $parser->read($user->username)) {
 
 		}
 
@@ -77,7 +77,7 @@ class Users
 	 * @return bool
 	 */
 	public function create($user) {
-		if (!$parser->read($user->login)) {
+		if (!$parser->read($user->username)) {
 
 		}
 
