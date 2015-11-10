@@ -2,6 +2,7 @@
 
 namespace Parvula\Core\PageSerializer;
 
+use InvalidArgumentException;
 use Parvula\Core\Model\Page;
 use Parvula\Core\Parser\Yaml;
 
@@ -28,12 +29,12 @@ class ParvulaYaml implements PageSerializerInterface {
 		}
 
 		$content = $page->content;
+		unset($page->content); // No content in the header
 
 		// Create the header
-		unset($page->content); // No content in the header
-		$header = PHP_EOL . (new Yaml)->encode((array) $page);
-
-		$header .= PHP_EOL . str_repeat('-', 5) . PHP_EOL . PHP_EOL;
+		$header = str_repeat('-', 3) . PHP_EOL;
+		$header .= trim((new Yaml)->encode((array) $page));
+		$header .= PHP_EOL . str_repeat('-', 3) . PHP_EOL . PHP_EOL;
 
 		return $header . $content;
 	}
@@ -47,10 +48,10 @@ class ParvulaYaml implements PageSerializerInterface {
 	 */
 	public function unserialize($data, array $options = []) {
 		if (!isset($options['slug'])) {
-			throw new \InvalidArgumentException('$options MUST have the `slug` field');
+			throw new InvalidArgumentException('$options MUST have the `slug` field');
 		}
 
-		$pageInfos = preg_split("/\s[-=]{3,}\s+/", $data, 2);
+		$pageInfos = preg_split("/\s[-=]{3,}\s+/", ltrim($data), 2);
 		$headerData = trim($pageInfos[0]);
 
 		$pageInfo = (new Yaml)->decode($headerData);
