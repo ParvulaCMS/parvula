@@ -5,11 +5,6 @@ namespace Parvula\Core;
 class Session {
 
 	/**
-	 * @var bool If session is started
-	 */
-	protected $isStarted = false;
-
-	/**
 	 * @var bool Prefix
 	 */
 	protected $prefix;
@@ -26,12 +21,13 @@ class Session {
 	/**
 	 * Starts the session
 	 *
+	 * @param bool $regenerateId
 	 * @return bool If the session has started
 	 */
-	public function start() {
-		if (!headers_sent() && !$this->isStarted) {
-			$this->isStarted = true;
-			return session_start() && session_regenerate_id(true);
+	public function start($regenerateId = true) {
+		if (!headers_sent() && !$this->isStarted()) {
+			session_name('parvula_sess');
+			return session_start() && session_regenerate_id($regenerateId);
 		}
 
 		return false;
@@ -78,11 +74,20 @@ class Session {
 	 * @return bool
 	 */
 	public function destroy() {
-		if ($this->isStarted) {
+		if ($this->isStarted()) {
 			return session_destroy();
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if the session is already started
+	 *
+	 * @return boolean
+	 */
+	public function isStarted() {
+		return session_status() === PHP_SESSION_ACTIVE;
 	}
 
 }
