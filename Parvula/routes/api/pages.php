@@ -9,35 +9,28 @@ use Parvula\Core\Exception\IOException;
 
 $pages = $app['pages'];
 
-//
-// Public API
-//
-
 /**
  * @api {get} /pages Get all pages
  * @apiName Get all pages
  * @apiGroup Page
  *
- * @apiParam {string} [index] Optional You can pass `?index` at the end to just have the slugs
+ * @apiParam {string} [index] Optional You can pass `?index` to url to just have the slugs
  *
- * @apiSuccess {Page[]} pages An array of pages
+ * @apiSuccess (200) {Page[]} pages An array of pages
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
- *     {
- *       "status":"success",
- *       "data":[
- *         {"title": "home", "slug": "home", "content": "<h1>My home page</h1>..."},
- *         {"title": "about me", "slug": "about", "content": "..."}
- *       ]
-*      }
+ *     [
+ *       {"title": "home", "slug": "home", "content": "<h1>My home page</h1>..."},
+ *       {"title": "about me", "slug": "about", "content": "..."}
+ *     ]
  */
 $router->get('/pages', function($req) use ($pages) {
 	if (isset($req->query->index)) {
 		// List of pages. Array<string> of slugs
 		return apiResponse(true, $pages->index());
 	}
-	return apiResponse(true, $pages->all()->order(SORT_ASC, 'slug')->toArray());
+	return apiResponse(200, $pages->all()->order(SORT_ASC, 'slug')->toArray());
 });
 
 /**
@@ -48,22 +41,20 @@ $router->get('/pages', function($req) use ($pages) {
  * @apiParam {string} slug The slug of the page
  * @apiParam {string} [raw] Optional You can pass `?raw` to not parse the content.
  *
- * @apiSuccess {Page} page A Page
+ * @apiSuccess (200) {Page} page A Page
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "status": "success",
- *       "data": {"title":"Home page","slug":"home","content":"<h1>Home page<\/h1>"}
+ *       "title":"Home page",
+ *       "slug":"home",
+ *       "content":"<h1>Home page<\/h1>"
  *     }
  */
 $router->get('/pages/{slug:.+}', function($req) use ($pages) {
-	return apiResponse(true, $pages->read($req->params->slug, !isset($req->query->raw)));
+	return apiResponse(200, $pages->read($req->params->slug, !isset($req->query->raw)));
 });
 
-//
-// Admin API
-//
 if($isAdmin()) {
 
 	/**
@@ -80,33 +71,24 @@ if($isAdmin()) {
 	 * @apiParamExample Request-Example:
 	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
-	 * @apiSuccess PageCreated
-	 *     HTTP/1.1 201 Created
-	 *
-	 * @apiError BadField No `title` or `slug`
-	 *      HTTP/1.1 400
-	 *
-	 * @apiError Exception If exception
-	 *      HTTP/1.1 404
-	 *
-	 * @apiError PageAlreadyExists Page already exists
-	 *      HTTP/1.1 409
+	 * @apiSuccess (201) PageCreated Page was created
+	 * @apiError (400) BadField No `title` or `slug`
+	 * @apiError (404) Exception If exception
+	 * @apiError (409) PageAlreadyExists Page already exists
 	 *
 	 * @apiErrorExample Error-Response:
-	 *     HTTP/1.1 400
+	 *     HTTP/1.1 400 Bad Request
 	 *     {
-	 *       "status": "error"
 	 *       "message": "This page need at least a slug and a title"
 	 *     }
 	 *
 	 * @apiErrorExample Error-Response:
 	 *     HTTP/1.1 409
 	 *     {
-	 *       "status": "error"
 	 *       "message": "This page already exists"
 	 *     }
 	 */
-	// TODO 'Location' header with link to /customers/{id} containing new ID.
+	// TODO 'Location' header with link to /pages/{id} containing new ID.
 	$router->post('/pages', function($req) use ($pages) {
 
 		if (!isset($req->body->slug, $req->body->title)) {
@@ -131,7 +113,7 @@ if($isAdmin()) {
 	});
 
 	$router->map('PUT|DELETE', '/pages', function($req) {
-		return apiResponse(404);
+		return apiResponse(405); // Method Not Allowed
 	});
 
 	/**
@@ -148,14 +130,9 @@ if($isAdmin()) {
 	 * @apiParamExample Request-Example:
 	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
-	 * @apiSuccess PageCreated
-	 *     HTTP/1.1 200 OK
-	 *
-	 * @apiError BadField No `title` or `slug`
-	 *      HTTP/1.1 400
-	 *
-	 * @apiError PageAlreadyExists If page does not exists or exception
-	 *      HTTP/1.1 404
+	 * @apiSuccess (204) PageUpdated
+	 * @apiError (400) BadField No `title` or `slug`
+	 * @apiError (404) PageAlreadyExists If page does not exists or exception
 	 */
 	$router->put('/pages/{slug:.+}', function($req) use ($pages) {
 
@@ -173,7 +150,7 @@ if($isAdmin()) {
 			return apiResponse(404, $e->getMessage());
 		}
 
-		return apiResponse(200);
+		return apiResponse(204);
 	});
 
 	/**
@@ -187,11 +164,8 @@ if($isAdmin()) {
 	 * @apiParamExample Request-Example:
 	 *     title=My new title&content=new content
 	 *
-	 * @apiSuccess PagePatched
-	 *     HTTP/1.1 200 OK
-	 *
-	 * @apiError Exception If exception
-	 *      HTTP/1.1 404
+	 * @apiSuccess (204) PagePatched
+	 * @apiError (404) Exception If exception
 	 */
 	$router->patch('/pages/{slug:.+}', function($req) use ($pages) {
 
@@ -203,7 +177,7 @@ if($isAdmin()) {
 			return apiResponse(404, $e->getMessage());
 		}
 
-		return apiResponse(200);
+		return apiResponse(204);
 	});
 
 	/*
@@ -211,11 +185,8 @@ if($isAdmin()) {
 	 * @apiName Delete page
 	 * @apiGroup Page
 	 *
-	 * @apiSuccess PagePatched
-	 *     HTTP/1.1 200 OK
-	 *
-	 * @apiError Exception If not ok or exception
-	 *      HTTP/1.1 404
+	 * @apiSuccess (204) PagePatched
+	 * @apiError (404) Exception If not ok or exception
 	 */
 	$router->delete('/pages/{slug:.+}', function($req) use ($pages) {
 		try {
@@ -224,7 +195,7 @@ if($isAdmin()) {
 			return apiResponse(404, $e->getMessage());
 		}
 
-		return apiResponse($res);
+		return apiResponse(204, $res);
 	});
 
 // } else {

@@ -8,32 +8,43 @@ use Parvula\Core\Exception\IOException;
 // Send API message @TODO Temporary
 function apiResponse($responseCode = 200, $data = null) {
 
+	if (headers_sent()) {
+		return;
+	}
+
 	if (is_array($responseCode)) {
 		$data = $responseCode;
 		$responseCode = true;
 	}
 
 	if($responseCode === true) {
-		$responseCode = 200;
+		$responseCode = 204;
 	} else if($responseCode == false) {
 		$responseCode = 400;
 	}
 
-	$res = [];
 	if($responseCode >= 300) {
-		$res['status'] = 'error';
+		$res = [];
 		$res['message'] = $data;
 	} else {
-		$res['status'] = 'success';
 		if ($data !== null) {
-			$res['data'] = $data;
+			$res = $data;
 		}
+	}
+
+	// Fix code 200 if no body
+	if (empty($res) && $responseCode === 200) {
+		$responseCode = 204;
 	}
 
 	header('Content-Type: application/json');
 	http_response_code($responseCode);
 
-	return json_encode($res);
+	if (isset($res) && !empty($res)) {
+		return json_encode($res);
+	}
+
+	return;
 }
 
 // TODO Temporary version

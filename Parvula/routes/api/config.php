@@ -21,7 +21,7 @@ function configPath($name) {
  *
  * @apiParam {String} name Config name
  *
- * @apiSuccess {mixed} Config object
+ * @apiSuccess (200) {mixed} Config object
  */
 $router->get('/{name}', function($req) use ($confIO) {
 	if (!configPath($req->params->name)) {
@@ -39,7 +39,9 @@ $router->get('/{name}', function($req) use ($confIO) {
  * @apiParam {String} name Config name
  * @apiParam {String} field Field name
  *
- * @apiSuccess {mixed} Config Field value
+ * @apiSuccess (200) {mixed} Config Field value
+ * @apiError (404) ConfigDoesNotExists Config does not exists
+ * @apiError (404) FieldError The field :field does not exists
  */
 $router->get('/{name}/{field}', function($req) use ($confIO) {
 	if (!$configName = configPath($req->params->name)) {
@@ -57,7 +59,7 @@ $router->get('/{name}/{field}', function($req) use ($confIO) {
 });
 
 /**
- * @api {patch} /:name Update specific field(s) of a config
+ * @api {patch} /config/:name Update specific field(s) of a config
  * @apiName Patch a config file
  * @apiGroup Config
  *
@@ -66,11 +68,11 @@ $router->get('/{name}/{field}', function($req) use ($confIO) {
  * @apiParamExample Request-Example:
  *     myfield=My new value
  *
- * @apiSuccess ConfigPatched
- *     HTTP/1.1 200 OK
+ * @apiSuccess (204) ConfigPatched
+ * @apiError (404) Exception If exception
  *
- * @apiError Exception If exception
- *      HTTP/1.1 404
+ * @apiSuccessExample ConfigPatched
+ *     HTTP/1.1 204
  */
 $router->patch('/{name}', function($req) use ($confIO) {
 	if (!$configName = configPath($req->params->name)) {
@@ -96,5 +98,5 @@ $router->patch('/{name}', function($req) use ($confIO) {
 		return apiResponse(404, $e->getMessage());
 	}
 
-	return apiResponse(200);
+	return apiResponse(204);
 });

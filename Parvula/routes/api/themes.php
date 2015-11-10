@@ -12,16 +12,13 @@ $themes = $app['themes'];
  * @apiName Get Theme
  * @apiGroup Theme
  *
- * @apiSuccess {array} Array of Theme
+ * @apiSuccess (200) {array} Array of Theme
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "status":"success",
- *       "data":{
- *         "mytheme":{..},
- *         "othertheme":{...}
- *       }
+ *       "mytheme":{..},
+ *       "othertheme":{...}
  *     }
  */
 $router->get('', function($req) use ($themes) {
@@ -35,23 +32,20 @@ $router->get('', function($req) use ($themes) {
  *
  * @apiParam {String} name Theme unique name
  *
- * @apiSuccess {Theme} Theme object
+ * @apiSuccess (200) {Theme} Theme object
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "status":"success",
- *       "data":{
- *         "layouts":{..},
- *         "name":"My theme",
- *         "infos":{
- *           "description":"...",
- *           "filesType":"php"
- *         }
+ *       "layouts":{..},
+ *       "name":"My theme",
+ *       "infos":{
+ *         "description":"...",
+ *         "filesType":"php"
  *       }
  *     }
  */
-$router->get('/{name:\w+}', function($req) use ($themes) {
+$router->get('/{name}', function($req) use ($themes) {
 	return apiResponse(true, $themes->read($req->params->name));
 });
 
@@ -64,23 +58,20 @@ $router->get('/{name:\w+}', function($req) use ($themes) {
   * @apiParam {String} field Theme field
   * @apiParam {String} [subfield] Optional Theme subfield
   *
-  * @apiSuccess {Theme} Theme propriety
+  * @apiSuccess (200) {Theme} Theme propriety
   *
   * @apiSuccessExample {json} Success-Response:
   *     HTTP/1.1 200 OK
   *     {
-  *       "status":"success",
-  *       "data":{
-  *         "layouts":{"index":"index.html"}
-  *       }
+  *       "layouts":{"index":"index.html"}
   *     }
   */
-$router->get('/{name:\w+}/{field:\w+}[/{subfield:\w+}]', function($req) use ($themes) {
-	$obj = $themes->read($req->params->name);
+$router->get('/{name}/{field}[/{subfield}]', function($req) use ($themes) {
+	$theme = $themes->read($req->params->name);
 
 	$field = $req->params->field;
 
-	if (!isset($obj->{$field})) {
+	if (!isset($theme->{$field})) {
 		return apiResponse(false, 'The field `' . $field . '` does not exists'); // TODO bad args
 	}
 
@@ -90,9 +81,9 @@ $router->get('/{name:\w+}/{field:\w+}[/{subfield:\w+}]', function($req) use ($th
 
 	$subfield = $req->params->subfield;
 
-	if (!isset($obj->{$field}->{$subfield})) {
+	if (!isset($theme->{$field}->{$subfield})) {
 		return apiResponse(false, 'The sub field `' . $subfield . '` does not exists'); // TODO bad args
 	}
 
-	return apiResponse(true, $themes->read($req->params->name)->{$field}->{$subfield});
+	return apiResponse(200, $themes->read($req->params->name)->{$field}->{$subfield});
 });
