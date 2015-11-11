@@ -16,7 +16,7 @@ $pages = $app['pages'];
  *
  * @apiParam {string} [index] Optional You can pass `?index` to url to just have the slugs
  *
- * @apiSuccess (200) {Page[]} pages An array of pages
+ * @apiSuccess (200) {array} pages An array of pages
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -28,7 +28,7 @@ $pages = $app['pages'];
 $router->get('/pages', function($req) use ($pages) {
 	if (isset($req->query->index)) {
 		// List of pages. Array<string> of slugs
-		return apiResponse(true, $pages->index());
+		return apiResponse(200, $pages->index());
 	}
 	return apiResponse(200, $pages->all()->order(SORT_ASC, 'slug')->toArray());
 });
@@ -41,7 +41,7 @@ $router->get('/pages', function($req) use ($pages) {
  * @apiParam {string} slug The slug of the page
  * @apiParam {string} [raw] Optional You can pass `?raw` to not parse the content.
  *
- * @apiSuccess (200) {Page} page A Page
+ * @apiSuccess (200) {Object} page A Page
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -118,7 +118,7 @@ if($isAdmin()) {
 
 	/**
 	 * @api {put} /pages/:slug Update a page
-	 * @apiDescription Page MUST exists
+	 * @apiDescription Page **must** exists to be updated
 	 * @apiName Update page
 	 * @apiGroup Page
 	 *

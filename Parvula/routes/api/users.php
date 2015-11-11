@@ -23,7 +23,7 @@ $users = $app['users'];
  *     ]
  */
 $router->get('', function($req) use ($users) {
-	return apiResponse(true, $users->index());
+	return apiResponse(200, $users->index());
 });
 
 /**
@@ -34,7 +34,7 @@ $router->get('', function($req) use ($users) {
  *
  * @apiParam {String} username User unique username
  *
- * @apiSuccess (200) {User} User object
+ * @apiSuccess (200) {Object} User object
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
