@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Core\PageSerializer;
+namespace Parvula\Core\PageRenderer;
 
 use Parvula\Core\Model\Page;
 
 /**
- * PageSerializer interface
+ * PageRenderer interface
  *
  * @package Parvula
  * @version 0.5.0
@@ -13,20 +13,22 @@ use Parvula\Core\Model\Page;
  * @author Fabien Sa
  * @license MIT License
  */
-interface PageSerializerInterface {
+interface PageRendererInterface {
 
 	/**
-	 * Serialize page
+	 * Render page to string
+	 *
 	 * @param Page $page
-	 * @return boolean
+	 * @return string
 	 */
-	public function serialize(Page $page);
+	public function render(Page $page);
 
 	/**
-	 * Unserialize data to get Page
+	 * Fetch raw data to create a page object
+	 *
 	 * @param mixed $data Data using to create the page
 	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */
-	public function unserialize($data, array $options = []);
+	public function fetch($data, array $options = []);
 }

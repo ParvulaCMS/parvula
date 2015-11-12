@@ -46,6 +46,9 @@ return [
 	'userConfig' => 'site.conf.yaml',
 
 	// Class to parse pages (must implements ContentParserInterface), can be null
+	'headParser' => '\Parvula\Core\Parser\Yaml',
+
+	// Class to parse pages (must implements ParserInterface)
 	'contentParser' => '\Parvula\Core\ContentParser\Markdown',
 
 	// Class to (un)serialize pages (must implements PageSerializerInterface)

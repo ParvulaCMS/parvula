@@ -81,13 +81,18 @@ $app->add('users', function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], DATA . 'users/users.php');
 });
 
+$app->share('pageRenderer', function (Container $this) {
+	$headParser = $this['config']->get('headParser');
+	$contentParser = $this['config']->get('contentParser');
+	$pageRenderer = $this['config']->get('pageRenderer');
+
+	return new $pageRenderer(new $headParser, new $contentParser);
+});
+
 $app->add('pages', function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
-	$pageSerializer = $this['config']->get('pageSerializer');
-	$contentParser = $this['config']->get('contentParser');
 
-	return new Parvula\Core\Model\Mapper\PagesFlatFiles(
-		new $contentParser, new $pageSerializer, $fileExtension);
+	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], PAGES, $fileExtension);
 });
 
 $app->add('themes', function (Container $this) {

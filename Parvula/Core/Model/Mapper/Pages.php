@@ -3,8 +3,8 @@
 namespace Parvula\Core\Model\Mapper;
 
 use Parvula\Core\Model\Page;
-use Parvula\Core\ContentParser\ContentParserInterface;
 use Parvula\Core\Model\CRUDInterface;
+use Parvula\Core\PageRenderer\PageRendererInterface;
 
 /**
  * Page Manager
@@ -23,17 +23,17 @@ abstract class Pages implements CRUDInterface
 	protected $pages;
 
 	/**
-	 * @var ContentParserInterface
+	 * @var PageRendererInterface
 	 */
-	protected $parser;
+	protected $renderer;
 
 	/**
 	 * Constructor
 	 *
 	 * @param ContentParserInterface $contentParser (optiona)
 	 */
-	 function __construct(ContentParserInterface $contentParser = null) {
-		$this->setParser($contentParser);
+	 function __construct(PageRendererInterface $pageRenderer) {
+		 $this->setRenderer($pageRenderer);
 	}
 
 	public abstract function patch($pageUID, array $page);
@@ -148,12 +148,12 @@ abstract class Pages implements CRUDInterface
 	}
 
 	/**
-	 * Set Parvula pages parser
+	 * Set page renderer
 	 *
-	 * @param ContentParserInterface $customParser (optional) Set a content parser, null if nothing
+	 * @param PageRendererInterface $customRenderer
 	 */
-	public function setParser(ContentParserInterface $customParser = null) {
-		$this->parser = $customParser;
+	public function setRenderer(PageRendererInterface $customRenderer) {
+		$this->renderer = $customRenderer;
 	}
 
 }
