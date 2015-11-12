@@ -51,8 +51,13 @@ return [
 	// Class to parse pages (must implements ParserInterface)
 	'contentParser' => '\Parvula\Core\ContentParser\Markdown',
 
-	// Class to (un)serialize pages (must implements PageSerializerInterface)
-	'pageSerializer' => '\Parvula\Core\PageSerializer\Parvula',
-	// 'pageSerializer' => 'Parvula\Core\PageSerializer\ParvulaJson',
+	// Class to fetch/render pages (must implements PageRendererInterface)
+	'pageRenderer' => 'Parvula\Core\PageRenderer\SimplePageRenderer',
+
+	// Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
+	// SSL versions 1, 2, and 3 should not longer be used
+	// The best practice is to only provide support for the TLS protocols (1.0, 1.1 and 1.2)
+	// For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
+	'forceLoginOnTLS' => false,
 
 ];
