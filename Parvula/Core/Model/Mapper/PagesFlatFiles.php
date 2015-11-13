@@ -32,7 +32,6 @@ class PagesFlatFiles extends Pages
 	/**
 	 * Constructor
 	 *
-	 * @param ContentParserInterface $contentParser Page content parser
 	 * @param PageRendererInterface $pageRenderer Page renderer
 	 * @param string $folder Pages folder
 	 * @param string $fileExtension File extension
@@ -71,7 +70,7 @@ class PagesFlatFiles extends Pages
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
 			$fn = function($data) use ($pageUID, $renderer) {
-				return $renderer->fetch($data, ['slug' => trim($pageUID, '/')]);
+				return $renderer->parse($data, ['slug' => trim($pageUID, '/')]);
 			};
 
 			$page = $fs->read($pageFullPath, $fn, $eval);

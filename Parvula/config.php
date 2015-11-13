@@ -52,7 +52,7 @@ return [
 	'contentParser' => '\Parvula\Core\ContentParser\Markdown',
 
 	// Class to fetch/render pages (must implements PageRendererInterface)
-	'pageRenderer' => 'Parvula\Core\PageRenderer\SimplePageRenderer',
+	'pageRenderer' => 'Parvula\Core\PageRenderer\ParvulaPageRenderer',
 
 	// Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
 	// SSL versions 1, 2, and 3 should not longer be used

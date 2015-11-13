@@ -51,8 +51,12 @@ $router->get('/pages', function($req) use ($pages) {
  *       "content":"<h1>Home page<\/h1>"
  *     }
  */
-$router->get('/pages/{slug:.+}', function($req) use ($pages) {
-	return apiResponse(200, $pages->read($req->params->slug, !isset($req->query->raw)));
+$router->get('/pages/{slug:.+}', function($req) use ($app, $pages) {
+	if (isset($req->query->raw)) {
+		$pages->setRenderer($app['pageRendererRAW']);
+	}
+
+	return apiResponse(200, $pages->read($req->params->slug));
 });
 
 if($isAdmin()) {

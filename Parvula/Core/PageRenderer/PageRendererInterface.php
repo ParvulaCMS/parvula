@@ -24,11 +24,11 @@ interface PageRendererInterface {
 	public function render(Page $page);
 
 	/**
-	 * Fetch raw data to create a page object
+	 * Parse raw data to create a page object
 	 *
 	 * @param mixed $data Data using to create the page
 	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */
-	public function fetch($data, array $options = []);
+	public function parse($data, array $options = []);
 }

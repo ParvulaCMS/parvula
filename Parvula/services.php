@@ -85,8 +85,13 @@ $app->share('pageRenderer', function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$contentParser = $this['config']->get('contentParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
-
 	return new $pageRenderer(new $headParser, new $contentParser);
+});
+
+$app->share('pageRendererRAW', function (Container $this) {
+	$headParser = $this['config']->get('headParser');
+	$pageRenderer = $this['config']->get('pageRenderer');
+	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\Null);
 });
 
 $app->add('pages', function (Container $this) {

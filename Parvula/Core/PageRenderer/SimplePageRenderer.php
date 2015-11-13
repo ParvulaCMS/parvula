@@ -9,20 +9,10 @@ use Parvula\Core\ContentParser\ContentParserInterface;
 /**
  * Default page renderer
  */
-class SimplePageRenderer implements PageRendererInterface {
+class SimplePageRenderer extends AbstractPageRenderer {
 
-	/**
-	 * @var ParserInterface
-	 */
-	private $parser;
-
-	/*
-	 * @var ContentParserInterface
-	 */
-	private $contentParser;
-
-	public function __construct(ParserInterface $parser, ContentParserInterface $contentParser) {
-		$this->parser = $parser;
+	public function __construct(ParserInterface $metadataParser, ContentParserInterface $contentParser) {
+		$this->metadataParser = $metadataParser;
 		$this->contentParser = $contentParser;
 	}
 
@@ -42,7 +32,7 @@ class SimplePageRenderer implements PageRendererInterface {
 
 		// Create the header
 		$header = str_repeat('-', 3) . PHP_EOL;
-		$header .= trim($this->parser->encode((array) $page));
+		$header .= trim($this->metadataParser->encode((array) $page));
 		$header .= PHP_EOL . str_repeat('-', 3) . PHP_EOL . PHP_EOL;
 
 		return $header . $content;
@@ -55,12 +45,12 @@ class SimplePageRenderer implements PageRendererInterface {
 	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */
-	public function fetch($data, array $options = []) {
+	public function parse($data, array $options = []) {
 
 		$pageInfos = preg_split('/\s[-=]{3,}\s+/', ltrim($data), 2);
 		$headerData = trim($pageInfos[0]);
 
-		$pageInfo = $this->parser->decode($headerData);
+		$pageInfo = $this->metadataParser->decode($headerData);
 
 		$pageInfo['content'] = '';
 		if (!empty($pageInfos[1])) {
