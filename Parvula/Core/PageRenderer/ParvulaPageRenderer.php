@@ -23,7 +23,7 @@ use Parvula\Core\ContentParser\ContentParserInterface;
  */
 class ParvulaPageRenderer extends SimplePageRenderer implements PageRendererInterface {
 
-	private $sectionsRegex = '/-{3}\s*(?<LOL>\w[\w- ]*?)\s*-{3}/';
+	private $sectionsRegex = '/-{3}\s+(\w[\w- ]*?)\s+-{3}/';
 
 	/**
 	 * Render page to string
@@ -31,19 +31,21 @@ class ParvulaPageRenderer extends SimplePageRenderer implements PageRendererInte
 	 * @param Page $page
 	 * @return string
 	 */
-	public function encode(Page $page) {
+	public function render(Page $page) {
 		if (!isset($page->title)) {
 			throw new PageException('Page MUST have a `title` to be serialized');
 		}
 
-		$limiter = str_repeat('-', 3);
+		$delimiter = str_repeat('-', 3) . PHP_EOL;
 
 		$content = $page->content;
 
 		// Add sections
-		foreach ($page->sections as $name => $value) {
-			$content .= $limiter . PHP_EOL . $name . PHP_EOL;
-			$content .= $value . PHP_EOL;
+		if (isset($page->sections)) {
+			foreach ($page->sections as $name => $value) {
+				$content .= PHP_EOL . PHP_EOL . $delimiter . $name . PHP_EOL . $delimiter;
+				$content .= $value . PHP_EOL;
+			}
 		}
 
 		// No content or sections in the header
@@ -51,9 +53,9 @@ class ParvulaPageRenderer extends SimplePageRenderer implements PageRendererInte
 		unset($page->sections);
 
 		// Create the header
-		$header = $limiter . PHP_EOL;
+		$header = $delimiter;
 		$header .= trim($this->metadataParser->encode((array) $page));
-		$header .= PHP_EOL . $limiter . PHP_EOL . PHP_EOL;
+		$header .= PHP_EOL . $delimiter . PHP_EOL;
 
 		return $header . $content;
 	}
