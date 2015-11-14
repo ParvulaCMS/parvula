@@ -24,6 +24,13 @@ class Request
 
 	public $params;
 
+	public $cookie;
+
+	/**
+	 * @var array
+	 */
+	public $files;
+
 	/**
 	 * @var string
 	 */
@@ -61,7 +68,7 @@ class Request
 		array $cookie,
 		array $files) {
 
-		// IP
+		// Client IP
 		$this->ip = isset($server['REMOTE_ADDR']) ? $server['REMOTE_ADDR'] : '';
 
 		// Query
@@ -81,6 +88,11 @@ class Request
 
 		// Body
 		$this->body = (object) $post;
+
+		$this->cookie = $cookie;
+
+		// Handle "multipart/form-data" (often $_FILES)
+		$this->files = $files;
 	}
 
 }

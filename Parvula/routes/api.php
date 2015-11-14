@@ -169,6 +169,10 @@ if ($isAdmin()) {
 		require 'api/config.php';
 	});
 
+	$router->group('/_api/files', function($router) use ($app) {
+		require 'api/files.php';
+	});
+
 }
 
 // If nothing match in the api group and not loged
