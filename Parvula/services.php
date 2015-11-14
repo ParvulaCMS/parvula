@@ -35,6 +35,11 @@ $app->add('fileParser', function () {
 	return new Parvula\Core\FileParser($parsers);
 });
 
+$app->share('config', function (Container $this) {
+	// Populate Config wrapper
+	return new Parvula\Core\Config($this['fileParser']->read(APP . 'config.yaml'));
+});
+
 $app->share('plugins', function (Container $this) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
 	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
