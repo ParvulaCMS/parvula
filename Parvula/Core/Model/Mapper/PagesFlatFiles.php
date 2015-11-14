@@ -103,12 +103,13 @@ class PagesFlatFiles extends Pages
 				return false;
 			}
 
-			if (!$fs->isWritable()) {
-				throw new IOException('Page destination folder is not writable');
-				// throw new IOException('Page `' . strip_tags($page->slug) . '` is not writable');
-			}
+			//TODO
+			// if (!$fs->isWritable()) { // folder ! not file
+			// 	throw new IOException('Page destination folder is not writable');
+			// 	// throw new IOException('Page `' . strip_tags($page->slug) . '` is not writable');
+			// }
 
-			$data = $this->renderer->serialize($page);
+			$data = $this->renderer->render($page);
 
 			$fs->write($pageFullPath, $data);
 
