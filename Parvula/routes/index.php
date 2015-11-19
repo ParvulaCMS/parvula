@@ -9,6 +9,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 	$view = $app['view'];
 	$pages = $app['pages'];
 	$theme = $app['theme'];
+	$config = $app['config'];
 	$plugins = $app['plugins'];
 
 	$slug = rtrim($req->params->slug, '/');
@@ -18,7 +19,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 	$plugins->trigger('slug', [$slug]);
 
 	if ($slug === '') {
-		$slug = $app['config']->get('homePage');
+		$slug = $config->get('homePage');
 	}
 
 	$page = $pages->read($slug, true);
@@ -28,7 +29,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 	if (false === $page) {
 		// header(' ', true, 404);
 		header('HTTP/1.0 404 Not Found'); // Set header to 404
-		$page = $pages->read($app['config']->get('errorPage'));
+		$page = $pages->read($config->get('errorPage'));
 		$plugins->trigger('404', [&$page]);
 
 		if(false === $page) {
@@ -50,18 +51,19 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 			'baseUrl'  => Parvula::getRelativeURIToRoot(),
 			'themeUrl' => Parvula::getRelativeURIToRoot() . $theme->getPath() . '/',
 			'pages'    =>
-				function($listHidden = false, $pagesPath = null) use ($pages) {
-					return $pages->all($pagesPath)->visible()->order(SORT_ASC)->toArray();
+				function($listHidden = false, $pagesPath = null) use ($pages, $config) {
+					return $pages->all($pagesPath)->visible()->
+						order($config->get('typeOfSort'), $config->get('sortField'))->toArray();
 				},
 			'plugin'   =>
 				function($name) use ($plugins) {
 					return $plugins->getPlugin($name);
 				},
-			'site'     => $app['config']->toObject(),
+			'site'     => $config->toObject(),
 			'page'     => $page,
-			'__time__' => function () use ($app) {
+			'__time__' => function () use ($config) {
 				// useful to benchmark
-				return sprintf('%.4f', $app['config']->get('__time__') + microtime(true));
+				return sprintf('%.4f', $config->get('__time__') + microtime(true));
 			},
 			'content'  => $page->content
 		]);
