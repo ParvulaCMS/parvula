@@ -5,48 +5,6 @@ namespace Parvula;
 use Exception;
 use Parvula\Core\Exception\IOException;
 
-// Send API message @TODO Temporary
-function apiResponse($responseCode = 200, $data = null) {
-
-	if (headers_sent()) {
-		return;
-	}
-
-	if (is_array($responseCode)) {
-		$data = $responseCode;
-		$responseCode = true;
-	}
-
-	if($responseCode === true) {
-		$responseCode = 204;
-	} else if($responseCode == false) {
-		$responseCode = 400;
-	}
-
-	if($responseCode >= 300) {
-		$res = [];
-		$res['message'] = $data;
-	} else {
-		if ($data !== null) {
-			$res = $data;
-		}
-	}
-
-	// Fix code 200 if no body
-	if (empty($res) && $responseCode === 200) {
-		$responseCode = 204;
-	}
-
-	header('Content-Type: application/json');
-	http_response_code($responseCode);
-
-	if (isset($res) && !empty($res)) {
-		return json_encode($res);
-	}
-
-	return;
-}
-
 // TODO Temporary version
 $isAdmin = function () use ($app) {
 	return $app['usersession'] && $app['usersession']->hasRole('admin');
@@ -61,6 +19,10 @@ $isAdmin = function () use ($app) {
  * @apiParam {String} username User unique username
  * @apiParam {String} password User password
  *
+ * @apiSuccess (200)
+ * @apiError (400) BadArguments
+ * @apiError (400) BadCredentials
+ *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -68,25 +30,28 @@ $isAdmin = function () use ($app) {
  *     }
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 404
+ *     HTTP/1.1 400
  *     {
- *       "status": "error",
+ *       "error": "BadArguments",
  *       "message": "you need to give at a username and a password"
  *     }
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.1 404
+ *     HTTP/1.1 403 Forbidden
  *     {
- *       "status": "error",
+ *       "error": "BadCredentials",
  *       "message": "user or password not ok"
  *     }
  */
-$router->post('/login', function ($req) use ($app) {
+$router->post('/login', function ($req, $res) use ($app) {
 
 	$users = $app['users'];
 
 	if (!isset($req->body->username, $req->body->password)) {
-		return apiResponse(false, 'you need to give at a username and a password');
+		return $res->status(400)->send([
+			'error' => 'BadArguments',
+			'message' => 'You need to give a username and a password'
+		]);
 	}
 
 	// TODO Tests !
@@ -101,17 +66,23 @@ $router->post('/login', function ($req) use ($app) {
 	$password = $req->body->password;
 
 	if (!($user = $users->read($req->body->username))) {
-		return apiResponse(false, 'user or password not ok');
+		return $res->status(403)->send([
+			'error' => 'BadCredentials',
+			'User or password not ok'
+		]);
 	}
 
 	if (!$user->login($password)) {
-		return apiResponse(false, 'user or password not ok');
+		return $res->status(403)->send([
+			'error' => 'BadCredentials',
+			'User or password not ok'
+		]);
 	}
 
 	// Create a session
 	$app['auth']->log($user->username);
 
-	return apiResponse(204);
+	return $res->sendStatus(204);
 });
 
 /**
@@ -128,7 +99,7 @@ $router->post('/login', function ($req) use ($app) {
  */
 $router->map('GET|POST', '/logout', function() use ($app) {
 	$res = $app['session']->destroy();
-	return apiResponse($res);
+	return $res->json($res);
 });
 
 /**
@@ -149,8 +120,8 @@ $router->map('GET|POST', '/logout', function() use ($app) {
  *       "data": false
  *     }
  */
-$router->map('GET|POST', '/islogged', function() use ($isAdmin) {
-	return apiResponse(200, (bool) $isAdmin());
+$router->map('GET|POST', '/islogged', function($req, $res) use ($isAdmin) {
+	return $res->json((bool) $isAdmin());
 });
 
 require 'api/pages.php';
@@ -176,6 +147,9 @@ if ($isAdmin()) {
 }
 
 // If nothing match in the api group and not loged
-$router->map('GET|POST|PUT|DELETE|PATCH', '/{r:.*}', function() use ($app) {
-	return apiResponse(400, 'API route not found or bad credentials');
+$router->map('GET|POST|PUT|DELETE|PATCH', '/{r:.*}', function($req, $res) use ($app) {
+	return $res->status(400)->send([
+		'error' => 'RouteOrCredentialsError',
+		'message' => 'API route not found or bad credentials'
+	]);
 });

@@ -14,12 +14,23 @@ $fs = new FilesSystem(UPLOADS);
  * @api {post} /upload Upload a file
  * @apiName Upload File
  * @apiGroup Files
+ *
+ * @apiSuccess (204)
+ * @apiError (400) NoFileUploaded
+ * @apiError (400) FileSizeExceeded
+ * @apiError (400) UploadException
  */
-$router->post('/upload', function($req) {
+$router->post('/upload', function ($req, $res) {
 
 	// header('Content-Type: text/plain; charset=utf-8');
 
 	$evilExt = ['php', 'html', 'htm'];
+
+	if (!isset($req->files['file'])) {
+		return $res->status(400)->send([
+			'error' => 'NoFileUploaded'
+		]);
+	}
 
 	$file = $req->files['file'];
 
@@ -47,10 +58,13 @@ $router->post('/upload', function($req) {
 				throw new RuntimeException('Unknown errors');
 		}
 
-		// You should also check filesize here.
+		// Filesize check
 		if ($file['size'] > 8000000) {
 			// throw new RuntimeException('Exceeded file size limit');
-			return apiResponse(400, 'Exceeded file size limit');
+			return $res->status(400)->send([
+				'error' => 'FileSizeExceeded',
+				'message' => 'Exceeded file size limit'
+			]);
 		}
 
 		$info = new \SplFileInfo($file['name']);
@@ -62,9 +76,8 @@ $router->post('/upload', function($req) {
 			// throw new RuntimeException('File extension not allowed');
 		}
 
-		// You should name it uniquely.
-		// DO NOT USE $files['file0']['name'] WITHOUT ANY VALIDATION !!
-		// On this example, obtain safe unique name from its binary data.
+		// Name should be unique // TODO
+		// DO NOT USE $files['file0']['name'] WITHOUT ANY VALIDATION
 		if (!move_uploaded_file(
 			$file['tmp_name'],
 			sprintf('%s/%s.%s', UPLOADS, $basename, $ext)
@@ -73,34 +86,43 @@ $router->post('/upload', function($req) {
 		}
 
 	} catch (RuntimeException $e) {
-		// echo $e->getMessage();
-		return apiResponse(400, $e->getMessage());
+		return $res->status(400)->send([
+			'error' => 'UploadException',
+			'message' => $e->getMessage()
+		]);
 	}
 
-	//  File was uploaded successfully
-	return apiResponse(204);
+	return $res->sendStatus(204);
 });
 
 /**
  * @api {get} /index Index files
  * @apiName Index Files
  * @apiGroup Files
+ *
+ * @apiSuccess (200)
  */
-$router->get('/index', function($req) use ($fs) {
+$router->get('/index', function ($req, $res) use ($fs) {
 	//TODO [] if no files
-	return apiResponse(200, $fs->index());
+	return $res->send($fs->index());
 });
 
 /**
  * @api {delete} /:file delete file
  * @apiName Delete File
  * @apiGroup Files
+ *
+ * @apiSuccess (204)
+ * @apiError (404) CannotBeDeleted
  */
-$router->delete('/{file:.+}', function($req) use ($fs) {
+$router->delete('/{file:.+}', function ($req, $res) use ($fs) {
 	try {
 		$res = $fs->delete($req->params->file);
-	} catch(Exception $e) {
-		return apiResponse(404, $e->getMessage());
+	} catch (Exception $e) {
+		return $res->status(404)->send([
+			'error' => 'CannotBeDeleted',
+			'message' => $e->getMessage()
+		]);
 	}
-	return apiResponse(204);
+	return $res->sendStatus(204);
 });

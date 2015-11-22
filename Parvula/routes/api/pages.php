@@ -25,16 +25,16 @@ $pages = $app['pages'];
  *       {"title": "about me", "slug": "about", "content": "..."}
  *     ]
  */
-$router->get('/pages', function($req) use ($pages) {
+$router->get('/pages', function ($req, $res) use ($pages) {
 	if (isset($req->query->index)) {
 		// List of pages. Array<string> of slugs
-		return apiResponse(200, $pages->index());
+		return $res->send($pages->index());
 	}
-	return apiResponse(200, $pages->all()->order(SORT_ASC, 'slug')->toArray());
+	return $res->send($pages->all()->order(SORT_ASC, 'slug')->toArray());
 });
 
 /**
- * @api {get} /pages/:slug Get a specific page.
+ * @api {get} /pages/:slug Get a specific page
  * @apiName Get page
  * @apiGroup Page
  *
@@ -42,21 +42,36 @@ $router->get('/pages', function($req) use ($pages) {
  * @apiParam {string} [raw] Optional You can pass `?raw` to not parse the content.
  *
  * @apiSuccess (200) {Object} page A Page
+ * @apiError (404) PageDoesNotExists This page does not exists
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "title":"Home page",
- *       "slug":"home",
- *       "content":"<h1>Home page<\/h1>"
+ *       "title": "Home page",
+ *       "slug": "home",
+ *       "content": "<h1>Home page<\/h1>"
+ *     }
+ *
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "error": "PageDoesNotExists",
+ *       "message": "This page does not exists"
  *     }
  */
-$router->get('/pages/{slug:.+}', function($req) use ($app, $pages) {
+$router->get('/pages/{slug:.+}', function ($req, $res) use ($app, $pages) {
 	if (isset($req->query->raw)) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
 
-	return apiResponse(200, $pages->read($req->params->slug));
+	if (false === $result = $pages->read($req->params->slug)) {
+		return $res->status(404)->send([
+			'error' => 'PageDoesNotExists',
+			'message' => 'This page does not exists'
+		]);
+	}
+
+	return $res->send($result);
 });
 
 if($isAdmin()) {
@@ -76,31 +91,39 @@ if($isAdmin()) {
 	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
 	 * @apiSuccess (201) PageCreated Page was created
-	 * @apiError (400) BadField No `title` or `slug`
-	 * @apiError (404) Exception If exception
+	 * @apiError (400) BadField This page need at least a slug and a title
+	 * @apiError (404) PageException If exception
 	 * @apiError (409) PageAlreadyExists Page already exists
 	 *
 	 * @apiErrorExample Error-Response:
 	 *     HTTP/1.1 400 Bad Request
 	 *     {
+	 *       "error": "BadField",
 	 *       "message": "This page need at least a slug and a title"
 	 *     }
 	 *
 	 * @apiErrorExample Error-Response:
-	 *     HTTP/1.1 409
+	 *     HTTP/1.1 409 Conflict
 	 *     {
+	 *       "error": "PageAlreadyExists",
 	 *       "message": "This page already exists"
 	 *     }
 	 */
 	// TODO 'Location' header with link to /pages/{id} containing new ID.
-	$router->post('/pages', function($req) use ($pages) {
+	$router->post('/pages', function ($req, $res) use ($pages) {
 
 		if (!isset($req->body->slug, $req->body->title)) {
-			return apiResponse(400, 'This page need at least a slug and a title');
+			return $res->status(400)->send([
+				'error' => 'BadField',
+				'message' => 'This page need at least a slug and a title'
+			]);
 		}
 
 		if ($pages->read($req->body->slug)) {
-			return apiResponse(409, 'This page already exists');
+			return $res->status(409)->send([
+				'error' => 'PageAlreadyExists',
+				'message' => 'This page already exists'
+			]);
 		}
 
 		$pageArr = (array) $req->body;
@@ -110,14 +133,17 @@ if($isAdmin()) {
 
 			$res = $pages->create($page);
 		} catch(Exception $e) {
-			return apiResponse(404, $e->getMessage());
+			return $res->status(404)->send([
+				'error' => 'PageException',
+				'message' => $e->getMessage()
+			]);
 		}
 
-		return apiResponse(201);
+		return $res->sendStatus(201);
 	});
 
-	$router->map('PUT|DELETE', '/pages', function($req) {
-		return apiResponse(405); // Method Not Allowed
+	$router->map('PUT|DELETE', '/pages', function ($req, $res) {
+		return $res->sendStatus(405); // Method Not Allowed
 	});
 
 	/**
@@ -135,13 +161,16 @@ if($isAdmin()) {
 	 *     title=My new title&slug=my_new_slug&content=Some content
 	 *
 	 * @apiSuccess (204) PageUpdated
-	 * @apiError (400) BadField No `title` or `slug`
-	 * @apiError (404) PageAlreadyExists If page does not exists or exception
+	 * @apiError (400) BadField This page need at least a `slug` and a `title`
+	 * @apiError (404) PageException If page does not exists or exception
 	 */
-	$router->put('/pages/{slug:.+}', function($req) use ($pages) {
+	$router->put('/pages/{slug:.+}', function ($req, $res) use ($pages) {
 
 		if (!isset($req->body->slug, $req->body->title)) {
-			return apiResponse(400, 'This page need at least a `slug` and a `title`');
+			return $res->status(400)->send([
+				'error' => 'BadField',
+				'message' => 'This page need at least a `slug` and a `title`'
+			]);
 		}
 
 		$pageArr = (array) $req->body;
@@ -151,10 +180,13 @@ if($isAdmin()) {
 
 			$pages->update($req->params->slug, $page);
 		} catch(Exception $e) {
-			return apiResponse(404, $e->getMessage());
+			return $res->status(404)->send([
+				'error' => 'PageException',
+				'message' => $e->getMessage()
+			]);
 		}
 
-		return apiResponse(204);
+		$res->sendStatus(204);
 	});
 
 	/**
@@ -169,19 +201,22 @@ if($isAdmin()) {
 	 *     title=My new title&content=new content
 	 *
 	 * @apiSuccess (204) PagePatched
-	 * @apiError (404) Exception If exception
+	 * @apiError (404) PageException If exception
 	 */
-	$router->patch('/pages/{slug:.+}', function($req) use ($pages) {
+	$router->patch('/pages/{slug:.+}', function ($req, $res) use ($pages) {
 
 		$pageArr = (array) $req->body;
 
 		try {
 			$pages->patch($req->params->slug, $pageArr);
 		} catch(Exception $e) {
-			return apiResponse(404, $e->getMessage());
+			return $res->status(404)->send([
+				'error' => 'PageException',
+				'message' => $e->getMessage()
+			]);
 		}
 
-		return apiResponse(204);
+		return $res->sendStatus(204);
 	});
 
 	/*
@@ -190,16 +225,19 @@ if($isAdmin()) {
 	 * @apiGroup Page
 	 *
 	 * @apiSuccess (204) PagePatched
-	 * @apiError (404) Exception If not ok or exception
+	 * @apiError (404) PageException If not ok or exception
 	 */
-	$router->delete('/pages/{slug:.+}', function($req) use ($pages) {
+	$router->delete('/pages/{slug:.+}', function ($req, $res) use ($pages) {
 		try {
 			$res = $pages->delete($req->params->slug);
-		} catch(\Exception $e) {
-			return apiResponse(404, $e->getMessage());
+		} catch(Exception $e) {
+			return $res->status(404)->send([
+				'error' => 'PageException',
+				'message' => $e->getMessage()
+			]);
 		}
 
-		return apiResponse(204, $res);
+		return $res->status(204)->send($res);
 	});
 
 // } else {

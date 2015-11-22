@@ -17,12 +17,12 @@ $themes = $app['themes'];
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
- *       "mytheme": {..},
+ *       "mytheme": {...},
  *       "othertheme": {...}
  *     }
  */
-$router->get('', function($req) use ($themes) {
-	return apiResponse(200, $themes->index());
+$router->get('', function ($req, $res) use ($themes) {
+	return $res->send($themes->index());
 });
 
 /**
@@ -33,6 +33,7 @@ $router->get('', function($req) use ($themes) {
  * @apiParam {String} name Theme unique name
  *
  * @apiSuccess (200) {Object} Theme object
+ * @apiError (404) ThemeNotFound
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -45,8 +46,15 @@ $router->get('', function($req) use ($themes) {
  *       }
  *     }
  */
-$router->get('/{name}', function($req) use ($themes) {
-	return apiResponse(200, $themes->read($req->params->name));
+$router->get('/{name}', function ($req, $res) use ($themes) {
+
+	if (false === $result = $themes->read($req->params->name)) {
+		return $res->status(404)->send([
+			'error' => 'ThemeNotFound'
+		]);
+	}
+
+	return $res->send($result);
 });
 
  /**
@@ -59,31 +67,38 @@ $router->get('/{name}', function($req) use ($themes) {
   * @apiParam {String} [subfield] Optional Theme subfield
   *
   * @apiSuccess (200) {Object} Theme propriety
+  * @apiError (404) FieldDoesNotExists
   *
   * @apiSuccessExample {json} Success-Response:
   *     HTTP/1.1 200 OK
   *     {
-  *       "layouts": {"index":"index.html"}
+  *       "layouts": {"index": "index.html"}
   *     }
   */
-$router->get('/{name}/{field}[/{subfield}]', function($req) use ($themes) {
+$router->get('/{name}/{field}[/{subfield}]', function ($req, $res) use ($themes) {
 	$theme = $themes->read($req->params->name);
 
 	$field = $req->params->field;
 
 	if (!isset($theme->{$field})) {
-		return apiResponse(false, 'The field `' . $field . '` does not exists'); // TODO bad args
+		return $res->status(404)->send([
+			'error' => 'FieldDoesNotExists',
+			'message' => 'The field `' . $field . '` does not exists'
+		]); // TODO bad args
 	}
 
 	if (!isset($req->params->subfield)) {
-		return apiResponse(200, $themes->read($req->params->name)->{$field});
+		return $res->send($themes->read($req->params->name)->{$field});
 	}
 
 	$subfield = $req->params->subfield;
 
 	if (!isset($theme->{$field}->{$subfield})) {
-		return apiResponse(false, 'The sub field `' . $subfield . '` does not exists'); // TODO bad args
+		return $res->status(404)->send([
+			'error' => 'FieldDoesNotExists',
+			'message' => 'The sub field `' . $subfield . '` does not exists'
+		]); // TODO bad args
 	}
 
-	return apiResponse(200, $themes->read($req->params->name)->{$field}->{$subfield});
+	return $res->send($themes->read($req->params->name)->{$field}->{$subfield});
 });

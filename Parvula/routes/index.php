@@ -79,7 +79,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 });
 
 // Files handler (media or uploads) (must have an extension)
-$router->get('/{file:.+\.[^.]{2,8}}', function ($req) use ($app) {
+$router->get('/{file:.+\.[^.]{2,8}}', function ($req, $res) use ($app) {
 
 	$filePath = str_replace('..', '', $req->params->file);
 	$ext  = pathinfo($filePath, PATHINFO_EXTENSION);
@@ -90,14 +90,7 @@ $router->get('/{file:.+\.[^.]{2,8}}', function ($req) use ($app) {
 		$filePath = UPLOADS . $filePath;
 	}
 
-	if (!is_file($filePath)) {
-		header('HTTP/1.0 404 Not Found');
-		die('404');
+	if (false === $res->sendFile($filePath)) {
+		$res->sendStatus(404);
 	}
-
-	$info = new finfo(FILEINFO_MIME_TYPE);
-	$contentType = $info->file($filePath);
-
-	header('Content-Type: ' . $contentType);
-	readfile($filePath);
 });

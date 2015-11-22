@@ -22,8 +22,8 @@ $users = $app['users'];
  *       "pat1987"
  *     ]
  */
-$router->get('', function($req) use ($users) {
-	return apiResponse(200, $users->index());
+$router->get('', function ($req, $res) use ($users) {
+	return $res->send($users->index());
 });
 
 /**
@@ -35,6 +35,7 @@ $router->get('', function($req) use ($users) {
  * @apiParam {String} username User unique username
  *
  * @apiSuccess (200) {Object} User object
+ * @apiError (404) UserNotFound User's username was not found
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -43,18 +44,20 @@ $router->get('', function($req) use ($users) {
  *       "email": "pro@compagny.com"
  *     }
  *
- * @apiError (404) UserNotFound The username of the User was not found
- *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
  *     {
- *       "message": "User not found"
+ *       "error": "UserNotFound",
+ *       "message": "User's username was not found"
  *     }
  */
-$router->get('/{username:\w+}', function($req) use ($users) {
+$router->get('/{username:\w+}', function ($req, $res) use ($users) {
 	if (false !== $user = $users->read($req->params->username)) {
-		return apiResponse(200, $user);
+		return $res->send($user);
 	}
 
-	return apiResponse(404, 'User not found');
+	return $res->status(404)->send([
+		'error' => 'UserNotFound',
+		'message' => 'User\'s username was not found'
+	]);
 });

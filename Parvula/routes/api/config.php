@@ -22,13 +22,14 @@ function configPath($name) {
  * @apiParam {String} name Config name
  *
  * @apiSuccess (200) {mixed} Config object
+ * @apiError (404) ConfigDoesNotExists
  */
-$router->get('/{name}', function($req) use ($confIO) {
+$router->get('/{name}', function ($req, $res) use ($confIO) {
 	if (!configPath($req->params->name)) {
-		return apiResponse(404, 'Config does not exists');
+		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
 	}
 
-	return apiResponse(200, $confIO->read(configPath($req->params->name)));
+	return $res->send($confIO->read(configPath($req->params->name)));
 });
 
 /**
@@ -43,19 +44,22 @@ $router->get('/{name}', function($req) use ($confIO) {
  * @apiError (404) ConfigDoesNotExists Config does not exists
  * @apiError (404) FieldError The field :field does not exists
  */
-$router->get('/{name}/{field}', function($req) use ($confIO) {
+$router->get('/{name}/{field}', function ($req, $res) use ($confIO) {
 	if (!$configName = configPath($req->params->name)) {
-		return apiResponse(404, 'Config does not exists');
+		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
 	}
 
 	$config = (object) $confIO->read($configName);
 
 	$field = $req->params->field;
 	if (!isset($config->{$field})) {
-		return apiResponse(404, 'The field `' . $field . '` does not exists');
+		return $res->status(404)->send([
+			'error' => 'FieldError',
+			'message' => 'The field `' . $field . '` does not exists'
+		]);
 	}
 
-	return apiResponse(200, $config->{$req->params->field});
+	return $res->send($config->{$req->params->field});
 });
 
 /**
@@ -69,14 +73,15 @@ $router->get('/{name}/{field}', function($req) use ($confIO) {
  *     myfield=My new value
  *
  * @apiSuccess (204) ConfigPatched
- * @apiError (404) Exception If exception
+ * @apiError (404) ConfigDoesNotExists
+ * @apiError (404) ConfigException If exception
  *
  * @apiSuccessExample ConfigPatched
- *     HTTP/1.1 204
+ *     HTTP/1.1 204 No Content
  */
-$router->patch('/{name}', function($req) use ($confIO) {
+$router->patch('/{name}', function ($req, $res) use ($confIO) {
 	if (!$configName = configPath($req->params->name)) {
-		return apiResponse(404, 'Config does not exists');
+		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
 	}
 
 	$config = $confIO->read($configName);
@@ -95,8 +100,11 @@ $router->patch('/{name}', function($req) use ($confIO) {
 	try {
 		$confIO->write($configName, (array)$config);
 	} catch(Exception $e) {
-		return apiResponse(404, $e->getMessage());
+		return $res->status(404)->send([
+			'error' => 'ConfigException',
+			'message' => $e->getMessage()
+		]);
 	}
 
-	return apiResponse(204);
+	return $res->sendStatus(204);
 });
