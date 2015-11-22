@@ -165,6 +165,13 @@ class PagesFlatFiles extends Pages
 		return true;
 	}
 
+	/**
+	 * Patch page
+	 *
+	 * @param string $pageUID
+	 * @param array $page
+	 * @return boolean True if the page was correctly patched
+	 */
 	public function patch($pageUID, array $page) {
 
 		$fs = new Files($this->folder);
@@ -173,20 +180,11 @@ class PagesFlatFiles extends Pages
 			throw new PageException('Page `' . $pageUID . '` does not exists');
 		}
 
-		$pageOld = $this->read($pageUID, false);
+		$pageOld = (array) $this->read($pageUID, false);
 
-		foreach ($page as $key => $value) {
-			if ($value === null) {
-				if (isset($pageOld->{$key})) {
-					unset($pageOld->{$key});
-				}
-			}
-			else if (!empty($value)) {
-				$pageOld->{$key} = $value;
-			}
-		}
+		$pageOld = array_replace_recursive($pageOld, $page);
 
-		$page = Page::pageFactory((array) $pageOld);
+		$page = Page::pageFactory($pageOld);
 
 		return $this->update($pageUID, $page);
 	}
