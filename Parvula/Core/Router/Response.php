@@ -66,11 +66,9 @@ class Response {
 		}
 
 		if ($body !== null && !is_scalar($body)) {
-			$body = json_encode($body);
 			$this->json($body);
 		}
-
-		if ($body !== null) {
+		else if ($body !== null) {
 			echo $body;
 		}
 	}
