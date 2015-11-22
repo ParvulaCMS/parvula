@@ -19,7 +19,7 @@ $isAdmin = function () use ($app) {
  * @apiParam {String} username User unique username
  * @apiParam {String} password User password
  *
- * @apiSuccess (200)
+ * @apiSuccess (200) User logged
  * @apiError (400) BadArguments
  * @apiError (400) BadCredentials
  *

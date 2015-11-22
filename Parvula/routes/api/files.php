@@ -15,7 +15,7 @@ $fs = new FilesSystem(UPLOADS);
  * @apiName Upload File
  * @apiGroup Files
  *
- * @apiSuccess (204)
+ * @apiSuccess (204) File uploaded
  * @apiError (400) NoFileUploaded
  * @apiError (400) FileSizeExceeded
  * @apiError (400) UploadException
@@ -100,7 +100,7 @@ $router->post('/upload', function ($req, $res) {
  * @apiName Index Files
  * @apiGroup Files
  *
- * @apiSuccess (200)
+ * @apiSuccess (200) Files index
  */
 $router->get('/index', function ($req, $res) use ($fs) {
 	//TODO [] if no files
@@ -112,7 +112,7 @@ $router->get('/index', function ($req, $res) use ($fs) {
  * @apiName Delete File
  * @apiGroup Files
  *
- * @apiSuccess (204)
+ * @apiSuccess (204) File deleted
  * @apiError (404) CannotBeDeleted
  */
 $router->delete('/{file:.+}', function ($req, $res) use ($fs) {
