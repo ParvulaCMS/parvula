@@ -4,6 +4,7 @@
 // ----------------------------- //
 
 use Parvula\Core\Parvula;
+use Parvula\Core\Router\Response;
 use Parvula\Core\Router\RouteCollection;
 
 $dispatcher = FastRoute\simpleDispatcher(function(RouteCollection $router) use ($app) {
@@ -20,6 +21,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(RouteCollection $router) use (
 }, ['routeCollector' => 'Parvula\\Core\\Router\\RouteCollection']);
 
 $req = $app['request'];
+$res = new Response;
 $uri = Parvula::getURI();
 $method = Parvula::getMethod();
 
@@ -40,6 +42,6 @@ switch ($routeInfo[0]) {
 		$vars = $routeInfo[2];
 		$req->params = (object) $vars;
 
-		echo $handler($req);
+		echo $handler($req, $res);
 		break;
 }
