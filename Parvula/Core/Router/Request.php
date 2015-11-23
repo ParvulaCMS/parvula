@@ -37,6 +37,11 @@ class Request
 	public $uri;
 
 	/**
+	 * @var string
+	 */
+	public $method;
+
+	/**
 	 * @var string Scheme (without the `://`)
 	 */
 	public $scheme;
@@ -50,6 +55,8 @@ class Request
 	 * @var string User agent
 	 */
 	public $userAgent;
+
+	public $scriptName;
 
 
 	/**
@@ -76,6 +83,12 @@ class Request
 		$this->query = (object) $this->query;
 
 		$this->host = isset($server['HTTP_HOST']) ? $server['HTTP_HOST'] : '';
+
+		// Script path
+		$this->scriptName = isset($server['SCRIPT_NAME']) ? $server['SCRIPT_NAME'] : __FILE__;
+
+		// HTTP method (verb)
+		$this->method = isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET';
 
 		$this->uri = isset($server['REQUEST_URI']) ? $server['REQUEST_URI'] : '';
 
