@@ -97,9 +97,9 @@ $router->post('/login', function ($req, $res) use ($app) {
  *       "status": "success"
  *     }
  */
-$router->map('GET|POST', '/logout', function() use ($app) {
-	$res = $app['session']->destroy();
-	return $res->json($res);
+$router->map('GET|POST', '/logout', function($req, $res) use ($app) {
+	$rep = $app['session']->destroy();
+	return $res->json($rep);
 });
 
 /**
