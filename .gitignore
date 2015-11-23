@@ -19,3 +19,11 @@ Thumbs.db
 *~
 *.sublime-project
 .idea
+.editorconfig
+.vscode
+
+# Others
+*.log
+*.zip
+*.paw
+
