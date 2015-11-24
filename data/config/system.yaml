@@ -33,13 +33,13 @@ fileExtension: md
 typeOfSort: SORT_ASC
 
 # Sort pages from specific field (like title, index or whatYouWant)
-sortField: slug
+sortField: index
 
 # File extensions in media folder
 mediaExtensions: [jpg, jpeg, png, gif]
 
 # User config file to read
-userConfig: site.conf.yaml
+userConfig: site.yaml
 
 # Class to parse pages (must implements ContentParserInterface), can be null
 headParser: \Parvula\Core\Parser\Yaml

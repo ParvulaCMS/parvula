@@ -43,7 +43,7 @@ loadAliases($config->get('aliases'));
 
 // Load user config
 // Append user config to Config wrapper (override if exists)
-$userConfig = $app['fileParser']->read(DATA . $config->get('userConfig'));
+$userConfig = $app['fileParser']->read(CONFIG . $config->get('userConfig'));
 $config->append((array) $userConfig);
 
 // Load plugins

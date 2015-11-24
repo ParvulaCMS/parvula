@@ -13,6 +13,7 @@ define('DATA',       ROOT . 'data/');
 define('PAGES',      DATA . 'pages/');
 define('IMAGES',     DATA . 'media/');
 define('UPLOADS',    DATA . 'uploads/');
+define('CONFIG',     DATA . 'config/');
 define('THEMES',     ROOT . 'themes/');
 define('PLUGINS',    ROOT . 'plugins/');
 define('VERSION',    '0.5.0');

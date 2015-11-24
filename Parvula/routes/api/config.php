@@ -7,11 +7,11 @@ namespace Parvula;
 $confIO = $app['fileParser'];
 
 function configPath($name) {
-	if ($name === 'site') {
-		return DATA . 'site.conf.yaml';
+	if (!is_file($path = CONFIG . $name . '.yaml')) { // TODO not force .yaml
+		return false;
 	}
 
-	return false;
+	return $path;
 }
 
 /**

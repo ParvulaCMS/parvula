@@ -37,7 +37,7 @@ $app->add('fileParser', function () {
 
 $app->share('config', function (Container $this) {
 	// Populate Config wrapper
-	return new Parvula\Core\Config($this['fileParser']->read(APP . 'config.yaml'));
+	return new Parvula\Core\Config($this['fileParser']->read(CONFIG . 'system.yaml'));
 });
 
 $app->share('plugins', function (Container $this) {
