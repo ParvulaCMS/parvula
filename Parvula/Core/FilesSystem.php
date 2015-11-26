@@ -60,7 +60,7 @@ class FilesSystem implements IOInterface {
 	 */
 	public function read($filename, callable $fn = null, $eval = false) {
 		if (!$this->exists($filename)) {
-			throw new IOException("File '$filename' does not exist.");
+			throw new IOException("File `{$filename}` does not exist");
 		}
 
 		if ($eval) {
@@ -91,9 +91,13 @@ class FilesSystem implements IOInterface {
 			$data = $fn($data);
 		}
 
-		if (false === @file_put_contents($this->workingDirectory . $filename, $data)) {
-			throw new IOException("File '$filename' is not writable.");
+		$res = @file_put_contents($this->workingDirectory . $filename, $data);
+
+		if (false === $res) {
+			throw new IOException("File `{$filename}` is not writable");
 		}
+
+		return $res;
 	}
 
 	/**
@@ -105,7 +109,7 @@ class FilesSystem implements IOInterface {
 	 */
 	public function delete($filename) {
 		if (!$this->exists($filename)) {
-			throw new IOException("File '$filename' not found", 1);
+			throw new IOException("File `{$filename}` not found");
 		}
 
 		return unlink($this->workingDirectory . $filename);
@@ -144,7 +148,7 @@ class FilesSystem implements IOInterface {
 	public function index($dir = '', $showHiddenFiles = false, callable $fn = null) {
 
 		if (!$this->isDir($dir)) {
-			throw new IOException("Directory '$dir' not found", 1);
+			throw new IOException("Directory `{$dir}` not found");
 		}
 
 		$fnName = __FUNCTION__;
