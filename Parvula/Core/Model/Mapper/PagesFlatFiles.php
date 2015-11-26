@@ -89,7 +89,7 @@ class PagesFlatFiles extends Pages
 	 * @param string $pageUID Page unique ID
 	 * @param Page $page Page object
 	 * @throws IOException If the page does not exists
-	 * @return string|bool Return true if ok, string if error
+	 * @return bool
 	 */
 	public function create($page) {
 
@@ -111,7 +111,9 @@ class PagesFlatFiles extends Pages
 
 			$data = $this->renderer->render($page);
 
-			$fs->write($pageFullPath, $data);
+			if (!$fs->write($pageFullPath, $data)) {
+				return false;
+			}
 
 		} catch(IOException $e) {
 			throw new PageException('Error Processing Request');
@@ -119,7 +121,7 @@ class PagesFlatFiles extends Pages
 
 		$this->pages[$page->slug] = $page;
 
-		// return true;
+		return true;
 	}
 
 	/**
@@ -149,7 +151,7 @@ class PagesFlatFiles extends Pages
 			$pageFileNew = $page->slug . $this->fileExtension;
 
 			if ($fs->exists($pageFileNew)) {
-				throw new PageException('Cannot rename, page ' . $page->slug . ' already exists');
+				throw new PageException('Cannot rename, page `' . $page->slug . '` already exists');
 			}
 
 			$fs->rename($pageFile, $pageFileNew);
@@ -187,6 +189,11 @@ class PagesFlatFiles extends Pages
 		$page = Page::pageFactory($pageOld);
 
 		return $this->update($pageUID, $page);
+	}
+
+	// TODO ?
+	public function head($pageUID) {
+
 	}
 
 	/**

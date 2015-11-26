@@ -131,11 +131,17 @@ if($isAdmin()) {
 		try {
 			$page = Page::pageFactory($pageArr);
 
-			$res = $pages->create($page);
+			$result = $pages->create($page);
 		} catch(Exception $e) {
-			return $res->status(404)->send([
+			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
+			]);
+		}
+
+		if (!$result) {
+			return $res->status(500)->send([
+				'error' => 'PageCannotBeCreated'
 			]);
 		}
 
@@ -180,7 +186,7 @@ if($isAdmin()) {
 
 			$pages->update($req->params->slug, $page);
 		} catch(Exception $e) {
-			return $res->status(404)->send([
+			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
 			]);
@@ -210,7 +216,7 @@ if($isAdmin()) {
 		try {
 			$pages->patch($req->params->slug, $pageArr);
 		} catch(Exception $e) {
-			return $res->status(404)->send([
+			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
 			]);
@@ -229,7 +235,7 @@ if($isAdmin()) {
 	 */
 	$router->delete('/pages/{slug:.+}', function ($req, $res) use ($pages) {
 		try {
-			$res = $pages->delete($req->params->slug);
+			$result = $pages->delete($req->params->slug);
 		} catch(Exception $e) {
 			return $res->status(404)->send([
 				'error' => 'PageException',
@@ -237,7 +243,13 @@ if($isAdmin()) {
 			]);
 		}
 
-		return $res->status(204)->send($res);
+		if (!$result) {
+			return $res->status(500)->send([
+				'error' => 'PageCannotBeDeleted'
+			]);
+		}
+
+		return $res->sendStatus(204);
 	});
 
 // } else {
