@@ -96,7 +96,7 @@ $app->share('pageRenderer', function (Container $this) {
 $app->share('pageRendererRAW', function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
-	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\Null);
+	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\None);
 });
 
 $app->add('pages', function (Container $this) {

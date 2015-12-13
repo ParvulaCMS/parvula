@@ -3,14 +3,14 @@
 namespace Parvula\Core\ContentParser;
 
 /**
- * Null content parser
+ * None content parser
  *
  * @package Parvula
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Null implements ContentParserInterface {
+class None implements ContentParserInterface {
 
 	/**
 	 * Parse data
