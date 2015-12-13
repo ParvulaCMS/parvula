@@ -1,8 +1,5 @@
 <?php
 
-
-<?php
-
 namespace Parvula\Core\Exception;
 
 use RuntimeException;
