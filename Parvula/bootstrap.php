@@ -46,6 +46,8 @@ loadAliases($config->get('aliases'));
 $userConfig = $app['fileParser']->read(CONFIG . $config->get('userConfig'));
 $config->append((array) $userConfig);
 
+Parvula::setRequest($app['request']);
+
 // Load plugins
 $plugins = $app['plugins'];
 $plugins->trigger('bootstrap', [$app]);

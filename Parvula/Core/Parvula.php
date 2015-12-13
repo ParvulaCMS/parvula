@@ -2,6 +2,7 @@
 
 namespace Parvula\Core;
 
+use Parvula\Core\Router\Request;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Exception\IOException;
 
@@ -19,6 +20,17 @@ class Parvula extends Container
 
 	private static $URL_REWRITING = true;
 
+	private static $request;
+
+	/**
+	 * Set Request
+	 *
+	 * @param Request $req
+	 */
+	public static function setRequest(Request $req) {
+		self::$request = $req;
+	}
+
 	/**
 	 * Get current URI (without /index.php)
 	 *
@@ -26,8 +38,9 @@ class Parvula extends Container
 	 */
 	public static function getURI() {
 		//TODO stock URI in field (same for relativeURI)
-		$scriptName = $_SERVER['SCRIPT_NAME'];
-		$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+		$scriptName = self::$request->scriptName;
+
+		$uri = parse_url(self::$request->uri, PHP_URL_PATH);
 
 		if(static::$URL_REWRITING) {
 			$scriptName = dirname($scriptName);
@@ -44,18 +57,11 @@ class Parvula extends Container
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::getURI();
 
-		$query = isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
-		$queryLen = strlen($query);
-		if($queryLen > 0) {
-			++$queryLen;
-		}
-		$postUrl = substr($postUrl, 0 , strlen($postUrl) - $queryLen);
-
 		$postUrl = str_replace(['//', '\\'], '/', $postUrl);
 		$slashNb = substr_count($postUrl, '/');
 
 		// Add a '../' to URL if there is not URL rewriting
-		if(!static::$URL_REWRITING) {
+		if (!static::$URL_REWRITING) {
 			++$slashNb;
 		}
 
@@ -81,7 +87,7 @@ class Parvula extends Container
 	 * @return string
 	 */
 	public static function getMethod() {
-		return $_SERVER['REQUEST_METHOD'];
+		return self::$request->method;
 	}
 
 	/**
