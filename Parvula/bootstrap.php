@@ -5,15 +5,14 @@
 
 use Parvula\Core\Parvula;
 
-if(!defined('ROOT')) exit;
+if (!defined('ROOT')) exit;
 $time = -microtime(true);
 
 // Try to load composer autoloader
-if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
+if (is_file($autoload = ROOT . 'vendor/autoload.php')) {
 	require $autoload;
 } else {
-	require APP . 'Core/Parvula.php';
-	Parvula::registerAutoloader();
+	throw new \RuntimeException('Please install the dependencies with composer: <code>composer install</code>');
 }
 
 $app = new Parvula;
