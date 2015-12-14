@@ -51,6 +51,9 @@ contentParser: \Parvula\Core\ContentParser\Markdown
 # pageRenderer: Parvula\Core\PageRenderer\SimplePageRenderer
 pageRenderer: Parvula\Core\PageRenderer\ParvulaPageRenderer
 
+# Prefix all API paths (should not be empty)
+apiPrefix: /api/0
+
 # Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
 # SSL versions 1, 2, and 3 should not longer be used
 # The best practice is to only provide support for the TLS protocols (1.0, 1.1 and 1.2)

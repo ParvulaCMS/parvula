@@ -11,7 +11,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(RouteCollection $router) use (
 	$app['plugins']->trigger('router', [&$router]);
 
 	// Api namespace
-	$router->group('/_api', function($router) use ($app) {
+	$prefix = rtrim($app['config']->get('apiPrefix'), '/');
+	$router->group($prefix, function($router) use ($app, $prefix) {
 		require APP . 'routes/api.php';
 	});
 

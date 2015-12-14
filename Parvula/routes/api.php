@@ -128,19 +128,19 @@ require 'api/pages.php';
 
 if ($isAdmin()) {
 
-	$router->group('/_api/themes', function($router) use ($app) {
+	$router->group($prefix . '/themes', function($router) use ($app) {
 		require 'api/themes.php';
 	});
 
-	$router->group('/_api/users', function($router) use ($app) {
+	$router->group($prefix . '/users', function($router) use ($app) {
 		require 'api/users.php';
 	});
 
-	$router->group('/_api/config', function($router) use ($app) {
+	$router->group($prefix . '/config', function($router) use ($app) {
 		require 'api/config.php';
 	});
 
-	$router->group('/_api/files', function($router) use ($app) {
+	$router->group($prefix . '/files', function($router) use ($app) {
 		require 'api/files.php';
 	});
 
