@@ -5,13 +5,18 @@
 
     RewriteEngine On
 
-    # Redirect Trailing Slashes...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ /%1 [L,R=301]
+    # Redirect if more than 2 slashes
+    RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
+    RewriteRule . %1/%2 [R=301,L]
 
-    # Handle Front Controller...
+    # Block access to specific files
+    RewriteRule data/(.*)\.(txt|md|html|yaml|yml|xml|json|php|sh|bat|log)$ . [L]
+
+    # Handle front controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Disable directory browsing
+Options All -Indexes
