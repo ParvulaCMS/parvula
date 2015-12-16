@@ -6,6 +6,7 @@ use Parvula\Core\IOInterface;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\Model\Theme;
 use Parvula\Core\Model\CRUDInterface;
+use Parvula\Core\Exception\NotFoundException;
 
 /**
  * Themes Manager
