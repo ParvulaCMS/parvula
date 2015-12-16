@@ -18,7 +18,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 	$plugins->trigger('uri', [$req->params->slug]);
 	$plugins->trigger('slug', [$slug]);
 
-	if ($slug === '') {
+	if (empty($slug)) {
 		$slug = $config->get('homePage');
 	}
 

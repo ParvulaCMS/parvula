@@ -82,7 +82,7 @@ class PagesFlatFiles extends Pages
 
 				$opt = [
 					'slug' => $pageUID,
-					'title' => ucfirst(str_replace('-', ' ', $pageTitle)) // lisp-case to Normal case
+					'title' => ucfirst(strtr($pageTitle, '-', ' ')) // lisp-case to Normal case
 				];
 
 				$pageUID[0] === '_' ? $opt += ['hidden' => true] : null;

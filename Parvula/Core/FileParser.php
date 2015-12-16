@@ -50,17 +50,17 @@ class FileParser implements IOInterface
 	 * @return mixed Returns data if the file was parsed, false on failure
 	 */
 	public function read($filePath) {
-		if (!is_file($this->folder. $filePath)) {
+		if (!is_file($this->folder . $filePath)) {
 			return false;
 		}
 
 		$parser = $this->getParser($this->folder. $filePath);
 
 		// Read method
-		if (isset($parser->include) && $parser->include === true) {
-			$raw = require $this->folder. $filePath;
+		if (isset($parser->include) && $parser->include) {
+			$raw = require $this->folder . $filePath;
 		} else {
-			$raw = file_get_contents($this->folder. $filePath);
+			$raw = file_get_contents($this->folder . $filePath);
 		}
 
 		return $this->decode($parser, $raw);

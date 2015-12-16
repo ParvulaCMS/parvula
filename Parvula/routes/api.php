@@ -55,7 +55,7 @@ $router->post('/login', function ($req, $res) use ($app) {
 	}
 
 	// TODO Tests !
-	if ($app['config']->get('forceLoginOnTLS') === true && $req->secureLayer !== true) {
+	if ($app['config']->get('forceLoginOnTLS') && !$req->secureLayer) {
 		if ($req->scheme !== 'https') {
 			// Try to redirect to https
 			header('Location: https://' . $req->host . $req->uri);
