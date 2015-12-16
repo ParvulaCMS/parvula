@@ -70,7 +70,25 @@ class PagesFlatFiles extends Pages
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
 			$fn = function($data) use ($pageUID, $renderer) {
-				return $renderer->parse($data, ['slug' => trim($pageUID, '/')]);
+				$pageUID = trim($pageUID, '/');
+
+				// Create the title from the filename
+				if (strpos($pageUID, '/') !== false) {
+					$pageTitle = explode('/', $pageUID);
+					$pageTitle = end($pageTitle);
+				} else {
+					$pageTitle = $pageUID;
+				}
+
+				$opt = [
+					'slug' => $pageUID,
+					'title' => ucfirst(str_replace('-', ' ', $pageTitle)) // lisp-case to Normal case
+				];
+
+				$pageUID[0] === '_' ? $opt += ['hidden' => true] : null;
+				$pageUID[0] === '.' ? $opt += ['secret' => true] : null;
+
+				return $renderer->parse($data, $opt);
 			};
 
 			$page = $fs->read($pageFullPath, $fn, $eval);
@@ -230,15 +248,14 @@ class PagesFlatFiles extends Pages
 			$fs = new Files($pagesPath);
 			$fs->index('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
-				// If files have the right extension and file not secret
-				// (does not begin with '_')
+				// If files have the right extension are not hidden (does not begin with '_')
 				$len = - strlen($that->fileExtension);
 				if (($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
 					if ($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
-					// If directory is not secret (or root)
+					// If directory is not hidden (or root)
 					if ($listHidden || $dir === '' || $dir[0] !== '_') {
 						$pagePath = $dir . basename($file, $that->fileExtension);
 						$pages[] = $pagePath;
