@@ -1,11 +1,11 @@
 # Parvula
-# plugins/*
-components/*
+plugins/
+static/
 
 # Composer
 composer.lock
 composer.phar
-vendor/*
+vendor/
 
 # OS
 __*
@@ -26,4 +26,6 @@ Thumbs.db
 *.log
 *.zip
 *.paw
+*.phar
+*.exe
 
