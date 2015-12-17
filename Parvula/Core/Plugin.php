@@ -57,7 +57,7 @@ abstract class Plugin {
 		$class = str_replace('\\', '/', $class);
 		$class = dirname($class);
 		$class = str_replace('Plugin/', '', $class);
-		return PLUGINS . $class . '/';
+		return _PLUGINS_ . $class . '/';
 	}
 
 	/**

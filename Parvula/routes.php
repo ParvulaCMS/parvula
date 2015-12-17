@@ -13,11 +13,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(RouteCollection $router) use (
 	// Api namespace
 	$prefix = rtrim($app['config']->get('apiPrefix'), '/');
 	$router->group($prefix, function($router) use ($app, $prefix) {
-		require APP . 'routes/api.php';
+		require _APP_ . 'routes/api.php';
 	});
 
 	// Index namespace
-	require APP . 'routes/index.php';
+	require _APP_ . 'routes/index.php';
 
 }, ['routeCollector' => 'Parvula\\Core\\Router\\RouteCollection']);
 

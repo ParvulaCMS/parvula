@@ -5,11 +5,11 @@
 
 use Parvula\Core\Parvula;
 
-if (!defined('ROOT')) exit;
+if (!defined('_ROOT_')) exit;
 $time = -microtime(true);
 
 // Try to load composer autoloader
-if (is_file($autoload = ROOT . 'vendor/autoload.php')) {
+if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
 	require $autoload;
 } else {
 	throw new \RuntimeException('Please install the dependencies with composer: <code>composer install</code>');
@@ -19,10 +19,10 @@ $app = new Parvula;
 
 // Parvula::redirectIfTrailingSlash(); //@FIXME
 
-require APP . 'helpers.php';
+require _APP_ . 'helpers.php';
 
 // Register services
-require APP . 'services.php';
+require _APP_ . 'services.php';
 
 $config = $app['config'];
 $config->set('__time__', $time);
@@ -42,7 +42,7 @@ loadAliases($config->get('aliases'));
 
 // Load user config
 // Append user config to Config wrapper (override if exists)
-$userConfig = $app['fileParser']->read(CONFIG . $config->get('userConfig'));
+$userConfig = $app['fileParser']->read(_CONFIG_ . $config->get('userConfig'));
 $config->append((array) $userConfig);
 
 Parvula::setRequest($app['request']);
