@@ -37,7 +37,7 @@ $app->add('fileParser', function () {
 
 $app->share('config', function (Container $this) {
 	// Populate Config wrapper
-	return new Parvula\Core\Config($this['fileParser']->read(CONFIG . 'system.yaml'));
+	return new Parvula\Core\Config($this['fileParser']->read(_CONFIG_ . 'system.yaml'));
 });
 
 $app->share('plugins', function (Container $this) {
@@ -83,7 +83,7 @@ $app->share('usersession', function (Container $this) {
 //-- ModelMapper --
 
 $app->add('users', function (Container $this) {
-	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], DATA . 'users/users.php');
+	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
 });
 
 $app->share('pageRenderer', function (Container $this) {
@@ -102,11 +102,11 @@ $app->share('pageRendererRAW', function (Container $this) {
 $app->add('pages', function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
-	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], PAGES, $fileExtension);
+	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
 });
 
 $app->add('themes', function (Container $this) {
-	return new Parvula\Core\Model\Mapper\Themes(THEMES, $this['fileParser']);
+	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $this['fileParser']);
 });
 
 $app->add('theme', function (Container $this) {
