@@ -36,8 +36,17 @@ $app->add('fileParser', function () {
 });
 
 $app->share('config', function (Container $this) {
+	$fp = $this['fileParser'];
+
 	// Populate Config wrapper
-	return new Parvula\Core\Config($this['fileParser']->read(_CONFIG_ . 'system.yaml'));
+	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'system.yaml'));
+
+	// Load user config
+	// Append user config to Config wrapper (override if exists)
+	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
+	$config->append((array) $userConfig);
+
+	return $config;
 });
 
 $app->share('plugins', function (Container $this) {

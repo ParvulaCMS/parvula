@@ -40,11 +40,6 @@ ini_set('display_errors', $debug);
 // Load class aliases
 loadAliases($config->get('aliases'));
 
-// Load user config
-// Append user config to Config wrapper (override if exists)
-$userConfig = $app['fileParser']->read(_CONFIG_ . $config->get('userConfig'));
-$config->append((array) $userConfig);
-
 Parvula::setRequest($app['request']);
 
 // Load plugins
