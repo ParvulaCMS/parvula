@@ -1,9 +1,10 @@
-
+---
 title: Some markdown
-
------
+---
 
 # Some markdown
+
+This page is saved in `data/pages/sub/mdown.md`.
 
 ## A subtitle
 

@@ -1,14 +1,12 @@
-
+---
 title: Home page
-slug: home
 author: Your name
+---
 
------
-
-# Home pagedsf
+# Home page
 
 Welcome to [*Parvula* CMS](https://github.com/BafS/parvula).
 
-Your pages are in `data/pages/`. Use [markdown](http://daringfireball.net/projects/markdown/) syntax to write pages !
+You can find your pages in `data/pages/`. Use [markdown](http://daringfireball.net/projects/markdown/) syntax to write !
 
-You can use the [administration](/admin) to edit your pages.
+Try the [administration](/admin) to edit your pages.
