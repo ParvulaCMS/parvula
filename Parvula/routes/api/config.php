@@ -6,8 +6,14 @@ namespace Parvula;
 
 $confIO = $app['fileParser'];
 
+/**
+ * Return config path if the config file exists
+ *
+ * @param string $name Config name
+ * @return bool|string Config path or false if config does not exists
+ */
 function configPath($name) {
-	if (!is_file($path = CONFIG . $name . '.yaml')) { // TODO not force .yaml
+	if (!is_file($path = _CONFIG_ . basename($name . '.yaml'))) { // TODO not force .yaml config serivce
 		return false;
 	}
 
