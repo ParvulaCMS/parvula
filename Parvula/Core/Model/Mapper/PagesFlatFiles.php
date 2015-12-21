@@ -30,6 +30,11 @@ class PagesFlatFiles extends Pages
 	private $folder;
 
 	/**
+	 * @var string Default file name if the slug point to a folder
+	 */
+	private $folderDefaultFile = '/index';
+
+	/**
 	 * Constructor
 	 *
 	 * @param PageRendererInterface $pageRenderer Page renderer
@@ -64,7 +69,11 @@ class PagesFlatFiles extends Pages
 			$fs = new Files($this->folder);
 
 			if (!$fs->exists($pageFullPath)) {
-				return false;
+				// Check if it can fallback to a default file in the folder
+				$pageUID = $pageUID . $this->folderDefaultFile;
+				if (!$fs->exists($pageFullPath = $pageUID . $this->fileExtension)) {
+					return false;
+				}
 			}
 
 			// Anonymous function to use renderer engine
