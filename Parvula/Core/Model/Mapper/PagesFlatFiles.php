@@ -258,14 +258,14 @@ class PagesFlatFiles extends Pages
 			$fs->index('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension are not hidden (does not begin with '_')
-				$len = - strlen($that->fileExtension);
-				if (($listHidden || $file[0] !== '_') && substr($file, $len) === $that->fileExtension) {
+				$ext = substr($file, -strlen($that->fileExtension));
+				if (($listHidden || ((empty($dir) || $dir[0] !== '_') && $file[0] !== '_')) && $ext === $that->fileExtension) {
 					if ($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
 					// If directory is not hidden (or root)
-					if ($listHidden || $dir === '' || $dir[0] !== '_') {
+					if ($listHidden || empty($dir) || $dir[0] !== '_') {
 						$pagePath = $dir . basename($file, $that->fileExtension);
 						$pages[] = $pagePath;
 					}
