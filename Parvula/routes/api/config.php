@@ -79,6 +79,7 @@ $router->get('/{name}/{field}', function ($req, $res) use ($confIO) {
  *     myfield=My new value
  *
  * @apiSuccess (204) ConfigPatched
+ * @apiError (400) InvalidData Data type must be array or object
  * @apiError (404) ConfigDoesNotExists
  * @apiError (404) ConfigException If exception
  *
@@ -90,21 +91,22 @@ $router->patch('/{name}', function ($req, $res) use ($confIO) {
 		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
 	}
 
-	$config = $confIO->read($configName);
+	$configOld = $confIO->read($configName);
 
-	$fields = $req->body;
-	if (is_array($config)) {
-		foreach ($fields as $key => $value) {
-			$config[$key] = $value;
-		}
-	} else if (is_object($config)) {
-		foreach ($fields as $key => $value) {
-			$config->{$key} = $value;
-		}
+	$newFields = (array) $req->body;
+	if ((array) $configOld === $configOld) { // is array
+		$config = array_replace_recursive($configOld, $newFields);
+	} else if (is_object($configOld)) {
+		$config = (object) array_replace_recursive((array) $configOld, $newFields);
+	} else {
+		return $res->status(400)->send([
+			'error' => 'InvalidData',
+			'message' => 'Data type must be array or object'
+		]);
 	}
 
 	try {
-		$confIO->write($configName, (array)$config);
+		$confIO->write($configName, $config);
 	} catch(Exception $e) {
 		return $res->status(404)->send([
 			'error' => 'ConfigException',
