@@ -68,14 +68,14 @@ $router->post('/login', function ($req, $res) use ($app) {
 	if (!($user = $users->read($req->body->username))) {
 		return $res->status(403)->send([
 			'error' => 'BadCredentials',
-			'User or password not ok'
+			'message' => 'User or password not ok'
 		]);
 	}
 
 	if (!$user->login($password)) {
 		return $res->status(403)->send([
 			'error' => 'BadCredentials',
-			'User or password not ok'
+			'message' => 'User or password not ok'
 		]);
 	}
 
