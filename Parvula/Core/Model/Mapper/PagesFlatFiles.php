@@ -154,8 +154,8 @@ class PagesFlatFiles extends Pages
 	/**
 	 * Update page object
 	 *
-	 * @param Page $page Page object
 	 * @param string $pageUID Page unique ID
+	 * @param Page $page Page object
 	 * @throws PageException If the page is not valid
 	 * @throws PageException If the page already exists
 	 * @throws PageException If the page does not exists
@@ -170,7 +170,7 @@ class PagesFlatFiles extends Pages
 		}
 
 		if (!isset($page->title, $page->slug)) {
-			throw new PageException('Page not valid. Must have at lease a `title` and a `slug`');
+			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
 
 		// New slug, need to rename
