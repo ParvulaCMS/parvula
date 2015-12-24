@@ -13,8 +13,7 @@ aliases:
     Component: Parvula\Core\Component
 
 # List of disabled plugins
-disabledPlugins:
-    -
+disabledPlugins: []
 
 # You can force this option with a boolean or leave it on auto detection
 URLRewriting: auto
@@ -48,8 +47,7 @@ headParser: \Parvula\Core\Parser\Yaml
 contentParser: \Parvula\Core\ContentParser\Markdown
 
 # Class to fetch/render pages (must implements PageRendererInterface)
-# pageRenderer: Parvula\Core\PageRenderer\SimplePageRenderer
-pageRenderer: Parvula\Core\PageRenderer\ParvulaPageRenderer
+pageRenderer: Parvula\Core\PageRenderer\FlatFilesPageRenderer
 
 # Prefix all API paths (should not be empty)
 apiPrefix: /api/0
