@@ -16,53 +16,68 @@ use Parvula\Core\Exception\PageException;
 class Page {
 
 	/**
-	 * @var string
+	 * @var string Page's title
 	 */
 	public $title;
 
 	/**
-	 * @var string
+	 * @var string Page's slug ([a-z0-9-_+/]+)
 	 */
 	public $slug;
 
 	/**
-	 * @var string
+	 * @var string Page's content
 	 */
 	public $content;
 
-	// public $hidden;
-	// public $index;
+	/**
+	 * @var stdClass Page's sections (optional)
+	 */
+	public $sections;
 
 	/**
 	 * Page factory, create a new page from an array
-	 * The parameter $pageInfo must contain, at least, the `title` and `slug` fields.
+	 * The parameter $infos must contain at least `title` and `slug` fields.
 	 * The `slug` need to be normalized (a-z0-9-_+/).
 	 *
-	 * @param array $pageInfo Array with page information (must contain `title` and `slug` fields)
+	 * @param array $infos Array with page informations (must contain `title` and `slug` fields)
 	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
 	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 * @return Page The created Page
 	 */
-	public static function pageFactory(array $pageInfo) {
-		$page = new static;
+	public static function pageFactory(array $infos) {
+		$content = isset($infos['content']) ? $infos['content'] : '';
+		$sections = isset($infos['sections']) ? $infos['sections'] : null;
+		unset($infos['content']);
+		unset($infos['sections']);
 
-		// Check if $pageInfo array is complete
-		if (empty($pageInfo['title']) || empty($pageInfo['slug'])) {
-			throw new PageException('Page cannot be created, $pageInfo MUST contain `title` and `slug` fields');
-		} else if (!isset($pageInfo['content'])) {
-			$pageInfo['content'] = '';
+		return new static($infos, $content, $sections);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param array $meta
+	 * @param string $content
+	 * @param object|array $sections
+	 */
+	public function __construct(array $meta, $content = '', $sections = null) {
+		// Check if required meta informations are available
+		if (empty($meta['title']) || empty($meta['slug'])) {
+			throw new PageException('Page cannot be created, $meta MUST contain `title` and `slug` keys');
 		}
 
-		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $pageInfo['slug'])) {
-			throw new PageException('Page cannot be created, $pageInfo[slug] (' .
-				htmlspecialchars($pageInfo['slug']) . ') value is not normalized');
+		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $meta['slug'])) {
+			throw new PageException('Page cannot be created, $meta[slug] (' .
+				htmlspecialchars($meta['slug']) . ') value is not normalized');
 		}
 
-		foreach ($pageInfo as $field => $value) {
-			$page->$field = $value;
+		foreach ($meta as $key => $value) {
+			$this->{$key} = $value;
 		}
 
-		return $page;
+		$this->content = $content;
+		$this->sections = (object) $sections;
 	}
 
 	/**
@@ -73,6 +88,55 @@ class Page {
 	 */
 	public function is(Page $page2) {
 		return $this->slug === $page2->slug;
+	}
+
+	/**
+	 * Get page's content
+	 *
+	 * @return string
+	 */
+	public function getContent() {
+		return $this->content;
+	}
+
+	/**
+	 * Get page's metadata
+	 *
+	 * @return array
+	 */
+	public function getMeta() {
+		$meta = [];
+		foreach ($this as $key => $value) {
+			if ($key !== 'sections' && $key !== 'content') {
+				$meta[$key] = $value;
+			}
+		}
+		return $meta;
+	}
+
+	/**
+	 * Get sections
+	 *
+	 * @return object|bool False if no section
+	 */
+	public function getSections() {
+		if (!isset($this->sections)) {
+			return false;
+		}
+		return $this->sections;
+	}
+
+	/**
+	 * Get section
+	 *
+	 * @param  string $name Section name
+	 * @return string|bool False if no section
+	 */
+	public function getSection($name) {
+		if (!isset($this->sections->{$name})) {
+			return false;
+		}
+		return $this->sections->{$name};
 	}
 
 	/**
