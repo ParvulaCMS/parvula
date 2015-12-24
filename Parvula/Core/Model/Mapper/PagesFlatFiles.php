@@ -198,24 +198,49 @@ class PagesFlatFiles extends Pages
 	 * Patch page
 	 *
 	 * @param string $pageUID
-	 * @param array $page
+	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch($pageUID, array $page) {
-
+	public function patch($pageUID, array $infos) {
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
 			throw new PageException('Page `' . $pageUID . '` does not exists');
 		}
 
-		$pageOld = (array) $this->read($pageUID, false);
+		/**
+		 * Patch helper
+		 * @param  array $array0 Array to patch
+		 * @param  array $array1 Patch to apply
+		 * @return array Patched array
+		 */
+		function patchHelper($array0, $array1) {
+			foreach ($array1 as $key => $value) {
+				// Create new key in $array0 if empty or not an array
+				if (!isset($array0[$key]) || (isset($array0[$key]) && !is_array($array0[$key]))) {
+					$array0[$key] = [];
+				}
 
-		$pageOld = array_replace_recursive($pageOld, $page);
+				if (is_array($value)) {
+					// Overwrite the value in the base array
+					$value = patchHelper($array0[$key], $value);
+				}
+				if ($value === null || $value === '') {
+					// Delete key when "null"
+					unset($array0[$key]);
+				} else {
+					$array0[$key] = $value;
+				}
+			}
+			return $array0;
+		}
 
-		$page = Page::pageFactory($pageOld);
+		$page = $this->read($pageUID, false);
+		$pagePatched = patchHelper((array) $page, $infos);
 
-		return $this->update($pageUID, $page);
+		$infos = Page::pageFactory($pagePatched);
+
+		return $this->update($pageUID, $infos);
 	}
 
 	// TODO ?
