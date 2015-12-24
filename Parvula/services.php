@@ -99,7 +99,12 @@ $app->share('pageRenderer', function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$contentParser = $this['config']->get('contentParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
-	return new $pageRenderer(new $headParser, new $contentParser);
+	$options = [
+		'delimiterMatcher' => '/\s[-=]{3,}\s+/',
+		'sectionMatcher' => '/-{3}\s+(\w[\w- ]*?)\s+-{3}/',
+		'delimiterRender' => '---'
+	];
+	return new $pageRenderer(new $headParser, new $contentParser, $options);
 });
 
 $app->share('pageRendererRAW', function (Container $this) {
