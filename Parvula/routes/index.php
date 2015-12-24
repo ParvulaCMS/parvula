@@ -61,6 +61,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 				},
 			'site'     => $config->toObject(),
 			'page'     => $page,
+			'config'   => $app['fileParser']->read(_CONFIG_ . 'user.yaml'), //TODO tests
 			'__time__' => function () use ($config) {
 				// useful to benchmark
 				return sprintf('%.4f', $config->get('__time__') + microtime(true));
