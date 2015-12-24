@@ -8,7 +8,7 @@ use Parvula\Core\FilesSystem;
 
 // @ALPHA
 
-$fs = new FilesSystem(UPLOADS);
+$fs = new FilesSystem(_UPLOADS_);
 
 /**
  * @api {post} /upload Upload a file
@@ -80,7 +80,7 @@ $router->post('/upload', function ($req, $res) {
 		// DO NOT USE $files['file0']['name'] WITHOUT ANY VALIDATION
 		if (!move_uploaded_file(
 			$file['tmp_name'],
-			sprintf('%s/%s.%s', UPLOADS, $basename, $ext)
+			sprintf('%s/%s.%s', _UPLOADS_, $basename, $ext)
 		)) {
 			throw new RuntimeException('Failed to move uploaded file');
 		}
