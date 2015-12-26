@@ -30,13 +30,21 @@ abstract class Pages implements CRUDInterface
 	/**
 	 * Constructor
 	 *
-	 * @param ContentParserInterface $contentParser (optiona)
+	 * @param ContentParserInterface $contentParser (optional)
 	 */
-	 function __construct(PageRendererInterface $pageRenderer) {
-		 $this->setRenderer($pageRenderer);
+	function __construct(PageRendererInterface $pageRenderer) {
+		$this->setRenderer($pageRenderer);
 	}
 
-	public abstract function patch($pageUID, array $page);
+	/**
+	 * Patch
+	 * Add patch verb to CRUD interface
+	 *
+	 * @param string $pageUID Page UID
+	 * @param array $infos Patch infos
+	 * @return bool
+	 */
+	public abstract function patch($pageUID, array $infos);
 
 	/**
 	 * Fetch all pages
@@ -109,7 +117,7 @@ abstract class Pages implements CRUDInterface
 		$that->pages = [];
 
 		foreach ($this->pages as $page) {
-			if($fn($page) === true) {
+			if ($fn($page) === true) {
 				$that->pages[] = $page;
 			}
 		}
