@@ -124,7 +124,9 @@ $router->map('GET|POST', '/islogged', function($req, $res) use ($isAdmin) {
 	return $res->json((bool) $isAdmin());
 });
 
-require 'api/pages.php';
+$router->group($prefix . '/pages', function($router) use ($app, $isAdmin) {
+	require 'api/pages.php';
+});
 
 if ($isAdmin()) {
 

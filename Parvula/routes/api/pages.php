@@ -25,7 +25,7 @@ $pages = $app['pages'];
  *       {"title": "about me", "slug": "about", "content": "..."}
  *     ]
  */
-$router->get('/pages', function ($req, $res) use ($pages) {
+$router->get('', function ($req, $res) use ($pages) {
 	if (isset($req->query->index)) {
 		// List of pages. Array<string> of slugs
 		return $res->send($pages->index());
@@ -59,7 +59,7 @@ $router->get('/pages', function ($req, $res) use ($pages) {
  *       "message": "This page does not exists"
  *     }
  */
-$router->get('/pages/{slug:.+}', function ($req, $res) use ($app, $pages) {
+$router->get('/{slug:.+}', function ($req, $res) use ($app, $pages) {
 	if (isset($req->query->raw)) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
@@ -110,7 +110,7 @@ if($isAdmin()) {
 	 *     }
 	 */
 	// TODO 'Location' header with link to /pages/{id} containing new ID.
-	$router->post('/pages', function ($req, $res) use ($pages) {
+	$router->post('', function ($req, $res) use ($pages) {
 
 		if (!isset($req->body->slug, $req->body->title)) {
 			return $res->status(400)->send([
@@ -148,7 +148,7 @@ if($isAdmin()) {
 		return $res->sendStatus(201);
 	});
 
-	$router->map('PUT|DELETE', '/pages', function ($req, $res) {
+	$router->map('PUT|DELETE', '', function ($req, $res) {
 		return $res->sendStatus(405); // Method Not Allowed
 	});
 
@@ -170,7 +170,7 @@ if($isAdmin()) {
 	 * @apiError (400) BadField This page need at least a `slug` and a `title`
 	 * @apiError (404) PageException If page does not exists or exception
 	 */
-	$router->put('/pages/{slug:.+}', function ($req, $res) use ($pages) {
+	$router->put('/{slug:.+}', function ($req, $res) use ($pages) {
 
 		if (!isset($req->body->slug, $req->body->title)) {
 			return $res->status(400)->send([
@@ -209,8 +209,7 @@ if($isAdmin()) {
 	 * @apiSuccess (204) PagePatched
 	 * @apiError (404) PageException If exception
 	 */
-	$router->patch('/pages/{slug:.+}', function ($req, $res) use ($pages) {
-
+	$router->patch('/{slug:.+}', function ($req, $res) use ($pages) {
 		$pageArr = (array) $req->body;
 
 		try {
@@ -233,7 +232,7 @@ if($isAdmin()) {
 	 * @apiSuccess (204) PagePatched
 	 * @apiError (404) PageException If not ok or exception
 	 */
-	$router->delete('/pages/{slug:.+}', function ($req, $res) use ($pages) {
+	$router->delete('/{slug:.+}', function ($req, $res) use ($pages) {
 		try {
 			$result = $pages->delete($req->params->slug);
 		} catch(Exception $e) {
