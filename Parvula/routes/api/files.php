@@ -143,7 +143,8 @@ $router->post('/upload', function ($req, $res) use ($app, $fs) {
  */
 $router->delete('/{file:.+}', function ($req, $res) use ($fs) {
 	try {
-		$result = $fs->delete($req->params->file);
+		$file = urldecode($req->params->file);
+		$result = $fs->delete($file);
 	} catch (Exception $e) {
 		return $res->status(404)->send([
 			'error' => 'CannotBeDeleted',
