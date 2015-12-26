@@ -121,7 +121,7 @@ class FilesSystem implements IOInterface {
 	 * @param string $filename File name
 	 * @return boolean If file is writable
 	 */
-	public function isWritable($filename) {
+	public function isWritable($filename = '') {
 		return is_writable($this->workingDirectory . $filename);
 	}
 
@@ -134,6 +134,17 @@ class FilesSystem implements IOInterface {
 	 */
 	public function rename($oldName, $newName) {
 		return rename($this->workingDirectory . $oldName, $this->workingDirectory . $newName);
+	}
+
+	/**
+	 * Try to change the mode of the specified file to that given in mode
+	 *
+	 * @param  string $filename
+	 * @param  int $mode Mode should be an *octal value* (prefixed with a 0)
+	 * @return bool
+	 */
+	public function chmod($filename = '', $mode) {
+		return chmod($this->workingDirectory . $filename, $mode);
 	}
 
 	/**
