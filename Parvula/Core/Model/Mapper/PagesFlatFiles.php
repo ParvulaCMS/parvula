@@ -210,29 +210,39 @@ class PagesFlatFiles extends Pages
 
 		/**
 		 * Patch helper
-		 * @param  array $array0 Array to patch
-		 * @param  array $array1 Patch to apply
+		 * @param  array $struct Array to patch
+		 * @param  array $patch Patch to apply
 		 * @return array Patched array
 		 */
-		function patchHelper($array0, $array1) {
-			foreach ($array1 as $key => $value) {
-				// Create new key in $array0 if empty or not an array
-				if (!isset($array0[$key]) || (isset($array0[$key]) && !is_array($array0[$key]))) {
-					$array0[$key] = [];
+		function patchHelper($struct, $patch) {
+			foreach ($patch as $key => $value) {
+				if (is_array($value)) {
+					// current value is an array, nothing to replace, use recursion
+					if ((object) $struct === $struct) {
+						$value = patchHelper($struct->$key, $value);
+					}
+					else if ((array) $struct === $struct) {
+						$value = patchHelper($struct[$key], $value);
+					}
 				}
 
-				if (is_array($value)) {
-					// Overwrite the value in the base array
-					$value = patchHelper($array0[$key], $value);
+				if ((array) $struct === $struct) {
+					if ($value === null || $value === '') {
+						unset($struct[$key]);
+					} else {
+						$struct[$key] = $value;
+					}
 				}
-				if ($value === null || $value === '') {
-					// Delete key when "null"
-					unset($array0[$key]);
-				} else {
-					$array0[$key] = $value;
+				else if ((object) $struct === $struct) {
+					if ($value === null || $value === '') {
+						unset($struct->$key);
+					} else {
+						$struct->$key = $value;
+					}
 				}
 			}
-			return $array0;
+
+			return $struct;
 		}
 
 		$page = $this->read($pageUID, false);
