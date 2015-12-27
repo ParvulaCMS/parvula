@@ -39,8 +39,8 @@ mediaExtensions: [jpg, jpeg, png, gif]
 
 # Upload options
 upload:
-    maxSize: 1 # Max upload size per file (in MO) (put a negative number for no limit)
-    evilExtensions: [php, html, htm, sh] # Evil extensions who will be renamed to *.txt
+    maxSize: 200 # Max upload size per file (in MO) (put a negative number for no limit)
+    evilExtensions: [php, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
 # User config file to read
 userConfig: site.yaml
