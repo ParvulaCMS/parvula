@@ -23,7 +23,7 @@ class Session {
 	/**
 	 * Constructor
 	 */
-	public function __construct($sessionName = 'PHPSESSID') {
+	public function __construct($sessionName = 'SESSID') {
 		$this->sessionName = $sessionName;
 	}
 
