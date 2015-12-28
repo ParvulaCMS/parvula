@@ -4,7 +4,7 @@ namespace Parvula\Core;
 
 use Parvula\Core\Model\User;
 
-class Authentication extends Session {
+class Authentication {
 
 	/**
 	 * @var mixed Token
@@ -12,15 +12,19 @@ class Authentication extends Session {
 	private $token;
 
 	/**
+	 * @var Session
+	 */
+	private $session;
+
+	/**
 	 * Constructor
 	 *
-	 * @param string $prefix
+	 * @param string $name
 	 * @param mixed $token
 	 */
-	public function __construct($prefix = '', $token) {
-		parent::__construct($prefix);
+	public function __construct(Session $session, $token) {
 		$this->token = $token;
-		$this->start();
+		$this->session = $session;
 	}
 
 	/**
@@ -30,7 +34,7 @@ class Authentication extends Session {
 	 * @return boolean If the given username is currently logged
 	 */
 	public function isLogged($username) {
-		return $this->get('username') === $username && $this->get('token') === $this->token;
+		return $this->session->get('username') === $username && $this->session->get('token') === $this->token;
 	}
 
 	/**
@@ -39,9 +43,11 @@ class Authentication extends Session {
 	 * @param string $username
 	 */
 	public function log($username) {
+		$this->session->regenerateId();
+
 		// Create a session
-		$this->set('username', $username);
-		$this->set('token', $this->token);
+		$this->session->set('username', $username);
+		$this->session->set('token', $this->token);
 	}
 
 	/**
@@ -50,7 +56,9 @@ class Authentication extends Session {
 	 * @return bool
 	 */
 	public function logout() {
-		return $this->destroy();
+		$this->session->regenerateId();
+
+		return $this->session->destroy();
 	}
 
 }

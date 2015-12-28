@@ -68,13 +68,13 @@ $app->share('request', function () {
 });
 
 $app->share('session', function () {
-	$session = new Parvula\Core\Session('parvula.');
-	$session->start(true);
+	$session = new Parvula\Core\Session('parvula_sess');
+	$session->start();
 	return $session;
 });
 
 $app->share('auth', function (Container $this) {
-	return new Parvula\Core\Authentication('parvula.', hash('sha1', $this['request']->ip . $this['request']->userAgent));
+	return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
 });
 
 // Get current logged User if available

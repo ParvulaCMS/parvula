@@ -2,20 +2,29 @@
 
 namespace Parvula\Core;
 
+use Exception;
+
+/**
+ * Session
+ *
+ * Usage example:
+ * ```
+ * $sess = new Parvula\Core\Session('secret_string');
+ * $sess->start();
+ *
+ * $sess->set('user_id', $userID); // Set user_id
+ * $sess->get('user_id'); // Get previous value
+ * ```
+ */
 class Session {
 
-	/**
-	 * @var bool Prefix
-	 */
-	protected $prefix;
+	private $sessionName;
 
 	/**
 	 * Constructor
-	 *
-	 * @param string $prefix
 	 */
-	public function __construct($prefix = '') {
-		$this->prefix = $prefix;
+	public function __construct($sessionName = 'PHPSESSID') {
+		$this->sessionName = $sessionName;
 	}
 
 	/**
@@ -24,38 +33,52 @@ class Session {
 	 * @param bool $regenerateId
 	 * @return bool If the session has started
 	 */
-	public function start($regenerateId = true) {
-		if (!headers_sent() && !$this->isStarted()) {
-			session_name('parvula_sess');
-			return session_start() && session_regenerate_id($regenerateId);
+	public function start($regenerateId = false) {
+		if (!headers_sent()) {
+			session_name($this->sessionName);
+
+			if (!$this->isActive()) {
+				session_start();
+			}
+
+			session_regenerate_id($regenerateId);
+
+			return true;
 		}
 
 		return false;
 	}
 
 	/**
-	 * Get session value
+	 * Regenerate session id
+	 */
+	public function regenerateId() {
+		session_regenerate_id(true);
+	}
+
+	/**
+	 * Gets the session value
 	 *
-	 * @param  string $index
-	 * @param  mixed $defaultValue (optional) Default value if nothing in the session
-	 * @return mixed
+	 * @param string $index
+	 * @param  mixed $defaultValue (optional) Default value if nothing was found
+	 * @return string|null
 	 */
 	public function get($index, $defaultValue = null) {
-		if ($this->has($index)) {
-			return $_SESSION[$this->prefix . $index];
+		if(!$this->has($index)) {
+			return $defaultValue;
 		}
 
-		return $defaultValue;
+		return $_SESSION[$index];
 	}
 
 	/**
 	 * Set session value
 	 *
 	 * @param string $index
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function set($index, $value) {
-		$_SESSION[$this->prefix . $index] = $value;
+		return $_SESSION[$index] = $value;
 	}
 
 	/**
@@ -65,7 +88,7 @@ class Session {
 	 * @return boolean If the session index exists
 	 */
 	public function has($index) {
-		return isset($_SESSION[$this->prefix . $index]);
+		return isset($_SESSION[$index]);
 	}
 
 	/**
@@ -74,8 +97,13 @@ class Session {
 	 * @return bool
 	 */
 	public function destroy() {
-		if ($this->isStarted()) {
-			return session_destroy();
+		if ($this->isActive()) {
+			session_unset();
+
+			$res = session_destroy();
+			session_write_close();
+
+			return $res;
 		}
 
 		return false;
@@ -86,7 +114,7 @@ class Session {
 	 *
 	 * @return boolean
 	 */
-	public function isStarted() {
+	public function isActive() {
 		return session_status() === PHP_SESSION_ACTIVE;
 	}
 
