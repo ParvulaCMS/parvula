@@ -83,7 +83,7 @@ abstract class Pages implements CRUDInterface
 	 */
 	public function visible() {
 		return $this->filter(function($page) {
-			return !isset($page->hidden) || $page->hidden === 'false';
+			return !isset($page->hidden) || !$page->hidden || $page->hidden === 'false';
 		});
 	}
 
@@ -94,7 +94,7 @@ abstract class Pages implements CRUDInterface
 	 */
 	public function hidden() {
 		return $this->filter(function($page) {
-			return isset($page->hidden) && $page->hidden !== 'false';
+			return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
 		});
 	}
 
