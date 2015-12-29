@@ -56,7 +56,7 @@ class PagesFlatFiles extends Pages
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function read($pageUID, $eval = false) {
+	public function read($pageUID, $parse = true, $eval = false) {
 
 		// If page was already loaded, return page
 		if (isset($this->pages[$pageUID])) {
@@ -78,7 +78,7 @@ class PagesFlatFiles extends Pages
 
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
-			$fn = function($data) use ($pageUID, $renderer) {
+			$fn = function($data) use ($pageUID, $renderer, $parse) {
 				$pageUID = trim($pageUID, '/');
 
 				// Create the title from the filename
@@ -97,7 +97,7 @@ class PagesFlatFiles extends Pages
 				$pageUID[0] === '_' ? $opt += ['hidden' => true] : null;
 				$pageUID[0] === '.' ? $opt += ['secret' => true] : null;
 
-				return $renderer->parse($data, $opt);
+				return $renderer->parse($data, $opt, $parse);
 			};
 
 			$page = $fs->read($pageFullPath, $fn, $eval);
