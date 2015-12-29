@@ -20,11 +20,6 @@ use Parvula\Core\PageRenderer\PageRendererInterface;
 class PagesFlatFiles extends Pages
 {
 	/**
-	 * @var string
-	 */
-	private $fileExtention;
-
-	/**
 	 * @var string Pages folder
 	 */
 	private $folder;
@@ -57,7 +52,6 @@ class PagesFlatFiles extends Pages
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function read($pageUID, $parse = true, $eval = false) {
-
 		// If page was already loaded, return page
 		if (isset($this->pages[$pageUID])) {
 			return $this->pages[$pageUID];
@@ -119,7 +113,6 @@ class PagesFlatFiles extends Pages
 	 * @return bool
 	 */
 	public function create($page) {
-
 		$pageFullPath = $page->slug . $this->fileExtension;
 
 		try {
@@ -162,7 +155,6 @@ class PagesFlatFiles extends Pages
 	 * @return bool Return true if page updated
 	 */
 	public function update($pageUID, $page) {
-
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
@@ -251,11 +243,6 @@ class PagesFlatFiles extends Pages
 		$infos = Page::pageFactory($pagePatched);
 
 		return $this->update($pageUID, $infos);
-	}
-
-	// TODO ?
-	public function head($pageUID) {
-
 	}
 
 	/**

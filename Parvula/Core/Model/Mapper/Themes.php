@@ -20,9 +20,15 @@ use Parvula\Core\Exception\NotFoundException;
 class Themes implements CRUDInterface
 {
 
+	/**
+	 * @var FilesSystem
+	 */
 	private $fs;
 
-	private $parser;
+	/**
+	 * @var IOInterface
+	 */
+	private $configIO;
 
 	/**
 	 * @var string Theme config // TODO
@@ -36,7 +42,7 @@ class Themes implements CRUDInterface
 	 */
 	public function __construct($themesPath, IOInterface $configSystem) {
 		$this->fs = new Files($themesPath);
-		$this->parser = $configSystem;
+		$this->configIO = $configSystem;
 	}
 
 	/**
@@ -59,7 +65,7 @@ class Themes implements CRUDInterface
 		}
 
 		// Read theme config
-		$infos = $this->parser->read($path . self::$THEME_INFO_FILE);
+		$infos = $this->configIO->read($path . self::$THEME_INFO_FILE);
 
 		return new Theme($path, $infos);
 	}

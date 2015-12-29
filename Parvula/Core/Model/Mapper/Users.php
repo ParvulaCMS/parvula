@@ -9,7 +9,6 @@ use Parvula\Core\Model\Mapper\AbstractDataMapper;
 
 class Users
 {
-
 	/**
 	 * @var array Array of User
 	 */
@@ -20,6 +19,10 @@ class Users
 	 */
 	protected $data;
 
+	/**
+	 * @param FileParser $parser
+	 * @param string     $usersFile
+	 */
 	public function __construct(FileParser $parser, $usersFile) {
 		$this->parser = $parser;
 		$this->data = $parser->read($usersFile);
@@ -55,14 +58,13 @@ class Users
 	}
 
 	/**
-	 * Update
+	 * Update @next
 	 *
 	 * @param string $id ID
 	 * @param mixed $data Data
 	 * @return bool
 	 */
 	public function update($username, $user) {
-		// ovveride ?
 		if ($userOld = $parser->read($user->username)) {
 
 		}
@@ -71,7 +73,7 @@ class Users
 	}
 
 	/**
-	 * Create
+	 * Create @next
 	 *
 	 * @param User $user User
 	 * @return bool
@@ -85,7 +87,7 @@ class Users
 	}
 
 	/**
-	 * Delete
+	 * Delete @next
 	 *
 	 * @param string $id ID
 	 * @return bool
