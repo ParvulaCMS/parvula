@@ -13,31 +13,27 @@ $templates = new League\Plates\Engine(__DIR__ . '/view', 'html');
 $templates->addData([
 	'baseUrl' => Parvula::getRelativeURIToRoot(),
 	'pluginUrl' => Parvula::getRelativeURIToRoot() . $this->getPluginPath(),
-	'templateUrl' => Parvula::getRelativeURIToRoot() . THEMES . $this->app['config']->get('theme')
+	'templateUrl' => Parvula::getRelativeURIToRoot() . _THEMES_ . $this->app['config']->get('theme')
 ]);
 
 // Check password
-if(isset($_POST, $_POST['password'])) {
+if (isset($_POST, $_POST['username'], $_POST['password'])) {
 
-	if($_POST['password'] === $configAdmin->get('password')) {
-		if(session_id() === '') {
-			session_id(uniqid());
-			session_start();
-		}
-		$_SESSION['id'] = uidSession();
-		$_SESSION['login'] = true;
+	if (!($user = $this->app['users']->read($_POST['username'])) || !$user->login($_POST['password'])) {
+		$templates->addData(['notice', true]);
+	}
+	else {
+		// Create a session
+		$this->app['auth']->log($user->username);
 
 		// Post/Redirect/Get pattern
 		header(
 			'Location: ./' . Parvula::getRelativeURIToRoot() . trim($configAdmin->get('adminRoute'), '/'),
 			true, 303);
-
-	} else {
-		$templates->addData(['notice', true]);
 	}
 }
 
-if(true === isParvulaAdmin()) {
+if ($this->app['usersession'] && $this->app['usersession']->hasRole('admin')) {
 	$pages = $this->app['pages'];
 	$pagesList = $pages->index(true);
 	$templates->addData([
