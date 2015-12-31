@@ -29,14 +29,14 @@ class PluginMediator
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {
-			if(is_string($plugin)) {
-				if(!class_exists($plugin)) {
-					throw new BadObjectCallException('Plugin class \''.$plugin.'\' not found');
+			if (is_string($plugin)) {
+				if (!class_exists($plugin)) {
+					throw new BadObjectCallException('Plugin class `' . $plugin . '` not found');
 				}
 				$plugin = new $plugin;
 			}
 
-			if(is_object($plugin)) {
+			if (is_object($plugin)) {
 				$id = get_class($plugin);
 				if (!isset($this->plugins[$id])) {
 					$this->plugins[$id] = $plugin;
@@ -56,7 +56,7 @@ class PluginMediator
 	public function trigger($event, array $args = []) {
 		$event = 'on' . ucfirst($event);
 		foreach ($this->plugins as $plugin) {
-			if(method_exists($plugin, $event)) {
+			if (method_exists($plugin, $event)) {
 				$this->callFunctionArray($plugin, $event, $args);
 			}
 		}
@@ -80,7 +80,7 @@ class PluginMediator
 	 * @param array $args Arguments
 	 */
 	private function callFunctionArray($obj, $fun, array $args) {
-		switch(count($args)) {
+		switch (count($args)) {
 			case 0: $obj->{$fun}(); break;
 			case 1: $obj->{$fun}($args[0]); break;
 			case 2: $obj->{$fun}($args[0], $args[1]); break;

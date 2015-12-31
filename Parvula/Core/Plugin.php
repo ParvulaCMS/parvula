@@ -80,7 +80,7 @@ abstract class Plugin
 	private function appendToElement($element, $html, $append) {
 		// @TODO a bit hacky, need to clean and find correctly the `</head>`
 
-		if(strlen($html) < 10) {
+		if (strlen($html) < 10) {
 			return false;
 		}
 

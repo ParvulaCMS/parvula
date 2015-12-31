@@ -42,7 +42,7 @@ class Parvula extends Container
 
 		$uri = parse_url(self::$request->uri, PHP_URL_PATH);
 
-		if(static::$URL_REWRITING) {
+		if (static::$URL_REWRITING) {
 			$scriptName = dirname($scriptName);
 		}
 
@@ -75,7 +75,7 @@ class Parvula extends Container
 
 		$newUrl = substr($postUrl, 1);
 
-		if($lastChar === '/') {
+		if ($lastChar === '/') {
 			header('Location: ../' . $newUrl, true, 303);
 		}
 		// echo $postUrl;

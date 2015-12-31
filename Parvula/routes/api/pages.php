@@ -74,7 +74,7 @@ $router->get('/{slug:.+}', function ($req, $res) use ($app, $pages) {
 	return $res->send($result);
 });
 
-if($isAdmin()) {
+if ($isAdmin()) {
 
 	/**
 	 * @api {post} /pages Create a new page
@@ -132,7 +132,7 @@ if($isAdmin()) {
 			$page = Page::pageFactory($pageArr);
 
 			$result = $pages->create($page);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
@@ -185,7 +185,7 @@ if($isAdmin()) {
 			$page = Page::pageFactory($pageArr);
 
 			$pages->update($req->params->slug, $page);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
@@ -214,7 +214,7 @@ if($isAdmin()) {
 
 		try {
 			$pages->patch($req->params->slug, $pageArr);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return $res->status(500)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()
@@ -235,7 +235,7 @@ if($isAdmin()) {
 	$router->delete('/{slug:.+}', function ($req, $res) use ($pages) {
 		try {
 			$result = $pages->delete($req->params->slug);
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			return $res->status(404)->send([
 				'error' => 'PageException',
 				'message' => $e->getMessage()

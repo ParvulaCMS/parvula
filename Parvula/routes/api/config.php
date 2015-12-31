@@ -107,7 +107,7 @@ $router->patch('/{name}', function ($req, $res) use ($confIO) {
 
 	try {
 		$confIO->write($configName, $config);
-	} catch(Exception $e) {
+	} catch (Exception $e) {
 		return $res->status(404)->send([
 			'error' => 'ConfigException',
 			'message' => $e->getMessage()

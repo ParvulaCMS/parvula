@@ -21,12 +21,12 @@ $fs = new FilesSystem(_UPLOADS_);
 $router->get('', function ($req, $res) use ($fs) {
 	try {
 		return $res->send($fs->index());
-	} catch(IOException $e) {
+	} catch (IOException $e) {
 		return $res->status(500)->send([
 			'error' => 'IOException',
 			'message' => $e->getMessage()
 		]);
-	} catch(Exception $e) {
+	} catch (Exception $e) {
 		return $res->status(500)->send([
 			'error' => 'Exception',
 			'message' => 'Server error'

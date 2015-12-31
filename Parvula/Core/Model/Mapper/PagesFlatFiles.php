@@ -72,7 +72,7 @@ class PagesFlatFiles extends Pages
 
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
-			$fn = function($data) use ($pageUID, $renderer, $parse) {
+			$fn = function ($data) use ($pageUID, $renderer, $parse) {
 				$pageUID = trim($pageUID, '/');
 
 				// Create the title from the filename
@@ -99,7 +99,7 @@ class PagesFlatFiles extends Pages
 
 			return $page;
 
-		} catch(IOException $e) {
+		} catch (IOException $e) {
 			exceptionHandler($e);
 		}
 	}
@@ -109,7 +109,7 @@ class PagesFlatFiles extends Pages
 	 *
 	 * @param string $pageUID Page unique ID
 	 * @param Page $page Page object
-	 * @throws IOException If the page does not exists
+	 * @throws PageException If the page does not exists
 	 * @return bool
 	 */
 	public function create($page) {
@@ -135,7 +135,7 @@ class PagesFlatFiles extends Pages
 				return false;
 			}
 
-		} catch(IOException $e) {
+		} catch (IOException $e) {
 			throw new PageException('Error Processing Request');
 		}
 
@@ -193,7 +193,7 @@ class PagesFlatFiles extends Pages
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch($pageUID, array $infos) {
+	public function patch ($pageUID, array $infos) {
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
@@ -277,7 +277,7 @@ class PagesFlatFiles extends Pages
 			}
 
 			$fs = new Files($pagesPath);
-			$fs->index('', false, function($file, $dir = '') use (&$pages, &$that, $listHidden)
+			$fs->index('', false, function ($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension are not hidden (does not begin with '_')
 				$ext = substr($file, -strlen($that->fileExtension));
@@ -296,7 +296,7 @@ class PagesFlatFiles extends Pages
 			});
 
 			return $pages;
-		} catch(IOException $e) {
+		} catch (IOException $e) {
 			exceptionHandler($e);
 		}
 	}

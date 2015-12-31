@@ -82,7 +82,7 @@ abstract class Pages implements CRUDInterface
 	 * @return Pages
 	 */
 	public function visible() {
-		return $this->filter(function($page) {
+		return $this->filter(function ($page) {
 			return !isset($page->hidden) || !$page->hidden || $page->hidden === 'false';
 		});
 	}
@@ -93,7 +93,7 @@ abstract class Pages implements CRUDInterface
 	 * @return Pages
 	 */
 	public function hidden() {
-		return $this->filter(function($page) {
+		return $this->filter(function ($page) {
 			return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
 		});
 	}
@@ -147,7 +147,7 @@ abstract class Pages implements CRUDInterface
 		foreach ($arr as $key => $obj) {
 			$sortFields[$key] = [];
 
-			if(isset($obj->$field)) {
+			if (isset($obj->$field)) {
 				$sortFields[$key] = $obj->$field;
 			}
 		}

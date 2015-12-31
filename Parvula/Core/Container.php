@@ -36,8 +36,8 @@ class Container implements ArrayAccess
 	 * @return mixed Entry
 	 */
 	public function get($id) {
-		if(isset($this->sharedInstances[$id])) {
-			if($this->sharedInstances[$id] === true) {
+		if (isset($this->sharedInstances[$id])) {
+			if ($this->sharedInstances[$id] === true) {
 				$this->sharedInstances[$id] = $this->instances[$id]($this);
 			}
 
@@ -79,8 +79,8 @@ class Container implements ArrayAccess
 	 * @param string $id Identifier of the entry to look for
 	 */
 	public function remove($id) {
-		if($this->has($id)) {
-			if(isset($this->sharedInstances)) {
+		if ($this->has($id)) {
+			if (isset($this->sharedInstances)) {
 				unset($this->sharedInstances);
 			}
 
