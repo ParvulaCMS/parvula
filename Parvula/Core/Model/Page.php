@@ -143,7 +143,7 @@ class Page {
 	 * @return object|bool False if no section
 	 */
 	public function getSections() {
-		if (!isset($this->sections)) {
+		if (!isset($this->sections) || empty((array) $this->sections)) {
 			return false;
 		}
 		return $this->sections;
