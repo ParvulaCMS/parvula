@@ -1,7 +1,6 @@
 <?= $this->fetch('includes::head') ?>
 
 <body>
-
 	<header class="header cf" role="banner">
 		<?= HTML::anchor($site->title, '.', ['class="logo"']) ?>
 
@@ -17,7 +16,9 @@
 	</header>
 
 	<main class="main" role="main">
-		<article class="content">
+		<article class="content" editable=true>
+			<h1><?= $page->title ?></h1>
+
 			<?= $page->content ?>
 		</article>
 	</main>
