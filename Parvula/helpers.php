@@ -2,6 +2,7 @@
 
 /**
  * Load aliases
+ *
  * @param array $aliases
  * @return
  */
@@ -15,13 +16,13 @@ function loadAliases(array $aliases) {
 function getPluginList(array $except = []) {
 	$plugins = [];
 	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
-	    while (false !== ($entry = readdir($handle))) {
-	        if (strlen($entry) > 1 && $entry[0] !== "." && substr($entry, 0, 2) !== '__'
+		while (false !== ($entry = readdir($handle))) {
+			if (strlen($entry) > 1 && $entry[0] !== "." && $entry[0] !== "_"
 				&& !in_array($entry, $except)) {
 				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
-	        }
-	    }
-	    closedir($handle);
+			}
+		}
+		closedir($handle);
 	}
 
 	return $plugins;
@@ -29,6 +30,8 @@ function getPluginList(array $except = []) {
 
 /**
  * Handle exceptions
+ *
+ * @deprecated
  * @param Exception $e
  * @return
  */
@@ -43,24 +46,4 @@ function exceptionHandler(Exception $e) {
 	"\n</pre>";
 
 	exit;
-}
-
-// $content = hash_hmac('sha256', $username, $publicHash);
-// $hash = hash_hmac('sha256', $content, $password);
-// $hash = hash_hmac('sha256', $message . $timestamp, $apiSecretKey);
-function login($username = 'a', $publicHash, $hash) {
-	// print_r($req->body);
-	//YYYYMMDD
-
-	// $username = $req->body['username'];
-	// $contentHash = $req->body['hash'];
-
-	// $public = $req->body['public'];
-
-	$passwordDb = 'qweqwe';
-
-	$content = hash_hmac('sha256', $username, $publicHash);
-	$secureHash = hash_hmac('sha256', $content, $passwordDb);
-
-	return $secureHash === $hash;
 }
