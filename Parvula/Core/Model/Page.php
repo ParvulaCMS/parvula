@@ -91,6 +91,29 @@ class Page {
 	}
 
 	/**
+	 * Get given field of page
+	 *
+	 * @param  string  $field
+	 * @param  string  $default
+	 * @return string Field of page, $default if nothing
+	 */
+	public function get($field, $default = '') {
+		if (isset($this->{$field})) {
+			return $this->{$field};
+		}
+		return $default;
+	}
+
+	/**
+	 * Check if the page has a specific field
+	 * @param  string  $field
+	 * @return boolean
+	 */
+	public function has($field) {
+		return isset($this->{$field});
+	}
+
+	/**
 	 * Get page's content
 	 *
 	 * @return string

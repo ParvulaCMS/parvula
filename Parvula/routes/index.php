@@ -5,7 +5,6 @@ use Parvula\Core\Model\PagesFlatFiles;
 
 // Pages handler (slug must be `a-z0-9-_+/`)
 $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
-
 	$view = $app['view'];
 	$pages = $app['pages'];
 	$theme = $app['theme'];
@@ -19,6 +18,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 	$plugins->trigger('slug', [$slug]);
 
 	if (empty($slug)) {
+		// Default page
 		$slug = $config->get('homePage');
 	}
 
@@ -40,7 +40,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 
 	try {
 		// Page layout
-		if (isset($page->layout) && $theme->hasLayout($page->layout)) {
+		if ($theme->hasLayout($page->get('layout'))) {
 			$layout = $theme->getLayout($page->layout);
 		} else {
 			$layout = $theme->getLayout(); // Default layout
