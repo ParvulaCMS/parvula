@@ -46,7 +46,9 @@ class Parvula extends Container
 			$scriptName = dirname($scriptName);
 		}
 
-		return implode(explode($scriptName, $uri, 2));
+		$uri = implode(explode($scriptName, $uri, 2));
+
+		return '/' . ltrim($uri, '/');
 	}
 
 	/**

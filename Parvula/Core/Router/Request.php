@@ -79,7 +79,7 @@ class Request
 		$this->ip = isset($server['REMOTE_ADDR']) ? $server['REMOTE_ADDR'] : '';
 
 		// Query
-		isset($server['QUERY_STRING']) ? parse_str($server['QUERY_STRING'], $this->query) : '';
+		isset($server['QUERY_STRING']) ? parse_str($server['QUERY_STRING'], $this->query) : [];
 		$this->query = (object) $this->query;
 
 		$this->host = isset($server['HTTP_HOST']) ? $server['HTTP_HOST'] : '';
