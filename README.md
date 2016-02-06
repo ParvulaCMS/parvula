@@ -1,11 +1,9 @@
-# ![PARVULA](http://i.imgur.com/o8RirUr.png)
+# ![PARVULA](http://i.imgur.com/3jxgH0C.png)
 
-> An extremely simple & flexible CMS
-
-#### A quick website from markdown files (or the syntax you want)
+> An extremely simple & flexible CMS generated from flat files
 
 ![example](http://i.imgur.com/yC4upE7.png)
-*Example with the univers template*
+*Example with the univers theme*
 
 ### Requirements
 
@@ -28,7 +26,7 @@ All pages are in `data/pages/`. You can create some sub directories if you want 
 The basic configuration file is `data/config/site.yaml`. There is 2 templates bundle by default: "simple" and "univers".
 
 ![website](http://i.imgur.com/LgG54UW.png)
-*Example with the default template*
+*Example with the default theme*
 
 ### Pages
 
