@@ -41,7 +41,8 @@ class Themes implements CRUDInterface
 	 * @param string $themesPath
 	 */
 	public function __construct($themesPath, IOInterface $configSystem) {
-		$this->fs = new Files($themesPath);
+		// $this->fs = new Files($themesPath);
+		$this->themesPath = $themesPath;
 		$this->configIO = $configSystem;
 	}
 
@@ -83,10 +84,17 @@ class Themes implements CRUDInterface
 	/**
 	 * List themes
 	 *
-	 * @return array
+	 * @return array Array of themes available
 	 */
 	public function index() {
-		return $this->fs->index(); // TODO no recusrion
+		// @next -> use $fs
+		$path = $this->themesPath;
+		$dirs = array_diff(scandir($path), ['.', '..']);
+		return array_values(array_filter($dirs, function ($val) use ($path) {
+			return is_dir($path . '/' . $val);
+		}));
+
+		// return $this->fs->index(); // TODO no recusrion
 	}
 
 	public function update($theme, $data) {
