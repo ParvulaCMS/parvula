@@ -4,7 +4,7 @@ use Parvula\Core\Parvula;
 use Parvula\Core\Model\PagesFlatFiles;
 
 // Pages handler (slug must be `a-z0-9-_+/`)
-$router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
+$router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) {
 	$view = $app['view'];
 	$pages = $app['pages'];
 	$theme = $app['theme'];
@@ -32,7 +32,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 		$page = $pages->read($config->get('errorPage'));
 		$plugins->trigger('404', [&$page]);
 
-		if(false === $page) {
+		if (false === $page) {
 			// Juste print simple 404 if there is no 404 page
 			die('404 - Page ' . htmlspecialchars($page) . ' not found');
 		}
@@ -51,12 +51,12 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function($req) use($app) {
 			'baseUrl'  => Parvula::getRelativeURIToRoot(),
 			'themeUrl' => Parvula::getRelativeURIToRoot() . $theme->getPath() . '/',
 			'pages'    =>
-				function($listHidden = false, $pagesPath = null) use ($pages, $config) {
-					return $pages->all($pagesPath)->visible()->
+				function ($listHidden = false, $pagesPath = null) use ($pages, $config) {
+					return $pages->all($pagesPath)->visibility(!$listHidden)->
 						order($config->get('typeOfSort'), $config->get('sortField'))->toArray();
 				},
 			'plugin'   =>
-				function($name) use ($plugins) {
+				function ($name) use ($plugins) {
 					return $plugins->getPlugin($name);
 				},
 			'site'     => $config->toObject(),
