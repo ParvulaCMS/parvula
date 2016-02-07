@@ -41,7 +41,7 @@ class Themes implements CRUDInterface
 	 * @param string $themesPath
 	 */
 	public function __construct($themesPath, IOInterface $configSystem) {
-		// $this->fs = new Files($themesPath);
+		$this->fs = new Files($themesPath);
 		$this->themesPath = $themesPath;
 		$this->configIO = $configSystem;
 	}
