@@ -1,0 +1,16 @@
+<?php $this->layout('layouts::_base') ?>
+
+<?php if ($page->getSections()) : ?>
+	<div class="row cols">
+	<?php foreach ($page->sections as $name => $section) : ?>
+		<div class="col-md-4" editable="<?= $name ?>">
+			<?= $section ?>
+		</div>
+	<?php endforeach ?>
+	</div>
+<?php endif; ?>
+
+
+<div class="content" editable=true>
+	<?= $content ?>
+</div>
