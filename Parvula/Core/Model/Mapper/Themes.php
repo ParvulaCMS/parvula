@@ -68,6 +68,10 @@ class Themes implements CRUDInterface
 		// Read theme config
 		$infos = $this->configIO->read($path . self::$THEME_INFO_FILE);
 
+		if ($this->fs->isDir($themeName . '/_layouts')) {
+			$infos['layouts'] = '_layouts';
+		}
+
 		return new Theme($path, $infos);
 	}
 

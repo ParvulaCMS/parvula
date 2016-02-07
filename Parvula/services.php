@@ -146,15 +146,23 @@ $app->add('view', function (Container $this) {
 	foreach ($iter as $path => $dir) {
 		if ($dir->isDir()){
 			$name = str_replace([DIRECTORY_SEPARATOR, '/', '\\'], '|', substr($path, $baseLen));
-			// Register '_*' folders exept '_layouts' (registered the 'layout' theme config)
-			if ($name[0] === '_' && $name !== '_layouts') {
+
+			// Register '_*' folders
+			if ($name[0] === '_') {
+
+				if ($name === '_layouts') {
+					$isLayoutRegistered = true;
+				}
+
 				$view->addFolder(substr($name, 1), $path);
 			}
 		}
 	}
 
-	// Register 'layouts' with the layouts folder (in the theme config)
-	$view->addFolder('layouts', $theme->getPath() . $theme->getLayoutFolder());
+	// Register 'layouts' with the layouts folder (in the theme config) if not registered
+	if (!$isLayoutRegistered) {
+		$view->addFolder('layouts', $theme->getPath() . $theme->getLayoutFolder());
+	}
 
 	return $view;
 });
