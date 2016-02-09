@@ -277,7 +277,7 @@ class PagesFlatFiles extends Pages
 			}
 
 			$fs = new Files($pagesPath);
-			$fs->index('', false, function ($file, $dir = '') use (&$pages, &$that, $listHidden)
+			$fs->index('', function ($file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
 				// If files have the right extension are not hidden (does not begin with '_')
 				$ext = substr($file, -strlen($that->fileExtension));

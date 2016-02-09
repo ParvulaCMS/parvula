@@ -148,40 +148,55 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * List files recursively in a directory
+	 * Index files recursively in a directory
 	 *
-	 * @param string $directory Directory to list recursively
-	 * @param boolean $showHiddenFiles True to list hidden files
-	 * @param callable $fn Callback function for each item $fn($key, $val)
-	 * @return array Return array of files
+	 * @param  string $dir
+	 * @param  callable $fn callback for each file `($file, $dir)`
+	 * @param  callable $filter callback filter for each file
+	 * @return array Files
 	 */
-	// TODO flag -> hidden file, recusive
-	public function index($dir = '', $showHiddenFiles = false, callable $fn = null) {
+	// TODO flags maxDepth
+	public function indexAll($dir = '', callable $fn = null, callable $filter = null) {
+		$path = $this->workingDirectory . $dir;
 
-		if (!$this->isDir($dir)) {
-			throw new IOException("Directory `{$dir}` not found");
+		$iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
+
+		if ($filter !== null) {
+			$iterator = new \RecursiveCallbackFilterIterator($iterator, $filter);
 		}
 
-		$fnName = __FUNCTION__;
-		$dirFull = $this->workingDirectory . $dir;
+		$iterator = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+		$iterator->setMaxDepth(8);
 
-		$items = [];
-		if ($handle = opendir($dirFull)) {
-			while (false !== ($file = readdir($handle))) {
-				if (($showHiddenFiles || $file[0] !== '.') && ($file !== '.' && $file !== '..')) {
-					if (is_dir($dirFull . '/' . $file)) {
-						$items[$file] = $this->$fnName($dir . '/' . $file, $showHiddenFiles, $fn);
-					} else {
-						if ($fn !== null) {
-							$fn($file, $dir);
-						}
-						$items[] = $file;
-					}
-				}
+		$files = [];
+		foreach ($iterator as $file) {
+			$cdir = substr($file->getPathInfo(), strlen($this->workingDirectory));
+
+			if ($fn) {
+				$fn($file->getFileName(), $cdir);
 			}
-			closedir($handle);
+			$files[] = $file;
 		}
-		return $items;
+
+		return $files;
+	}
+
+	/**
+	 * Index files recursively in a directory (without hidden files)
+	 *
+	 * @param  string $dir
+	 * @param  callable $fn callback for each file `($file, $dir)`
+	 * @param  callable $filter callback filter for each file
+	 * @return array Files
+	 */
+	public function index($dir = '', callable $fn = null, $filter = null) {
+		if ($filter === null) {
+			$filter = function ($current) {
+				return $current->getFilename()[0] !== '.';
+			};
+		}
+
+		return $this->indexAll($dir, $fn, $filter);
 	}
 
 	/**
