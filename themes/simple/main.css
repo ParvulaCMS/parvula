@@ -1,4 +1,4 @@
-/*
+/**
  * Main Style
  * Fabien Sa
  */
@@ -25,14 +25,16 @@ body {
 	height: 150px;
 	line-height: 150px;
 	text-align: center;
+	background: #34495e;
 }
 
 .header h1, .header h1 a {
 	padding: 0 10px;
 	margin: 0;
-	font-weight: 200;
-	font-size: 40pt;
+	font-weight: 300;
+	font-size: 38pt;
 	letter-spacing: 8px;
+	color: #eee;
 }
 
 .header a {
@@ -42,36 +44,36 @@ body {
 /* Navigation */
 .header .nav {
 	width: 100%;
-	border-bottom: 1px solid rgb(60, 155, 220);
-	border-top: 1px solid rgb(60, 155, 220);
-	height: 45px;
+	height: 50px;
+	background: #2c3e50;
 }
 
 .header ul {
 	margin: 0;
 	padding: 0;
-	line-height: 45px;
+	line-height: 50px;
 	clear: both;
 	list-style-type: none;
 }
 
-.header li a:hover {
-	margin-top: -2px;
-	border-top: 2px solid rgb(60, 155, 220);
+.header ul li a:hover {
 	border-bottom: 2px solid rgb(60, 155, 220);
+	text-decoration: none;
 }
 
 .header ul li a {
 	float: left;
 	padding: 0 25px;
+	font-weight: bold;
+	color: #bdc3c7;
 }
 
 /*
  * Main
  */
 .main {
-	padding: 20px 10%;
-	margin-bottom: 50px;
+	padding: 30px 10%;
+	margin-bottom: 40px;
 }
 
 .main .content {

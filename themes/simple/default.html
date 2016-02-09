@@ -6,15 +6,16 @@
 		<h1><?= HTML::anchor($site->title, '.') ?></h1>
 
 		<ul class="nav">
-		<?php foreach ($pages() as $page) : ?>
-			<li><?= HTML::anchor($page->title, $page->slug) ?></li>
+		<?php foreach ($pages() as $p) : ?>
+			<li><?= HTML::anchor($p->title, $p->slug) ?></li>
 		<?php endforeach ?>
 		</ul>
 	</header>
 
 	<section class="main">
-		<article class="content" fe-editable="<?= $self->slug ?>">
-			<?= $self->content ?>
+		<article class="content" editable="<?= $page->slug ?>">
+			<h1><?= $page->title ?></h1>
+			<?= $page->content ?>
 		</article>
 	</section>
 

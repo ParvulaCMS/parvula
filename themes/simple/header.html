@@ -3,13 +3,13 @@
 <head>
 	<meta charset="utf-8">
 
-	<title><?= $this->e($self->title . ' · ' . $site->title) ?></title>
+	<title><?= $this->e($page->title . ' · ' . $site->title) ?></title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<?php if(isset($site->description)) : ?>
+	<?php if (isset($site->description)) : ?>
 	<meta name="description" content="<?= $site->description ?>">
 	<?php endif ?>
-	<link rel="icon" type="image/x-icon" href="<?= $templateUrl ?>favicon.png" />
+	<link rel="icon" type="image/x-icon" href="<?= $themeUrl ?>favicon.png" />
 
-	<?= Asset::css($templateUrl . 'main.css') ?>
+	<?= Asset::css($themeUrl . 'main.css') ?>
 </head>
