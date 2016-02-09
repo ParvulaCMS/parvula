@@ -276,19 +276,19 @@ class PagesFlatFiles extends Pages
 				$pagesPath = $this->folder;
 			}
 
-			$fs = new Files($pagesPath);
-			$fs->index('', function ($file, $dir = '') use (&$pages, &$that, $listHidden)
+			(new Files($pagesPath))->index('', function (\SplFileInfo $file, $dir = '') use (&$pages, &$that, $listHidden)
 			{
+				$filename = $file->getFileName();
 				// If files have the right extension are not hidden (does not begin with '_')
-				$ext = substr($file, -strlen($that->fileExtension));
-				if (($listHidden || ((empty($dir) || $dir[0] !== '_') && $file[0] !== '_')) && $ext === $that->fileExtension) {
+				$ext = substr($filename, -strlen($that->fileExtension));
+				if (($listHidden || ((empty($dir) || $dir[0] !== '_') && $filename[0] !== '_')) && $ext === $that->fileExtension) {
 					if ($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
 					// If directory is not hidden (or root)
 					if ($listHidden || empty($dir) || $dir[0] !== '_') {
-						$pagePath = $dir . basename($file, $that->fileExtension);
+						$pagePath = $dir . basename($filename, $that->fileExtension);
 						$pages[] = $pagePath;
 					}
 

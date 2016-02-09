@@ -146,9 +146,8 @@ $app->add('view', function (Container $this) {
 		return $current->isDir() && $current->getFilename()[0] === '_';
 	};
 
-	$fs = new Files($path);
-	$flattened = $fs->index('', function ($file, $dir) use ($path, $view) {
-		$view->addFolder(substr($file, 1), $path . $dir . '/' . $file);
+	(new Files($path))->index('', function (\SplFileInfo $file, $dir) use ($path, $view) {
+		$view->addFolder(substr($file->getFileName(), 1), $path . $dir . '/' . $file->getFileName());
 	}, $filter);
 
 	return $view;

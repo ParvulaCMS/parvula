@@ -151,7 +151,7 @@ class FilesSystem implements IOInterface {
 	 * Index files recursively in a directory
 	 *
 	 * @param  string $dir
-	 * @param  callable $fn callback for each file `($file, $dir)`
+	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
 	 * @param  callable $filter callback filter for each file
 	 * @return array Files
 	 */
@@ -173,9 +173,9 @@ class FilesSystem implements IOInterface {
 			$cdir = substr($file->getPathInfo(), strlen($this->workingDirectory));
 
 			if ($fn) {
-				$fn($file->getFileName(), $cdir);
+				$fn($file, $cdir);
 			}
-			$files[] = $file;
+			$files[] = $file->getFileName();
 		}
 
 		return $files;
@@ -185,7 +185,7 @@ class FilesSystem implements IOInterface {
 	 * Index files recursively in a directory (without hidden files)
 	 *
 	 * @param  string $dir
-	 * @param  callable $fn callback for each file `($file, $dir)`
+	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
 	 * @param  callable $filter callback filter for each file
 	 * @return array Files
 	 */
