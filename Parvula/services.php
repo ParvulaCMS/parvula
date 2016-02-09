@@ -4,6 +4,7 @@
 // ----------------------------- //
 
 use Parvula\Core\Container;
+use Parvula\Core\FilesSystem as Files;
 
 $app->share('errorHandler', function () {
 	if (class_exists('\\Whoops\\Run')) {
