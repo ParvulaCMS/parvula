@@ -67,8 +67,8 @@ $app->share('request', function () {
 	);
 });
 
-$app->share('session', function () {
-	$session = new Parvula\Core\Session('parvula_sess');
+$app->share('session', function ($this) {
+	$session = new Parvula\Core\Session($this['config']->get('sessionName'));
 	$session->start();
 	return $session;
 });
