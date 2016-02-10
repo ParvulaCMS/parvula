@@ -109,34 +109,33 @@ class PagesFlatFiles extends Pages
 	 * Create page object in "pageUID" file
 	 *
 	 * @param Page $page Page object
+	 * @throws IOException If the destination folder is not writable
 	 * @throws PageException If the page does not exists
 	 * @return bool
 	 */
 	public function create($page) {
-		$pageFullPath = $page->slug . $this->fileExtension;
+		$pagePath = $page->slug . $this->fileExtension;
+
+		$fs = new Files($this->folder);
+
+		if (!$fs->isWritable()) {
+			throw new IOException('Page destination folder is not writable');
+		}
 
 		try {
-			$fs = new Files($this->folder);
 
-			if ($fs->exists($pageFullPath)) {
-				// TODO create page
+			if ($fs->exists($pagePath)) {
 				return false;
 			}
 
-			//TODO
-			// if (!$fs->isWritable()) { // folder ! not file
-			// 	throw new IOException('Page destination folder is not writable');
-			// 	// throw new IOException('Page `' . strip_tags($page->slug) . '` is not writable');
-			// }
-
 			$data = $this->renderer->render($page);
 
-			if (!$fs->write($pageFullPath, $data)) {
+			if (!$fs->write($pagePath, $data)) {
 				return false;
 			}
 
 		} catch (IOException $e) {
-			throw new PageException('Error Processing Request');
+			throw new PageException('Page cannot be created');
 		}
 
 		$this->pages[$page->slug] = $page;
