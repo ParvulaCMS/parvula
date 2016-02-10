@@ -77,7 +77,10 @@ class Page {
 			$this->{$key} = $value;
 		}
 
-		$this->date = new DateTime($this->date);
+		// date can be set by after the creation, by the database or file last edit
+		if (!empty($this->date)) {
+			$this->date = new DateTime($this->date);
+		}
 		$this->content = $content;
 		$this->sections = (object) $sections;
 	}
