@@ -30,6 +30,6 @@ interface IOInterface {
 	 * //@throws Exception If the ressource does not exists ??
 	 * @return bool If the data was writen
 	 */
-	public function write($path, $data); //TODO Flag ?
+	public function write($path, $data);
 
 }

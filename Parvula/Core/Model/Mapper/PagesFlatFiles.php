@@ -108,7 +108,6 @@ class PagesFlatFiles extends Pages
 	/**
 	 * Create page object in "pageUID" file
 	 *
-	 * @param string $pageUID Page unique ID
 	 * @param Page $page Page object
 	 * @throws PageException If the page does not exists
 	 * @return bool

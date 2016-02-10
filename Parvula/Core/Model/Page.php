@@ -58,9 +58,9 @@ class Page {
 	/**
 	 * Constructor
 	 *
-	 * @param array $meta
-	 * @param string $content
-	 * @param object|array $sections
+	 * @param array $meta Metadata
+	 * @param string $content (optional) Content
+	 * @param object|array $sections (optional) Sections
 	 */
 	public function __construct(array $meta, $content = '', $sections = null) {
 		// Check if required meta informations are available
@@ -77,7 +77,7 @@ class Page {
 			$this->{$key} = $value;
 		}
 
-		// date can be set by after the creation, by the database or file last edit
+		// date can be set after the creation, by the database or file last edit
 		if (!empty($this->date)) {
 			$this->date = new DateTime($this->date);
 		}
@@ -96,10 +96,10 @@ class Page {
 	}
 
 	/**
-	 * Get given field of page
+	 * Get given field of page if exists and not empty
 	 *
-	 * @param  string  $field
-	 * @param  string  $default optional
+	 * @param  string $field
+	 * @param  string $default (optional)
 	 * @return string Field of page, $default if nothing
 	 */
 	public function get($field, $default = '') {
@@ -111,7 +111,8 @@ class Page {
 
 	/**
 	 * Check if the page has a specific field
-	 * @param  string  $field
+	 *
+	 * @param  string $field
 	 * @return boolean
 	 */
 	public function has($field) {

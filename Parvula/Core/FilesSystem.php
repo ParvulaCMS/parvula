@@ -53,7 +53,7 @@ class FilesSystem implements IOInterface {
 	 * Read data from file
 	 *
 	 * @param string $filename File name
-	 * @param callable ($fn) Apply function to file data
+	 * @param callable ($fn) Apply function to file data (\SplFileInfo $file, string $data)
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the file does not exists
 	 * @return mixed File data
