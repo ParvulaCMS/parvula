@@ -42,6 +42,10 @@ upload:
     maxSize: 200 # Max upload size per file (in MO) (put a negative number for no limit)
     evilExtensions: [php, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
+# Timezone ('UTC' if nothing)
+# timezones available: https://secure.php.net/manual/en/timezones.php
+timezone: Europe/Zurich
+
 # User config file to read
 userConfig: site.yaml
 

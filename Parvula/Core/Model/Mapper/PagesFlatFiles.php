@@ -72,7 +72,7 @@ class PagesFlatFiles extends Pages
 
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
-			$fn = function ($data) use ($pageUID, $renderer, $parse) {
+			$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
 				$pageUID = trim($pageUID, '/');
 
 				// Create the title from the filename
@@ -83,15 +83,16 @@ class PagesFlatFiles extends Pages
 					$pageTitle = $pageUID;
 				}
 
-				$opt = [
+				$opts = [
 					'slug' => $pageUID,
-					'title' => ucfirst(strtr($pageTitle, '-', ' ')) // lisp-case to Normal case
+					'title' => ucfirst(strtr($pageTitle, '-', ' ')), // lisp-case to Normal case
+					'date' => '@' . $fileInfo->getMTime()
 				];
 
-				$pageUID[0] === '_' ? $opt += ['hidden' => true] : null;
-				$pageUID[0] === '.' ? $opt += ['secret' => true] : null;
+				$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
+				$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
 
-				return $renderer->parse($data, $opt, $parse);
+				return $renderer->parse($data, $opts, $parse);
 			};
 
 			$page = $fs->read($pageFullPath, $fn, $eval);

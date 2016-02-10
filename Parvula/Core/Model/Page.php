@@ -2,6 +2,7 @@
 
 namespace Parvula\Core\Model;
 
+use DateTime;
 use Parvula\Core\Exception\PageException;
 
 /**
@@ -76,6 +77,7 @@ class Page {
 			$this->{$key} = $value;
 		}
 
+		$this->date = new DateTime($this->date);
 		$this->content = $content;
 		$this->sections = (object) $sections;
 	}
@@ -94,11 +96,11 @@ class Page {
 	 * Get given field of page
 	 *
 	 * @param  string  $field
-	 * @param  string  $default
+	 * @param  string  $default optional
 	 * @return string Field of page, $default if nothing
 	 */
 	public function get($field, $default = '') {
-		if (isset($this->{$field})) {
+		if (isset($this->{$field}) && !empty($this->{$field})) {
 			return $this->{$field};
 		}
 		return $default;
