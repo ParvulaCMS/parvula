@@ -270,31 +270,32 @@ class PagesFlatFiles extends Pages
 	 */
 	public function index($listHidden = false, $pagesPath = null) {
 		$pages = [];
-		$that = &$this;
 
 		try {
 			if ($pagesPath === null) {
 				$pagesPath = $this->folder;
 			}
 
-			(new Files($pagesPath))->index('', function (\SplFileInfo $file, $dir = '') use (&$pages, &$that, $listHidden)
-			{
-				$filename = $file->getFileName();
-				// If files have the right extension are not hidden (does not begin with '_')
-				$ext = substr($filename, -strlen($that->fileExtension));
-				if (($listHidden || ((empty($dir) || $dir[0] !== '_') && $filename[0] !== '_')) && $ext === $that->fileExtension) {
+			// Filter secret (.*) and hiddent files (_*)
+			$filter = function ($current) use ($listHidden) {
+				return ($listHidden || $current->getFilename()[0] !== '_')
+					&& $current->getFilename()[0] !== '.';
+			};
+
+			$ext = $this->fileExtension;
+			(new Files($pagesPath))->index('',
+				function (\SplFileInfo $file, $dir) use (&$pages, $ext) {
+				$currExt = '.' . $file->getExtension();
+
+				// If files have the right extension
+				if ($currExt === $ext) {
 					if ($dir !== '') {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
-					// If directory is not hidden (or root)
-					if ($listHidden || empty($dir) || $dir[0] !== '_') {
-						$pagePath = $dir . basename($filename, $that->fileExtension);
-						$pages[] = $pagePath;
-					}
-
+					$pages[] = $dir . $file->getBasename($currExt); // page path
 				}
-			});
+			}, $filter);
 
 			return $pages;
 		} catch (IOException $e) {
