@@ -100,13 +100,13 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$meta .= PHP_EOL . $delimiter . PHP_EOL;
 
 		// Add the content
-		$content = $page->getContent();
+		$content = trim($page->getContent());
 
 		// Add sections (if exist)
 		if (($sections = $page->getSections()) !== false) {
 			foreach ($sections as $name => $value) {
 				$content .= PHP_EOL . PHP_EOL . $delimiter . $name . PHP_EOL . $delimiter;
-				$content .= $value . PHP_EOL;
+				$content .= trim($value) . PHP_EOL;
 			}
 		}
 
@@ -130,7 +130,6 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$content = '';
 		$sections = new \StdClass;
 		if (!empty($pageTokens[1])) {
-
 			// Split into sections
 			$content = preg_split(
 				$this->sectionMatcher, $pageTokens[1] . ' ', -1,
