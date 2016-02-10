@@ -23,9 +23,6 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 	}
 
 	$page = $pages->read($slug, true);
-	// Set the right timezone
-	$page->date->setTimeZone(new DateTimeZone($config->get('timezone', 'UTC')));
-	$plugins->trigger('page', [&$page]);
 
 	// 404
 	if (false === $page) {
@@ -39,6 +36,10 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 			die('404 - Page ' . htmlspecialchars($page) . ' not found');
 		}
 	}
+
+	// Set the right timezone
+	$page->date->setTimeZone(new DateTimeZone($config->get('timezone', 'UTC')));
+	$plugins->trigger('page', [&$page]);
 
 	try {
 		// Page layout
@@ -85,7 +86,7 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res) use ($app) {
 
 	$filePath = str_replace('..', '', $req->params->file);
-	$ext  = pathinfo($filePath, PATHINFO_EXTENSION);
+	$ext = pathinfo($filePath, PATHINFO_EXTENSION);
 
 	if (in_array($ext, $app['config']->get('mediaExtensions'))) {
 		$filePath = _IMAGES_ . $filePath;
