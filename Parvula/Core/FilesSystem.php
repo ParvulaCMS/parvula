@@ -63,19 +63,24 @@ class FilesSystem implements IOInterface {
 			throw new IOException("File `{$filename}` does not exist");
 		}
 
-		if ($eval) {
-			ob_start();
-			include $this->workingDirectory . $filename;
-			$data = ob_get_clean();
-		} else {
-			$data = file_get_contents($this->workingDirectory . $filename);
+		$fileInfo = new \SplFileInfo($this->workingDirectory . $filename);
+
+		if ($fileInfo->isReadable()) {
+			if ($eval) {
+				ob_start();
+				include $this->workingDirectory . $filename;
+				$data = ob_get_clean();
+			} else {
+				$file = $fileInfo->openFile('r');
+				$data = $file->fread($file->getSize());
+			}
 		}
 
 		if ($fn !== null) {
-			return $fn($data);
-		} else {
-			return $data;
+			return $fn($fileInfo, $data);
 		}
+
+		return $data;
 	}
 
 	/**
