@@ -1,0 +1,45 @@
+	<div id="pages-list" class="active">
+		<h2>Pages</h2>
+		<ul class="list">
+		<?php foreach ($pagesList as $pagePath) : ?>
+			<li><a href="#<?= $pagePath ?>"><?= htmlspecialchars($pagePath)?></a> <button class="admin-btn-xs delete">x</button></li>
+		<?php endforeach; ?>
+		</ul>
+		<ul class="no-style">
+			<li><a href="#" class="admin-btn-m">New page</a></li>
+		</ul>
+		<ul class="no-style">
+			<li><a class="admin-btn-m right" href="./<?= $baseUrl ?>">website</a></li>
+			<li><button class="admin-btn-m right logout">logout</button></li>
+		</ul>
+	</div>
+
+	<div id="page-info">
+		<h2>Page info</h2>
+		<ul id="infos">
+		</ul>
+
+		<ul>
+			<li><label class="field"><em>Add field</em></label> <input class="input-m" /> <button class="admin-btn-s plus">+</button></li>
+		</ul>
+	</div>
+
+	<div id="headbar">
+		<button class="admin-btn left toggleList">menu <span class="anim">>></span></button>
+		<input class="title" placeholder="Page title" />
+		<button class="admin-btn right toggleInfo">page info <span class="anim">v</span></button>
+		<button class="admin-btn right save">save</button>
+	</div>
+
+	<textarea id="editor"></textarea>
+
+	<div id="preview">
+		<div class="inner"></div>
+	</div>
+
+	<script type="text/javascript">
+		baseUrl = './<?= $baseUrl ?>';
+	</script>
+	<script src="<?= $pluginUrl ?>js/marked.js"></script>
+	<script src="<?= $pluginUrl ?>js/jquery.min.js"></script>
+	<script src="<?= $pluginUrl ?>js/admin.js"></script>

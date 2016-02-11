@@ -1,13 +1,12 @@
-
+---
 title: Some markdown
+---
 
------
-
-# Some markdown
+This page is saved in `data/pages/sub/mdown.md`.
 
 ## A subtitle
 
-[Home page](home)
+[Home page](/home)
 
 Some **bold** test.
 
@@ -30,8 +29,8 @@ An here some `$code($this->field);` with [a link](http://wikipedia.org).
 | col 2 is      | centered      |   $12 |
 | zebra stripes | are neat      |    $1 |
 
----------------
+---
 
-![A cat](cat.jpg)
+![A cat](/cat.jpg)
 
 *End*

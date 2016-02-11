@@ -1,14 +1,13 @@
-
+---
 title: Home page
-author: Your name
-date: 24.12.2013
-
------
-
-# Home page
+description: Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+layout: home
+---
 
 Welcome to [*Parvula* CMS](https://github.com/BafS/parvula).
 
-Your pages are in `data/pages/`. Use [markdown](http://daringfireball.net/projects/markdown/) syntax to write pages !
+Edit the website configuration in `data/config/site.yaml`.
 
-You can use the [administration](./parvula-admin/) to edit your pages.
+You can find and edit your pages in `data/pages/`. Use the  [markdown syntax](http://daringfireball.net/projects/markdown/) to write !
+
+You can also try the [administration](/admin) to edit your pages. Have fun !

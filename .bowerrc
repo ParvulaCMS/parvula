@@ -1,0 +1,5 @@
+{
+    "directory": "static/components",
+    "analytics": false,
+    "timeout": 120000
+}

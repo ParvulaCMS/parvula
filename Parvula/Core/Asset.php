@@ -6,7 +6,7 @@ namespace Parvula\Core;
  * Assets manager
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -36,20 +36,40 @@ class Asset {
 	}
 
 	/**
+	 * Auto render the ressource file
+	 * Read the extension and automatically load the right type
+	 * @param string|array $ressource Ressource filename
+	 * @param string ($pattern)
+	 * @return string Html output
+	 */
+	public static function auto($ressource, $pattern = null) {
+		$ext = pathinfo($ressource, PATHINFO_EXTENSION);
+
+		if($ext === 'js') {
+			return Asset::js($name, $pattern);
+		} else if($ext === 'css') {
+			return Asset::css($name, $pattern);
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Render CSS
 	 * @param string|array $css Css filename
 	 * @param string ($pattern)
 	 * @return string Html output
 	 */
 	public static function css($css, $pattern = null) {
+		if(!$css) {
+			return;
+		}
 
 		if(!is_string($pattern)) {
 			$pattern = '<link href="{{file}}" rel="stylesheet" />' . PHP_EOL;
 		}
 
-		$out = static::renderTag($css, $pattern);
-
-		return $out;
+		return static::renderTag($css, $pattern);
 	}
 
 	/**
@@ -59,13 +79,15 @@ class Asset {
 	 * @return string Html output
 	 */
 	public static function js($js, $pattern = null) {
+		if(!$js) {
+			return;
+		}
+
 		if(!is_string($pattern)) {
 			$pattern = '<script src="{{file}}"></script>' . PHP_EOL;
 		}
 
-		$out = static::renderTag($js, $pattern);
-
-		return $out;
+		return static::renderTag($js, $pattern);
 	}
 
 	/**
@@ -77,15 +99,17 @@ class Asset {
 	 */
 	private static function renderTag($files, $pattern) {
 		if(is_string($files)) {
-			$files = array($files);
+			$files = [$files];
 		}
 
 		$output = '';
 		foreach ($files as $file) {
+			if($file) {
+				$output .= str_replace('{{file}}', $file, $pattern);
+			}
 			if(!preg_match('/^https?:\/\//', $file)) {
 				$file = static::$basePath . $file;
 			}
-			$output .= str_replace('{{file}}', $file, $pattern);
 		}
 
 		return $output;

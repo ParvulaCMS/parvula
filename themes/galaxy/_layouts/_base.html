@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+	<?= $this->fetch('includes::head') ?>
+
+	<body class="<?= $page->get('layout') ?>">
+		<?= $this->fetch('includes::header') ?>
+
+		<div class="container">
+			<div class="main">
+				<?= $this->section('content', $content) ?>
+			</div>
+
+			<?= $this->fetch('includes::footer') ?>
+		</div>
+	</body>
+</html>

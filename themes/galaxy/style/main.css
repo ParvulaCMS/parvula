@@ -1,0 +1,129 @@
+html, body {
+  height: 100%;
+  font-family: 'Raleway', sans-serif;
+}
+
+.navbar {
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+
+.navbar .navbar-brand {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-item.active .nav-link {
+  color: #9ac;
+}
+
+.nav-item .nav-link {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  font-size: 90%;
+  -webkit-transition: color .25s;
+  transition: color .25s;
+}
+
+.nav-pills {
+  float: right;
+}
+
+.intro-header {
+  box-shadow: 0 0 6em rgba(0, 0, 0, 0.15) inset;
+  color: #fff;
+  text-align: center;
+  display: table;
+  width: 100%;
+  height: 280px;
+  text-transform: uppercase;
+  background: url("../background.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.intro-header .intro-body {
+  display: inline-block;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.intro-header .intro-body .content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.2em 1.4em;
+}
+
+.intro-header .intro-body .subheading {
+  display: inline-block;
+  margin-top: 1.2rem;
+}
+
+.home .intro-header {
+  min-height: 300px;
+  height: 60%;
+}
+
+.home .intro-header .intro-body .content {
+  border: 2px solid #fff;
+}
+
+.main {
+  color: #414446;
+  margin-top: 3.5rem;
+}
+
+.cols {
+  margin-bottom: 3.5em;
+}
+
+.site-footer {
+  margin-top: 3.5em;
+  color: #666;
+  font-size: 85%;
+}
+
+.site-footer .wrapper {
+  padding: 1.5em 0;
+}
+
+blockquote {
+  background: #f8f8f8;
+  border-left: 5px solid #ccc;
+  margin: 1.2em 5px;
+  padding-left: 10px;
+}
+
+hr {
+  border: none;
+  border-bottom: 2px solid #ddd;
+  height: 0;
+  padding: 0;
+}
+
+@media (min-width: 48em) {
+  html {
+    font-size: 17px;
+  }
+  .home .intro-header {
+    height: 85%;
+  }
+  .intro-header .intro-body .content {
+    padding: 2em 2.4em;
+  }
+}
+
+@media (min-width: 34em) {
+  .nav-item {
+    width: auto;
+  }
+  .navbar-brand {
+    width: auto;
+  }
+}

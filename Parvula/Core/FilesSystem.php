@@ -8,134 +8,225 @@ use Parvula\Core\Exception\IOException;
  * Files System
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class FilesSystem {
+class FilesSystem implements IOInterface {
 
 	/**
 	 * @var string
 	 */
-	private $prefixPath;
+	private $workingDirectory;
 
 	/**
 	 * Constructor
-	 * @param string $prefixPath
+	 *
+	 * @param string $workingDirectory
 	 */
-	function __construct($prefixPath = '.') {
-		$this->prefixPath = rtrim($prefixPath) . '/';
+	function __construct($workingDirectory = '.') {
+		$this->workingDirectory = rtrim($workingDirectory, '/') . '/';
 	}
 
 	/**
 	 * Check if file exists
+	 *
 	 * @param string $filename File name
 	 * @return boolean If file exists
 	 */
 	public function exists($filename) {
-		return is_file($this->prefixPath . $filename);
+		return file_exists($this->workingDirectory . $filename);
 	}
 
 	/**
-	 * Check if directory exists
+	 * Check if it is a directory
+	 *
 	 * @param string $dirname Directory name
 	 * @return boolean If direcorty exists
 	 */
-	public function existsDir($dirname) {
-		return is_dir($this->prefixPath . $dirname);
+	public function isDir($dirname) {
+		return is_dir($this->workingDirectory . $dirname);
 	}
 
 	/**
 	 * Read data from file
+	 *
 	 * @param string $filename File name
-	 * @param callable ($fn) Apply function to file data
+	 * @param callable ($fn) Apply function to file data (\SplFileInfo $file, string $data)
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the file does not exists
 	 * @return mixed File data
 	 */
-	public function read($filename, $fn = null, $eval = false) {
-		if(!$this->exists($filename)) {
-			throw new IOException("File '$filename' not found", 1);
+	public function read($filename, callable $fn = null, $eval = false) {
+		if (!$this->exists($filename)) {
+			throw new IOException("File `{$filename}` does not exist");
 		}
 
-		if($eval) {
-			ob_start();
-			include $this->prefixPath . $filename;
-			$data = ob_get_clean();
-		} else {
-			$data = file_get_contents($this->prefixPath . $filename);
+		$fileInfo = new \SplFileInfo($this->workingDirectory . $filename);
+
+		if ($fileInfo->isReadable()) {
+			if ($eval) {
+				ob_start();
+				include $this->workingDirectory . $filename;
+				$data = ob_get_clean();
+			} else {
+				$file = $fileInfo->openFile('r');
+				$data = $file->fread($file->getSize());
+			}
 		}
 
-		if($fn !== null) {
-			return $fn($data);
-		} else {
-			return $data;
+		if ($fn !== null) {
+			return $fn($fileInfo, $data);
 		}
+
+		return $data;
 	}
 
 	/**
 	 * Write data to file
+	 *
 	 * @param string $filename File name
 	 * @param mixed $data
 	 * @param callable ($fn) Apply function to data
-	 * @return boolean
+	 * @throws IOException if file is not writable
 	 */
-	public function write($filename, $data, $fn = null) {
-		if($fn !== null) {
+	public function write($filename, $data, callable $fn = null) {
+		if ($fn !== null) {
 			$data = $fn($data);
 		}
 
-		return file_put_contents($this->prefixPath . $filename, $data);
+		$res = @file_put_contents($this->workingDirectory . $filename, $data);
+
+		if (false === $res) {
+			throw new IOException("File `{$filename}` is not writable");
+		}
+
+		return $res;
 	}
 
 	/**
 	 * Delete file
+	 *
 	 * @param string $filename File to delete
 	 * @throws IOException If the file does not exists
 	 * @return boolean If filename is deleted
 	 */
 	public function delete($filename) {
-		if(!$this->exists($filename)) {
-			throw new IOException("File '$filename' not found", 1);
+		if (!$this->exists($filename)) {
+			throw new IOException("File `{$filename}` not found");
 		}
 
-		return unlink($this->prefixPath . $filename);
+		return unlink($this->workingDirectory . $filename);
 	}
 
 	/**
-	 * List files recursively in a directory
-	 * @param string $directory Directory to list recursively
-	 * @param boolean $showHiddenFiles True to list hidden files
-	 * @param callable $fn Callback function for each item $fn($key, $val)
-	 * @return array Return array of files
+	 * Check if file is writable
+	 *
+	 * @param string $filename File name
+	 * @return boolean If file is writable
 	 */
-	public function getFilesList($dir = '', $showHiddenFiles = false, $fn = null) {
-		$fnName = __FUNCTION__;
+	public function isWritable($filename = '') {
+		return is_writable($this->workingDirectory . $filename);
+	}
 
-		if(!$this->existsDir($dir)) {
-			throw new IOException("Directory '$dir' not found", 1);
+	/**
+	 * Rename file
+	 *
+	 * @param string $oldName Old file name
+	 * @param string $newName New file name
+	 * @return boolean
+	 */
+	public function rename($oldName, $newName) {
+		return rename($this->workingDirectory . $oldName, $this->workingDirectory . $newName);
+	}
+
+	/**
+	 * Try to change the mode of the specified file to that given in mode
+	 *
+	 * @param  string $filename
+	 * @param  int $mode Mode should be an *octal value* (prefixed with a 0)
+	 * @return bool
+	 */
+	public function chmod($filename = '', $mode) {
+		return chmod($this->workingDirectory . $filename, $mode);
+	}
+
+	/**
+	 * Index files recursively in a directory
+	 *
+	 * @param  string $dir
+	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
+	 * @param  callable $filter callback filter for each file
+	 * @return array Files
+	 */
+	// TODO flags maxDepth
+	public function indexAll($dir = '', callable $fn = null, callable $filter = null) {
+		$path = $this->workingDirectory . $dir;
+
+		$iterator = new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS);
+
+		if ($filter !== null) {
+			$iterator = new \RecursiveCallbackFilterIterator($iterator, $filter);
 		}
 
-		$dirFull = $this->prefixPath . $dir;
+		$iterator = new \RecursiveIteratorIterator($iterator, \RecursiveIteratorIterator::SELF_FIRST);
+		$iterator->setMaxDepth(8);
 
-		$items = array();
-		if($handle = opendir($dirFull)) {
-			while(false !== ($file = readdir($handle))) {
-				if(($showHiddenFiles || $file[0] !== '.') && ($file !== '.' && $file !== '..')) {
-					if(is_dir($dirFull . '/' . $file)) {
-						$items[$file] = $this->$fnName($dir . '/' . $file, $showHiddenFiles, $fn);
-					} else {
-						if($fn !== null) {
-							$fn($file, $dir);
-						}
-						$items[] = $file;
-					}
-				}
+		$files = [];
+		foreach ($iterator as $file) {
+			$cdir = substr($file->getPathInfo(), strlen($this->workingDirectory));
+
+			if ($fn) {
+				$fn($file, $cdir);
 			}
-			closedir($handle);
+			$files[] = $file->getFileName();
 		}
-		return $items;
+
+		return $files;
+	}
+
+	/**
+	 * Index files recursively in a directory (without hidden files)
+	 *
+	 * @param  string $dir
+	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
+	 * @param  callable $filter callback filter for each file
+	 * @return array Files
+	 */
+	public function index($dir = '', callable $fn = null, $filter = null) {
+		if ($filter === null) {
+			$filter = function ($current) {
+				return $current->getFilename()[0] !== '.';
+			};
+		}
+
+		return $this->indexAll($dir, $fn, $filter);
+	}
+
+	/**
+	 * Get working directory
+	 *
+	 * @return string Current working directory
+	 */
+	public function getCurrentWorkingDirectory() {
+		return $this->workingDirectory;
+	}
+
+	/*
+	 * Alias for {getCurrentWorkingDirectory}
+	 */
+	public function getCWD() {
+		return $this->workingDirectory;
+	}
+
+	/**
+	 * Set working directory
+	 *
+	 * @param string $workingDirectory
+	 */
+	public function setCurrentWorkingDirectory($workingDirectory) {
+		$this->workingDirectory = $workingDirectory;
 	}
 
 }

@@ -2,6 +2,7 @@
 
 /**
  * Load aliases
+ *
  * @param array $aliases
  * @return
  */
@@ -11,24 +12,26 @@ function loadAliases(array $aliases) {
 	}
 }
 
-/**
- * Parse configuration data in object
- * @param string $configData
- * @return StdClass Config object
- */
-function parseConfigData($configData) {
-	preg_match_all('/([^\s:]+)[\s:]+(.+)/', $configData, $matches);
-
-	$conf = new \StdClass();
-	for ($i = 0; $i <= count($matches); ++$i) {
-		$conf->{$matches[1][$i]} = trim($matches[2][$i]);
+//@TODO cleaner
+function getPluginList(array $except = []) {
+	$plugins = [];
+	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
+		while (false !== ($entry = readdir($handle))) {
+			if (strlen($entry) > 1 && $entry[0] !== "." && $entry[0] !== "_"
+				&& !in_array($entry, $except)) {
+				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
+			}
+		}
+		closedir($handle);
 	}
 
-	return $conf;
+	return $plugins;
 }
 
 /**
  * Handle exceptions
+ *
+ * @deprecated
  * @param Exception $e
  * @return
  */
@@ -43,47 +46,4 @@ function exceptionHandler(Exception $e) {
 	"\n</pre>";
 
 	exit;
-}
-
-/**
- * Unique ID for session
- * @return string
- */
-function uidSession() {
-	$ip = $_SERVER["REMOTE_ADDR"];
-
-	return sha1(sha1('!#;' . $ip) . $_SERVER['HTTP_USER_AGENT']);
-}
-
-/**
- * Check if we are admin
- * @return boolean
- */
-function isParvulaAdmin() {
-	if(session_id() === '') {
-		session_start();
-	}
-
-	if(isset($_SESSION, $_SESSION['login']) && $_SESSION['login'] === true) {
-		session_regenerate_id(true);
-		$logged = $_SESSION['login'];
-
-		$sid = uidSession();
-		if(isset($_SESSION['id']) && $_SESSION['id'] !== $sid) {
-			session_destroy();
-			return false;
-		}
-
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/**
- * Alias for HTML::sEcho
- * @return string
- */
-function sEcho() { 
-	return call_user_func_array("HTML::sEcho", func_get_args());
 }

@@ -1,48 +1,41 @@
-Parvula CMS
-===========
+# ![PARVULA](http://i.imgur.com/igAQPza.png)
 
-#### A quick website from markdown files
+> **An extremely simple & flexible CMS generated from flat files**
 
-![website](http://i.imgur.com/jO3KwHI.png)
-*Example with the fullpage template*
+![screenshot](http://i.imgur.com/gsbzwgl.png)
+> Parvula with the default galaxy theme
 
-Requirements
-------------
-* PHP 5.3+
+### Requirements
+
+* PHP 5.4+
+* [Composer](http://getcomposer.org/)
 * URL Rewriting (recommended)
-* [Composer](http://getcomposer.org/) is recommended
 
-Installation with Composer
---------------------------
+### Installation with Composer
+
 1. Download and extract the zip
 2. Run `composer install`
 3. That's it !
 
-Without composer, download [php-markdown](http://michelf.ca/projects/php-markdown/) and put Michelf directory in root.
+## Usage
 
+### Edit pages
 
-Edit pages
-----------
-All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
+All pages are located in `data/pages/`. You can also create sub directories if you want to organise your pages.
 
-The basic configuration file is in `data/site.conf.md`. There is 2 templates bundle by default: "simple" and "fullpage".
+The basic configuration file is `data/config/site.yaml`.
+There is 2 themes bundle by default: "simple" and "galaxy".
 
-![website](http://i.imgur.com/P3Fp24p.png)
-*Default template*
+### Pages
 
-
-Pages
------
 * Pages must have a title to be listed
-* Page beginning with `_` are "secret" pages, not listed
+* Pages beginning with `_` are *hidden* pages, not listed but accessible
 * You can order pages with the *index* field
 
-
-Administration
---------------
+### Administration
 
 ![parvula administration](http://i.imgur.com/WtDfVXu.png)
 
-You can edit pages online at **yoursite.com/parvula-admin/** (admin url can be edited in Parvula/config.php).
+You can edit pages online at **yoursite.com/admin** (admin url can be edited in `plugins/Admin/config.php`).
 
-Don't forget to chmod 755 `data/pages` and *change the default password* in `data/admin.conf.php`.
+Don't forget to *chmod 755* `data/pages` and *change the default password* in `plugins/Admin/config.php` !

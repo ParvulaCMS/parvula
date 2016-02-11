@@ -1,0 +1,21 @@
+<nav class="navbar navbar-default">
+	<a class="navbar-brand" href="./<?= $baseUrl ?>"><?= $site->title ?></a>
+	<ul class="nav nav-pills">
+		<?php foreach ($pages() as $myPage) : ?>
+		<li class="nav-item <?= !$page->is($myPage) ?: 'active' ?>">
+			<a class="nav-link" href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a>
+		</li>
+		<?php endforeach; ?>
+	</ul>
+</nav>
+
+<header class="intro-header">
+	<div class="container intro-body">
+		<div class="content">
+			<h1><?= $page->title ?></h1>
+			<?php if ($page->get('description')): ?>
+				<span class="subheading"><?= $page->get('description') ?></span>
+			<?php endif; ?>
+		</div>
+	</div>
+</header>

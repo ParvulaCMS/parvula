@@ -3,51 +3,53 @@
 // Let the magic begin
 // ----------------------------- //
 
-use Parvula\Core\Router;
-use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 
-if(!defined('ROOT')) exit;
+if (!defined('_ROOT_')) exit;
+$time = -microtime(true);
 
 // Try to load composer autoloader
-if(is_readable($autoload = ROOT . 'vendor/autoload.php')) {
+if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
 	require $autoload;
 } else {
-	require APP . 'Core/Parvula.php';
-	Parvula::registerAutoloader();
+	throw new \RuntimeException('Please install the dependencies with composer: <code>composer install</code>');
 }
 
-require APP . 'helpers.php';
+$app = new Parvula;
 
-// Use custom exception handler
-set_exception_handler('exceptionHandler');
+// Parvula::redirectIfTrailingSlash(); //@FIXME
 
-// Populate Config wrapper
-Config::populate(require APP . 'config.php');
+require _APP_ . 'helpers.php';
+
+// Register services
+require _APP_ . 'services.php';
+
+$config = $app['config'];
+$config->set('__time__', $time);
+
+$debug = (bool) $config->get('debug', false);
+
+if ($debug) {
+	error_reporting(E_ALL);
+	$app->get('errorHandler');
+}
 
 // Display or not errors
-ini_set('display_errors', (bool) Config::get('debug'));
+ini_set('display_errors', $debug);
+
+// Set timezone
+date_default_timezone_set($config->get('timezone', 'UTC'));
 
 // Load class aliases
-loadAliases(Config::get('aliases'));
+loadAliases($config->get('aliases'));
 
-// Load user config
-$config = Parvula::getUserConfig();
+Parvula::setRequest($app['request']);
 
-// Append user config to Config wrapper (override if exists)
-Config::append((array) $config);
-
-// Auto set URLRewriting Config
-if(Config::get('URLRewriting') === 'auto') {
-	$scriptName = $_SERVER['SCRIPT_NAME'];
-	if(substr($_SERVER['REQUEST_URI'], 0, strlen($scriptName)) === $scriptName) {
-		Config::set('URLRewriting', false);
-	} else {
-		Config::set('URLRewriting', true);
-	}
-}
+// Load plugins
+$plugins = $app['plugins'];
+$plugins->trigger('bootstrap', [$app]);
+$plugins->trigger('load');
 
 // Load routes
-$router = new Router(Parvula::getURI());
 require 'routes.php';
-$router->run();
+$plugins->trigger('end');
