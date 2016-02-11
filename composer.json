@@ -1,8 +1,8 @@
 {
 	"name": "bafs/parvula",
-	"description": "Simple, Markdown and Fast CMS",
+	"description": "An extremely simple & flexible CMS",
 	"type": "project",
-	"keywords": ["cms", "markdown"],
+	"keywords": ["cms", "flat files", "markdown"],
 	"license": "MIT",
 	"homepage": "https://github.com/BafS/parvula",
 	"authors": [
@@ -20,7 +20,7 @@
 		"php": ">=5.4",
 		"league/plates": "3.*",
 		"erusev/parsedown-extra": "^0.7.0",
-		"nikic/fast-route": "^0.6.0",
+		"nikic/fast-route": "^0.7.0",
 		"ircmaxell/password-compat": "^1.0",
 		"symfony/yaml": "^2.8"
 	},
