@@ -1,9 +1,9 @@
-# ![PARVULA](http://i.imgur.com/3jxgH0C.png)
+# ![PARVULA](http://i.imgur.com/igAQPza.png)
 
-> An extremely simple & flexible CMS generated from flat files
+> **An extremely simple & flexible CMS generated from flat files**
 
-![example](http://i.imgur.com/yC4upE7.png)
-*Example with the univers theme*
+![screenshot](http://i.imgur.com/gsbzwgl.png)
+> Parvula with the default galaxy theme
 
 ### Requirements
 
@@ -21,17 +21,15 @@
 
 ### Edit pages
 
-All pages are in `data/pages/`. You can create some sub directories if you want to organise your pages.
+All pages are located in `data/pages/`. You can also create sub directories if you want to organise your pages.
 
-The basic configuration file is `data/config/site.yaml`. There is 2 templates bundle by default: "simple" and "univers".
-
-![website](http://i.imgur.com/LgG54UW.png)
-*Example with the default theme*
+The basic configuration file is `data/config/site.yaml`.
+There is 2 themes bundle by default: "simple" and "galaxy".
 
 ### Pages
 
 * Pages must have a title to be listed
-* Pages beginning with `_` are *hidden* pages, not listed
+* Pages beginning with `_` are *hidden* pages, not listed but accessible
 * You can order pages with the *index* field
 
 ### Administration
