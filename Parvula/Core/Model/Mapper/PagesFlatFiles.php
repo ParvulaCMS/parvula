@@ -287,7 +287,7 @@ class PagesFlatFiles extends Pages
 
 				// If files have the right extension
 				if ($currExt === $ext) {
-					if ($dir !== '') {
+					if ($dir) {
 						$dir = trim($dir, '/\\') . '/';
 					}
 
