@@ -2,5 +2,5 @@
 
 return [
 	'adminRoute' => '/admin',
-	'password'   => '_Your_Password_'
+	'password' => 'yourPassword'
 ];

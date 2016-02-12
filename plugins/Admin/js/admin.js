@@ -101,7 +101,7 @@ var setPageInfo = function (page) {
 
 				if (field === 'title') {
 					pageTitleEl.val(page.title);
-				} else {
+				} else if (field !== 'date') {
 					ulEl.append(
 						'<li><label class="field">' + field + '</label> <input class="input-m" value="' + page[field] + '" /> <button class="admin-btn-s delete">x</button></li>');
 				}

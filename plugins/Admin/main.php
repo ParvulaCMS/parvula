@@ -4,7 +4,7 @@ use Parvula\Core\Config;
 use Parvula\Core\Parvula;
 use Parvula\Core\Model\Pages;
 
-if($configAdmin->get('password') === "_Your_Password_") {
+if ($configAdmin->get('password') === 'yourPassword') {
 	die('You MUST change the default password in `' . __DIR__ . '/conf.php`.');
 }
 
@@ -17,14 +17,13 @@ $templates->addData([
 ]);
 
 // Check password
-if (isset($_POST, $_POST['username'], $_POST['password'])) {
-
-	if (!($user = $this->app['users']->read($_POST['username'])) || !$user->login($_POST['password'])) {
+if (isset($_POST, $_POST['password'])) {
+	if ($_POST['password'] !== $configAdmin->get('password')) {
 		$templates->addData(['notice', true]);
 	}
 	else {
 		// Create a session
-		$this->app['auth']->log($user->username);
+		$this->app['auth']->log('admin');
 
 		// Post/Redirect/Get pattern
 		header(
