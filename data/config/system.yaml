@@ -2,8 +2,11 @@
 #  System config
 # ------------------------------ #
 
-# Show errors if debug is enabled
+# Shows errors if debug is enabled
 debug: true
+
+defaultFields:
+    layout: default # TODO
 
 # Class aliases
 aliases:
@@ -25,7 +28,6 @@ homePage: home
 errorPage: _404
 
 # Extension for files in ./data/pages
-# fileExtension: html
 fileExtension: md
 
 # How to sort pages (SORT_ASC, SORT_DESC) (php.net/manual/en/function.array-multisort.php)
@@ -49,23 +51,23 @@ timezone: Europe/Zurich
 # User config file to read
 userConfig: site.yaml
 
-# Class to parse pages (must implements ContentParserInterface), can be null
+# Class to parse pages (must implement ContentParserInterface), can be null
 headParser: \Parvula\Core\Parser\Yaml
 
-# Class to parse pages (must implements ParserInterface)
+# Class to parse pages (must implement ParserInterface)
 contentParser: \Parvula\Core\ContentParser\Markdown
 
-# Class to fetch/render pages (must implements PageRendererInterface)
+# Class to fetch/render pages (must implement PageRendererInterface)
 pageRenderer: Parvula\Core\PageRenderer\FlatFilesPageRenderer
 
-# Prefix all API paths (should not be empty)
+# Prefix to all API paths (must not be empty)
 apiPrefix: /api/0
 
 # Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
-# SSL versions 1, 2, and 3 should not longer be used
-# The best practice is to only provide support for the TLS protocols (1.0, 1.1 and 1.2)
+# SSL versions 1, 2, and 3 should no longer be used
+# The best practice is to just provide support for the TLS protocols (1.0, 1.1 and 1.2)
 # For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
 forceLoginOnTLS: false
 
-# Name of the session, which is used in cookies (should contain only alphanumeric characters)
+# Name of the session, which is used in cookies (should contain just alphanumeric characters)
 sessionName: parvula_sess

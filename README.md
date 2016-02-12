@@ -21,20 +21,21 @@
 
 ### Edit pages
 
-All pages are located in `data/pages/`. You can also create sub directories if you want to organise your pages.
+All pages are located in `data/pages/`. You can also create sub directories to better organise your pages.
 
 The basic configuration file is `data/config/site.yaml`.
-There is 2 themes bundle by default: "simple" and "galaxy".
+There are 2 bundled themes by default: "simple" and "galaxy".
 
 ### Pages
 
-* Pages must have a title to be listed
+* Pages must have a title to be listed (in the menu)
 * Pages beginning with `_` are *hidden* pages, not listed but accessible
 * You can order pages with the *index* field
 
 ### Administration
 
-![parvula administration](http://i.imgur.com/WtDfVXu.png)
+![Parvula administration](http://i.imgur.com/WtDfVXu.png)
+> Administration plugin
 
 You can edit pages online at **yoursite.com/admin** (admin url can be edited in `plugins/Admin/config.php`).
 
