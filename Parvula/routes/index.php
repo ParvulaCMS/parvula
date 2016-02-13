@@ -85,14 +85,12 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 // Files handler (media or uploads) (must have an extension)
 $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res) use ($app) {
 
-	$filePath = str_replace('..', '', $req->params->file);
+	$filePath = str_replace(['..', "\0"], '', $req->params->file);
 	$ext = pathinfo($filePath, PATHINFO_EXTENSION);
 
-	if (in_array($ext, $app['config']->get('mediaExtensions'))) {
-		$filePath = _IMAGES_ . $filePath;
-	} else {
-		$filePath = _UPLOADS_ . $filePath;
-	}
+	// if (in_array($ext, $app['config']->get('mediaExtensions'))) {
+	$filePath = _UPLOADS_ . $filePath;
+	// }
 
 	if (false === $res->sendFile($filePath)) {
 		$res->sendStatus(404);

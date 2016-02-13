@@ -15,7 +15,6 @@ define('_CONFIG_',      _DATA_ . 'config/');
 define('_USERS_',       _DATA_ . 'users/');
 
 // Static
-define('_IMAGES_',      _STATIC_ . 'media/');
 define('_UPLOADS_',     _STATIC_ . 'files/');
 define('_COMPONENTS_',  _STATIC_ . 'components/');
 
