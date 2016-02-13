@@ -1,0 +1,226 @@
+
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+.site-header {
+    border-bottom: 1px solid #eee;
+}
+
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+
+    .navbar-brand {
+        img {
+            height: 32px;
+            margin-top: -2px;
+            margin-right: 10px;
+        }
+    }
+}
+
+.page-content {
+}
+
+.docs-content {
+
+    margin-top: 1.5rem;
+
+    h1 {
+        font-size: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-top: 0.8rem;
+    }
+
+    h1.docs-title {
+        font-size: 2.4rem;
+        margin: 1rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+}
+
+
+.docs-nav {
+    padding: 2rem 0;
+    border-right: 1px solid #eee;
+
+    .nav-header {
+        height: 2rem;
+        margin-top: 1rem;
+        padding-left: .2rem;
+        font-weight: bold;
+        border-bottom: 1px solid #eee;
+    }
+
+    .nav-link {
+        border-radius: 0;
+
+        &:hover {
+            background: rgba(0,0,0,.03);
+        }
+
+        &.active {
+            background: rgba(5,120,255,.8);
+        }
+    }
+}
+
+
+
+/*
+ * Footer
+ */
+.site-footer {
+    margin-top: 2rem;
+    padding: 2rem 0;
+    // color: #999;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-top: .05rem solid #e5e5e5;
+
+    ul, li {
+        padding: 0;
+        list-style-type: none;
+        margin: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.home .jumbotron {
+    background: url('../images/background.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    height: 600px;
+    text-align: center;
+    color: #fff;
+    border-radius: 0;
+
+    .buttons {
+        margin: 1rem 0;
+
+        .btn {
+            margin: 0 .5rem;
+        }
+    }
+
+    .logo {
+        max-width: 100%;
+        width: 500px;
+        margin: 30px 0;
+    }
+
+    .page-heading {
+        font-size: 3rem;
+    }
+
+    .product-screen {
+        width: 90%;
+        max-width: 1100px;
+    }
+}
+
+.btn-secondary-outline {
+    color: #fff;
+    border-color: #fff;
+}
+
+.icon-github svg {
+    height: 18px;
+    margin-bottom: -2px;
+}
+
+// highlighter
+.highlighter-rouge pre {
+    padding: .8rem 1rem;
+    border-radius: 3px;
+}
+
+// GLOBAL
+blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display: inline;
+}
+
+
+
+
+
+
+$spacing-unit:     30px;
+
+
+/**
+ * Set `margin-bottom` to maintain vertical rhythm
+ */
+%vertical-rhythm {
+    margin-bottom: $spacing-unit / 2;
+}
+
+/**
+ * Images
+ */
+img {
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+/**
+ * Figures
+ */
+figure > img {
+    display: block;
+}
+
+/**
+ * Clearfix
+ */
+%clearfix {
+
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+/**
+ * Icons
+ */
+.icon {
+
+    > svg {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+
+        // path {
+            // fill: $grey-color;
+        // }
+    }
+}

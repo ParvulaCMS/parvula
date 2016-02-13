@@ -1,0 +1,42 @@
+---
+layout: default
+---
+
+<div class="row">
+    <div class="col-md-3">
+
+        <ul class="docs-nav nav nav-pills nav-stacked">
+          {% for my_page in site.pages | sort: 'path' %}
+            {% if my_page.section.size > 0 %}
+            {% else %}
+              {% if my_page.title and my_page.layout == 'doc' %}
+                <li class="nav-item">
+                  <a class="nav-link {% if my_page.url == page.url %}active{% endif %}" href="{{ site.baseurl }}{{ my_page.url }}">{{ my_page.title }}</a>
+                </li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% for section in site.sections %}
+            {% assign pages = site.pages | sort: 'index' %}
+            {% for my_page in pages %}
+              {% if forloop.first %}
+              <li class="nav-header">{{ section[1] }}</li>
+              {% endif %}
+              {% if my_page.title and my_page.section == section[0] %}
+                <li class="nav-item">
+                  <a class="nav-link {% if my_page.url == page.url %}active{% endif %}" href="{{ site.baseurl }}{{ my_page.url }}">{{ my_page.title }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </ul>
+    </div>
+
+    <article class="col-md-9 docs-content">
+        <header class="docs-header">
+            <h1 class="docs-title">{{ page.title }}</h1>
+        </header>
+        {{ content }}
+    </article>
+</div>

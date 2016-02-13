@@ -1,0 +1,34 @@
+<footer class="site-footer text-muted">
+  <div class="container">
+  <div class="row">
+
+    <div class="col-md-5">
+      <ul class="contact-list">
+        <li><strong>{{ site.title }}</strong></li>
+        <li><p>{{ site.description }}</p></li>
+      </ul>
+    </div>
+
+
+    <div class="col-md-5 col-md-offset-2">
+      <ul class="social-media-list">
+        {% if site.github_username %}
+        <li>
+          {% include icon-github.html username=site.github_username %}
+        </li>
+        {% endif %}
+
+        {% if site.twitter_username %}
+        <li>
+          {% include icon-twitter.html username=site.twitter_username %}
+        </li>
+        {% endif %}
+      </ul>
+      <ul class="social-media-list">
+        <li><a href="#">Back to top</a></li>
+      </ul>
+    </div>
+
+  </div>
+  </div>
+</footer>

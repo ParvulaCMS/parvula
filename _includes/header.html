@@ -1,0 +1,20 @@
+<header>
+  <nav class="navbar navbar-light">
+    <a class="navbar-brand site-title" href="{{ site.baseurl }}/"><img class="pull-sm-left" src="{{ site.baseurl }}/images/logo64b.png" /> {{ site.title }}</a>
+    <ul class="nav navbar-nav pull-md-right">
+      {% for my_page in site.pages %}
+      <!-- section -->
+        {% if my_page.title and (my_page.layout != 'doc' or my_page.navbar) %}
+        <!-- | sort:"weight" -->
+        <li class="nav-item">
+          <a class="nav-link {% if my_page.url == page.url %}active{% endif %}" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
+        </li>
+        {% endif %}
+      {% endfor %}
+
+      <li class="nav-item">
+        <a class="nav-link" href="https://github.com/BafS/parvula"><span class="icon-github">{% include icon-github.svg %}</span> Github</a>
+      </li>
+    </ul>
+  </nav>
+</header>

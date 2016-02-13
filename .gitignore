@@ -1,8 +1,0 @@
-*~
-*.bak
-.DS_Store
-vendor/*
-__*
-*.sublime-project
-composer.lock
-composer.phar

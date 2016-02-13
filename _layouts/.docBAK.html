@@ -1,0 +1,78 @@
+---
+layout: default
+---
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="doc-nav nav nav-pills nav-stacked">
+          {% assign sortedPages = site.pages | sort: "path" %}
+          {% for my_page in sortedPages %}
+            {% if my_page.title and my_page.layout == 'doc' %}
+            <li class="nav-header">{{ site.sections[my_page.group] }}</li>
+            <li class="nav-item">
+              <a class="nav-link {% if page.url == my_page.url %}active{% endif %}" href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        <hr />
+
+
+        <ul class="nav nav-list">
+          <li><a href="{{ site.baseurl }}/">Home</a></li>
+          {% assign projects = site.pages | sort: "section" %}
+          {% for page in projects %}
+
+            <!-- {{section[0]}} -->
+            {% if forloop.first %}
+            <li class="nav-header">- {{ page.section }}</li>
+            {% endif %}
+            {% if page.title %}
+              <li data-order="{{ page.order }}">
+                <a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+
+
+        <hr />
+        <ul class="nav nav-list">
+          {% for section in site.sections %}
+
+            {% for page in site.pages | sort: 'path' %}
+              {% if page.title and page.section.size > 0 %}
+              {% else %}
+                <li>
+                  <a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+
+            {% for page in site.pages | sort: 'path' %}
+              <!-- {{section[0]}} -->
+              {% if forloop.first %}
+              <li class="nav-header">{{ section[1] }}</li>
+              {% endif %}
+              {% if page.title and page.section == section[0] %}
+                <li>
+                  <a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </ul>
+
+
+
+
+
+    </div>
+
+    <article class="col-md-9 docs-content">
+        <header class="post-header">
+            <h1 class="post-title">{{ page.title }}</h1>
+        </header>
+        {{ content }}
+    </article>
+</div>

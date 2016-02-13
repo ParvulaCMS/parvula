@@ -1,0 +1,37 @@
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# Site settings
+title: Parvula
+email: fabacrans@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  An extremely simple & flexible CMS
+baseurl: "/parvula"
+url: "http://yourdomain.com" # the base hostname & protocol for your site
+github_username:  BafS/parvula
+
+sections:
+    getting-started: Getting Started
+    content: Content
+    customization: Customization
+
+
+
+# Build settings
+markdown: kramdown
+
+# Rouge:
+
+sass:
+  compressed: true
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - node_modules
