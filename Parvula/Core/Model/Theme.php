@@ -3,6 +3,7 @@
 namespace Parvula\Core\Model;
 
 use StdClass;
+use Parvula\Core\FilesSystem as FS;
 use Parvula\Core\Exception\NotFoundException;
 
 /**
@@ -83,15 +84,19 @@ class Theme {
 			throw new \Exception('Layouts folder `' . $this->layoutsFolder . '` is not valid.');
 		}
 
-		$glob = glob($this->path . $this->layoutsFolder . '*.' . $this->extension, GLOB_NOSORT);
-
 		$this->layouts = new StdClass;
-		foreach ($glob as $layout) {
-			$layout = basename($layout);
-			$name = substr($layout, 0, - strlen($this->extension) - 1);
-			$layout = $this->layoutsFolder . $name;
-			$this->layouts->{$name} = $layout;
-		}
+		$that = $this;
+		$filter = function($file) use ($that) {
+			return $that->extension === $file->getExtension() && $file->getBasename()[0] !== '_';
+		};
+
+		(new FS($this->path))->index($this->layoutsFolder, function ($file, $dir) use ($that) {
+			$file = $file->getBasename('.' . $file->getExtension());
+			if ($dir) {
+				$dir .= '/';
+			}
+			$that->layouts->{$file} = $dir . $file;
+		}, $filter);
 	}
 
 	/**
