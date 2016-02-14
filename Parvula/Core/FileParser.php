@@ -5,6 +5,7 @@ namespace Parvula\Core;
 use Parvula\Core\Parser\ParserInterface;
 use Parvula\Core\FilesSystem as Files;
 use Parvula\Core\IOInterface;
+use Parvula\Core\Exception\ParseException;
 
 /**
  * File Parser
