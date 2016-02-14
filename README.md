@@ -17,7 +17,9 @@
 2. Run `composer install`
 3. That's it !
 
-## Usage
+## Quick start
+
+**Please read the [documentation](https://bafs.github.io/parvula/) for more information**
 
 ### Edit pages
 
