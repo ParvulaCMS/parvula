@@ -69,6 +69,44 @@ $router->get('/{name}/{field}', function ($req, $res) use ($confIO) {
 });
 
 /**
+ * @api {post} /config/:name Create a new config file
+ * @apiName Create a config file
+ * @apiGroup Config
+ *
+ * @apiParam {string} Config content
+ *
+ * @apiParamExample Request-Example:
+ *     myfield=My new value&other=123
+ *
+ * @apiSuccess (201) ConfigCreate
+ * @apiError (409) ConfigAlreadyExists
+ * @apiError (404) ConfigException If exception
+ *
+ * @apiSuccessExample ConfigCreated
+ *     HTTP/1.1 201 No Content
+ */
+$router->post('/{name}', function ($req, $res) use ($confIO) {
+	if (configPath($req->params->name)) {
+		return $res->status(409)->send(['error' => 'ConfigAlreadyExists']);
+	}
+
+	$path = _CONFIG_ . basename($req->params->name . '.yaml'); // TODO
+
+	$config = (array) $req->body;
+
+	try {
+		$confIO->write($path, $config);
+	} catch (Exception $e) {
+		return $res->status(404)->send([
+			'error' => 'ConfigException',
+			'message' => $e->getMessage()
+		]);
+	}
+
+	return $res->sendStatus(201);
+});
+
+/**
  * @api {patch} /config/:name Update specific field(s) of a config
  * @apiName Patch a config file
  * @apiGroup Config
