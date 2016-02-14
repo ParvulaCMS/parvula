@@ -131,6 +131,10 @@ $router->patch('/{name}', function ($req, $res) use ($confIO) {
 
 	$configOld = $confIO->read($configName);
 
+	if (empty($configOld)) {
+		$configOld = [];
+	}
+
 	$newFields = (array) $req->body;
 	if ((array) $configOld === $configOld) { // is array
 		$config = array_replace_recursive($configOld, $newFields);
