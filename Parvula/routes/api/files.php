@@ -40,12 +40,19 @@ $router->get('', function ($req, $res) use ($fs) {
  * @apiGroup Files
  * @apiDescription Upload file(s) via multipart data upload
  *
- * @apiSuccess (204) FileUploaded File uploaded
+ * @apiSuccess (201) FileUploaded File uploaded
  * @apiError (400) NoFileSent No file was sent
  * @apiError (400) FileSizeExceeded Exceeded file size limit
  * @apiError (400) FileNameError Exceeded file name limit
  * @apiError (500) InternalError
  * @apiError (500) UploadException
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *       "filename": "supercat.png",
+ *       "directory": "static\/files"
+ *     }
  */
 $router->post('/upload', function ($req, $res) use ($app, $fs) {
 	$config = $app['config'];
@@ -114,9 +121,10 @@ $router->post('/upload', function ($req, $res) use ($app, $fs) {
 		}
 
 		// Name should be unique // TODO
+		$filename =  $basename . '.' . $ext;
 		if (!move_uploaded_file(
 			$file['tmp_name'],
-			sprintf('%s/%s.%s', _UPLOADS_, $basename, $ext)
+			_UPLOADS_ . $filename
 		)) {
 			throw new RuntimeException('Failed to move uploaded file');
 		}
@@ -128,7 +136,10 @@ $router->post('/upload', function ($req, $res) use ($app, $fs) {
 		]);
 	}
 
-	return $res->sendStatus(204);
+	return $res->status(201)->send([
+		'filename' => $filename,
+		'directory' => _UPLOADS_
+	]);
 });
 
 /**
