@@ -82,7 +82,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	}
 
 	/**
-	 * Render page to string
+	 * Render Page object to string
 	 *
 	 * @param Page $page
 	 * @return string Rendered page
@@ -120,7 +120,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	}
 
 	/**
-	 * Decode string data to create a page object
+	 * Decode string data to create a Page object
 	 *
 	 * @param mixed $data Data using to create the page
 	 * @param array ($options) default page field(s)
@@ -138,8 +138,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		if (!empty($pageTokens[1])) {
 			// Split into sections
 			$content = preg_split(
-				$this->sectionMatcher, $pageTokens[1] . ' ', -1,
-				PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+				$this->sectionMatcher, $pageTokens[1] . ' ', -1, PREG_SPLIT_DELIM_CAPTURE);
 
 			if (($len = count($content)) > 1) {
 				for ($i = 1; $i < $len; ++$i) {
