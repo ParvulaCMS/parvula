@@ -94,9 +94,15 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 		$delimiter = $this->delimiterRender . PHP_EOL;
 
+		$metaArr = $page->getMeta();
+		if (isset($metaArr['slug'])) {
+			// For flat files DB, the slug is the filename thus we don't need the slug
+			unset($metaArr['slug']);
+		}
+
 		// Create the front matter
 		$meta = $delimiter;
-		$meta .= trim($this->metadataParser->encode($page->getMeta()));
+		$meta .= trim($this->metadataParser->encode($metaArr));
 		$meta .= PHP_EOL . $delimiter . PHP_EOL;
 
 		// Add the content

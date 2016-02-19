@@ -114,7 +114,9 @@ class PagesFlatFiles extends Pages
 	 * @return bool
 	 */
 	public function create($page) {
-		$pagePath = $page->slug . $this->fileExtension;
+		if (!isset($page->slug)) {
+			throw new IOException('Page cannot be created. It must have a slug');
+		}
 
 		$fs = new Files($this->folder);
 
@@ -122,8 +124,10 @@ class PagesFlatFiles extends Pages
 			throw new IOException('Page destination folder is not writable');
 		}
 
-		try {
+		$slug = $page->slug;
+		$pagePath = $slug . $this->fileExtension;
 
+		try {
 			if ($fs->exists($pagePath)) {
 				return false;
 			}
@@ -133,12 +137,11 @@ class PagesFlatFiles extends Pages
 			if (!$fs->write($pagePath, $data)) {
 				return false;
 			}
-
 		} catch (IOException $e) {
 			throw new PageException('Page cannot be created');
 		}
 
-		$this->pages[$page->slug] = $page;
+		$this->pages[$slug] = $page;
 
 		return true;
 	}
