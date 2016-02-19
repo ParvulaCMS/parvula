@@ -37,8 +37,6 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 		}
 	}
 
-	// Set the right timezone
-	$page->date->setTimeZone(new DateTimeZone($config->get('timezone', 'UTC')));
 	$plugins->trigger('page', [&$page]);
 
 	try {
