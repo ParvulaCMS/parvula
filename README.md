@@ -13,9 +13,8 @@
 
 ### Installation with Composer
 
-1. Download and extract the zip
-2. Run `composer install`
-3. That's it !
+1. Run `composer create-project bafs/parvula cms` (where `cms` is the destination folder)
+2. That's it !
 
 ## Quick start
 
