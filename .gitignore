@@ -29,3 +29,8 @@ Thumbs.db
 *.phar
 *.exe
 
+# Jekyll
+_site
+.sass-cache
+.jekyll-metadata
+
