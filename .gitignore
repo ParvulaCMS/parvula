@@ -3,7 +3,7 @@ _site/
 .jekyll-metadata
 
 # Others
-vendor/
+/vendor/*
 data/
 plugins/
 *.zip
