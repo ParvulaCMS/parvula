@@ -107,6 +107,10 @@ hr {
   padding: 0;
 }
 
+img {
+  max-width: 100%;
+}
+
 @media (min-width: 48em) {
   html {
     font-size: 17px;
