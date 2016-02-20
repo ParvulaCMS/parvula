@@ -18,7 +18,7 @@ function getPluginList(array $except = []) {
 	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
 		while (false !== ($entry = readdir($handle))) {
 			if (strlen($entry) > 1 && $entry[0] !== "." && $entry[0] !== "_"
-				&& !in_array($entry, $except)) {
+				&& is_dir(_PLUGINS_ . $entry) && !in_array($entry, $except)) {
 				$plugins[] =  "Plugin\\" . $entry . "\\$entry";
 			}
 		}
