@@ -17,10 +17,10 @@ Parvula requires you to have:
 
 ## Via Composer *create-project* (recommended)
 
-You can simply run the following command. It will download Parvula and install its dependencies.
+You can simply run the following command. It will download the last version of Parvula and install its dependencies.
 
 ```bash
-composer create-project --prefer-dist bafs/parvula cms
+composer create-project bafs/parvula cms
 ```
 
 Replace `cms` with the folder name you would like to install it in.
