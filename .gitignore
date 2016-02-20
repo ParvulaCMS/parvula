@@ -5,3 +5,7 @@ _site/
 # Others
 vendor/
 data/
+plugins/
+*.zip
+*.phar
+composer.lock
