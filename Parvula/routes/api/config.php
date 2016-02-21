@@ -137,7 +137,7 @@ $this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
 		$configOld = [];
 	}
 
-	$newFields = (array) $req->body;
+	$newFields = (array) $req->getParsedBody();
 	if ((array) $configOld === $configOld) { // is array
 		$config = array_replace_recursive($configOld, $newFields);
 	} else if (is_object($configOld)) {

@@ -60,7 +60,7 @@ $this->get('', function ($req, $res) use ($pages) {
  *     }
  */
 $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
-	if (isset($req->query->raw)) {
+	if (isset($req->getQueryParams()['raw'])) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
 
