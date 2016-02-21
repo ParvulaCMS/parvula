@@ -55,11 +55,13 @@ $this->post('/login', function ($req, $res) use ($app) {
 		], 400);
 	}
 
-	// TODO Tests !
-	if ($app['config']->get('forceLoginOnTLS') && !$req->secureLayer) {
-		if ($req->scheme !== 'https') {
+	// Too late, data have been sent but force the redirection
+	// TODO Tests ! // && !$req->secureLayer
+	if ($app['config']->get('forceLoginOnTLS')) {
+		$uri = $req->getUri();
+		if ($uri->getScheme() !== 'https') {
 			// Try to redirect to https
-			header('Location: https://' . $req->host . $req->uri);
+			header('Location: https://' . $uri->getHost() . $uri->getPath() . $uri->getQuery());
 			exit;
 		}
 	}
