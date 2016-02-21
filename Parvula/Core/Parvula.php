@@ -62,8 +62,16 @@ class Parvula extends Container
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::$request->getUri()->getPath();
 
-		$postUrl = str_replace(['//', '\\'], '/', $postUrl);
-		$slashNb = substr_count($postUrl, '/');
+		echo "->[$postUrl]";
+		echo "->[$basePath]";
+
+		// Be sure to have a clean path
+		$postUrl = str_replace(['//', '///'], '/', $postUrl);
+
+		$slashNb = 0;
+		if ($postUrl !== '/') {
+			$slashNb = substr_count($postUrl, '/');
+		}
 
 		// TODO tests
 		// Add a '../' to URL if there is not URL rewriting
