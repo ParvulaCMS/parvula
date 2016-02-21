@@ -56,18 +56,6 @@ $app->share('plugins', function (Container $this) {
 	return $pluginMediator;
 });
 
-$app->share('request', function () {
-	parse_str(file_get_contents("php://input"), $post_vars);
-
-	return new Parvula\Core\Router\Request(
-		$_SERVER,
-		$_GET,
-		$post_vars,
-		$_COOKIE,
-		$_FILES
-	);
-});
-
 $app->share('session', function ($this) {
 	$session = new Parvula\Core\Session($this['config']->get('sessionName'));
 	$session->start();
@@ -75,7 +63,8 @@ $app->share('session', function ($this) {
 });
 
 $app->share('auth', function (Container $this) {
-	return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
+	return new Parvula\Core\Authentication($this['session'], hash('sha1', '@TODO'));
+	// return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
 });
 
 // Get current logged User if available
