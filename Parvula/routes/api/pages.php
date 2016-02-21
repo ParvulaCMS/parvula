@@ -177,7 +177,7 @@ if ($isAdmin()) {
 		if (!isset($parsedBody['slug'], $parsedBody['title'])) {
 			return $this->api->json($res, [
 				'error' => 'BadField',
-				'message' => 'This page need at least a `slug` and a `title`' . json_encode($parsedBody)
+				'message' => 'This page need at least a `slug` and a `title`'
 			], 400);
 		}
 
@@ -212,8 +212,7 @@ if ($isAdmin()) {
 	 * @apiError (404) PageException If exception
 	 */
 	$this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
-		$parsedBody = $req->getParsedBody();
-		$pageArr = (array) $parsedBody;
+		$pageArr = (array) $req->getParsedBody();
 
 		try {
 			$pages->patch($args['slug'], $pageArr);

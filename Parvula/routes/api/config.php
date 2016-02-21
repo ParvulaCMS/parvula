@@ -35,7 +35,7 @@ $this->get('/{name}', function ($req, $res, $args) use ($confIO) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	return $this->api->json($confIO->read(configPath($args['name'])));
+	return $this->api->json($res, $confIO->read(configPath($args['name'])));
 });
 
 /**
@@ -65,7 +65,7 @@ $this->get('/{name}/{field}', function ($req, $res, $args) use ($confIO) {
 		], 404);
 	}
 
-	return $this->api->json($config->{$args['field']});
+	return $this->api->json($res, $config->{$args['field']});
 });
 
 /**
@@ -89,7 +89,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 	$parsedBody = $req->getParsedBody();
 
 	if (configPath($args['name'])) {
-		return $this->api->json(['error' => 'ConfigAlreadyExists'], 409);
+		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
 	$path = _CONFIG_ . basename($args['name'] . '.yaml'); // TODO
