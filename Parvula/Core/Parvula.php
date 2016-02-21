@@ -2,16 +2,13 @@
 
 namespace Parvula\Core;
 
-// use Parvula\Core\Router\Request;
-use Parvula\Core\FilesSystem as Files;
-use Parvula\Core\Exception\IOException;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Parvula
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.6.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -76,19 +73,6 @@ class Parvula extends Container
 
 		return str_repeat('../', max($slashNb, 0));
 	}
-
-	// public static function redirectIfTrailingSlash() {
-	// 	$postUrl = static::getURI();
-	//
-	// 	$lastChar = substr($postUrl, -1);
-	//
-	// 	$newUrl = substr($postUrl, 1);
-	//
-	// 	if ($lastChar === '/') {
-	// 		header('Location: ../' . $newUrl, true, 303);
-	// 	}
-	// 	// echo $postUrl;
-	// }
 
 	/**
 	 * Get request method
