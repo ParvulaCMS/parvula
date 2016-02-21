@@ -18,9 +18,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Parvula extends Container
 {
-
-	private static $URL_REWRITING = true;
-
 	private static $request;
 
 	/**
@@ -61,9 +58,7 @@ class Parvula extends Container
 	 */
 	public static function getRelativeURIToRoot() {
 		$postUrl = static::$request->getUri()->getPath();
-
-		echo "->[$postUrl]";
-		echo "->[$basePath]";
+		$basePath = static::$request->getUri()->getBasePath();
 
 		// Be sure to have a clean path
 		$postUrl = str_replace(['//', '///'], '/', $postUrl);
@@ -74,8 +69,8 @@ class Parvula extends Container
 		}
 
 		// TODO tests
-		// Add a '../' to URL if there is not URL rewriting
-		if (!static::$URL_REWRITING) {
+		// Add a '../' to URL if there is no URL rewriting
+		if (substr($basePath, -9) === 'index.php') {
 			++$slashNb;
 		}
 

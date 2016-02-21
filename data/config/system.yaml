@@ -18,9 +18,6 @@ aliases:
 # List of disabled plugins
 disabledPlugins: []
 
-# You can force this option with a boolean or leave it on auto detection
-URLRewriting: auto
-
 # Default home page
 homePage: home
 
