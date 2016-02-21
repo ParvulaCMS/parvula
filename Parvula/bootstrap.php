@@ -43,7 +43,38 @@ date_default_timezone_set($config->get('timezone', 'UTC'));
 // Load class aliases
 loadAliases($config->get('aliases'));
 
-Parvula::setRequest($app['request']);
+
+
+
+
+
+class APIRender {
+	/**
+	 * Output rendered template
+	 *
+	 * @param  ResponseInterface $response
+	 * @param  array $data Associative array of data to be returned
+	 * @param  int $status HTTP status code
+	 * @return ResponseInterface
+	 */
+	public function json(\Psr\Http\Message\ResponseInterface $res, $data = [], $status = 200) {
+		return $res
+			->withStatus($status)
+			->withHeader('Content-Type', 'application/json')
+			->write(json_encode($data));
+	}
+};
+
+$slimConf = [
+	'settings' => [
+		'displayErrorDetails' => true,
+	],
+	'api' => new APIRender()
+];
+$c = new \Slim\Container($slimConf);
+$router = new \Slim\App($c);
+
+Parvula::setRequest($c['request']);
 
 // Load plugins
 $plugins = $app['plugins'];

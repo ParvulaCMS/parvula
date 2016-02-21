@@ -22,8 +22,8 @@ $users = $app['users'];
  *       "pat1987"
  *     ]
  */
-$router->get('', function ($req, $res) use ($users) {
-	return $res->send($users->index());
+$this->get('', function ($req, $res) use ($users) {
+	return $this->api->json($res, $users->index());
 });
 
 /**
@@ -51,13 +51,13 @@ $router->get('', function ($req, $res) use ($users) {
  *       "message": "User's username was not found"
  *     }
  */
-$router->get('/{username:\w+}', function ($req, $res) use ($users) {
-	if (false !== $user = $users->read($req->params->username)) {
-		return $res->send($user);
+$this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
+	if (false !== $user = $users->read($args['username'])) {
+		return $this->api->json($res, $user);
 	}
 
-	return $res->status(404)->send([
+	return $this->api->json($res, [
 		'error' => 'UserNotFound',
 		'message' => 'User\'s username was not found'
-	]);
+	], 404);
 });

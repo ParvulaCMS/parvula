@@ -4,18 +4,20 @@ use Parvula\Core\Parvula;
 use Parvula\Core\Model\PagesFlatFiles;
 
 // Pages handler (slug must be `a-z0-9-_+/`)
-$router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) {
+$router->map(['GET', 'POST'], '/{slug:[a-z0-9\-_\+\/]*}', function ($req, $res, $args) use ($app) {
 	$view = $app['view'];
 	$pages = $app['pages'];
 	$theme = $app['theme'];
 	$config = $app['config'];
 	$plugins = $app['plugins'];
 
-	$slug = rtrim($req->params->slug, '/');
+	$slug = rtrim($args['slug'], '/');
 	$slug = urldecode($slug);
+	// return $res->write("Hello " . $args['slug']);
 
-	$plugins->trigger('uri', [$req->params->slug]);
+	$plugins->trigger('uri', [$args['slug']]);
 	$plugins->trigger('slug', [$slug]);
+
 
 	if (empty($slug)) {
 		// Default page
@@ -81,16 +83,29 @@ $router->map('GET|POST', '/{slug:[a-z0-9\-_\+\/]*}', function ($req) use ($app) 
 });
 
 // Files handler (media or uploads) (must have an extension)
-$router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res) use ($app) {
+$router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res, $args) use ($app) {
 
-	$filePath = str_replace(['..', "\0"], '', $req->params->file);
+	$filePath = str_replace(['..', "\0"], '', $args['file']);
 	$ext = pathinfo($filePath, PATHINFO_EXTENSION);
 
 	// if (in_array($ext, $app['config']->get('mediaExtensions'))) {
 	$filePath = _UPLOADS_ . $filePath;
 	// }
 
-	if (false === $res->sendFile($filePath)) {
-		$res->sendStatus(404);
+	if (is_file($filePath)) {
+		$info = new finfo(FILEINFO_MIME_TYPE);
+		$contentType = $info->file($filePath);
+
+		// ->set('Content-Type', $f->type);
+		// ->set('Pragma', "public");
+		// ->set('Content-disposition:', 'attachment; filename=' . $f->name);
+		// ->set('Content-Transfer-Encoding', 'binary');
+		// ->set('Content-Length', $f->size);
+		$res = $res->withHeader('Content-type', $contentType);
+
+		//stream_get_contents
+		return $res->write(file_get_contents($filePath));
 	}
+
+	return $res->withStatus(404);
 });

@@ -3,10 +3,11 @@
 // Routes (controller)
 // ----------------------------- //
 
-use Parvula\Core\Parvula;
-use Parvula\Core\Router\Response;
-use Parvula\Core\Router\RouteCollection;
+// use Parvula\Core\Parvula;
+// use Parvula\Core\Router\Response;
+// use Parvula\Core\Router\RouteCollection;
 
+/*
 $dispatcher = FastRoute\simpleDispatcher(function(RouteCollection $router) use ($app) {
 	$app['plugins']->trigger('router', [&$router]);
 
@@ -46,3 +47,17 @@ switch ($routeInfo[0]) {
 		echo $handler($req, $res);
 		break;
 }
+*/
+
+$app['plugins']->trigger('router', [&$router]);
+
+// Api namespace
+$prefix = rtrim($app['config']->get('apiPrefix'), '/');
+$router->group($prefix, function() use ($app) {
+	require _APP_ . 'routes/api.php';
+});
+
+// Index namespace
+require _APP_ . 'routes/index.php';
+
+$router->run();
