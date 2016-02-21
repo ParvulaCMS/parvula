@@ -31,7 +31,7 @@ $debug = (bool) $config->get('debug', false);
 
 if ($debug) {
 	error_reporting(E_ALL);
-	$app->get('errorHandler');
+	$app['errorHandler'];
 }
 
 // Display or not errors

@@ -2,6 +2,7 @@
 
 namespace Parvula\Core;
 
+use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**

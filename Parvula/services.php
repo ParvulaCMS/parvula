@@ -3,10 +3,10 @@
 // Register services
 // ----------------------------- //
 
-use Parvula\Core\Container;
+use Pimple\Container;
 use Parvula\Core\FilesSystem as Files;
 
-$app->share('errorHandler', function () {
+$app['errorHandler'] = function () {
 	if (class_exists('\\Whoops\\Run')) {
 		$whoops = new Whoops\Run();
 		$whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
@@ -19,14 +19,14 @@ $app->share('errorHandler', function () {
 		// Use custom exception handler
 		set_exception_handler('exceptionHandler');
 	}
-});
+};
 
-$app->share('config', function () {
+$app['config'] = function () {
 	// Populate Config wrapper
 	return new Parvula\Core\Config(require APP . 'config.php');
-});
+};
 
-$app->add('fileParser', function () {
+$app['fileParser'] = function () {
 	$parsers = [
 		'json' => new \Parvula\Core\Parser\Json,
 		'yaml' => new \Parvula\Core\Parser\Yaml,
@@ -34,9 +34,9 @@ $app->add('fileParser', function () {
 	];
 
 	return new Parvula\Core\FileParser($parsers);
-});
+};
 
-$app->share('config', function (Container $this) {
+$app['config'] = function (Container $this) {
 	$fp = $this['fileParser'];
 
 	// Populate Config wrapper
@@ -48,27 +48,27 @@ $app->share('config', function (Container $this) {
 	$config->append((array) $userConfig);
 
 	return $config;
-});
+};
 
-$app->share('plugins', function (Container $this) {
+$app['plugins'] = function (Container $this) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
 	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
 	return $pluginMediator;
-});
+};
 
-$app->share('session', function ($this) {
+$app['session'] = function (Container $this) {
 	$session = new Parvula\Core\Session($this['config']->get('sessionName'));
 	$session->start();
 	return $session;
-});
+};
 
-$app->share('auth', function (Container $this) {
+$app['auth'] = function (Container $this) {
 	return new Parvula\Core\Authentication($this['session'], hash('sha1', '@TODO'));
 	// return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
-});
+};
 
 // Get current logged User if available
-$app->share('usersession', function (Container $this) {
+$app['usersession'] = function (Container $this) {
 	$sess = $this['session'];
 	if ($username = $sess->get('username')) {
 		if ($this['auth']->isLogged($username)) {
@@ -77,15 +77,15 @@ $app->share('usersession', function (Container $this) {
 	}
 
 	return false;
-});
+};
 
 //-- ModelMapper --
 
-$app->add('users', function (Container $this) {
+$app['users'] = function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
-});
+};
 
-$app->share('pageRenderer', function (Container $this) {
+$app['pageRenderer'] = function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$contentParser = $this['config']->get('contentParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
@@ -95,33 +95,33 @@ $app->share('pageRenderer', function (Container $this) {
 		'delimiterRender' => '---'
 	];
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
-});
+};
 
-$app->share('pageRendererRAW', function (Container $this) {
+$app['pageRendererRAW'] = function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
 	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\None);
-});
+};
 
-$app->add('pages', function (Container $this) {
+$app['pages'] = function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
 	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
-});
+};
 
-$app->add('themes', function (Container $this) {
+$app['themes'] = function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $this['fileParser']);
-});
+};
 
-$app->share('theme', function (Container $this) {
+$app['theme'] = function (Container $this) {
 	if ($this['themes']->has($themeName = $this['config']->get('theme'))) {
 		return $this['themes']->read($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
 	}
-});
+};
 
-$app->add('view', function (Container $this) {
+$app['view'] = function (Container $this) {
 	$theme = $this['theme'];
 
 	// Create new Plates instance to render theme files
@@ -140,4 +140,4 @@ $app->add('view', function (Container $this) {
 	}, $filter);
 
 	return $view;
-});
+};
