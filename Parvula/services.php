@@ -6,17 +6,31 @@
 use Pimple\Container;
 use Parvula\Core\FilesSystem as Files;
 
-$app['errorHandler'] = function () {
+$app['logger'] = function () {
+	return new Katzgrau\KLogger\Logger(_LOGS_, Psr\Log\LogLevel::WARNING, [
+		'extension' => 'log',
+		'dateFormat' => DateTime::ISO8601
+	]);
+};
+
+$app['errorHandler'] = function ($that) {
 	if (class_exists('\\Whoops\\Run')) {
 		$run = new Whoops\Run;
 		$handler = new Whoops\Handler\PrettyPageHandler;
 
 		$handler->setPageTitle("Parvula Error");
 		$handler->addDataTable('Parvula', [
-		 	'Version'=> _VERSION_
+			'Version'=> _VERSION_
 		]);
 
 		$run->pushHandler($handler);
+
+		$run->pushHandler(function($exception, $inspector, $run) use ($that) {
+			$that['logger']->critical(
+				$exception->getMessage() . ': ' . $exception->getTraceAsString()
+			);
+			return Whoops\Handler\Handler::DONE;
+		});
 
 		if (Whoops\Util\Misc::isAjaxRequest()) {
 			$run->pushHandler(new Whoops\Handler\JsonResponseHandler);
@@ -24,10 +38,6 @@ $app['errorHandler'] = function () {
 
 		$run->register();
 	}
-};
-
-$app['logger'] = function () {
-	return new Katzgrau\KLogger\Logger(_LOGS_);
 };
 
 $app['fileParser'] = function () {
