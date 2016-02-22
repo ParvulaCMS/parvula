@@ -67,14 +67,26 @@ class APIRender {
 
 $slimConf = [
 	'settings' => [
-		'displayErrorDetails' => true,
+		'displayErrorDetails' => true
 	],
 	'api' => new APIRender()
 ];
 $c = new \Slim\Container($slimConf);
-$router = new \Slim\App($c);
+
+$c['errorHandler'] = function ($c) use ($app) {
+	return function ($req, $res, $exception) use ($c, $app) {
+		$app['logger']->critical($exception->getMessage());
+
+		return $c->api->json($res, [
+			'error' => 'ServerError',
+			'message' => $exception->getMessage()
+		]);
+	};
+};
 
 Parvula::setRequest($c['request']);
+
+$router = new \Slim\App($c);
 
 // Load plugins
 $plugins = $app['plugins'];

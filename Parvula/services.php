@@ -26,9 +26,8 @@ $app['errorHandler'] = function () {
 	}
 };
 
-$app['config'] = function () {
-	// Populate Config wrapper
-	return new Parvula\Core\Config(require APP . 'config.php');
+$app['logger'] = function () {
+	return new Katzgrau\KLogger\Logger(_LOGS_);
 };
 
 $app['fileParser'] = function () {
