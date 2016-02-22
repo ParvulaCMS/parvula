@@ -27,6 +27,9 @@ require _APP_ . 'services.php';
 $config = $app['config'];
 $config->set('__time__', $time);
 
+// Set timezone
+date_default_timezone_set($config->get('timezone', 'UTC'));
+
 $debug = (bool) $config->get('debug', false);
 
 if ($debug) {
@@ -36,9 +39,6 @@ if ($debug) {
 
 // Display or not errors
 ini_set('display_errors', $debug);
-
-// Set timezone
-date_default_timezone_set($config->get('timezone', 'UTC'));
 
 // Load class aliases
 loadAliases($config->get('aliases'));
