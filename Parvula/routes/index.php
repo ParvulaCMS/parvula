@@ -13,11 +13,9 @@ $router->map(['GET', 'POST'], '/{slug:[a-z0-9\-_\+\/]*}', function ($req, $res, 
 
 	$slug = rtrim($args['slug'], '/');
 	$slug = urldecode($slug);
-	// return $res->write("Hello " . $args['slug']);
 
 	$plugins->trigger('uri', [$args['slug']]);
 	$plugins->trigger('slug', [$slug]);
-
 
 	if (empty($slug)) {
 		// Default page
