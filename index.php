@@ -21,6 +21,6 @@ define('_COMPONENTS_',  _STATIC_ . 'components/');
 
 define('_THEMES_',      _ROOT_ . 'themes/');
 define('_PLUGINS_',     _ROOT_ . 'plugins/');
-define('_VERSION_',     '0.5.0');
+define('_VERSION_',     '0.6.0');
 
 require_once _APP_ . 'bootstrap.php';
