@@ -2,8 +2,12 @@
 #  System config
 # ------------------------------ #
 
-# Shows errors if debug is enabled
+# Shows errors and exceptions if 'true' (should set to 'false' in production)
 debug: true
+
+# Log errors and exceptions if 'true' (recommanded in production)
+# To use this option Monolog package is needed (read the doc for more infos)
+logErrors: true
 
 defaultFields:
     layout: default # TODO

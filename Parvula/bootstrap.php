@@ -31,6 +31,12 @@ $config->set('__time__', $time);
 date_default_timezone_set($config->get('timezone', 'UTC'));
 
 $debug = (bool) $config->get('debug', false);
+$logErrors = (bool) $config->get('logErrors', false);
+
+if ($logErrors) {
+	// Register the logger
+	$app['loggerHandler'];
+}
 
 if ($debug) {
 	error_reporting(E_ALL);
