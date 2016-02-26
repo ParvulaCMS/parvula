@@ -39,12 +39,13 @@ if ($logErrors) {
 }
 
 if ($debug) {
+	// Report all errors
 	error_reporting(E_ALL);
 	$app['errorHandler'];
+} else {
+	// Don't report errors to the client (but errors can still be logged)
+	error_reporting(0);
 }
-
-// Display or not errors
-ini_set('display_errors', $debug);
 
 // Load class aliases
 loadAliases($config->get('aliases'));
