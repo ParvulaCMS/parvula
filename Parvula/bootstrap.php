@@ -51,23 +51,6 @@ if ($debug) {
 // Load class aliases
 loadAliases($config->get('aliases'));
 
-class APIRender {
-	/**
-	 * Output rendered template
-	 *
-	 * @param  ResponseInterface $response
-	 * @param  array $data Associative array of data to be returned
-	 * @param  int $status HTTP status code
-	 * @return ResponseInterface
-	 */
-	public function json(\Psr\Http\Message\ResponseInterface $res, $data = [], $status = 200) {
-		return $res
-			->withStatus($status)
-			->withHeader('Content-Type', 'application/json')
-			->write(json_encode($data));
-	}
-};
-
 // Load plugins
 $plugins = $app['plugins'];
 $plugins->trigger('bootstrap', [$app]);
