@@ -5,6 +5,9 @@
 
 use Pimple\Container;
 use Parvula\Core\FilesSystem as Files;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 $app['router'] = function ($cont) {
 	$slimConf = [
 		'settings' => [
@@ -21,11 +24,21 @@ $app['router'] = function ($cont) {
 	return $router;
 };
 
-$app['logger'] = function () {
-	return new Katzgrau\KLogger\Logger(_LOGS_, Psr\Log\LogLevel::WARNING, [
-		'extension' => 'log',
-		'dateFormat' => DateTime::ISO8601
-	]);
+// Log errors in _LOG_ folder
+$app['loggerHandler'] = function ($c) {
+	if (class_exists('\\Monolog\\Logger')) {
+		$logger = new Logger('parvula');
+		$file = (new DateTime('now'))->format('Y-m-d') . '.log';
+
+		$logger->pushProcessor(new Monolog\Processor\UidProcessor());
+		$logger->pushHandler(new StreamHandler(_LOGS_ . $file, Logger::WARNING));
+
+		Monolog\ErrorHandler::register($logger);
+
+		return $logger;
+	}
+
+	return false;
 };
 
 $app['errorHandler'] = function ($that) {
@@ -40,18 +53,18 @@ $app['errorHandler'] = function ($that) {
 
 		$run->pushHandler($handler);
 
-		$run->pushHandler(function($exception, $inspector, $run) use ($that) {
-			$that['logger']->critical(
-				$exception->getMessage() . ': ' . $exception->getTraceAsString()
-			);
-			return Whoops\Handler\Handler::DONE;
-		});
-
 		if (Whoops\Util\Misc::isAjaxRequest()) {
 			$run->pushHandler(new Whoops\Handler\JsonResponseHandler);
 		}
 
 		$run->register();
+
+		if (class_exists('\\Monolog\\Logger')) {
+			// Be sure that Monolog is still register
+			Monolog\ErrorHandler::register($that['loggerHandler']);
+		}
+
+		return $run;
 	}
 };
 
