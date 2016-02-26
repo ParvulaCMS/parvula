@@ -17,8 +17,6 @@ if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
 
 $app = new Parvula;
 
-// Parvula::redirectIfTrailingSlash(); //@FIXME
-
 require _APP_ . 'helpers.php';
 
 // Register services
@@ -29,6 +27,9 @@ $config->set('__time__', $time);
 
 // Set timezone
 date_default_timezone_set($config->get('timezone', 'UTC'));
+
+$router = $app['router'];
+Parvula::setRequest($router->getContainer()['request']);
 
 $debug = (bool) $config->get('debug', false);
 $logErrors = (bool) $config->get('logErrors', false);
@@ -50,11 +51,6 @@ if ($debug) {
 // Load class aliases
 loadAliases($config->get('aliases'));
 
-
-
-
-
-
 class APIRender {
 	/**
 	 * Output rendered template
@@ -71,29 +67,6 @@ class APIRender {
 			->write(json_encode($data));
 	}
 };
-
-$slimConf = [
-	'settings' => [
-		'displayErrorDetails' => true
-	],
-	'api' => new APIRender()
-];
-$c = new \Slim\Container($slimConf);
-
-$c['errorHandler'] = function ($c) use ($app) {
-	return function ($req, $res, $exception) use ($c, $app) {
-		$app['logger']->critical($exception->getMessage());
-
-		return $c->api->json($res, [
-			'error' => 'ServerError',
-			'message' => $exception->getMessage()
-		]);
-	};
-};
-
-Parvula::setRequest($c['request']);
-
-$router = new \Slim\App($c);
 
 // Load plugins
 $plugins = $app['plugins'];

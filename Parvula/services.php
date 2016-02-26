@@ -5,6 +5,21 @@
 
 use Pimple\Container;
 use Parvula\Core\FilesSystem as Files;
+$app['router'] = function ($cont) {
+	$slimConf = [
+		'settings' => [
+			'displayErrorDetails' => false,
+		],
+		'api' => new APIRender()
+	];
+
+	$router = new \Slim\App($slimConf);
+
+	// Remove Slim handler, we want to use our
+	unset($router->getContainer()['errorHandler']);
+
+	return $router;
+};
 
 $app['logger'] = function () {
 	return new Katzgrau\KLogger\Logger(_LOGS_, Psr\Log\LogLevel::WARNING, [
