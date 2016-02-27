@@ -11,14 +11,15 @@ use Monolog\Handler\StreamHandler;
 $app['router'] = function ($cont) {
 	$slimConf = [
 		'settings' => [
-			'displayErrorDetails' => false,
+			'displayErrorDetails' => false
 		],
-		'api' => new APIRender()
+		'api' => new Parvula\Core\Router\APIRender(),
+		'logger' => $cont['loggerHandler']
 	];
 
-	$router = new \Slim\App($slimConf);
+	$router = new Slim\App($slimConf);
 
-	// Remove Slim handler, we want to use our
+	// Remove Slim handler, we want to use our own
 	unset($router->getContainer()['errorHandler']);
 
 	return $router;
