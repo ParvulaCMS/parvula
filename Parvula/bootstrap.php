@@ -44,8 +44,8 @@ if ($debug) {
 	error_reporting(E_ALL);
 	$app['errorHandler'];
 } else {
-	// Don't report errors to the client (but errors can still be logged)
-	error_reporting(0);
+	// Don't display errors to the client
+	ini_set('display_errors', 0);
 }
 
 // Load class aliases
