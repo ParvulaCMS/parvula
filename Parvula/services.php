@@ -69,10 +69,12 @@ $app['errorHandler'] = function ($that) {
 	}
 };
 
+// To parse serialized files in multiple formats
 $app['fileParser'] = function () {
 	$parsers = [
 		'json' => new \Parvula\Core\Parser\Json,
 		'yaml' => new \Parvula\Core\Parser\Yaml,
+		'yml' => new \Parvula\Core\Parser\Yaml,
 		'php' => new \Parvula\Core\Parser\Php
 	];
 
