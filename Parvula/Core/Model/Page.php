@@ -37,6 +37,16 @@ class Page {
 	public $sections;
 
 	/**
+	 * @var string Page's parent slug (optional)
+	 */
+	public $parent;
+
+	/**
+	 * @var array Page's children (optional)
+	 */
+	public $children;
+
+	/**
 	 * Page factory, create a new page from an array
 	 * The parameter $infos must contain at least `title` and `slug` fields.
 	 * The `slug` need to be normalized (a-z0-9-_+/).
@@ -162,6 +172,37 @@ class Page {
 			return false;
 		}
 		return $this->sections->{$name};
+	}
+
+	/**
+	 * Add page child
+	 *
+	 * @param Page $child
+	 */
+	public function addChild(Page $child) {
+		if (!$this->children) {
+			$this->children = [];
+		}
+
+		$this->children[] = $child;
+	}
+
+	/**
+	 * Set page children
+	 *
+	 * @param array $children Array of Page
+	 */
+	public function setChildren(array $children) {
+		$this->children = $children;
+	}
+
+	/**
+	 * Get page children
+	 *
+	 * @return array Array of Page
+	 */
+	public function getChildren() {
+		return $this->children;
 	}
 
 	/**
