@@ -29,7 +29,7 @@ This menu will simply list all pages without taking in account the hierarchy.
 </nav>
 ```
 
-### A simple with main pages
+### A simple menu with main pages
 
 This menu will list all the *main* pages (pages without a parent).
 
@@ -37,7 +37,7 @@ This menu will list all the *main* pages (pages without a parent).
 <nav>
     <ul>
         <?php foreach ($pages() as $myPage) : ?>
-        <?php if (!$page->parent) : // Page WITHOUT a parent ?>
+        <?php if (!$myPage->parent) : // Page WITHOUT a parent ?>
         <li>
             <a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a>
         </li>
@@ -55,7 +55,7 @@ This menu will list all sub pages (pages with a parent).
 <nav>
     <ul>
         <?php foreach ($pages() as $myPage) : ?>
-        <?php if ($page->parent) : // Page WITH a parent ?>
+        <?php if ($myPage->parent) : // Page WITH a parent ?>
         <li>
             <a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a>
         </li>
@@ -75,12 +75,12 @@ This menu will list pages with sub pages.
 <nav>
     <ul>
         <?php foreach ($pages() as $myPage) : ?>
-        <?php if (!$page->parent) : // Page WITHOUT a parent (main pages) ?>
+        <?php if (!$myPage->parent) : // Page WITHOUT a parent (main pages) ?>
         <li>
             <a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a>
-            <?php if ($page->getChildren()) : // If the page have children ?>
+            <?php if ($myPage->getChildren()) : // If the page have children ?>
                 <ul>
-                <?php foreach ($page->getChildren() as $myPage) : // List children ?>
+                <?php foreach ($myPage->getChildren() as $myPage) : // List children ?>
                     <li><a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a></li>
                 <?php endforeach; ?>
                 </ul>
