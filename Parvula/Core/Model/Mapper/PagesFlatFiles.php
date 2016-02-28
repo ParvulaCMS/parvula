@@ -195,7 +195,7 @@ class PagesFlatFiles extends Pages
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch ($pageUID, array $infos) {
+	public function patch($pageUID, array $infos) {
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
@@ -324,7 +324,10 @@ class PagesFlatFiles extends Pages
 		$pagesIndex = $this->index(true, $path);
 
 		foreach ($pagesIndex as $pageUID) {
-			$that->pages[] = $this->read($pageUID);
+			if (!isset($that->pages[$pageUID])) {
+				$page = $this->read($pageUID);
+				$that->pages[$page->slug] = $page;
+			}
 		}
 
 		return $that;
