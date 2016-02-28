@@ -56,6 +56,7 @@ If no title, title value will be lisp-case converted file name.
 | Field    | Default value | Description   |
 |----------|---------------|---------------|
 | `layout` | `home`        | The layout file to use. In the `_layouts` folder of themes. `home` layout is required in each theme |
+| `date` | *creation time*       | Date of the creation in timestamp |
 | `hidden` | `false`       | If the page is *hidden*. Can still be seen from the url but will not appear in the menu |
 | `secret` | `false`       | If the page is *secret*. The page will not be accessible (either by url or  the menu) |
 
@@ -132,10 +133,23 @@ And can be accessed from the theme with
 (or directly from `<?= $page->sections->{'panel'} ?>`)
 
 
+## Misc
 
-<?= $page->date->format(DateTime::RFC822); ?>
-<?php //print_r($page) ?>
+### Date
 
+Each page has a date. The default value is the page creation in timestamp.
+
+PHP has the `DateTime` object and can understand those formats : ...
+
+To print the date, simply use `DateTime` like that:
+
+```php
+<?= (new DateTime($page->date))->format(DateTime::RFC822); ?>
+```
+
+See the PHP doc know [the predefined formats](https://secure.php.net/manual/en/class.datetime.php)
+
+---
 
 ---
 
