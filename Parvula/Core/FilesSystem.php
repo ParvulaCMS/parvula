@@ -205,6 +205,16 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
+	 * Get file modification time
+	 * 
+	 * @param string $filename
+	 * @return int Timestamp
+	 */
+	public function modificationTime($filename = '') {
+		return filemtime($this->workingDirectory . $filename);
+	}
+
+	/**
 	 * Get working directory
 	 *
 	 * @return string Current working directory
