@@ -173,6 +173,11 @@ $app['view'] = function (Container $this) {
 	$path = $theme->getPath();
 	$view = new League\Plates\Engine($path, $theme->getExtension());
 
+	// Helper function to list pages
+	$view->registerFunction('listPages', function ($pages, $options) {
+		return listPagesAndChildren(listPagesRoot($pages), $options);
+	});
+
 	// Register folder begining with a '_' as Plates folder
 	// (Plates will resolve `this->fetch('myFolder::file')` as `_myFolder/file.html`)
 	$filter = function ($current) {
