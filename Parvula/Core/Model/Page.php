@@ -142,7 +142,7 @@ class Page {
 	public function getMeta() {
 		$meta = [];
 		foreach ($this as $key => $value) {
-			if ($key !== 'sections' && $key !== 'content') {
+			if ($key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}
