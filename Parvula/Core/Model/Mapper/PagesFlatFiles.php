@@ -41,6 +41,7 @@ class PagesFlatFiles extends Pages
 
 		$this->folder = $folder;
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
+		$this->fetchPages();
 	}
 
 	/**
@@ -52,6 +53,8 @@ class PagesFlatFiles extends Pages
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function read($pageUID, $parse = true, $eval = false) {
+		$pageUID = trim($pageUID, '/');
+
 		// If page was already loaded, return page
 		if (isset($this->pages[$pageUID])) {
 			return $this->pages[$pageUID];
@@ -73,12 +76,11 @@ class PagesFlatFiles extends Pages
 			// Anonymous function to use renderer engine
 			$renderer = $this->renderer;
 			$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
-				$pageUID = trim($pageUID, '/');
-
 				// Create the title from the filename
 				if (strpos($pageUID, '/') !== false) {
-					$pageTitle = explode('/', $pageUID);
-					$pageTitle = end($pageTitle);
+					$pageUIDToken = explode('/', $pageUID);
+					$pageTitle = array_pop($pageUIDToken);
+					$parent = implode('/', $pageUIDToken);
 				} else {
 					$pageTitle = $pageUID;
 				}
@@ -89,6 +91,7 @@ class PagesFlatFiles extends Pages
 					'date' => '@' . $fileInfo->getMTime()
 				];
 
+				isset($parent) ? $opts += ['parent' => $parent] : null;
 				$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
 				$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
 
@@ -331,6 +334,33 @@ class PagesFlatFiles extends Pages
 		}
 
 		return $that;
+	}
+
+	private function fetchPages() {
+		$_pages = [];
+		$_pagesChildren = [];
+
+		$pagesIndex = $this->index(true);
+
+		foreach ($pagesIndex as $pageUID) {
+			$page = $this->read($pageUID);
+			$_pages[] = $page;
+
+			if (isset($page->parent)) {
+				if (!isset($_pagesChildren[$page->parent])) {
+					$_pagesChildren[$page->parent] = [];
+				}
+				$_pagesChildren[$page->parent][] = $page;
+			}
+		}
+
+		foreach ($_pages as $page) {
+			if (isset($_pagesChildren[$page->slug])) {
+				$page->setChildren($_pagesChildren[$page->slug]);
+			}
+		}
+
+		return $_pages;
 	}
 
 }
