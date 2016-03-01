@@ -42,6 +42,7 @@ if ($logErrors) {
 if ($debug) {
 	// Report all errors
 	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
 	$app['errorHandler'];
 } else {
 	// Don't display errors to the client
