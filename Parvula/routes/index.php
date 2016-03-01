@@ -3,15 +3,15 @@
 use Parvula\Core\Parvula;
 use Parvula\Core\Model\PagesFlatFiles;
 
-// Pages handler (slug must be `a-z0-9-_+/`)
-$router->map(['GET', 'POST'], '/{slug:[a-z0-9\-_\+\/]*}', function ($req, $res, $args) use ($app) {
+// Pages handler (slug must be `a-z0-9-_+/` (will be rewrited to lowercase if needed))
+$router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $res, $args) use ($app) {
 	$view = $app['view'];
 	$pages = $app['pages'];
 	$theme = $app['theme'];
 	$config = $app['config'];
 	$plugins = $app['plugins'];
 
-	$slug = rtrim($args['slug'], '/');
+	$slug = strtolower(rtrim($args['slug'], '/'));
 	$slug = urldecode($slug);
 
 	$plugins->trigger('uri', [$args['slug']]);
