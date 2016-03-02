@@ -272,14 +272,10 @@ class PagesFlatFiles extends Pages
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function index($listHidden = false, $pagesPath = null) {
+	public function index($listHidden = false, $pagesPath = '') {
 		$pages = [];
 
 		try {
-			if ($pagesPath === null) {
-				$pagesPath = $this->folder;
-			}
-
 			// Filter secret (.*) and hiddent files (_*)
 			$filter = function ($current) use ($listHidden) {
 				return ($listHidden || $current->getFilename()[0] !== '_')
@@ -287,7 +283,7 @@ class PagesFlatFiles extends Pages
 			};
 
 			$ext = $this->fileExtension;
-			(new Files($pagesPath))->index('',
+			(new Files($this->folder))->index($pagesPath,
 				function (\SplFileInfo $file, $dir) use (&$pages, $ext) {
 				$currExt = '.' . $file->getExtension();
 
@@ -296,7 +292,6 @@ class PagesFlatFiles extends Pages
 					if ($dir) {
 						$dir = trim($dir, '/\\') . '/';
 					}
-
 					$pages[] = $dir . $file->getBasename($currExt); // page path
 				}
 			}, $filter);
@@ -316,13 +311,9 @@ class PagesFlatFiles extends Pages
 	 * @param string ($path) Pages in a specific sub path
 	 * @return Pages
 	 */
-	public function all($path = null) {
+	public function all($path = '') {
 		$that = clone $this;
 		$that->pages = [];
-
-		if ($path !== null) {
-			$path = $this->folder . $path;
-		}
 
 		$pagesIndex = $this->index(true, $path);
 
