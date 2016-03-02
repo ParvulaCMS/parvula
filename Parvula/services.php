@@ -166,16 +166,28 @@ $app['theme'] = function (Container $this) {
 	}
 };
 
-$app['view'] = function (Container $this) {
-	$theme = $this['theme'];
+$app['view'] = function (Container $app) {
+	$theme = $app['theme'];
+	$config = $app['config'];
 
 	// Create new Plates instance to render theme files
 	$path = $theme->getPath();
 	$view = new League\Plates\Engine($path, $theme->getExtension());
 
-	// Helper function to list pages
+	// Helper function
+	// List pages
 	$view->registerFunction('listPages', function ($pages, $options) {
 		return listPagesAndChildren(listPagesRoot($pages), $options);
+	});
+
+	// System date format
+	$view->registerFunction('dateFormat', function (DateTime $date) use ($config) {
+		return $date->format($config->get('dateFormat'));
+	});
+
+	// System date format
+	$view->registerFunction('pageDateFormat', function (Parvula\Core\Model\Page $page) use ($config) {
+		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 
 	// Register folder begining with a '_' as Plates folder
