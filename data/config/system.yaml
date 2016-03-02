@@ -46,8 +46,13 @@ upload:
     evilExtensions: [php, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
 # Timezone ('UTC' if nothing)
-# timezones available: https://secure.php.net/manual/en/timezones.php
+# timezones available: https://php.net/manual/en/timezones.php
 timezone: Europe/Zurich
+
+# System time/date format
+# Default: 'l, F j, Y' (will print 'Wednesday, March 2, 2016')
+# Formats available: https://php.net/manual/en/function.date.php
+dateFormat: l, F j, Y
 
 # User config file to read
 userConfig: site.yaml
