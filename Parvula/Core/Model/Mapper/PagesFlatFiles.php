@@ -81,9 +81,6 @@ class PagesFlatFiles extends Pages
 					$pageUIDToken = explode('/', $pageUID);
 					$pageTitle = array_pop($pageUIDToken);
 					$parent = implode('/', $pageUIDToken);
-					if ($parent[0] === '_') {
-						$parent = substr($parent, 1);
-					}
 				} else {
 					$pageTitle = $pageUID;
 				}
