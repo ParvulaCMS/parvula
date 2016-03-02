@@ -206,6 +206,19 @@ class Page {
 	}
 
 	/**
+	 * Get php DateTime object with Page date
+	 * More info https://php.net/manual/en/class.datetime.php
+	 *
+	 * @return DateTime
+	 */
+	public function getDateTime() {
+		if (!$this->date) {
+			return false;
+		}
+		return new DateTime($this->date);
+	}
+
+	/**
 	 * Override `tostring` when print this object
 	 *
 	 * @return string
