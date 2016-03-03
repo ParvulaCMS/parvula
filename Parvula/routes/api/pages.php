@@ -26,11 +26,20 @@ $pages = $app['pages'];
  *     ]
  */
 $this->get('', function ($req, $res) use ($pages) {
+	// List of pages. Array<string> of slugs
 	if (isset($req->getQueryParams()['index'])) {
-		// List of pages. Array<string> of slugs
 		return $this->api->json($res, $pages->index());
 	}
-	return $this->api->json($res, $pages->all()->order(SORT_ASC, 'slug')->toArray());
+
+	$allPages = $pages->all()->order(SORT_ASC, 'slug');
+
+	// List all pages (with or without a parent)
+	if (isset($req->getQueryParams()['all'])) {
+		return $this->api->json($res, $allPages->toArray());
+	}
+
+	// List root pages, pages without a parent
+	return $this->api->json($res, $allPages->withoutParent()->toArray());
 });
 
 /**
