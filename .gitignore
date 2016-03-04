@@ -28,9 +28,14 @@ Thumbs.db
 *.paw
 *.phar
 *.exe
+doc/
 
 # Jekyll
 _site
 .sass-cache
 .jekyll-metadata
+/api/*
+
+# Npm
+node_modules/
 
