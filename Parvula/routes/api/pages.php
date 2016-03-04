@@ -15,6 +15,7 @@ $pages = $app['pages'];
  * @apiGroup Page
  *
  * @apiParam {string} [index] Optional You can pass `?index` to url to just have the slugs
+ * @apiParam {string} [all] Optional You can pass `?all` to url to list all pages (parents and children)
  *
  * @apiSuccess (200) {array} pages An array of pages
  *
