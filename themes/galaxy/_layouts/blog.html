@@ -16,20 +16,23 @@ if (isset($page->options, $page->options['limit'])) {
 $children = $page->getChildren();
 ?>
 
-<div class="posts">
-<?php if ($children): ?>
-	<?php
+<?php
+if ($children):
 	// Order children by date
 	usort($children, function (Page $p1, Page $p2) {
 		return $p1->getDateTime() < $p2->getDateTime();
 	});
-	?>
-	<?php foreach ($children as $child): ?>
-		<h3><a href="<?= $baseUrl . $child->slug ?>"><?= $child->title ?></a></h3>
-		<p class="post-date font-italic text-muted"><?= $this->e($child, 'pageDateFormat') ?></p>
-		<?php if (++$i >= $limit) { break; } ?>
+	foreach ($children as $child): ?>
+	<div class="card">
+		<div class="card-block">
+			<h4 class="card-title"><?= $child->title ?></h4>
+			<h6 class="card-subtitle text-muted"><?= $this->e($child, 'pageDateFormat') ?></h6>
+			<p class="p-t-1"><?= $this->excerpt($child->content) ?>...</p>
+			<a href="<?= $baseUrl . $child->slug ?>" class="btn btn-primary-outline btn-sm card-link">Read more</a>
+		</div>
+	</div>
+	<?php if (++$i >= $limit) { break; } ?>
 	<?php endforeach; ?>
 <?php else: ?>
 	<em>Nothing for the moment...</em>
 <?php endif; ?>
-</div>

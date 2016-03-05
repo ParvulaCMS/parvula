@@ -74,6 +74,10 @@ html, body {
   border: 2px solid #fff;
 }
 
+.blog .intro-header {
+  height: 160px;
+}
+
 .main {
   color: #414446;
   margin-top: 3.5rem;
@@ -137,4 +141,11 @@ img {
   .navbar-brand {
     width: auto;
   }
+}
+
+@media (max-width: 34em) {
+	.nav-stacked {
+		width: 100%;
+		margin-bottom: 1.5rem;
+	}
 }
