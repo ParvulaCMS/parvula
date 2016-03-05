@@ -9,7 +9,7 @@ use Parvula\Core\Exception\PageException;
  * This class represents a Page
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.6.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -211,6 +211,15 @@ class Page {
 	}
 
 	/**
+	 * Get page parent
+	 *
+	 * @return Page Parent Page
+	 */
+	public function getParent() {
+		return $this->getLazy('parent');
+	}
+
+	/**
 	 * Get php DateTime object with Page date
 	 * More info https://php.net/manual/en/class.datetime.php
 	 *
@@ -221,6 +230,21 @@ class Page {
 			return false;
 		}
 		return new DateTime($this->date);
+	}
+
+	/**
+	 * Breadcrumb of parents
+	 * The first element is the oldest parent, the last one, the adjacent
+	 *
+	 * @return array Array of Page
+	 */
+	public function getBreadcrumb() {
+		$pages = [];
+		$page = $this;
+		while ($page = $page->getParent()) {
+			$pages[] = $page;
+		}
+		return array_reverse($pages);
 	}
 
 	/**
