@@ -22,6 +22,6 @@ class Json implements ParserInterface {
 	 * @return string The json encoded string
 	 */
 	public function encode($data) {
-		return json_encode($data);
+		return json_encode($data, JSON_PRETTY_PRINT);
 	}
 }
