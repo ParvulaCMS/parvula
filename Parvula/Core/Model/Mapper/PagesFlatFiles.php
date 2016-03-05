@@ -327,6 +327,11 @@ class PagesFlatFiles extends Pages
 		return $that;
 	}
 
+	/**
+	 * Fetch pages
+	 *
+	 * @return array Array of all Page
+	 */
 	private function fetchPages() {
 		$_pages = [];
 		$_pagesChildren = [];
@@ -338,10 +343,16 @@ class PagesFlatFiles extends Pages
 			$_pages[] = $page;
 
 			if (isset($page->parent)) {
-				if (!isset($_pagesChildren[$page->parent])) {
-					$_pagesChildren[$page->parent] = [];
+				$parent = $page->parent;
+				$that = $this;
+				// Add lazy function to resolve parent when function is called
+				$page->addLazy('parent', function () use ($parent, $that) {
+					return $that->read($parent);
+				});
+				if (!isset($_pagesChildren[$parent])) {
+					$_pagesChildren[$parent] = [];
 				}
-				$_pagesChildren[$page->parent][] = $page;
+				$_pagesChildren[$parent][] = $page;
 			}
 		}
 
