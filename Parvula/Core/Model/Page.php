@@ -47,6 +47,11 @@ class Page {
 	public $children;
 
 	/**
+	 * @var array Array of Closure
+	 */
+	protected $lazyFunctions;
+
+	/**
 	 * Page factory, create a new page from an array
 	 * The parameter $infos must contain at least `title` and `slug` fields.
 	 * The `slug` need to be normalized (a-z0-9-_+/).
@@ -216,6 +221,30 @@ class Page {
 			return false;
 		}
 		return new DateTime($this->date);
+	}
+
+	/**
+	 * Add a lazy function
+	 *
+	 * @param string $key
+	 * @param Closure $closure
+	 */
+	public function addLazy($key, \Closure $closure) {
+		$this->lazyFunctions[$key] = $closure;
+	}
+
+	/**
+	 * Resolve a given lazy function
+	 *
+	 * @param string $key
+	 * @return mixed Return the result of the lazy function
+	 */
+	public function getLazy($key) {
+		if (isset($this->lazyFunctions)) {
+			return $this->lazyFunctions[$key]();
+		}
+
+		return false;
 	}
 
 	/**
