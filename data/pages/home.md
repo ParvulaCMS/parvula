@@ -2,6 +2,7 @@
 title: Home page
 description: Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
 layout: home
+index: 0 # To be the first page in the menu
 ---
 
 Welcome to [*Parvula* CMS](https://github.com/BafS/parvula).
