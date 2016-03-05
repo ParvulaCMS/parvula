@@ -62,50 +62,45 @@ class PagesFlatFiles extends Pages
 
 		$pageFullPath = $pageUID . $this->fileExtension;
 
-		try {
-			$fs = new Files($this->folder);
+		$fs = new Files($this->folder);
 
-			if (!$fs->exists($pageFullPath)) {
-				// Check if it can fallback to a default file in the folder
-				$pageUID = $pageUID . $this->folderDefaultFile;
-				if (!$fs->exists($pageFullPath = $pageUID . $this->fileExtension)) {
-					return false;
-				}
+		if (!$fs->exists($pageFullPath)) {
+			// Check if it can fallback to a default file in the folder
+			$pageUID = $pageUID . $this->folderDefaultFile;
+			if (!$fs->exists($pageFullPath = $pageUID . $this->fileExtension)) {
+				return false;
+			}
+		}
+
+		// Anonymous function to use renderer engine
+		$renderer = $this->renderer;
+		$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
+			// Create the title from the filename
+			if (strpos($pageUID, '/') !== false) {
+				$pageUIDToken = explode('/', $pageUID);
+				$pageTitle = array_pop($pageUIDToken);
+				$parent = implode('/', $pageUIDToken);
+			} else {
+				$pageTitle = $pageUID;
 			}
 
-			// Anonymous function to use renderer engine
-			$renderer = $this->renderer;
-			$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
-				// Create the title from the filename
-				if (strpos($pageUID, '/') !== false) {
-					$pageUIDToken = explode('/', $pageUID);
-					$pageTitle = array_pop($pageUIDToken);
-					$parent = implode('/', $pageUIDToken);
-				} else {
-					$pageTitle = $pageUID;
-				}
+			$opts = [
+				'slug' => $pageUID,
+				'title' => ucfirst(strtr($pageTitle, '-', ' ')), // lisp-case to Normal case
+				'date' => '@' . $fileInfo->getMTime()
+			];
 
-				$opts = [
-					'slug' => $pageUID,
-					'title' => ucfirst(strtr($pageTitle, '-', ' ')), // lisp-case to Normal case
-					'date' => '@' . $fileInfo->getMTime()
-				];
+			isset($parent) ? $opts += ['parent' => $parent] : null;
+			$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
+			$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
 
-				isset($parent) ? $opts += ['parent' => $parent] : null;
-				$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
-				$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
+			return $renderer->parse($data, $opts, $parse);
+		};
 
-				return $renderer->parse($data, $opts, $parse);
-			};
+		$page = $fs->read($pageFullPath, $fn, $eval);
+		$this->pages[$pageUID] = $page;
 
-			$page = $fs->read($pageFullPath, $fn, $eval);
-			$this->pages[$pageUID] = $page;
-
-			return $page;
-
-		} catch (IOException $e) {
-			exceptionHandler($e);
-		}
+		return $page;
 	}
 
 	/**
