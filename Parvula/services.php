@@ -190,6 +190,20 @@ $app['view'] = function (Container $app) {
 		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 
+	// Excerpt strings
+	$view->registerFunction('excerpt', function ($text, $length = 275) {
+		$text = strip_tags($text);
+		$excerpt = substr($text, 0, $length);
+		if ($excerpt !== $text) {
+			$lastDot = strrpos($excerpt, '. ');
+			if ($lastDot === false) {
+				$lastDot = strrpos($excerpt, ' ');
+			}
+			$excerpt = substr($excerpt, 0, $lastDot);
+		}
+		return $excerpt;
+	});
+
 	// Register folder begining with a '_' as Plates folder
 	// (Plates will resolve `this->fetch('myFolder::file')` as `_myFolder/file.html`)
 	$filter = function ($current) {
