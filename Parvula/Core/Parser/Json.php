@@ -11,7 +11,8 @@ class Json implements ParserInterface {
 	 * @return array|object Appropriate PHP type
 	 */
 	public function decode($json) {
-		return json_decode($json);
+		$json = trim($json, '-');
+		return json_decode($json, true);
 	}
 
 	/**
