@@ -5,6 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/packagist/v/bafs/parvula.svg?style=flat-square" alt="version">
   <img src="https://img.shields.io/packagist/l/BafS/parvula.svg?style=flat-square" alt="license">
+  <img src="https://img.shields.io/maintenance/yes/2016.svg?style=flat-square" alt="maintenance">
 </p>
 
 > **An extremely simple & flexible CMS generated from flat files**
