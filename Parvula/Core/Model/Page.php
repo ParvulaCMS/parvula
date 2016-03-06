@@ -49,7 +49,7 @@ class Page {
 	/**
 	 * @var array Array of Closure
 	 */
-	protected $lazyFunctions;
+	protected $_lazyFunctions;
 
 	/**
 	 * Page factory, create a new page from an array
@@ -147,7 +147,7 @@ class Page {
 	public function getMeta() {
 		$meta = [];
 		foreach ($this as $key => $value) {
-			if ($key !== 'sections' && $key !== 'content' && $key !== 'children') {
+			if ($key[0] !== '_' && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}
@@ -254,7 +254,7 @@ class Page {
 	 * @param Closure $closure
 	 */
 	public function addLazy($key, \Closure $closure) {
-		$this->lazyFunctions[$key] = $closure;
+		$this->_lazyFunctions[$key] = $closure;
 	}
 
 	/**
@@ -264,8 +264,8 @@ class Page {
 	 * @return mixed Return the result of the lazy function
 	 */
 	public function getLazy($key) {
-		if (isset($this->lazyFunctions)) {
-			return $this->lazyFunctions[$key]();
+		if (isset($this->_lazyFunctions)) {
+			return $this->_lazyFunctions[$key]();
 		}
 
 		return false;
