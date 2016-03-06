@@ -29,21 +29,45 @@ function getPluginList(array $except = []) {
 }
 
 /**
- * Handle exceptions
- *
- * @deprecated
- * @param Exception $e
- * @return
+ * List pages and children
+ * 
+ * @param $pages Array of Page
+ * @param $options Array of options (options available: ul, li, level, liCallback)
+ * @return string Html list of pages
  */
-function exceptionHandler(Exception $e) {
-	$className = basename(str_replace('\\', '/', get_class($e)));
+function listPagesAndChildren(array $pages, array $options, $level = 9) {
+	$ul = isset($options['ul']) ? $options['ul'] : '';
+	$li = isset($options['li']) ? $options['li'] : '';
+	$liCallback = isset($options['liCallback']) ? $options['liCallback'] : null;
+	$level = isset($options['level']) ? $options['level'] : 9;
+	if ($level > 0) {
+		$str = '<ul ' . $ul . '>' . PHP_EOL;
+		foreach($pages as $page) {
+			$anch = $page->title;
+			if ($liCallback !== null) {
+				$anch = $liCallback($page);
+			}
+			$str .= '<li '. $li. '>' . $anch;
+			if ($page->getChildren()) {
+				--$options['level'];
+				$str .= listPagesAndChildren($page->getChildren(), $options);
+				++$options['level'];
+			}
+			$str .= '</li>' . PHP_EOL;
+		}
+		return $str . '</ul>' . PHP_EOL;
+	}
+	return '';
+}
 
-	echo "<h2 style='font-size:24px'>Error</h2>\n",
-	"<pre style='background:#f8f8f8;padding:8px'>\n",
-	'<b>Caught ', $className,': "', $e->getMessage(),
-	'"</b> (', $e->getFile(), ':', $e->getLine(), ")\n\n",
-	'<span style="color:#811">', $e->getTraceAsString(), "</span>",
-	"\n</pre>";
-
-	exit;
+/**
+ * List parent pages
+ * 
+ * @param $pages Array of Page
+ * @return array of pages
+ */
+function listPagesRoot(array $pages) {
+	return array_filter($pages, function($page) {
+		return !$page->parent;
+	});
 }

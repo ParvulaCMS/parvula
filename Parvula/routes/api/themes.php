@@ -21,8 +21,8 @@ $themes = $app['themes'];
  *       "othertheme": {...}
  *     }
  */
-$router->get('', function ($req, $res) use ($themes) {
-	return $res->send($themes->index());
+$this->get('', function ($req, $res) use ($themes) {
+	return $this->api->json($res, $themes->index());
 });
 
 /**
@@ -46,15 +46,14 @@ $router->get('', function ($req, $res) use ($themes) {
  *       }
  *     }
  */
-$router->get('/{name}', function ($req, $res) use ($themes) {
-
-	if (false === $result = $themes->read($req->params->name)) {
-		return $res->status(404)->send([
+$this->get('/{name}', function ($req, $res, $args) use ($themes) {
+	if (false === $result = $themes->read($args['name'])) {
+		return $this->api->json($res, [
 			'error' => 'ThemeNotFound'
-		]);
+		], 404);
 	}
 
-	return $res->send($result);
+	return $this->api->json($res, $result);
 });
 
  /**
@@ -75,30 +74,30 @@ $router->get('/{name}', function ($req, $res) use ($themes) {
   *       "layouts": {"index": "index.html"}
   *     }
   */
-$router->get('/{name}/{field}[/{subfield}]', function ($req, $res) use ($themes) {
-	$theme = $themes->read($req->params->name);
+$this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($themes) {
+	$theme = $themes->read($args['name']);
 
-	$field = $req->params->field;
+	$field = $args['field'];
 
 	if (!isset($theme->{$field})) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'FieldDoesNotExists',
 			'message' => 'The field `' . $field . '` does not exists'
-		]); // TODO bad args
+		], 404); // TODO bad args
 	}
 
-	if (!isset($req->params->subfield)) {
-		return $res->send($themes->read($req->params->name)->{$field});
+	if (!isset($args['subfield'])) {
+		return $this->api->json($res, $themes->read($args['name'])->{$field});
 	}
 
-	$subfield = $req->params->subfield;
+	$subfield = $args['subfield'];
 
 	if (!isset($theme->{$field}->{$subfield})) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'FieldDoesNotExists',
 			'message' => 'The sub field `' . $subfield . '` does not exists'
-		]); // TODO bad args
+		], 404); // TODO bad args
 	}
 
-	return $res->send($themes->read($req->params->name)->{$field}->{$subfield});
+	return $this->api->json($res, $themes->read($args['name'])->{$field}->{$subfield});
 });

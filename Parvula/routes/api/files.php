@@ -18,19 +18,21 @@ $fs = new FilesSystem(_UPLOADS_);
  *
  * @apiSuccess (200) Array Array of files paths
  */
-$router->get('', function ($req, $res) use ($fs) {
+$this->get('', function ($req, $res) use ($fs) {
+	///https://weierophinney.github.io/2015-10-20-PSR-7-and-Middleware/#/35
+	//->getUploadedFiles
 	try {
-		return $res->send($fs->index());
+		return $this->api->json($res, $fs->index());
 	} catch (IOException $e) {
-		return $res->status(500)->send([
+		return $this->api->json($res, [
 			'error' => 'IOException',
 			'message' => $e->getMessage()
-		]);
+		], 500);
 	} catch (Exception $e) {
-		return $res->status(500)->send([
+		return $this->api->json($res, [
 			'error' => 'Exception',
 			'message' => 'Server error'
-		]);
+		], 500);
 	}
 });
 
@@ -54,55 +56,46 @@ $router->get('', function ($req, $res) use ($fs) {
  *       "directory": "static\/files"
  *     }
  */
-$router->post('/upload', function ($req, $res) use ($app, $fs) {
+$this->post('/upload', function ($req, $res) use ($app, $fs) {
 	$config = $app['config'];
 
+	$files = $req->getUploadedFiles();
+
 	try {
-		// Undefined | Multiple Files | $files Corruption Attack
-		// If this request falls under any of them, treat it invalid.
-		if (
-			!isset($req->files['file']['error']) ||
-			is_array($req->files['file']['error'])
-		) {
-			throw new RuntimeException('Invalid parameters');
-		}
-
-		$file = $req->files['file'];
-
-		if ($file['error'] === UPLOAD_ERR_NO_FILE || !isset($req->files['file'])) {
-			return $res->status(400)->send([
+		if (empty($files['file'])) {
+			return $this->api->json($res, [
 				'error' => 'NoFileSent',
 				'message' => 'No file was sent'
-			]);
+			], 400);
 		}
 
 		if (!$fs->isWritable()) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'InternalError',
 				'message' => 'Upload folder is not writable'
-			]);
+			], 500);
 		}
+
+		$file = $files['file'];
 
 		// Check file name length
-		if (strlen($file['name']) > 128) {
-			return $res->status(400)->send([
+		if (strlen($file->getClientFilename()) > 128) {
+			return $this->api->json($res, [
 				'error' => 'FileNameError',
 				'message' => 'Exceeded file name limit'
-			]);
+			], 400);
 		}
 
-		// Filesize re-check
+		// Filesize check
 		$maxSize = $config->get('upload.maxSize') * 1000 * 1000;
-		if ($maxSize >= 0 && $file['size'] > $maxSize) {
-			// throw new RuntimeException('Exceeded file size limit');
-			return $res->status(400)->send([
+		if ($maxSize >= 0 && $file->getSize() > $maxSize) {
+			return $this->api->json($res, [
 				'error' => 'FileSizeExceeded',
 				'message' => 'Exceeded file size limit'
-			]);
+			], 400);
 		}
 
-		// @TODO Check $file['error'] value.
-		switch ($file['error']) {
+		switch ($file->getError()) {
 			case UPLOAD_ERR_OK:
 				break;
 			case UPLOAD_ERR_INI_SIZE:
@@ -112,34 +105,28 @@ $router->post('/upload', function ($req, $res) use ($app, $fs) {
 				throw new RuntimeException('Unknown errors');
 		}
 
-		$info = new \SplFileInfo($file['name']);
+		$info = new \SplFileInfo($file->getClientFilename());
 		$ext = $info->getExtension();
 		$basename = $info->getBasename('.' . $ext);
 		if (in_array($ext, $config->get('upload.evilExtensions'))) {
 			$ext = 'txt';
-			// throw new RuntimeException('File extension not allowed');
 		}
 
 		// Name should be unique // TODO
 		$filename =  $basename . '.' . $ext;
-		if (!move_uploaded_file(
-			$file['tmp_name'],
-			_UPLOADS_ . $filename
-		)) {
-			throw new RuntimeException('Failed to move uploaded file');
-		}
+		$file->moveTo(_UPLOADS_ . $filename);
 
 	} catch (RuntimeException $e) {
-		return $res->status(500)->send([
+		return $this->api->json($res, [
 			'error' => 'UploadException',
 			'message' => $e->getMessage()
-		]);
+		], 500);
 	}
 
-	return $res->status(201)->send([
+	return $this->api->json($res, [
 		'filename' => $filename,
 		'directory' => _UPLOADS_
-	]);
+	], 201);
 });
 
 /**
@@ -152,15 +139,15 @@ $router->post('/upload', function ($req, $res) use ($app, $fs) {
  * @apiSuccess (204) FileDeleted File deleted
  * @apiError (404) CannotBeDeleted File cannot be deleted
  */
-$router->delete('/{file:.+}', function ($req, $res) use ($fs) {
+$this->delete('/{file:.+}', function ($req, $res, $args) use ($fs) {
 	try {
-		$file = urldecode($req->params->file);
+		$file = urldecode($args['file']);
 		$result = $fs->delete($file);
 	} catch (Exception $e) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'CannotBeDeleted',
 			'message' => $e->getMessage()
-		]);
+		], 404);
 	}
-	return $res->sendStatus(204);
+	return $res->withStatus(204);
 });

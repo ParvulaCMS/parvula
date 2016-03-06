@@ -13,6 +13,7 @@ define('_VENDOR_',      _ROOT_ . 'vendor/');
 define('_PAGES_',       _DATA_ . 'pages/');
 define('_CONFIG_',      _DATA_ . 'config/');
 define('_USERS_',       _DATA_ . 'users/');
+define('_LOGS_',        _DATA_ . 'logs/');
 
 // Static
 define('_UPLOADS_',     _STATIC_ . 'files/');
@@ -20,6 +21,6 @@ define('_COMPONENTS_',  _STATIC_ . 'components/');
 
 define('_THEMES_',      _ROOT_ . 'themes/');
 define('_PLUGINS_',     _ROOT_ . 'plugins/');
-define('_VERSION_',     '0.5.0');
+define('_VERSION_',     '0.6.0');
 
 require_once _APP_ . 'bootstrap.php';

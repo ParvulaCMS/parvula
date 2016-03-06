@@ -43,46 +43,47 @@ $isAdmin = function () use ($app) {
  *       "message": "user or password not ok"
  *     }
  */
-$router->post('/login', function ($req, $res) use ($app) {
-
+$this->post('/login', function ($req, $res) use ($app) {
 	$users = $app['users'];
 
-	if (!isset($req->body->username, $req->body->password)) {
-		return $res->status(400)->send([
+	$parsedBody = $req->getParsedBody();
+
+	if (!isset($parsedBody['username'], $parsedBody['password'])) {
+		return $this->api->json($res, [
 			'error' => 'BadArguments',
 			'message' => 'You need to give a username and a password'
-		]);
+		], 400);
 	}
 
-	// TODO Tests !
-	if ($app['config']->get('forceLoginOnTLS') && !$req->secureLayer) {
-		if ($req->scheme !== 'https') {
+	// Too late, data have been sent but force the redirection
+	// TODO Tests ! // && !$req->secureLayer
+	if ($app['config']->get('forceLoginOnTLS')) {
+		$uri = $req->getUri();
+		if ($uri->getScheme() !== 'https') {
 			// Try to redirect to https
-			header('Location: https://' . $req->host . $req->uri);
+			header('Location: https://' . $uri->getHost() . $uri->getPath() . $uri->getQuery());
 			exit;
 		}
 	}
 
-	$password = $req->body->password;
-
-	if (!($user = $users->read($req->body->username))) {
-		return $res->status(403)->send([
+	if (!($user = $users->read($parsedBody['username']))) {
+		return $this->api->json($res, [
 			'error' => 'BadCredentials',
 			'message' => 'User or password not ok'
-		]);
+		], 403);
 	}
 
-	if (!$user->login($password)) {
-		return $res->status(403)->send([
+	if (!$user->login($parsedBody['password'])) {
+		return $this->api->json($res, [
 			'error' => 'BadCredentials',
 			'message' => 'User or password not ok'
-		]);
+		], 403);
 	}
 
 	// Create a session
 	$app['auth']->log($user->username);
 
-	return $res->sendStatus(204);
+	return $res->withStatus(204);
 });
 
 /**
@@ -97,9 +98,9 @@ $router->post('/login', function ($req, $res) use ($app) {
  *       "status": "success"
  *     }
  */
-$router->map('GET|POST', '/logout', function($req, $res) use ($app) {
+$this->map(['GET', 'POST'], '/logout', function ($req, $res) use ($app) {
 	$rep = $app['session']->destroy();
-	return $res->json($rep);
+	return $this->api->json($res, $rep);
 });
 
 /**
@@ -120,38 +121,39 @@ $router->map('GET|POST', '/logout', function($req, $res) use ($app) {
  *       "data": false
  *     }
  */
-$router->map('GET|POST', '/islogged', function($req, $res) use ($isAdmin) {
-	return $res->json((bool) $isAdmin());
+$this->map(['GET', 'POST'], '/islogged', function ($req, $res) use ($isAdmin) {
+	return $this->api->json($res, (bool) $isAdmin());
 });
 
-$router->group($prefix . '/pages', function($router) use ($app, $isAdmin) {
+$this->group('/pages', function () use ($app, $isAdmin) {
 	require 'api/pages.php';
 });
 
 if ($isAdmin()) {
 
-	$router->group($prefix . '/themes', function($router) use ($app) {
+
+	$this->group('/themes', function () use ($app) {
 		require 'api/themes.php';
 	});
 
-	$router->group($prefix . '/users', function($router) use ($app) {
+	$this->group('/users', function () use ($app) {
 		require 'api/users.php';
 	});
 
-	$router->group($prefix . '/config', function($router) use ($app) {
+	$this->group('/config', function () use ($app) {
 		require 'api/config.php';
 	});
 
-	$router->group($prefix . '/files', function($router) use ($app) {
+	$this->group('/files', function () use ($app) {
 		require 'api/files.php';
 	});
 
 }
 
 // If nothing match in the api group and not loged
-$router->map('GET|POST|PUT|DELETE|PATCH', '/{r:.*}', function($req, $res) use ($app) {
-	return $res->status(400)->send([
+$this->any('/{r:.*}', function ($req, $res) use ($app) {
+	return $this->api->json($res, [
 		'error' => 'RouteOrCredentialsError',
 		'message' => 'API route not found or bad credentials'
-	]);
+	], 400);
 });

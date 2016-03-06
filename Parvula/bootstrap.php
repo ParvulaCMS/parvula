@@ -17,8 +17,6 @@ if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
 
 $app = new Parvula;
 
-// Parvula::redirectIfTrailingSlash(); //@FIXME
-
 require _APP_ . 'helpers.php';
 
 // Register services
@@ -27,23 +25,32 @@ require _APP_ . 'services.php';
 $config = $app['config'];
 $config->set('__time__', $time);
 
-$debug = (bool) $config->get('debug', false);
-
-if ($debug) {
-	error_reporting(E_ALL);
-	$app->get('errorHandler');
-}
-
-// Display or not errors
-ini_set('display_errors', $debug);
-
 // Set timezone
 date_default_timezone_set($config->get('timezone', 'UTC'));
 
+$router = $app['router'];
+Parvula::setRequest($router->getContainer()['request']);
+
+$debug = (bool) $config->get('debug', false);
+$logErrors = (bool) $config->get('logErrors', false);
+
+if ($logErrors) {
+	// Register the logger
+	$app['loggerHandler'];
+}
+
+if ($debug) {
+	// Report all errors
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	$app['errorHandler'];
+} else {
+	// Don't display errors to the client
+	ini_set('display_errors', 0);
+}
+
 // Load class aliases
 loadAliases($config->get('aliases'));
-
-Parvula::setRequest($app['request']);
 
 // Load plugins
 $plugins = $app['plugins'];

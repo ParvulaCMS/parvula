@@ -2,11 +2,11 @@
 title: Some markdown
 ---
 
-This page is saved in `data/pages/sub/mdown.md`.
+This page is saved in `data/pages/parent/mdown.md`.
+
+If the file `parent.md` exists this page will be one of her children.
 
 ## A subtitle
-
-[Home page](/home)
 
 Some **bold** test.
 
@@ -16,6 +16,10 @@ List :
   * First - sub
 - Second
 + Etc...
+
+[Home page](/home)
+
+[Home page button with style](/home) {.btn .btn-info}
 
 > This is a blockquote
 
@@ -33,4 +37,4 @@ An here some `$code($this->field);` with [a link](http://wikipedia.org).
 
 ![A cat](/cat.jpg)
 
-*End*
+*End of the page*

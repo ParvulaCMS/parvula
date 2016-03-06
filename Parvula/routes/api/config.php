@@ -30,12 +30,12 @@ function configPath($name) {
  * @apiSuccess (200) {mixed} Config object
  * @apiError (404) ConfigDoesNotExists
  */
-$router->get('/{name}', function ($req, $res) use ($confIO) {
-	if (!configPath($req->params->name)) {
-		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
+$this->get('/{name}', function ($req, $res, $args) use ($confIO) {
+	if (!configPath($args['name'])) {
+		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	return $res->send($confIO->read(configPath($req->params->name)));
+	return $this->api->json($res, $confIO->read(configPath($args['name'])));
 });
 
 /**
@@ -50,22 +50,22 @@ $router->get('/{name}', function ($req, $res) use ($confIO) {
  * @apiError (404) ConfigDoesNotExists Config does not exists
  * @apiError (404) FieldError The field :field does not exists
  */
-$router->get('/{name}/{field}', function ($req, $res) use ($confIO) {
-	if (!$configName = configPath($req->params->name)) {
-		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
+$this->get('/{name}/{field}', function ($req, $res, $args) use ($confIO) {
+	if (!$configName = configPath($args['name'])) {
+		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
 	$config = (object) $confIO->read($configName);
 
-	$field = $req->params->field;
+	$field = $args['field'];
 	if (!isset($config->{$field})) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'FieldError',
 			'message' => 'The field `' . $field . '` does not exists'
-		]);
+		], 404);
 	}
 
-	return $res->send($config->{$req->params->field});
+	return $this->api->json($res, $config->{$args['field']});
 });
 
 /**
@@ -85,25 +85,27 @@ $router->get('/{name}/{field}', function ($req, $res) use ($confIO) {
  * @apiSuccessExample ConfigCreated
  *     HTTP/1.1 201 No Content
  */
-$router->post('/{name}', function ($req, $res) use ($confIO) {
-	if (configPath($req->params->name)) {
-		return $res->status(409)->send(['error' => 'ConfigAlreadyExists']);
+$this->post('/{name}', function ($req, $res, $args) use ($confIO) {
+	$parsedBody = $req->getParsedBody();
+
+	if (configPath($args['name'])) {
+		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
-	$path = _CONFIG_ . basename($req->params->name . '.yaml'); // TODO
+	$path = _CONFIG_ . basename($args['name'] . '.yaml'); // TODO
 
-	$config = (array) $req->body;
+	$config = (array) $parsedBody;
 
 	try {
 		$confIO->write($path, $config);
 	} catch (Exception $e) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'ConfigException',
 			'message' => $e->getMessage()
-		]);
+		], 404);
 	}
 
-	return $res->sendStatus(201);
+	return $res->withStatus(201);
 });
 
 /**
@@ -124,9 +126,9 @@ $router->post('/{name}', function ($req, $res) use ($confIO) {
  * @apiSuccessExample ConfigPatched
  *     HTTP/1.1 204 No Content
  */
-$router->patch('/{name}', function ($req, $res) use ($confIO) {
-	if (!$configName = configPath($req->params->name)) {
-		return $res->status(404)->send(['error' => 'ConfigDoesNotExists']);
+$this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
+	if (!$configName = configPath($args['name'])) {
+		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
 	$configOld = $confIO->read($configName);
@@ -135,26 +137,26 @@ $router->patch('/{name}', function ($req, $res) use ($confIO) {
 		$configOld = [];
 	}
 
-	$newFields = (array) $req->body;
+	$newFields = (array) $req->getParsedBody();
 	if ((array) $configOld === $configOld) { // is array
 		$config = array_replace_recursive($configOld, $newFields);
 	} else if (is_object($configOld)) {
 		$config = (object) array_replace_recursive((array) $configOld, $newFields);
 	} else {
-		return $res->status(400)->send([
+		return $this->api->json($res, [
 			'error' => 'InvalidData',
 			'message' => 'Data type must be array or object'
-		]);
+		], 400);
 	}
 
 	try {
 		$confIO->write($configName, $config);
 	} catch (Exception $e) {
-		return $res->status(404)->send([
+		return $this->api->json($res, [
 			'error' => 'ConfigException',
 			'message' => $e->getMessage()
-		]);
+		], 404);
 	}
 
-	return $res->sendStatus(204);
+	return $res->withStatus(204);
 });

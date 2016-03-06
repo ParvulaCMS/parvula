@@ -9,7 +9,7 @@ use Parvula\Core\Exception\PageException;
  * This class represents a Page
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.6.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -35,6 +35,21 @@ class Page {
 	 * @var stdClass Page's sections (optional)
 	 */
 	public $sections;
+
+	/**
+	 * @var string Page's parent slug (optional)
+	 */
+	public $parent;
+
+	/**
+	 * @var array Page's children (optional)
+	 */
+	public $children;
+
+	/**
+	 * @var array Array of Closure
+	 */
+	protected $_lazyFunctions;
 
 	/**
 	 * Page factory, create a new page from an array
@@ -74,7 +89,11 @@ class Page {
 		}
 
 		foreach ($meta as $key => $value) {
-			$this->{$key} = $value;
+			// object with private fields casted to array will have keys prepended with \0
+			// https://php.net/manual/en/language.types.array.php#language.types.array.casting
+			if (!is_null($value) && $key[0] !== "\0") {
+				$this->{$key} = $value;
+			}
 		}
 
 		$this->content = $content;
@@ -132,7 +151,7 @@ class Page {
 	public function getMeta() {
 		$meta = [];
 		foreach ($this as $key => $value) {
-			if ($key !== 'sections' && $key !== 'content') {
+			if ($key[0] !== '_' && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}
@@ -162,6 +181,113 @@ class Page {
 			return false;
 		}
 		return $this->sections->{$name};
+	}
+
+	/**
+	 * Add page child
+	 *
+	 * @param Page $child
+	 */
+	public function addChild(Page $child) {
+		if (!$this->children) {
+			$this->children = [];
+		}
+
+		$this->children[] = $child;
+	}
+
+	/**
+	 * Set page children
+	 *
+	 * @param array $children Array of Page
+	 */
+	public function setChildren(array $children) {
+		$this->children = $children;
+	}
+
+	/**
+	 * Get page children
+	 *
+	 * @return array Array of Page
+	 */
+	public function getChildren() {
+		return $this->children;
+	}
+
+	/**
+	 * Get page parent
+	 *
+	 * @return Page Parent Page
+	 */
+	public function getParent() {
+		return $this->getLazy('parent');
+	}
+
+	/**
+	 * Get php DateTime object with Page date
+	 * More info https://php.net/manual/en/class.datetime.php
+	 *
+	 * @return DateTime
+	 */
+	public function getDateTime() {
+		if (!$this->date) {
+			return false;
+		}
+		return new DateTime($this->date);
+	}
+
+	/**
+	 * Breadcrumb of parents
+	 * The first element is the oldest parent, the last one, the adjacent
+	 *
+	 * @return array Array of Page
+	 */
+	public function getBreadcrumb() {
+		$pages = [];
+		$page = $this;
+		while ($page = $page->getParent()) {
+			$pages[] = $page;
+		}
+		return array_reverse($pages);
+	}
+
+	/**
+	 * Add a lazy function
+	 *
+	 * @param string $key
+	 * @param Closure $closure
+	 */
+	public function addLazy($key, \Closure $closure) {
+		$this->_lazyFunctions[$key] = $closure;
+	}
+
+	/**
+	 * Resolve a given lazy function
+	 *
+	 * @param string $key
+	 * @return mixed Return the result of the lazy function
+	 */
+	public function getLazy($key) {
+		if (isset($this->_lazyFunctions)) {
+			return $this->_lazyFunctions[$key]();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Transform Page to array
+	 *
+	 * @return array Array of Page's fields
+	 */
+	public function toArray() {
+		$arr = [];
+		foreach ($this as $key => $value) {
+			if ($key[0] !== '_') {
+				$arr[$key] = $value;
+			}
+		}
+		return $arr;
 	}
 
 	/**

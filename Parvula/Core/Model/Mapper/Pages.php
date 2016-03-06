@@ -110,6 +110,28 @@ abstract class Pages implements CRUDInterface
 	}
 
 	/**
+	 * Show pages without a parent (the 'root' pages)
+	 *
+	 * @return Pages
+	 */
+	public function withoutParent() {
+		return $this->filter(function (Page $page) {
+			return (bool) !$page->get('parent');
+		});
+	}
+
+	/**
+	 * Show pages with a parent (the children pages)
+	 *
+	 * @return Pages
+	 */
+	public function withParent() {
+		return $this->filter(function (Page $page) {
+			return (bool) $page->get('parent');
+		});
+	}
+
+	/**
 	 * Filter pages
 	 *
 	 * Example:

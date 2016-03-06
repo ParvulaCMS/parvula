@@ -41,6 +41,7 @@ class PagesFlatFiles extends Pages
 
 		$this->folder = $folder;
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
+		$this->fetchPages();
 	}
 
 	/**
@@ -52,6 +53,8 @@ class PagesFlatFiles extends Pages
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function read($pageUID, $parse = true, $eval = false) {
+		$pageUID = trim($pageUID, '/');
+
 		// If page was already loaded, return page
 		if (isset($this->pages[$pageUID])) {
 			return $this->pages[$pageUID];
@@ -59,50 +62,45 @@ class PagesFlatFiles extends Pages
 
 		$pageFullPath = $pageUID . $this->fileExtension;
 
-		try {
-			$fs = new Files($this->folder);
+		$fs = new Files($this->folder);
 
-			if (!$fs->exists($pageFullPath)) {
-				// Check if it can fallback to a default file in the folder
-				$pageUID = $pageUID . $this->folderDefaultFile;
-				if (!$fs->exists($pageFullPath = $pageUID . $this->fileExtension)) {
-					return false;
-				}
+		if (!$fs->exists($pageFullPath)) {
+			// Check if it can fallback to a default file in the folder
+			$pageUID = $pageUID . $this->folderDefaultFile;
+			if (!$fs->exists($pageFullPath = $pageUID . $this->fileExtension)) {
+				return false;
+			}
+		}
+
+		// Anonymous function to use renderer engine
+		$renderer = $this->renderer;
+		$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
+			// Create the title from the filename
+			if (strpos($pageUID, '/') !== false) {
+				$pageUIDToken = explode('/', $pageUID);
+				$pageTitle = array_pop($pageUIDToken);
+				$parent = implode('/', $pageUIDToken);
+			} else {
+				$pageTitle = $pageUID;
 			}
 
-			// Anonymous function to use renderer engine
-			$renderer = $this->renderer;
-			$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
-				$pageUID = trim($pageUID, '/');
+			$opts = [
+				'slug' => $pageUID,
+				'title' => ucfirst(strtr($pageTitle, '-', ' ')), // lisp-case to Normal case
+				'date' => '@' . $fileInfo->getMTime()
+			];
 
-				// Create the title from the filename
-				if (strpos($pageUID, '/') !== false) {
-					$pageTitle = explode('/', $pageUID);
-					$pageTitle = end($pageTitle);
-				} else {
-					$pageTitle = $pageUID;
-				}
+			isset($parent) ? $opts += ['parent' => $parent] : null;
+			$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
+			$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
 
-				$opts = [
-					'slug' => $pageUID,
-					'title' => ucfirst(strtr($pageTitle, '-', ' ')), // lisp-case to Normal case
-					'date' => '@' . $fileInfo->getMTime()
-				];
+			return $renderer->parse($data, $opts, $parse);
+		};
 
-				$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
-				$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
+		$page = $fs->read($pageFullPath, $fn, $eval);
+		$this->pages[$pageUID] = $page;
 
-				return $renderer->parse($data, $opts, $parse);
-			};
-
-			$page = $fs->read($pageFullPath, $fn, $eval);
-			$this->pages[$pageUID] = $page;
-
-			return $page;
-
-		} catch (IOException $e) {
-			exceptionHandler($e);
-		}
+		return $page;
 	}
 
 	/**
@@ -195,7 +193,7 @@ class PagesFlatFiles extends Pages
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch ($pageUID, array $infos) {
+	public function patch($pageUID, array $infos) {
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
@@ -240,7 +238,7 @@ class PagesFlatFiles extends Pages
 		}
 
 		$page = $this->read($pageUID, false);
-		$pagePatched = patchHelper((array) $page, $infos);
+		$pagePatched = patchHelper($page->toArray(), $infos);
 
 		$infos = Page::pageFactory($pagePatched);
 
@@ -269,14 +267,10 @@ class PagesFlatFiles extends Pages
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function index($listHidden = false, $pagesPath = null) {
+	public function index($listHidden = false, $pagesPath = '') {
 		$pages = [];
 
 		try {
-			if ($pagesPath === null) {
-				$pagesPath = $this->folder;
-			}
-
 			// Filter secret (.*) and hiddent files (_*)
 			$filter = function ($current) use ($listHidden) {
 				return ($listHidden || $current->getFilename()[0] !== '_')
@@ -284,7 +278,7 @@ class PagesFlatFiles extends Pages
 			};
 
 			$ext = $this->fileExtension;
-			(new Files($pagesPath))->index('',
+			(new Files($this->folder))->index($pagesPath,
 				function (\SplFileInfo $file, $dir) use (&$pages, $ext) {
 				$currExt = '.' . $file->getExtension();
 
@@ -293,7 +287,6 @@ class PagesFlatFiles extends Pages
 					if ($dir) {
 						$dir = trim($dir, '/\\') . '/';
 					}
-
 					$pages[] = $dir . $file->getBasename($currExt); // page path
 				}
 			}, $filter);
@@ -313,21 +306,58 @@ class PagesFlatFiles extends Pages
 	 * @param string ($path) Pages in a specific sub path
 	 * @return Pages
 	 */
-	public function all($path = null) {
+	public function all($path = '') {
 		$that = clone $this;
 		$that->pages = [];
-
-		if ($path !== null) {
-			$path = $this->folder . $path;
-		}
 
 		$pagesIndex = $this->index(true, $path);
 
 		foreach ($pagesIndex as $pageUID) {
-			$that->pages[] = $this->read($pageUID);
+			if (!isset($that->pages[$pageUID])) {
+				$page = $this->read($pageUID);
+				$that->pages[$page->slug] = $page;
+			}
 		}
 
 		return $that;
+	}
+
+	/**
+	 * Fetch pages
+	 *
+	 * @return array Array of all Page
+	 */
+	private function fetchPages() {
+		$_pages = [];
+		$_pagesChildren = [];
+
+		$pagesIndex = $this->index(true);
+
+		foreach ($pagesIndex as $pageUID) {
+			$page = $this->read($pageUID);
+			$_pages[] = $page;
+
+			if (isset($page->parent)) {
+				$parent = $page->parent;
+				$that = $this;
+				// Add lazy function to resolve parent when function is called
+				$page->addLazy('parent', function () use ($parent, $that) {
+					return $that->read($parent);
+				});
+				if (!isset($_pagesChildren[$parent])) {
+					$_pagesChildren[$parent] = [];
+				}
+				$_pagesChildren[$parent][] = $page;
+			}
+		}
+
+		foreach ($_pages as $page) {
+			if (isset($_pagesChildren[$page->slug])) {
+				$page->setChildren($_pagesChildren[$page->slug]);
+			}
+		}
+
+		return $_pages;
 	}
 
 }

@@ -1,4 +1,12 @@
-# ![PARVULA](http://i.imgur.com/igAQPza.png)
+<p align="center">
+  <a href="https://bafs.github.io/parvula" target="_blank"><img src="http://i.imgur.com/igAQPza.png" alt="Parvula"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/packagist/v/bafs/parvula.svg?style=flat-square" alt="version">
+  <img src="https://img.shields.io/packagist/l/BafS/parvula.svg?style=flat-square" alt="license">
+  <img src="https://img.shields.io/maintenance/yes/2016.svg?style=flat-square" alt="maintenance">
+</p>
 
 > **An extremely simple & flexible CMS generated from flat files**
 
@@ -7,14 +15,19 @@
 
 ### Requirements
 
-* PHP 5.4+
+* PHP 5.5+
 * [Composer](http://getcomposer.org/)
 * URL Rewriting (recommended)
 
 ### Installation with Composer
 
-1. Run `composer create-project bafs/parvula cms` (where `cms` is the destination folder)
-2. That's it !
+Parvula can be install with this single line :
+
+```bash
+composer create-project bafs/parvula cms
+```
+
+where `cms` is the destination folder
 
 ## Quick start
 

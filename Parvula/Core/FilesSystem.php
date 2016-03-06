@@ -56,6 +56,7 @@ class FilesSystem implements IOInterface {
 	 * @param callable ($fn) Apply function to file data (\SplFileInfo $file, string $data)
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the file does not exists
+	 * @throws IOException If the file is empty
 	 * @return mixed File data
 	 */
 	public function read($filename, callable $fn = null, $eval = false) {
@@ -72,6 +73,9 @@ class FilesSystem implements IOInterface {
 				$data = ob_get_clean();
 			} else {
 				$file = $fileInfo->openFile('r');
+				if ($file->getSize() === 0) {
+					throw new IOException("File `{$filename}` is empty");
+				}
 				$data = $file->fread($file->getSize());
 			}
 		}
@@ -202,6 +206,16 @@ class FilesSystem implements IOInterface {
 		}
 
 		return $this->indexAll($dir, $fn, $filter);
+	}
+
+	/**
+	 * Get file modification time
+	 *
+	 * @param string $filename
+	 * @return int Timestamp
+	 */
+	public function modificationTime($filename = '') {
+		return filemtime($this->workingDirectory . $filename);
 	}
 
 	/**

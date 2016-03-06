@@ -3,40 +3,85 @@
 // Register services
 // ----------------------------- //
 
-use Parvula\Core\Container;
+use Pimple\Container;
 use Parvula\Core\FilesSystem as Files;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-$app->share('errorHandler', function () {
-	if (class_exists('\\Whoops\\Run')) {
-		$whoops = new Whoops\Run();
-		$whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
-		$jsonHandler = new Whoops\Handler\JsonResponseHandler();
-		$jsonHandler->onlyForAjaxRequests(true);
-		$whoops->pushHandler($jsonHandler);
+$app['router'] = function ($cont) {
+	$slimConf = [
+		'settings' => [
+			'displayErrorDetails' => false
+		],
+		'api' => new Parvula\Core\Router\APIRender(),
+		'logger' => $cont['loggerHandler']
+	];
 
-		$whoops->register();
-	} else {
-		// Use custom exception handler
-		set_exception_handler('exceptionHandler');
+	$router = new Slim\App($slimConf);
+
+	// Remove Slim handler, we want to use our own
+	unset($router->getContainer()['errorHandler']);
+
+	return $router;
+};
+
+// Log errors in _LOG_ folder
+$app['loggerHandler'] = function ($c) {
+	if (class_exists('\\Monolog\\Logger')) {
+		$logger = new Logger('parvula');
+		$file = (new DateTime('now'))->format('Y-m-d') . '.log';
+
+		$logger->pushProcessor(new Monolog\Processor\UidProcessor());
+		$logger->pushHandler(new StreamHandler(_LOGS_ . $file, Logger::WARNING));
+
+		Monolog\ErrorHandler::register($logger);
+
+		return $logger;
 	}
-});
 
-$app->share('config', function () {
-	// Populate Config wrapper
-	return new Parvula\Core\Config(require APP . 'config.php');
-});
+	return false;
+};
 
-$app->add('fileParser', function () {
+$app['errorHandler'] = function ($that) {
+	if (class_exists('\\Whoops\\Run')) {
+		$run = new Whoops\Run;
+		$handler = new Whoops\Handler\PrettyPageHandler;
+
+		$handler->setPageTitle("Parvula Error");
+		$handler->addDataTable('Parvula', [
+			'Version'=> _VERSION_
+		]);
+
+		$run->pushHandler($handler);
+
+		if (Whoops\Util\Misc::isAjaxRequest()) {
+			$run->pushHandler(new Whoops\Handler\JsonResponseHandler);
+		}
+
+		$run->register();
+
+		if (class_exists('\\Monolog\\Logger')) {
+			// Be sure that Monolog is still register
+			Monolog\ErrorHandler::register($that['loggerHandler']);
+		}
+
+		return $run;
+	}
+};
+
+// To parse serialized files in multiple formats
+$app['fileParser'] = function () {
 	$parsers = [
 		'json' => new \Parvula\Core\Parser\Json,
 		'yaml' => new \Parvula\Core\Parser\Yaml,
+		'yml' => new \Parvula\Core\Parser\Yaml,
 		'php' => new \Parvula\Core\Parser\Php
 	];
 
 	return new Parvula\Core\FileParser($parsers);
-});
+};
 
-$app->share('config', function (Container $this) {
+$app['config'] = function (Container $this) {
 	$fp = $this['fileParser'];
 
 	// Populate Config wrapper
@@ -48,38 +93,27 @@ $app->share('config', function (Container $this) {
 	$config->append((array) $userConfig);
 
 	return $config;
-});
+};
 
-$app->share('plugins', function (Container $this) {
+$app['plugins'] = function (Container $this) {
 	$pluginMediator = new Parvula\Core\PluginMediator;
 	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
 	return $pluginMediator;
-});
+};
 
-$app->share('request', function () {
-	parse_str(file_get_contents("php://input"), $post_vars);
-
-	return new Parvula\Core\Router\Request(
-		$_SERVER,
-		$_GET,
-		$post_vars,
-		$_COOKIE,
-		$_FILES
-	);
-});
-
-$app->share('session', function ($this) {
+$app['session'] = function (Container $this) {
 	$session = new Parvula\Core\Session($this['config']->get('sessionName'));
 	$session->start();
 	return $session;
-});
+};
 
-$app->share('auth', function (Container $this) {
-	return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
-});
+$app['auth'] = function (Container $this) {
+	return new Parvula\Core\Authentication($this['session'], hash('sha1', '@TODO'));
+	// return new Parvula\Core\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
+};
 
 // Get current logged User if available
-$app->share('usersession', function (Container $this) {
+$app['usersession'] = function (Container $this) {
 	$sess = $this['session'];
 	if ($username = $sess->get('username')) {
 		if ($this['auth']->isLogged($username)) {
@@ -88,15 +122,15 @@ $app->share('usersession', function (Container $this) {
 	}
 
 	return false;
-});
+};
 
 //-- ModelMapper --
 
-$app->add('users', function (Container $this) {
+$app['users'] = function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
-});
+};
 
-$app->share('pageRenderer', function (Container $this) {
+$app['pageRenderer'] = function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$contentParser = $this['config']->get('contentParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
@@ -106,38 +140,69 @@ $app->share('pageRenderer', function (Container $this) {
 		'delimiterRender' => '---'
 	];
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
-});
+};
 
-$app->share('pageRendererRAW', function (Container $this) {
+$app['pageRendererRAW'] = function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
 	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\None);
-});
+};
 
-$app->add('pages', function (Container $this) {
+$app['pages'] = function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
 	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
-});
+};
 
-$app->add('themes', function (Container $this) {
+$app['themes'] = function (Container $this) {
 	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $this['fileParser']);
-});
+};
 
-$app->share('theme', function (Container $this) {
+$app['theme'] = function (Container $this) {
 	if ($this['themes']->has($themeName = $this['config']->get('theme'))) {
 		return $this['themes']->read($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
 	}
-});
+};
 
-$app->add('view', function (Container $this) {
-	$theme = $this['theme'];
+$app['view'] = function (Container $app) {
+	$theme = $app['theme'];
+	$config = $app['config'];
 
 	// Create new Plates instance to render theme files
 	$path = $theme->getPath();
 	$view = new League\Plates\Engine($path, $theme->getExtension());
+
+	// Helper function
+	// List pages
+	$view->registerFunction('listPages', function ($pages, $options) {
+		return listPagesAndChildren(listPagesRoot($pages), $options);
+	});
+
+	// System date format
+	$view->registerFunction('dateFormat', function (DateTime $date) use ($config) {
+		return $date->format($config->get('dateFormat'));
+	});
+
+	// System date format
+	$view->registerFunction('pageDateFormat', function (Parvula\Core\Model\Page $page) use ($config) {
+		return $page->getDateTime()->format($config->get('dateFormat'));
+	});
+
+	// Excerpt strings
+	$view->registerFunction('excerpt', function ($text, $length = 275) {
+		$text = strip_tags($text);
+		$excerpt = substr($text, 0, $length);
+		if ($excerpt !== $text) {
+			$lastDot = strrpos($excerpt, '. ');
+			if ($lastDot === false) {
+				$lastDot = strrpos($excerpt, ' ');
+			}
+			$excerpt = substr($excerpt, 0, $lastDot);
+		}
+		return $excerpt;
+	});
 
 	// Register folder begining with a '_' as Plates folder
 	// (Plates will resolve `this->fetch('myFolder::file')` as `_myFolder/file.html`)
@@ -151,4 +216,4 @@ $app->add('view', function (Container $this) {
 	}, $filter);
 
 	return $view;
-});
+};

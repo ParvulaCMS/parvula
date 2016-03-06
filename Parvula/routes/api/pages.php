@@ -15,6 +15,7 @@ $pages = $app['pages'];
  * @apiGroup Page
  *
  * @apiParam {string} [index] Optional You can pass `?index` to url to just have the slugs
+ * @apiParam {string} [all] Optional You can pass `?all` to url to list all pages (parents and children)
  *
  * @apiSuccess (200) {array} pages An array of pages
  *
@@ -25,12 +26,21 @@ $pages = $app['pages'];
  *       {"title": "about me", "slug": "about", "content": "..."}
  *     ]
  */
-$router->get('', function ($req, $res) use ($pages) {
-	if (isset($req->query->index)) {
-		// List of pages. Array<string> of slugs
-		return $res->send($pages->index());
+$this->get('', function ($req, $res) use ($pages) {
+	// List of pages. Array<string> of slugs
+	if (isset($req->getQueryParams()['index'])) {
+		return $this->api->json($res, $pages->index());
 	}
-	return $res->send($pages->all()->order(SORT_ASC, 'slug')->toArray());
+
+	$allPages = $pages->all()->order(SORT_ASC, 'slug');
+
+	// List all pages (with or without a parent)
+	if (isset($req->getQueryParams()['all'])) {
+		return $this->api->json($res, $allPages->toArray());
+	}
+
+	// List root pages, pages without a parent
+	return $this->api->json($res, $allPages->withoutParent()->toArray());
 });
 
 /**
@@ -59,19 +69,19 @@ $router->get('', function ($req, $res) use ($pages) {
  *       "message": "This page does not exists"
  *     }
  */
-$router->get('/{slug:.+}', function ($req, $res) use ($app, $pages) {
-	if (isset($req->query->raw)) {
+$this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
+	if (isset($req->getQueryParams()['raw'])) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
 
-	if (false === $result = $pages->read($req->params->slug)) {
-		return $res->status(404)->send([
+	if (false === $result = $pages->read($args['slug'])) {
+		return $this->api->json($res, [
 			'error' => 'PageDoesNotExists',
 			'message' => 'This page does not exists'
-		]);
+		], 404);
 	}
 
-	return $res->send($result);
+	return $this->api->json($res, $result);
 });
 
 if ($isAdmin()) {
@@ -110,46 +120,47 @@ if ($isAdmin()) {
 	 *     }
 	 */
 	// TODO 'Location' header with link to /pages/{id} containing new ID.
-	$router->post('', function ($req, $res) use ($pages) {
+	$this->post('', function ($req, $res) use ($pages) {
+		$parsedBody = $req->getParsedBody();
 
-		if (!isset($req->body->slug, $req->body->title)) {
-			return $res->status(400)->send([
+		if (!isset($parsedBody['slug'], $parsedBody['title'])) {
+			return $this->api->json($res, [
 				'error' => 'BadField',
 				'message' => 'This page need at least a slug and a title'
-			]);
+			], 400);
 		}
 
-		if ($pages->read($req->body->slug)) {
-			return $res->status(409)->send([
+		if ($pages->read($parsedBody['slug'])) {
+			return $this->api->json($res, [
 				'error' => 'PageAlreadyExists',
 				'message' => 'This page already exists'
-			]);
+			], 409);
 		}
 
-		$pageArr = (array) $req->body;
+		$pageArr = (array) $parsedBody;
 
 		try {
 			$page = Page::pageFactory($pageArr);
 
 			$result = $pages->create($page);
 		} catch (Exception $e) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'PageException',
 				'message' => $e->getMessage()
-			]);
+			], 500);
 		}
 
 		if (!$result) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'PageCannotBeCreated'
-			]);
+			], 500);
 		}
 
-		return $res->sendStatus(201);
+		return $res->withStatus(201);
 	});
 
-	$router->map('PUT|DELETE', '', function ($req, $res) {
-		return $res->sendStatus(405); // Method Not Allowed
+	$this->map(['PUT', 'DELETE'], '', function ($req, $res) {
+		return $res->withStatus(405); // Method Not Allowed
 	});
 
 	/**
@@ -170,29 +181,30 @@ if ($isAdmin()) {
 	 * @apiError (400) BadField This page need at least a `slug` and a `title`
 	 * @apiError (404) PageException If page does not exists or exception
 	 */
-	$router->put('/{slug:.+}', function ($req, $res) use ($pages) {
+	$this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+		$parsedBody = $req->getParsedBody();
 
-		if (!isset($req->body->slug, $req->body->title)) {
-			return $res->status(400)->send([
+		if (!isset($parsedBody['slug'], $parsedBody['title'])) {
+			return $this->api->json($res, [
 				'error' => 'BadField',
 				'message' => 'This page need at least a `slug` and a `title`'
-			]);
+			], 400);
 		}
 
-		$pageArr = (array) $req->body;
+		$pageArr = (array) $parsedBody;
 
 		try {
 			$page = Page::pageFactory($pageArr);
 
-			$pages->update($req->params->slug, $page);
+			$pages->update($args['slug'], $page);
 		} catch (Exception $e) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'PageException',
 				'message' => $e->getMessage()
-			]);
+			], 500);
 		}
 
-		$res->sendStatus(204);
+		$res->withStatus(204);
 	});
 
 	/**
@@ -209,19 +221,19 @@ if ($isAdmin()) {
 	 * @apiSuccess (204) PagePatched
 	 * @apiError (404) PageException If exception
 	 */
-	$router->patch('/{slug:.+}', function ($req, $res) use ($pages) {
-		$pageArr = (array) $req->body;
+	$this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+		$pageArr = (array) $req->getParsedBody();
 
 		try {
-			$pages->patch($req->params->slug, $pageArr);
+			$pages->patch($args['slug'], $pageArr);
 		} catch (Exception $e) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'PageException',
 				'message' => $e->getMessage()
-			]);
+			], 500);
 		}
 
-		return $res->sendStatus(204);
+		return $res->withStatus(204);
 	});
 
 	/*
@@ -232,23 +244,23 @@ if ($isAdmin()) {
 	 * @apiSuccess (204) PagePatched
 	 * @apiError (404) PageException If not ok or exception
 	 */
-	$router->delete('/{slug:.+}', function ($req, $res) use ($pages) {
+	$this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 		try {
-			$result = $pages->delete($req->params->slug);
+			$result = $pages->delete($args['slug']);
 		} catch (Exception $e) {
-			return $res->status(404)->send([
+			return $this->api->json($res, [
 				'error' => 'PageException',
 				'message' => $e->getMessage()
-			]);
+			], 404);
 		}
 
 		if (!$result) {
-			return $res->status(500)->send([
+			return $this->api->json($res, [
 				'error' => 'PageCannotBeDeleted'
-			]);
+			], 500);
 		}
 
-		return $res->sendStatus(204);
+		return $res->withStatus(204);
 	});
 
 // } else {
