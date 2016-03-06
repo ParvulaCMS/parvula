@@ -9,3 +9,5 @@ plugins/
 *.zip
 *.phar
 composer.lock
+node_modules
+__*
