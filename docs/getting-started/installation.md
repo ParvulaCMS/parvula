@@ -9,9 +9,12 @@ section: getting-started
 
 Parvula requires you to have:
 
- - PHP 5.4+
- - Apache
+ - PHP 5.5+
+ - Apache (module `mod_rewrite` is recommended)
+ - mbstring (multibyte string support)
  - [Composer](http://getcomposer.org/)
+
+*Note*: Apache is the only web server officially supported but you can read [Slim documentation](http://www.slimframework.com/docs/start/web-servers.html) for more options.
 
 # Installing Parvula
 
