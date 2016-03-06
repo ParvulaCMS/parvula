@@ -135,6 +135,24 @@ And can be accessed from the theme with
 
 ## Misc
 
+### Children
+
+You can access page children.
+
+```php
+// Will return an array of pages
+$page->getChildren();
+```
+
+### Parent
+
+You can access page parent.
+
+```php
+// Will return a parent Page
+$page->getParent();
+```
+
 ### Date
 
 Each page has a date. The default value is the page creation in timestamp.
@@ -148,6 +166,13 @@ To print the date, simply use `DateTime` like that:
 ```
 
 See the PHP doc know [the predefined formats](https://secure.php.net/manual/en/class.datetime.php)
+
+### Breadcrumb
+
+```php
+// Will return an array of pages
+$page->getBreadcrumb();
+```
 
 ---
 
