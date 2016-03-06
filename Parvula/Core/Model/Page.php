@@ -89,7 +89,9 @@ class Page {
 		}
 
 		foreach ($meta as $key => $value) {
-			$this->{$key} = $value;
+			if (!is_null($value)) {
+				$this->{$key} = $value;
+			}
 		}
 
 		$this->content = $content;
