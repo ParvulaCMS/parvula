@@ -275,6 +275,21 @@ class Page {
 	}
 
 	/**
+	 * Transform Page to array
+	 *
+	 * @return array Array of Page's fields
+	 */
+	public function toArray() {
+		$arr = [];
+		foreach ($this as $key => $value) {
+			if ($key[0] !== '_') {
+				$arr[$key] = $value;
+			}
+		}
+		return $arr;
+	}
+
+	/**
 	 * Override `tostring` when print this object
 	 *
 	 * @return string
