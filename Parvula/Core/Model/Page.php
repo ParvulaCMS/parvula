@@ -49,7 +49,7 @@ class Page {
 	/**
 	 * @var array Array of Closure
 	 */
-	protected $_lazyFunctions;
+	// protected $_lazyFunctions;
 
 	/**
 	 * Page factory, create a new page from an array
@@ -89,7 +89,8 @@ class Page {
 		}
 
 		foreach ($meta as $key => $value) {
-			if (!is_null($value)) {
+			// object with private fields casted to array will have keys prepended with \0
+			if (!is_null($value) && $key[0] == "\0") {
 				$this->{$key} = $value;
 			}
 		}
