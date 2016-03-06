@@ -34,6 +34,9 @@ layout: default
     </div>
 
     <article class="col-md-9 docs-content">
+		{% if page.since %}
+			<span class="label label-pill label-info pull-xs-right">since {{ page.since }}</span>
+		{% endif %}
         <header class="docs-header">
             <h1 class="docs-title">{{ page.title }}</h1>
         </header>
