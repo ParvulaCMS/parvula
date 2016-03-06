@@ -238,7 +238,7 @@ class PagesFlatFiles extends Pages
 		}
 
 		$page = $this->read($pageUID, false);
-		$pagePatched = patchHelper((array) $page, $infos);
+		$pagePatched = patchHelper($page->toArray(), $infos);
 
 		$infos = Page::pageFactory($pagePatched);
 
