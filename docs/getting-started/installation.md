@@ -22,6 +22,7 @@ Parvula requires you to have:
 
 You can simply run the following command. It will download the last version of Parvula and install its dependencies.
 
+{:.code-primary}
 ```bash
 composer create-project bafs/parvula cms
 ```

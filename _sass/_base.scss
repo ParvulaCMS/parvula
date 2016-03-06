@@ -206,6 +206,10 @@ figure > img {
     display: block;
 }
 
+.code-primary pre {
+	border: 2px solid rgba(5,120,255,.8);
+}
+
 /**
  * Clearfix
  */
