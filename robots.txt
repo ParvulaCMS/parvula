@@ -1,0 +1,11 @@
+User-agent: *
+# Assets
+
+# Directories
+Disallow: /plugins/
+Disallow: /data/
+Disallow: /Parvula/
+Disallow: /vendor/
+Disallow: /components/
+# Paths URI
+Disallow: /admin/
