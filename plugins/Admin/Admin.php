@@ -10,8 +10,9 @@ class Admin extends Plugin
 	function onRouter(&$router) {
 		$configAdmin = new Config(require 'config.php');
 
-		$router->map(['GET', 'POST'], $configAdmin->get('adminRoute'), function () use ($configAdmin) {
-			require_once 'main.php';
+		$that = $this;
+		$router->map(['GET', 'POST'], $configAdmin->get('adminRoute'), function () use ($that, $configAdmin) {
+			return require_once 'main.php';
 		});
 	}
 }
