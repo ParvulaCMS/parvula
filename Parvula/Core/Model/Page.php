@@ -3,6 +3,7 @@
 namespace Parvula\Core\Model;
 
 use DateTime;
+use Parvula\Core\Model\Mapper\Pages;
 use Parvula\Core\Exception\PageException;
 
 /**
@@ -201,7 +202,7 @@ class Page {
 	 *
 	 * @param array $children Array of Page
 	 */
-	public function setChildren(array $children) {
+	public function setChildren(Pages $children) {
 		$this->children = $children;
 	}
 
@@ -211,7 +212,20 @@ class Page {
 	 * @return array Array of Page
 	 */
 	public function getChildren() {
-		return $this->children;
+		if ($this->children) {
+			return $this->children->toArray();
+		}
+	}
+
+	/**
+	 * Get page children
+	 *
+	 * @return Pages Pages mapper
+	 */
+	public function getPagesChildren() {
+		if ($this->children) {
+			return $this->children;
+		}
 	}
 
 	/**

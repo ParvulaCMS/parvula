@@ -361,7 +361,9 @@ class PagesFlatFiles extends Pages
 
 		foreach ($_pages as $page) {
 			if (isset($_pagesChildren[$page->slug])) {
-				$page->setChildren($_pagesChildren[$page->slug]);
+				$pagesChildren = clone $this;
+				$pagesChildren->pages = $_pagesChildren[$page->slug];
+				$page->setChildren($pagesChildren);
 			}
 		}
 
