@@ -55,7 +55,21 @@ abstract class Pages implements CRUDInterface
 	 * @param string ($path) Pages in a specific sub path
 	 * @return Pages
 	 */
-	public abstract function all($path = null);
+	public function all($path = '') {
+		$that = clone $this;
+		$that->pages = [];
+
+		$pagesIndex = $this->index(true, $path);
+
+		foreach ($pagesIndex as $pageUID) {
+			if (!isset($that->pages[$pageUID])) {
+				$page = $this->read($pageUID);
+				$that->pages[$page->slug] = $page;
+			}
+		}
+
+		return $that;
+	}
 
 	/**
 	 * Order pages

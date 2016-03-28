@@ -301,31 +301,6 @@ class PagesFlatFiles extends Pages
 	}
 
 	/**
-	 * Fetch all pages
-	 * This method will read each pages
-	 * If you want an array of Page use `toArray()` method
-	 * Exemple: `$pages->all()->toArray();`
-	 *
-	 * @param string ($path) Pages in a specific sub path
-	 * @return Pages
-	 */
-	public function all($path = '') {
-		$that = clone $this;
-		$that->pages = [];
-
-		$pagesIndex = $this->index(true, $path);
-
-		foreach ($pagesIndex as $pageUID) {
-			if (!isset($that->pages[$pageUID])) {
-				$page = $this->read($pageUID);
-				$that->pages[$page->slug] = $page;
-			}
-		}
-
-		return $that;
-	}
-
-	/**
 	 * Fetch pages
 	 *
 	 * @return array Array of all Page
