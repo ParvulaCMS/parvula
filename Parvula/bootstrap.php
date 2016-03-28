@@ -1,8 +1,4 @@
 <?php
-// ----------------------------- //
-// Let the magic begin
-// ----------------------------- //
-
 use Parvula\Core\Parvula;
 
 if (!defined('_ROOT_')) exit;
@@ -28,9 +24,6 @@ $config->set('__time__', $time);
 // Set timezone
 date_default_timezone_set($config->get('timezone', 'UTC'));
 
-$router = $app['router'];
-Parvula::setRequest($router->getContainer()['request']);
-
 $debug = (bool) $config->get('debug', false);
 $logErrors = (bool) $config->get('logErrors', false);
 
@@ -51,6 +44,18 @@ if ($debug) {
 
 // Load class aliases
 loadAliases($config->get('aliases'));
+
+// Command line script loader
+if (php_sapi_name() === 'cli' && count($argv) > 1) {
+	$phpFile = _BIN_ . trim($argv[1], " /\\.\0") . '.php';
+	if (is_readable($phpFile)) {
+		array_shift($argv);
+		require $phpFile;
+	}
+}
+
+$router = $app['router'];
+Parvula::setRequest($router->getContainer()['request']);
 
 // Load plugins
 $plugins = $app['plugins'];
