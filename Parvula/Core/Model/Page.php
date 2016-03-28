@@ -3,13 +3,14 @@
 namespace Parvula\Core\Model;
 
 use DateTime;
+use Parvula\Core\Model\Mapper\Pages;
 use Parvula\Core\Exception\PageException;
 
 /**
  * This class represents a Page
  *
  * @package Parvula
- * @version 0.6.0
+ * @version 0.7.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -101,12 +102,20 @@ class Page {
 	}
 
 	/**
+	 * @deprecated deprecated since version 0.7.0
+	 * @see equal
+	 */
+	public function is(Page $page2) {
+		return $this->slug === $page2->slug;
+	}
+
+	/**
 	 * Compare this page with an other (compare the slug)
 	 *
 	 * @param Page $page2
 	 * @return boolean True if both pages are the same
 	 */
-	public function is(Page $page2) {
+	public function equals(Page $page2) {
 		return $this->slug === $page2->slug;
 	}
 
@@ -201,7 +210,7 @@ class Page {
 	 *
 	 * @param array $children Array of Page
 	 */
-	public function setChildren(array $children) {
+	public function setChildren(Pages $children) {
 		$this->children = $children;
 	}
 
@@ -211,7 +220,20 @@ class Page {
 	 * @return array Array of Page
 	 */
 	public function getChildren() {
-		return $this->children;
+		if ($this->children) {
+			return $this->children->toArray();
+		}
+	}
+
+	/**
+	 * Get page children
+	 *
+	 * @return Pages Pages mapper
+	 */
+	public function getPagesChildren() {
+		if ($this->children) {
+			return $this->children;
+		}
 	}
 
 	/**

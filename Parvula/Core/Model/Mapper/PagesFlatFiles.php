@@ -29,6 +29,8 @@ class PagesFlatFiles extends Pages
 	 */
 	private $folderDefaultFile = '/index';
 
+	private $arePagesFetched = false;
+
 	/**
 	 * Constructor
 	 *
@@ -41,7 +43,7 @@ class PagesFlatFiles extends Pages
 
 		$this->folder = $folder;
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
-		$this->fetchPages();
+		$this->arePagesFetched = false;
 	}
 
 	/**
@@ -53,6 +55,7 @@ class PagesFlatFiles extends Pages
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function read($pageUID, $parse = true, $eval = false) {
+		$this->fetchPages();
 		$pageUID = trim($pageUID, '/');
 
 		// If page was already loaded, return page
@@ -328,6 +331,11 @@ class PagesFlatFiles extends Pages
 	 * @return array Array of all Page
 	 */
 	private function fetchPages() {
+		if ($this->arePagesFetched) {
+			return;
+		}
+
+		$this->arePagesFetched = true;
 		$_pages = [];
 		$_pagesChildren = [];
 
@@ -353,7 +361,9 @@ class PagesFlatFiles extends Pages
 
 		foreach ($_pages as $page) {
 			if (isset($_pagesChildren[$page->slug])) {
-				$page->setChildren($_pagesChildren[$page->slug]);
+				$pagesChildren = clone $this;
+				$pagesChildren->pages = $_pagesChildren[$page->slug];
+				$page->setChildren($pagesChildren);
 			}
 		}
 

@@ -12,8 +12,8 @@ $templates = new League\Plates\Engine(__DIR__ . '/view', 'html');
 
 $templates->addData([
 	'baseUrl' => Parvula::getRelativeURIToRoot(),
-	'pluginUrl' => Parvula::getRelativeURIToRoot() . $this->getPluginPath(),
-	'templateUrl' => Parvula::getRelativeURIToRoot() . _THEMES_ . $this->app['config']->get('theme')
+	'pluginUrl' => Parvula::getRelativeURIToRoot() . $that->getPluginPath(),
+	'templateUrl' => Parvula::getRelativeURIToRoot() . _THEMES_ . $that->app['config']->get('theme')
 ]);
 
 // Check password
@@ -23,7 +23,7 @@ if (isset($_POST, $_POST['password'])) {
 	}
 	else {
 		// Create a session
-		$this->app['auth']->log('admin');
+		$that->app['auth']->log('admin');
 
 		// Post/Redirect/Get pattern
 		header(
@@ -32,8 +32,8 @@ if (isset($_POST, $_POST['password'])) {
 	}
 }
 
-if ($this->app['usersession'] && $this->app['usersession']->hasRole('admin')) {
-	$pages = $this->app['pages'];
+if ($that->app['usersession'] && $that->app['usersession']->hasRole('admin')) {
+	$pages = $that->app['pages'];
 	$pagesList = $pages->index(true);
 	$templates->addData([
 		'pagesList' => $pagesList,
@@ -43,4 +43,4 @@ if ($this->app['usersession'] && $this->app['usersession']->hasRole('admin')) {
 	$templates->addData(['_page' => 'login']);
 }
 
-echo $templates->render('base');
+return $templates->render('base');

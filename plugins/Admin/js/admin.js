@@ -55,8 +55,8 @@ api.pages = {
 			type: 'DELETE',
 			url: API_URL + '/pages/' + slug
 		})
-		.done(function (res) {
-			callback(res.message, false);
+		.done(function () {
+			callback('', false);
 		})
 		.fail(function (res) {
 			callback(res.responseJSON.message, true);

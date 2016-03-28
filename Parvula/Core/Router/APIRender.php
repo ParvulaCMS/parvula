@@ -29,6 +29,6 @@ class APIRender {
 		return $res
 			->withStatus($status)
 			->withHeader('Content-Type', 'application/json')
-			->write(json_encode($data));
+			->write(json_encode($data, JSON_PRETTY_PRINT));
 	}
 };

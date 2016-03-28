@@ -5,14 +5,21 @@
 
     RewriteEngine On
 
-    # Redirect if more than 2 slashes
+    ## Redirect if more than 2 slashes
     RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
     RewriteRule . %1/%2 [R=301,L]
 
-    # Block access to specific files
-    RewriteRule data/(.*)\.(txt|md|html|yaml|yml|xml|json|php|sh|bat|log)$ . [L]
+    ## Block access to specific files
+    RewriteRule ^(data|Parvula|themes)/(.*)\.(txt|md|html|yaml|yml|xml|json|php|sh|bat|log)$ error [F]
+    RewriteRule ^plugins/(.*)\.(php|sh|bat|log)$ error [F]
+    # Block dot files
+    RewriteRule (^|/)\. - [F]
 
-    # Handle front controller
+    <FilesMatch (?i:(composer\.(json|lock|phar)|(readme|license|copyright)\.(md|txt)))>
+        Deny from all
+    </FilesMatch>
+
+    ## Handle front controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
