@@ -19,7 +19,6 @@ Thumbs.db
 *~
 *.sublime-project
 .idea
-.editorconfig
 .vscode
 
 # Others
@@ -38,4 +37,3 @@ _site
 
 # Npm
 node_modules/
-
