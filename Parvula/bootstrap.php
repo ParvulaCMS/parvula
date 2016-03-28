@@ -50,7 +50,9 @@ if (php_sapi_name() === 'cli' && count($argv) > 1) {
 	$phpFile = _BIN_ . trim($argv[1], " /\\.\0") . '.php';
 	if (is_readable($phpFile)) {
 		array_shift($argv);
-		require $phpFile;
+		if (!require $phpFile) {
+			return;
+		}
 	}
 }
 
