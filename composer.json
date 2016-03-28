@@ -18,7 +18,7 @@
 	},
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=5.5 || ^7.0",
+		"php": ">=5.5.9 || ^7.0",
 		"league/plates": "3.*",
 		"erusev/parsedown-extra": "^0.7.0",
 		"symfony/yaml": "^3.0",
