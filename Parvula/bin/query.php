@@ -1,6 +1,11 @@
 <?php
 // Basic command line queries
 
+if (count($argv) === 1) {
+	echo 'Usage: query [<METHOD>] <URI>' . PHP_EOL;
+	return false;
+}
+
 if (count($argv) === 2) {
 	$method = 'GET';
 	$uri = $argv[1];
