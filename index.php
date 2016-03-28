@@ -19,8 +19,9 @@ define('_LOGS_',        _DATA_ . 'logs/');
 define('_UPLOADS_',     _STATIC_ . 'files/');
 define('_COMPONENTS_',  _STATIC_ . 'components/');
 
+define('_BIN_',         _APP_ . 'bin/');
 define('_THEMES_',      _ROOT_ . 'themes/');
 define('_PLUGINS_',     _ROOT_ . 'plugins/');
-define('_VERSION_',     '0.6.1');
+define('_VERSION_',     '0.7.0-dev');
 
 require_once _APP_ . 'bootstrap.php';
