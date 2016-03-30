@@ -126,26 +126,26 @@ $this->map(['GET', 'POST'], '/islogged', function ($req, $res) use ($isAdmin) {
 });
 
 $this->group('/pages', function () use ($app, $isAdmin) {
-	require 'api/pages.php';
+	require 'pages.php';
 });
 
 if ($isAdmin()) {
 
 
 	$this->group('/themes', function () use ($app) {
-		require 'api/themes.php';
+		require 'themes.php';
 	});
 
 	$this->group('/users', function () use ($app) {
-		require 'api/users.php';
+		require 'users.php';
 	});
 
 	$this->group('/config', function () use ($app) {
-		require 'api/config.php';
+		require 'config.php';
 	});
 
 	$this->group('/files', function () use ($app) {
-		require 'api/files.php';
+		require 'files.php';
 	});
 
 }
