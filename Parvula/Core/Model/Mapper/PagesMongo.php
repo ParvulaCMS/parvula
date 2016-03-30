@@ -36,11 +36,10 @@ class PagesMongo extends Pages
 	 * Get a page object in html string
 	 *
 	 * @param string $pageUID Page unique ID
-	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function read($pageUID, $parse = true, $eval = false) {
+	public function read($pageUID) {
     $page = $this->collection->findOne(['meta.slug' => $pageUID]);
 
     if (empty($page)) {
@@ -103,16 +102,14 @@ class PagesMongo extends Pages
 	 * @return bool Return true if page updated
 	 */
 	public function update($pageUID, $page) {
-    echo ('DEBUG');
-  
+
     if (!$this->exists($pageUID)) {
 			throw new PageException('Page `' . $pageUID . '` does not exists');
     }
-  
+
 		if (!isset($page->title, $page->slug)) {
 			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
-
 
     try {
       $res = $this->collection->replaceOne(
@@ -127,8 +124,8 @@ class PagesMongo extends Pages
       if ($res->getModifiedCount()) {
         return true;
       }
-
       return false;
+
     } catch (Exception $e) {
       return false;
     }
@@ -147,7 +144,7 @@ class PagesMongo extends Pages
 		}
 
     $prototype = [];
-    
+
     foreach ($infos as $key => $value) {
       if (in_array($key, ['content', 'sections'])) {
         $prototype[$key] = $value;
@@ -162,11 +159,11 @@ class PagesMongo extends Pages
         ['$set' => $prototype]
       );
 
-      #if ($res->getModifiedCount()) {
-      return true;
-      #}
-
+      if ($res->getModifiedCount()) {
+        return true;
+      }
       return false;
+
     } catch (Exception $e) {
       return false;
     }
@@ -190,12 +187,14 @@ class PagesMongo extends Pages
 	 * Index pages and get an array of pages slug
 	 *
 	 * @param boolean ($listHidden) List hidden files & folders
-	 * @param string ($pagesPath) Pages path
 	 * @throws IOException If the pages directory does not exists
 	 * @return array Array of pages paths
 	 */
-	public function index($listHidden = false, $pagesPath = '') {
-    $res = $this->collection->distinct('meta.slug');
-    return $res;
+	public function index($listHidden = false) {
+    $exceptions = [true];
+    if ($listHidden) {
+      $exceptions = [];
+    }
+    return $this->collection->distinct('meta.slug', ['meta.hidden' => ['$nin' => $exceptions]]);
 	}
 }
