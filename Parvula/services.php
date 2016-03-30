@@ -11,7 +11,7 @@ use Monolog\Handler\StreamHandler;
 $app['router'] = function ($cont) {
 	$slimConf = [
 		'settings' => [
-			'displayErrorDetails' => false
+			'displayErrorDetails' => true
 		],
 		'api' => new Parvula\Core\Router\APIRender(),
 		'logger' => $cont['loggerHandler']
@@ -141,21 +141,43 @@ $app['pageRenderer'] = function (Container $this) {
 	];
 
 	if ($headParser === null) {
-		return new $pageRenderer(new $contentParser, $options);
+	  return new $pageRenderer(new $contentParser, $options);
 	}
+
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
 };
 
 $app['pageRendererRAW'] = function (Container $this) {
 	$headParser = $this['config']->get('headParser');
 	$pageRenderer = $this['config']->get('pageRenderer');
+
+	if ($headParser === null) {
+
+	  return new $pageRenderer(new Parvula\Core\ContentParser\None);
+	}
+
 	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\None);
+};
+
+$app['mongodb'] = function (Container $this) {
+  $fileExtension =  '.' . $this['config']->get('fileExtension');
+
+  $fp = $this['fileParser'];
+
+  $config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'db.yaml'));
+  $client = new MongoDB\Client;
+  $db = $client->{$config->get('mongo')['name']};
+
+  return $db;
 };
 
 $app['pages'] = function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
-	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
+
+  return new Parvula\Core\Model\Mapper\PagesMongo($this['pageRenderer'], $this['mongodb']->pages);
+
+	# return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
 };
 
 $app['themes'] = function (Container $this) {
