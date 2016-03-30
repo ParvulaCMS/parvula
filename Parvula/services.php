@@ -139,6 +139,10 @@ $app['pageRenderer'] = function (Container $this) {
 		'sectionMatcher' => '/-{3}\s+(\w[\w- ]*?)\s+-{3}/',
 		'delimiterRender' => '---'
 	];
+
+	if ($headParser === null) {
+		return new $pageRenderer(new $contentParser, $options);
+	}
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
 };
 
