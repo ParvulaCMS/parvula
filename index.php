@@ -3,8 +3,12 @@
 namespace Parvula;
 
 // Define some useful constants
-define('_ROOT_',        '');
-define('_USER_ROOT_',   '');
+if (!defined('_ROOT_')) {
+	define('_ROOT_', '');
+}
+if (!defined('_USER_ROOT_')) {
+	define('_USER_ROOT_', '');
+}
 define('_APP_',         _ROOT_ . 'Parvula/');
 define('_DATA_',        _USER_ROOT_ . 'data/');
 define('_STATIC_',      _USER_ROOT_ . 'static/');
