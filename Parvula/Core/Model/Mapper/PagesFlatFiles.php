@@ -12,7 +12,7 @@ use Parvula\Core\PageRenderer\PageRendererInterface;
  * Flat file pages
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.7.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
@@ -54,7 +54,7 @@ class PagesFlatFiles extends Pages
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function read($pageUID, $parse = true, $eval = false) {
+	public function read($pageUID, $eval = false) {
 		$this->fetchPages();
 		$pageUID = trim($pageUID, '/');
 
@@ -77,7 +77,7 @@ class PagesFlatFiles extends Pages
 
 		// Anonymous function to use renderer engine
 		$renderer = $this->renderer;
-		$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer, $parse) {
+		$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer) {
 			// Create the title from the filename
 			if (strpos($pageUID, '/') !== false) {
 				$pageUIDToken = explode('/', $pageUID);
@@ -97,7 +97,7 @@ class PagesFlatFiles extends Pages
 			$pageUID[0] === '_' ? $opts += ['hidden' => true] : null;
 			$pageUID[0] === '.' ? $opts += ['secret' => true] : null;
 
-			return $renderer->parse($data, $opts, $parse);
+			return $renderer->parse($data, $opts);
 		};
 
 		$page = $fs->read($pageFullPath, $fn, $eval);
