@@ -174,10 +174,8 @@ $app['mongodb'] = function (Container $this) {
 $app['pages'] = function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
-
-  return new Parvula\Core\Model\Mapper\PagesMongo($this['pageRenderer'], $this['mongodb']->pages);
-
-	# return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
+	// return new Parvula\Core\Model\Mapper\PagesMongo($this['pageRenderer'], $this['mongodb']->pages);
+	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
 };
 
 $app['themes'] = function (Container $this) {
