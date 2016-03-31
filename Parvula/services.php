@@ -151,8 +151,9 @@ $app['usersession'] = function (Container $this) {
 
 //-- ModelMapper --
 
-$app['users'] = function (Container $this) {
-	return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
+$app['users'] = function (Container $c) {
+	return new Parvula\Core\Model\Mapper\UsersMongo($c['mongodb']->users);
+	#return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
 };
 
 $app['pageRenderer'] = function (Container $this) {
