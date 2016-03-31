@@ -137,7 +137,15 @@ body {
     .product-screen {
         width: 90%;
         max-width: 1100px;
+        padding-bottom: 20px;
     }
+}
+
+.banner {
+  .row {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
 }
 
 .btn-secondary-outline {
