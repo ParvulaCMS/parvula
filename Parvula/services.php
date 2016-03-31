@@ -141,7 +141,7 @@ $app['pageRenderer'] = function (Container $this) {
 	];
 
 	if ($headParser === null) {
-	  return new $pageRenderer(new $contentParser, $options);
+		return new $pageRenderer(new $contentParser, $options);
 	}
 
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
@@ -152,16 +152,13 @@ $app['pageRendererRAW'] = function (Container $this) {
 	$pageRenderer = $this['config']->get('pageRenderer');
 
 	if ($headParser === null) {
-
-	  return new $pageRenderer(new Parvula\Core\ContentParser\None);
+		return new $pageRenderer(new Parvula\Core\ContentParser\None);
 	}
 
 	return new $pageRenderer(new $headParser, new Parvula\Core\ContentParser\None);
 };
 
 $app['mongodb'] = function (Container $this) {
-	$fileExtension =  '.' . $this['config']->get('fileExtension');
-
 	$fp = $this['fileParser'];
 
 	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'db.yaml'));
