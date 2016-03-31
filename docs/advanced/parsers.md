@@ -1,7 +1,7 @@
 ---
 layout: doc
 title: Change your parser
-section: customization
+section: advanced
 ---
 
 # Choose an other parser

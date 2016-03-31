@@ -18,14 +18,13 @@ sections:
     getting-started: Getting Started
     content: Content
     customization: Customization
-
+    advanced: Advanced
 
 
 # Build settings
 markdown: kramdown
 
 # Rouge:
-
 sass:
   compressed: true
 
