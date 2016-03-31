@@ -1,14 +1,15 @@
 <p align="center">
-  <a href="https://bafs.github.io/parvula" target="_blank"><img src="http://i.imgur.com/igAQPza.png" alt="Parvula"></a>
+  <a href="https://bafs.github.io/parvula" target="_blank"><img width="650" src="http://i.imgur.com/igAQPza.png" alt="Parvula"></a>
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/PHP-5.5+-brightgreen.svg?style=flat-square" alt="PHP 5.5+">
   <img src="https://img.shields.io/packagist/v/bafs/parvula.svg?style=flat-square" alt="version">
   <img src="https://img.shields.io/packagist/l/BafS/parvula.svg?style=flat-square" alt="license">
-  <img src="https://img.shields.io/maintenance/yes/2016.svg?style=flat-square" alt="maintenance">
+  <img src="https://www.versioneye.com/user/projects/56fcfa82905db1003b29956e/badge.svg?style=flat" alt="dependecies">
 </p>
 
-> **An extremely simple & flexible CMS generated from flat files**
+> **An extremely simple & flexible CMS** generated from flat files with a complete API
 
 ![screenshot](http://i.imgur.com/gsbzwgl.png)
 > Parvula with the default galaxy theme
