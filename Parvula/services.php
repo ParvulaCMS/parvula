@@ -160,22 +160,35 @@ $app['pageRendererRAW'] = function (Container $this) {
 };
 
 $app['mongodb'] = function (Container $this) {
-  $fileExtension =  '.' . $this['config']->get('fileExtension');
-
-  $fp = $this['fileParser'];
-
-  $config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'db.yaml'));
-  $client = new MongoDB\Client;
-  $db = $client->{$config->get('mongo')['name']};
-
-  return $db;
-};
-
-$app['pages'] = function (Container $this) {
 	$fileExtension =  '.' . $this['config']->get('fileExtension');
 
-	// return new Parvula\Core\Model\Mapper\PagesMongo($this['pageRenderer'], $this['mongodb']->pages);
-	return new Parvula\Core\Model\Mapper\PagesFlatFiles($this['pageRenderer'], _PAGES_, $fileExtension);
+	$fp = $this['fileParser'];
+
+	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'db.yaml'));
+	$client = new MongoDB\Client;
+	$db = $client->{$config->get('mongo')['name']};
+
+	return $db;
+};
+
+$app['pages'] = function (Container $c) {
+	$mapper = $c['config']->get('mapper');
+
+	$mappers = [
+		'mongodb' => function() use ($c) {
+			return new Parvula\Core\Model\Mapper\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
+		},
+		'flatfiles' => function() use ($c) {
+			$fileExtension =  '.' . $c['config']->get('fileExtension');
+			return new Parvula\Core\Model\Mapper\PagesFlatFiles($c['pageRenderer'], _PAGES_, $fileExtension);
+		}
+	];
+
+	if (!isset($mappers[$mapper])) {
+		$mapper = 'flatfiles';
+	}
+
+	return $mappers[$mapper]();
 };
 
 $app['themes'] = function (Container $this) {

@@ -64,6 +64,9 @@ contentParser: \Parvula\Core\ContentParser\Markdown
 # Class to fetch/render pages (must implement PageRendererInterface)
 pageRenderer: Parvula\Core\PageRenderer\FlatFilesPageRenderer
 
+# Mapper [flatfiles, mongodb] (! dev)
+mapper: flatfiles
+
 # Prefix to all API paths (must not be empty)
 apiPrefix: /api/0
 
