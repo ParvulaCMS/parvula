@@ -76,5 +76,8 @@ apiPrefix: /api/0
 # For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
 forceLoginOnTLS: false
 
+# Secret token for the API
+secretToken: YourSuperSecretTokenForTheAPI
+
 # Name of the session, which is used in cookies (should contain just alphanumeric characters)
 sessionName: parvula_sess

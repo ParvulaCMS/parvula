@@ -8,16 +8,55 @@ use Parvula\Core\FilesSystem as Files;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-$app['router'] = function ($cont) {
+$app['config'] = function (Container $c) {
+	$fp = $c['fileParser'];
+
+	// Populate Config wrapper
+	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'system.yaml'));
+
+	// Load user config
+	// Append user config to Config wrapper (override if exists)
+	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
+	$config->append((array) $userConfig);
+
+	return $config;
+};
+
+$app['router'] = function (Container $c) {
 	$slimConf = [
 		'settings' => [
-			'displayErrorDetails' => true
+			'displayErrorDetails' => !$c['config']->get('debug', false)
 		],
 		'api' => new Parvula\Core\Router\APIRender(),
-		'logger' => $cont['loggerHandler']
+		'logger' => $c['loggerHandler']
 	];
 
 	$router = new Slim\App($slimConf);
+
+	$container = $router->getContainer();
+	$router->add(new \Slim\Middleware\JwtAuthentication([
+		"path" => "/api",
+		// true: If the middleware detects insecure usage over HTTP it will throw a RuntimeException
+		"secure" => !$c['config']->get('debug', false),
+		// "cookie" => "parvula_token",
+		"passthrough" => [
+			'/api/0/login',
+			'/api/0/public'
+		],
+		'rules' => [
+			// GET /api/0/pages
+			function($arr) {
+				$path = trim($arr->getUri()->getPath(), '/');
+				if ($arr->isGet() && preg_match('~^api/0/pages~', $path)) {
+					return false;
+				}
+			}
+		],
+		"secret" => $c['config']->get('secretToken'),
+		"callback" => function ($request, $response, $arguments) use ($container) {
+			$container["token"] = $arguments["decoded"];
+		}
+	]));
 
 	// Remove Slim handler, we want to use our own
 	unset($router->getContainer()['errorHandler']);
@@ -79,20 +118,6 @@ $app['fileParser'] = function () {
 	];
 
 	return new Parvula\Core\FileParser($parsers);
-};
-
-$app['config'] = function (Container $this) {
-	$fp = $this['fileParser'];
-
-	// Populate Config wrapper
-	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'system.yaml'));
-
-	// Load user config
-	// Append user config to Config wrapper (override if exists)
-	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
-	$config->append((array) $userConfig);
-
-	return $config;
 };
 
 $app['plugins'] = function (Container $this) {

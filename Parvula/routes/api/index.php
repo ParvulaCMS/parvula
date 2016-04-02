@@ -2,22 +2,35 @@
 
 namespace Parvula;
 
+use DateTime;
 use Exception;
+use Firebase\JWT\JWT;
 use Parvula\Core\Exception\IOException;
 
-// TODO Temporary version
-$isAdmin = function () use ($app) {
-	return $app['usersession'] && $app['usersession']->hasRole('admin');
-};
+function checkTokenScope(array $scope, $token) {
+	if (!count(array_intersect($scope, $token->scope))) {
+		throw new \Exception('Bad credentials for this path.', 403);
+	}
+
+	return true;
+}
+
+function checkAuth(array $scope) {
+	return function ($req, $res, $next) use ($scope) {
+		checkTokenScope($scope, $req->getAttribute('token'));
+		// checkTokenScope($scope, $this->token);
+		$res = $next($req, $res);
+		return $res;
+	};
+}
 
 /**
  * @api {post} /login Login
  * @apiName Login
- * @apiGroup Authentication
+ * @apiGroup Authorization
  * @apiDescription Create a new session if the credentials are OK
  *
- * @apiParam {String} username User unique username
- * @apiParam {String} password User password
+ * @apiParam {String} Authorization Basic <base 64 />
  *
  * @apiSuccess (200) User logged
  * @apiError (400) BadArguments
@@ -43,117 +56,88 @@ $isAdmin = function () use ($app) {
  *       "message": "user or password not ok"
  *     }
  */
-$this->post('/login', function ($req, $res) use ($app) {
+$this->post("/login", function ($req, $res, $args) use ($app) {
 	$users = $app['users'];
 
-	$parsedBody = $req->getParsedBody();
+	$server = $req->getServerParams();
 
-	if (!isset($parsedBody['username'], $parsedBody['password'])) {
+	if (!isset($server['PHP_AUTH_USER'], $server['PHP_AUTH_PW'])) {
 		return $this->api->json($res, [
 			'error' => 'BadArguments',
 			'message' => 'You need to give a username and a password'
 		], 400);
 	}
 
-	// Too late, data have been sent but force the redirection
-	// TODO Tests ! // && !$req->secureLayer
-	if ($app['config']->get('forceLoginOnTLS')) {
-		$uri = $req->getUri();
-		if ($uri->getScheme() !== 'https') {
-			// Try to redirect to https
-			header('Location: https://' . $uri->getHost() . $uri->getPath() . $uri->getQuery());
-			exit;
-		}
-	}
+	$username = $server['PHP_AUTH_USER'];
+	$password = $server['PHP_AUTH_PW'];
 
-	if (!($user = $users->read($parsedBody['username']))) {
+	if (!($user = $users->read($username))) {
 		return $this->api->json($res, [
 			'error' => 'BadCredentials',
 			'message' => 'User or password not ok'
 		], 403);
 	}
 
-	if (!$user->login($parsedBody['password'])) {
+	if (!$user->login($password)) {
 		return $this->api->json($res, [
 			'error' => 'BadCredentials',
 			'message' => 'User or password not ok'
 		], 403);
 	}
 
-	// Create a session
-	$app['auth']->log($user->username);
+	$now = new DateTime();
+	$future = new DateTime("now +2 hours");
+	$server = $req->getServerParams();
 
-	return $res->withStatus(204);
+	try {
+		$payload = [
+			"iat" => $now->getTimeStamp(),
+			"exp" => $future->getTimeStamp(),
+			"jti" => base64_encode(random_bytes(32)),
+			"sub" => $username,
+			"scope" => $user->getRoles()
+		];
+	} catch (Exception $e) {
+		die('Could not generate a random string. Is our OS secure?');
+	}
+
+	$secret = $app['config']->get('secretToken');
+	$token = JWT::encode($payload, $secret, 'HS256');
+	$data['status'] = 'ok';
+	$data['token'] = $token;
+	return $res->withStatus(201)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 });
 
-/**
- * @api {get} /logout Logout
- * @apiName Logout
- * @apiGroup Authentication
- * @apiDescription Delete the current session
- *
- * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "status": "success"
- *     }
- */
-$this->map(['GET', 'POST'], '/logout', function ($req, $res) use ($app) {
-	$rep = $app['session']->destroy();
-	return $this->api->json($res, $rep);
+$this->group('/pages', function () use ($app) {
+	require 'pages.public.php';
 });
 
-/**
- * @api {get} /islogged Is logged
- * @apiName Is logged
- * @apiGroup Authentication
- * @apiDescription Check if is the current session is logged
- *
- * @apiSuccessExample Success-Response:
- *     {
- *       "status": "success",
- *       "data": true
- *     }
- *
- * @apiSuccessExample Success-Response:
- *     {
- *       "status": "success",
- *       "data": false
- *     }
- */
-$this->map(['GET', 'POST'], '/islogged', function ($req, $res) use ($isAdmin) {
-	return $this->api->json($res, (bool) $isAdmin());
-});
-
-$this->group('/pages', function () use ($app, $isAdmin) {
+$this->group('/pages', function () use ($app) {
 	require 'pages.php';
-});
+})->add(checkAuth(['pages', 'all']));
 
-if ($isAdmin()) {
+$this->group('/themes', function () use ($app) {
+	require 'themes.php';
+})->add(checkAuth(['themes', 'all']));
 
+$this->group('/users', function () use ($app) {
+	require 'users.php';
+})->add(checkAuth(['users', 'all']));
 
-	$this->group('/themes', function () use ($app) {
-		require 'themes.php';
-	});
+$this->group('/config', function () use ($app) {
+	require 'config.php';
+})->add(checkAuth(['config', 'all']));
 
-	$this->group('/users', function () use ($app) {
-		require 'users.php';
-	});
-
-	$this->group('/config', function () use ($app) {
-		require 'config.php';
-	});
-
-	$this->group('/files', function () use ($app) {
-		require 'files.php';
-	});
-
-}
+$this->group('/files', function () use ($app) {
+	require 'files.php';
+})->add(checkAuth(['files', 'all']));
 
 // If nothing match in the api group and not loged
 $this->any('/{r:.*}', function ($req, $res) use ($app) {
 	return $this->api->json($res, [
 		'error' => 'RouteOrCredentialsError',
-		'message' => 'API route not found or bad credentials'
+		'message' => 'API route not found'
 	], 400);
 });

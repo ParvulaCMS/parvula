@@ -25,6 +25,9 @@
 		"pimple/pimple": "^3.0",
 		"slim/slim": "^3.3",
 		"ext-mbstring": "*"
+		"ext-mbstring": "*",
+		"tuupola/slim-jwt-auth": "^2.1",
+		"paragonie/random_compat": "^2.0"
 	},
 	"require-dev": {
 		"filp/whoops": "^2.1"

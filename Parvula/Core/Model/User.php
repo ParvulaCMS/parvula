@@ -48,6 +48,16 @@ class User {
 		return password_verify($password, $this->password);
 	}
 
+	// TODO
+	/**
+	 * Get user's roles
+	 * 
+	 * @return array Roles
+	 */
+	public function getRoles() {
+		return ['all'];
+	}
+
 	/**
 	 * Check if the user has the given role
 	 * [Always true for Parvula 0.5 @future]
