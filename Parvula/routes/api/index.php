@@ -86,16 +86,16 @@ $this->post("/login", function ($req, $res, $args) use ($app) {
 	}
 
 	$now = new DateTime();
-	$future = new DateTime("now +2 hours");
+	$future = new DateTime('now +2 hours');
 	$server = $req->getServerParams();
 
 	try {
 		$payload = [
-			"iat" => $now->getTimeStamp(),
-			"exp" => $future->getTimeStamp(),
-			"jti" => base64_encode(random_bytes(32)),
-			"sub" => $username,
-			"scope" => $user->getRoles()
+			'iat' => $now->getTimeStamp(), // issued at
+			'exp' => $future->getTimeStamp(), // expiration time
+			'jti' => JWT::urlsafeB64Encode(random_bytes(32)), // unique identifier
+			'sub' => $username, // subject
+			'scope' => $user->getRoles()
 		];
 	} catch (Exception $e) {
 		die('Could not generate a random string. Is our OS secure?');
@@ -108,6 +108,13 @@ $this->post("/login", function ($req, $res, $args) use ($app) {
 	return $res->withStatus(201)
 		->withHeader('Content-Type', 'application/json')
 		->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+});
+
+$this->get('/credentials', function ($req, $res) {
+	if (!isset($this->token)) {
+		return $res->withStatus(401)->withJson([]);
+	}
+	$res->withJson($this->token->scope);
 });
 
 $this->group('/pages', function () use ($app) {
