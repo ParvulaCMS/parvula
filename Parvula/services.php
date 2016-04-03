@@ -35,11 +35,11 @@ $app['router'] = function (Container $c) {
 
 	$container = $router->getContainer();
 	$router->add(new \Slim\Middleware\JwtAuthentication([
-		"path" => "/api",
+		'path' => '/api',
 		// true: If the middleware detects insecure usage over HTTP it will throw a RuntimeException
-		"secure" => !$c['config']->get('debug', false),
-		// "cookie" => "parvula_token",
-		"passthrough" => [
+		'secure' => !$c['config']->get('debug', false),
+		// 'cookie' => 'parvula_token',
+		'passthrough' => [
 			'/api/0/login',
 			'/api/0/public'
 		],
@@ -52,9 +52,9 @@ $app['router'] = function (Container $c) {
 				}
 			}
 		],
-		"secret" => $c['config']->get('secretToken'),
-		"callback" => function ($request, $response, $arguments) use ($container) {
-			$container["token"] = $arguments["decoded"];
+		'secret' => $c['config']->get('secretToken'),
+		'callback' => function ($request, $response, $arguments) use ($container) {
+			$container['token'] = $arguments['decoded'];
 		}
 	]));
 
