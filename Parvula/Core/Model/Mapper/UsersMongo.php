@@ -20,19 +20,20 @@ class UsersMongo
 	protected $data;
 
 	/**
-	 * @param FileParser $parser
-	 * @param string     $usersFile
+	 * @param Collection $collection
 	 */
 	public function __construct($collection) {
 		$this->collection = $collection;
 	}
 
-	private function exists($slug) {
-		if ($this->read($slug)) {
+	private function exists($username) {
+		if ($this->read($username)) {
 			return true;
 		}
 		return false;
 	}
+
+
 
 
 	/**
@@ -41,34 +42,38 @@ class UsersMongo
 	 * @return array List of ressources
 	 */
 	public function index() {
-		// Return users username
-		return $this->collection->distinct('uid');
+		return $this->collection->distinct('username');
 	}
 
 	/**
 	 * Read a user from ID
 	 *
-	 * @param  string $id ID (username)
+	 * @param  string $username
 	 * @throws Exception If the ressource does not exists
 	 * @return User|bool The user or false if user not found
 	 */
-	public function read($id) {
-		$user = $this->collection->findOne(['uid' => $id]);
-
-		if (empty($page)) {
+	public function read($username) {
+		if ($username === null) {
 			return false;
 		}
-			return new User();
+
+		$user = $this->collection->findOne(['username' => $username]);
+
+		if ($user === null) {
+			return false;
 		}
+
+		return new User(iterator_to_array($user));
+	}
 
 	/**
 	 * Update @next
 	 *
-	 * @param string $id ID
+	 * @param string $username
 	 * @param mixed $data Data
 	 * @return bool
 	 */
-	public function update($username, $user) {
+	public function update($username, $data) {
 		return false;
 	}
 
@@ -80,12 +85,16 @@ class UsersMongo
 	 * @return bool
 	 */
 	public function create($user) {
-		if (!isset($user['name'], $user['password'], $user['email'])) {
-			# throw ''; # TODO
+		if (get_class($user) !== 'Parvula\Core\Model\User') {
+
+			#throw ''; # TODO
+			return false;
 		}
 
-		#if ($this->collection->
-		echo('tgggg');
+		if (in_array($user->username, $this->collection->distinct('name')) ||
+			in_array($user->email, $this->collection->distinct('email'))) {
+			return false; # TODO
+		}
 
 		return $this->collection->insertOne($user)->getInsertedCount() > 0 ? true : false;
 	}
@@ -93,15 +102,15 @@ class UsersMongo
 	/**
 	 * Delete @next
 	 *
-	 * @param string $id ID
+	 * @param string $username name
 	 * @return bool
 	 */
-	public function delete($id) {
-		if ($id === null) {
+	public function delete($username) {
+		if ($username === null) {
 			return false;
 		}
 
-		if ($this->collection->findOneAndDelete(['' => $id]) === null) {
+		if ($this->collection->findOneAndDelete(['username' => $username]) === null) {
 			return false;
 		}
 

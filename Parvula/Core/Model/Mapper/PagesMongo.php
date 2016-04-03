@@ -32,6 +32,10 @@ class PagesMongo extends Pages
 		$this->collection = $collection;
 	}
 
+	public function getCollection() {
+		return $this->collection;
+	}
+
 	/**
 	 * Get a page object in html string
 	 *

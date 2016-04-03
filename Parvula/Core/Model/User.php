@@ -26,14 +26,18 @@ class User {
 	/**
 	 * @var string Password (hashed)
 	 */
-	protected $password;
+	public $password;
 
 	// public $group; // @future
 
 	public function __construct(array $infos) {
 		foreach ($infos as $key => $value) {
 			if (property_exists($this, $key)) {
-				$this->{$key} = $value;
+				if ($key === 'password') {
+					$this->password = password_hash($value, PASSWORD_DEFAULT);
+				} else {
+					$this->{$key} = $value;
+				}
 			}
 		}
 	}
