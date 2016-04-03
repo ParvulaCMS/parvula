@@ -25,14 +25,7 @@ class DatabasePageRenderer implements PageRendererInterface {
 	public function __construct(
 		ContentParserInterface $contentParser, $options = []) {
 		$this->contentParser = $contentParser;
-
-		$defaultOptions = [
-			'delimiterMatcher' => '/\s-{3,}\s+/',
-			'sectionMatcher' => '/-{3}\s+(\w[\w- ]*?)\s+-{3}/',
-			'delimiterRender' => '---'
-		];
-
-		$options += $defaultOptions;
+		$this->options = $options;
 	}
 
 	/**

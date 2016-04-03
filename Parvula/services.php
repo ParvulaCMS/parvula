@@ -4,6 +4,7 @@
 // ----------------------------- //
 
 use Pimple\Container;
+use Parvula\Core\Config;
 use Parvula\Core\FilesSystem as Files;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -12,7 +13,7 @@ $app['config'] = function (Container $c) {
 	$fp = $c['fileParser'];
 
 	// Populate Config wrapper
-	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'system.yaml'));
+	$config = new Config($fp->read(_CONFIG_ . 'system.yaml'));
 
 	// Load user config
 	// Append user config to Config wrapper (override if exists)
@@ -151,20 +152,12 @@ $app['usersession'] = function (Container $this) {
 
 //-- ModelMapper --
 
-$app['users'] = function (Container $c) {
-	return new Parvula\Core\Model\Mapper\UsersMongo($c['mongodb']->users);
-	#return new Parvula\Core\Model\Mapper\Users($this['fileParser'], _USERS_ . '/users.php');
-};
-
 $app['pageRenderer'] = function (Container $this) {
-	$headParser = $this['config']->get('headParser');
 	$contentParser = $this['config']->get('contentParser');
-	$pageRenderer = $this['config']->get('pageRenderer');
-	$options = [
-		'delimiterMatcher' => '/\s[-=]{3,}\s+/',
-		'sectionMatcher' => '/-{3}\s+(\w[\w- ]*?)\s+-{3}/',
-		'delimiterRender' => '---'
-	];
+	$pageRenderer = $this['config:mapper']->get('pageRenderer');
+
+	$headParser = $this['config:mapper']->get('headParser');
+	$options = $this['config:mapper']->get('pageRendererOptions');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new $contentParser, $options);
@@ -187,35 +180,64 @@ $app['pageRendererRAW'] = function (Container $this) {
 $app['mongodb'] = function (Container $this) {
 	$fp = $this['fileParser'];
 
-	$config = new Parvula\Core\Config($fp->read(_CONFIG_ . 'db.yaml'));
+	$config = new Config($fp->read(_CONFIG_ . 'databases.yaml'));
 	$client = new MongoDB\Client;
-	$db = $client->{$config->get('mongo')['name']};
+	$db = $client->{$config->get('mongodb')['name']};
 
 	return $db;
 };
 
-$app['pages'] = function (Container $c) {
-	$mapper = $c['config']->get('mapper');
+$app['mappers'] = function (Container $c) {
+	$mapperName = $c['config']->get('mapper');
 
 	$mappers = [
-		'mongodb' => function() use ($c) {
-			return new Parvula\Core\Model\Mapper\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
-		},
-		'flatfiles' => function() use ($c) {
-			$fileExtension =  '.' . $c['config']->get('fileExtension');
-			return new Parvula\Core\Model\Mapper\PagesFlatFiles($c['pageRenderer'], _PAGES_, $fileExtension);
-		}
+		'mongodb' => [
+			'pages' => function () use ($c) {
+				return new Parvula\Core\Model\Mapper\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
+			},
+			'users' => function () use ($c) {
+				return new Parvula\Core\Model\Mapper\UsersMongo($c['mongodb']->users);
+			}
+		],
+		'flatfiles' => [
+			'pages' => function (Config $conf) use ($c) {
+				return new Parvula\Core\Model\Mapper\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+			},
+			'users' => function () use ($c) {
+				return new Parvula\Core\Model\Mapper\Users($c['fileParser'], _USERS_ . '/users.php');
+			}
+		]
 	];
 
-	if (!isset($mappers[$mapper])) {
-		$mapper = 'flatfiles';
+	if (!isset($mappers[$mapperName])) {
+		throw new Exception(
+			'Mapper `' . htmlspecialchars($mapperName) . '` does not exists, please edit your settings.');
+
 	}
 
-	return $mappers[$mapper]();
+	return $mappers[$mapperName];
 };
 
-$app['themes'] = function (Container $this) {
-	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $this['fileParser']);
+$app['config:mapper'] = function (Container $c) {
+	$mapperName = $c['config']->get('mapper');
+	$confs = $c['config']->get('mappers');
+	if (isset($confs[$mapperName])) {
+		return new Config($confs[$mapperName]);
+	}
+
+	return new Config([]);
+};
+
+$app['users'] = function (Container $c) {
+	return $c['mappers']['users']($c['config:mapper']);
+};
+
+$app['pages'] = function (Container $c) {
+	return $c['mappers']['pages']($c['config:mapper']);
+};
+
+$app['themes'] = function (Container $c) {
+	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $this) {
