@@ -1,0 +1,31 @@
+# ------------------------------ #
+# Mappers specific settings
+# ------------------------------ #
+
+# Mapper [flatfiles, mongodb]
+mapper: flatfiles
+
+flatfiles:
+    # Pages mapper (must implement CRUDInterface)
+    pagesMapper: Parvula\Core\Model\Mapper\PagesFlatFiles
+
+    # Class to parse pages metadata (must implement ParserInterface)
+    headParser: \Parvula\Core\Parser\Yaml
+
+    # Class to fetch/render pages (must implement PageRendererInterface)
+    pageRenderer: Parvula\Core\PageRenderer\FlatFilesPageRenderer
+
+    # Extension for files in ./data/pages
+    fileExtension: md
+
+    pageRendererOptions:
+        delimiterMatcher: /\s[-=]{3,}\s+/
+        sectionMatcher: /-{3}\s+(\w[\w- ]*?)\s+-{3}/
+        delimiterRender: ---
+
+mongodb:
+    # Pages mapper (must implement CRUDInterface)
+    pagesMapper: Parvula\Core\Model\Mapper\PagesMongo
+
+    # Class to fetch/render pages (must implement PageRendererInterface)
+    pageRenderer: Parvula\Core\PageRenderer\DatabasePageRenderer

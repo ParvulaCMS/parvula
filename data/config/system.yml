@@ -50,40 +50,10 @@ timezone: Europe/Zurich
 dateFormat: l, F j, Y
 
 # User config file to read
-userConfig: site.yaml
+userConfig: site.yml
 
 # Class to parse pages (must implement ContentParserInterface), can be null
 contentParser: \Parvula\Core\ContentParser\Markdown
-
-# Mapper [flatfiles, mongodb] (! dev)
-mapper: flatfiles
-
-# Mappers specific settings
-mappers:
-    flatfiles:
-        # Pages mapper (must implement CRUDInterface)
-        pagesMapper: Parvula\Core\Model\Mapper\PagesFlatFiles
-
-        # Class to parse pages metadata (must implement ParserInterface)
-        headParser: \Parvula\Core\Parser\Yaml
-
-        # Class to fetch/render pages (must implement PageRendererInterface)
-        pageRenderer: Parvula\Core\PageRenderer\FlatFilesPageRenderer
-
-        # Extension for files in ./data/pages
-        fileExtension: md
-
-        pageRendererOptions:
-            delimiterMatcher: /\s[-=]{3,}\s+/
-            sectionMatcher: /-{3}\s+(\w[\w- ]*?)\s+-{3}/
-            delimiterRender: ---
-
-    mongodb:
-        # Pages mapper (must implement CRUDInterface)
-        pagesMapper: Parvula\Core\Model\Mapper\PagesMongo
-
-        # Class to fetch/render pages (must implement PageRendererInterface)
-        pageRenderer: Parvula\Core\PageRenderer\DatabasePageRenderer
 
 # Prefix to all API paths (must not be empty)
 apiPrefix: /api/0
@@ -96,6 +66,3 @@ forceLoginOnTLS: false
 
 # Secret token for the API
 secretToken: YourSuperSecretTokenForTheAPI
-
-# Name of the session, which is used in cookies (should contain just alphanumeric characters)
-sessionName: parvula_sess

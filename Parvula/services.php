@@ -13,7 +13,7 @@ $app['config'] = function (Container $c) {
 	$fp = $c['fileParser'];
 
 	// Populate Config wrapper
-	$config = new Config($fp->read(_CONFIG_ . 'system.yaml'));
+	$config = new Config($fp->read(_CONFIG_ . 'system.yml'));
 
 	// Load user config
 	// Append user config to Config wrapper (override if exists)
@@ -180,7 +180,7 @@ $app['pageRendererRAW'] = function (Container $this) {
 $app['mongodb'] = function (Container $this) {
 	$fp = $this['fileParser'];
 
-	$config = new Config($fp->read(_CONFIG_ . 'databases.yaml'));
+	$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
 	$client = new MongoDB\Client;
 	$db = $client->{$config->get('mongodb')['name']};
 
@@ -188,7 +188,8 @@ $app['mongodb'] = function (Container $this) {
 };
 
 $app['mappers'] = function (Container $c) {
-	$mapperName = $c['config']->get('mapper');
+	$conf = $c['config:mapper'];
+	$mapperName = $conf->get('name');
 
 	$mappers = [
 		'mongodb' => [
@@ -200,7 +201,7 @@ $app['mappers'] = function (Container $c) {
 			}
 		],
 		'flatfiles' => [
-			'pages' => function (Config $conf) use ($c) {
+			'pages' => function () use ($c, $conf) {
 				return new Parvula\Core\Model\Mapper\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
@@ -219,22 +220,20 @@ $app['mappers'] = function (Container $c) {
 };
 
 $app['config:mapper'] = function (Container $c) {
-	$mapperName = $c['config']->get('mapper');
-	$confs = $c['config']->get('mappers');
-	if (isset($confs[$mapperName])) {
-		return new Config($confs[$mapperName]);
-	}
+	$fp = $c['fileParser'];
+	$mappersConfig = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
+	$mapperName = $mappersConfig->get('mapper');
 
-	return new Config([]);
+	$conf = new Config($mappersConfig->get($mapperName));
+	$conf->set('name', $mapperName);
+
+	return $conf;
 };
 
-$app['users'] = function (Container $c) {
-	return $c['mappers']['users']($c['config:mapper']);
-};
+// Aliases
+$app['pages'] = $app['mappers']['pages'];
 
-$app['pages'] = function (Container $c) {
-	return $c['mappers']['pages']($c['config:mapper']);
-};
+$app['users'] = $app['mappers']['users'];
 
 $app['themes'] = function (Container $c) {
 	return new Parvula\Core\Model\Mapper\Themes(_THEMES_, $c['fileParser']);
