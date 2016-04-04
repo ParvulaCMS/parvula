@@ -33,7 +33,7 @@ class Themes implements CRUDInterface
 	/**
 	 * @var string Theme config // TODO
 	 */
-	private static $THEME_INFO_FILE = 'theme.yaml';
+	private static $THEME_INFO_FILE = 'theme.yml';
 
 	/**
 	 * Constructor

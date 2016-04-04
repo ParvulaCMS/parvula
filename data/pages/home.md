@@ -7,7 +7,7 @@ index: 0 # To be the first page in the menu
 
 Welcome to [*Parvula* CMS](https://github.com/BafS/parvula).
 
-Edit the website configuration in `data/config/site.yaml`.
+Edit the website configuration in `data/config/site.yml`.
 
 You can find and edit your pages in `data/pages/`. Use the  [markdown syntax](http://daringfireball.net/projects/markdown/) to write !
 

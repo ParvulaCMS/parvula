@@ -38,7 +38,7 @@ where `cms` is the destination folder
 
 All pages are located in `data/pages/`. You can also create sub directories to better organise your pages.
 
-The basic configuration file is `data/config/site.yaml`.
+The basic configuration file is `data/config/site.yml`.
 There are 2 bundled themes by default: "simple" and "galaxy".
 
 ### Pages

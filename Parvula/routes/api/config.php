@@ -13,7 +13,7 @@ $confIO = $app['fileParser'];
  * @return bool|string Config path or false if config does not exists
  */
 function configPath($name) {
-	if (!is_file($path = _CONFIG_ . basename($name . '.yaml'))) { // TODO not force .yaml config serivce
+	if (!is_file($path = _CONFIG_ . basename($name . '.yml'))) { // TODO not force .yml config serivce
 		return false;
 	}
 
@@ -92,7 +92,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
-	$path = _CONFIG_ . basename($args['name'] . '.yaml'); // TODO
+	$path = _CONFIG_ . basename($args['name'] . '.yml'); // TODO
 
 	$config = (array) $parsedBody;
 

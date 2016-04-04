@@ -26,8 +26,8 @@ if (isset($argv[1])) {
 }
 
 $mustExists = [
-	_CONFIG_ . 'site.yaml',
-	_CONFIG_ . 'system.yaml',
+	_CONFIG_ . 'site.yml',
+	_CONFIG_ . 'system.yml',
 	_ROOT_ . 'composer.json',
 ];
 
