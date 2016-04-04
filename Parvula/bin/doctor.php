@@ -28,13 +28,15 @@ if (isset($argv[1])) {
 $mustExists = [
 	_CONFIG_ . 'site.yml',
 	_CONFIG_ . 'system.yml',
+	_CONFIG_ . 'mappers.yml',
 	_ROOT_ . 'composer.json',
+	_ROOT_ . 'index.php'
 ];
 
 $shouldBeWritable = [
 	_DATA_ . 'config',
 	_DATA_ . 'pages',
-	_DATA_ . 'users',
+	_DATA_ . 'users'
 ];
 
 $modulesNeeded = [
@@ -93,6 +95,8 @@ $errors += test('Check if needed modules are loaded', function () use ($modulesN
 });
 
 if ($checkAPI) {
+
+	// Flatfiles
 	$errors += test('Check if folders are writable [API]', function() use ($shouldBeWritable) {
 		return array_reduce($shouldBeWritable, function ($errors, $path) {
 			if (!is_writable(_ROOT_ . $path)) {
