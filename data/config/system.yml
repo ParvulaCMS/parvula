@@ -12,10 +12,10 @@ logErrors: false
 
 # Class aliases
 aliases:
-    HTML: Parvula\Core\Html
-    Conf: Parvula\Core\Config
-    Asset: Parvula\Core\Asset
-    Component: Parvula\Core\Component
+    HTML: Parvula\Html
+    Conf: Parvula\Config
+    Asset: Parvula\Asset
+    Component: Parvula\Component
 
 # List of disabled plugins
 disabledPlugins: []
@@ -53,7 +53,7 @@ dateFormat: l, F j, Y
 userConfig: site.yml
 
 # Class to parse pages (must implement ContentParserInterface), can be null
-contentParser: \Parvula\Core\ContentParser\Markdown
+contentParser: \Parvula\ContentParser\Markdown
 
 # Prefix to all API paths (must not be empty)
 apiPrefix: /api/0

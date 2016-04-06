@@ -1,7 +1,5 @@
 <?php
 
-namespace Parvula;
-
 // Define some useful constants
 if (!defined('_ROOT_')) {
 	define('_ROOT_', '');
@@ -9,7 +7,7 @@ if (!defined('_ROOT_')) {
 if (!defined('_USER_ROOT_')) {
 	define('_USER_ROOT_', '');
 }
-define('_APP_',         _ROOT_ . 'Parvula/');
+define('_APP_',         _ROOT_ . 'app/');
 define('_DATA_',        _USER_ROOT_ . 'data/');
 define('_STATIC_',      _USER_ROOT_ . 'static/');
 define('_VENDOR_',      _ROOT_ . 'vendor/');

@@ -2,8 +2,8 @@
 
 namespace Plugin\Admin;
 
-use Parvula\Core\Plugin;
-use Parvula\Core\Config;
+use Parvula\Plugin;
+use Parvula\Config;
 
 class Admin extends Plugin
 {
