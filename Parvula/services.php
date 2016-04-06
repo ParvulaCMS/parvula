@@ -83,11 +83,18 @@ $app['loggerHandler'] = function ($c) {
 };
 
 $app['errorHandler'] = function ($that) {
-	if (class_exists('\\Whoops\\Run')) {
+	if (class_exists('League\\BooBoo\\Runner')) {
+
+		$runner = new League\BooBoo\Runner();
+		// $runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
+		$runner->pushFormatter(new Parvula\External\HtmlPrettyFormatter);
+		$runner->register();
+
+	} else if (class_exists('Whoops\\Run')) {
 		$run = new Whoops\Run;
 		$handler = new Whoops\Handler\PrettyPageHandler;
 
-		$handler->setPageTitle("Parvula Error");
+		$handler->setPageTitle('Parvula Error');
 		$handler->addDataTable('Parvula', [
 			'Version'=> _VERSION_
 		]);
@@ -100,7 +107,7 @@ $app['errorHandler'] = function ($that) {
 
 		$run->register();
 
-		if (class_exists('\\Monolog\\Logger')) {
+		if (class_exists('Monolog\\Logger')) {
 			// Be sure that Monolog is still register
 			Monolog\ErrorHandler::register($that['loggerHandler']);
 		}

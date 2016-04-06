@@ -29,7 +29,7 @@
 		"paragonie/random_compat": "^2.0"
 	},
 	"require-dev": {
-		"filp/whoops": "^2.1"
+		"league/booboo": "^1.0"
 	},
 	"suggest": {
 		"monolog/monolog": "Allow Parvula to log errors and exceptions"
