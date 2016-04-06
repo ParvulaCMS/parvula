@@ -82,13 +82,21 @@ $app['loggerHandler'] = function ($c) {
 	return false;
 };
 
-$app['errorHandler'] = function ($that) {
+$app['errorHandler'] = function (Container $c) {
 	if (class_exists('League\\BooBoo\\Runner')) {
-
 		$runner = new League\BooBoo\Runner();
-		$runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
-		// $runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
-		// $runner->pushFormatter(new \External\HtmlPrettyFormatter);
+
+		$accept = $c['router']->getContainer()['request']->getHeader('Accept');
+		$accept = join(' ', $accept);
+
+		// If we accept html, show html, else show json
+		if (strpos($accept, 'html') !== false){
+			$runner->pushFormatter(new Parvula\External\HtmlPrettyFormatter);
+			// $runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
+		} else {
+			$runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
+		}
+
 		$runner->register();
 
 	} else if (class_exists('Whoops\\Run')) {
@@ -110,7 +118,7 @@ $app['errorHandler'] = function ($that) {
 
 		if (class_exists('Monolog\\Logger')) {
 			// Be sure that Monolog is still register
-			Monolog\ErrorHandler::register($that['loggerHandler']);
+			Monolog\ErrorHandler::register($c['loggerHandler']);
 		}
 
 		return $run;
