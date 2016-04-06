@@ -1,6 +1,6 @@
 <?php
 
-namespace External;
+namespace Parvula\External;
 
 use League\BooBoo\Util;
 use League\BooBoo\Formatter\AbstractFormatter;
