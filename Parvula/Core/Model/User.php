@@ -2,11 +2,13 @@
 
 namespace Parvula\Core\Model;
 
+use Exception;
+
 /**
  * This class represents a user
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.7.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
@@ -33,12 +35,13 @@ class User {
 	public function __construct(array $infos) {
 		foreach ($infos as $key => $value) {
 			if (property_exists($this, $key)) {
-				if ($key === 'password') {
-					$this->password = password_hash($value, PASSWORD_DEFAULT);
-				} else {
-					$this->{$key} = $value;
-				}
+
+				$this->{$key} = $value;
 			}
+		}
+
+		if (password_get_info($this->password)['algo'] === 0) {
+			throw new Exception('Password must be hashed with password_hash');
 		}
 	}
 
@@ -55,7 +58,7 @@ class User {
 	// TODO
 	/**
 	 * Get user's roles
-	 * 
+	 *
 	 * @return array Roles
 	 */
 	public function getRoles() {

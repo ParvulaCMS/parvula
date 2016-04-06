@@ -96,6 +96,8 @@ class UsersMongo
 			return false; # TODO
 		}
 
+		$user->password = password_hash($user->password, PASSWORD_DEFAULT);
+
 		return $this->collection->insertOne($user)->getInsertedCount() > 0 ? true : false;
 	}
 
