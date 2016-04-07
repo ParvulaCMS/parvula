@@ -33,7 +33,7 @@ class Page {
 	public $content;
 
 	/**
-	 * @var stdClass Page's sections (optional)
+	 * @var array Page's sections (optional)
 	 */
 	public $sections;
 
@@ -64,7 +64,7 @@ class Page {
 	 */
 	public static function pageFactory(array $infos) {
 		$content = isset($infos['content']) ? $infos['content'] : '';
-		$sections = isset($infos['sections']) ? $infos['sections'] : null;
+		$sections = isset($infos['sections']) ? $infos['sections'] : [];
 		unset($infos['content']);
 		unset($infos['sections']);
 
@@ -76,9 +76,9 @@ class Page {
 	 *
 	 * @param array $meta Metadata
 	 * @param string $content (optional) Content
-	 * @param object|array $sections (optional) Sections
+	 * @param array $sections (optional) array of Section
 	 */
-	public function __construct(array $meta, $content = '', $sections = null) {
+	public function __construct(array $meta, $content = '', array $sections = []) {
 		// Check if required meta informations are available
 		if (empty($meta['title']) || empty($meta['slug'])) {
 			throw new PageException('Page cannot be created, $meta MUST contain `title` and `slug` keys');
@@ -98,7 +98,7 @@ class Page {
 		}
 
 		$this->content = $content;
-		$this->sections = (object) $sections;
+		$this->sections = $sections;
 	}
 
 	/**
@@ -170,12 +170,9 @@ class Page {
 	/**
 	 * Get sections
 	 *
-	 * @return object|bool False if no section
+	 * @return array array of Section
 	 */
 	public function getSections() {
-		if (!isset($this->sections) || empty((array) $this->sections)) {
-			return false;
-		}
 		return $this->sections;
 	}
 
@@ -186,10 +183,12 @@ class Page {
 	 * @return string|bool False if no section
 	 */
 	public function getSection($name) {
-		if (!isset($this->sections->{$name})) {
-			return false;
+		foreach ($this->sections as $section) {
+			if ($section->name === $name) {
+				return $section->content;
+			}
 		}
-		return $this->sections->{$name};
+		return false;
 	}
 
 	/**

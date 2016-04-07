@@ -3,6 +3,7 @@
 namespace Parvula\Model\Mapper;
 
 use Parvula\Model\Page;
+use Parvula\Model\Section;
 use Parvula\Exception\IOException;
 use Parvula\Exception\PageException;
 use Parvula\PageRenderer\PageRendererInterface;
@@ -43,9 +44,8 @@ class PagesMongo extends Pages
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function read($pageUID) {
-		$page = $this->collection->findOne(['meta.slug' => $pageUID]);
-
+	public function read($slug) {
+		$page = $this->collection->findOne(['meta.slug' => $slug]);
 		if (empty($page)) {
 			return false;
 		}
@@ -85,12 +85,13 @@ class PagesMongo extends Pages
 
 		$page = [
 			'meta' => $page->getMeta(),
-			'content' => $page->content
+			'content' => $page->content,
+			'sections' => $page->sections
 		];
 
 		try {
 			return $this->collection->insertOne($page)->getInsertedCount() > 0 ? true : false;
-		} catch (BadMethodCallException $e) {
+		} catch (Exception $e) {
 			throw new IOException('Page cannot be created');
 		}
 	}
@@ -124,7 +125,7 @@ class PagesMongo extends Pages
 				]
 			);
 
-			if ($res->getModifiedCount()) {
+			if ($res->getModifiedCount() > 0) {
 				return true;
 			}
 			return false;
@@ -141,9 +142,9 @@ class PagesMongo extends Pages
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch($pageUID, array $infos) {
-		if (!$this->exists($pageUID)) {
-			throw new PageException('Page `' . $pageUID . '` does not exists');
+	public function patch($slug, array $infos) {
+		if (!$this->exists($slug)) {
+			throw new PageException('Page `' . $slug . '` does not exists');
 		}
 
 		$prototype = [];
@@ -157,11 +158,11 @@ class PagesMongo extends Pages
 
 		try {
 			$res = $this->collection->updateOne(
-				['meta.slug' => $pageUID],
+				['meta.slug' => $slug],
 				['$set' => $prototype]
 			);
 
-			if ($res->getModifiedCount()) {
+			if ($res->getModifiedCount() > 0) {
 				return true;
 			}
 			return false;

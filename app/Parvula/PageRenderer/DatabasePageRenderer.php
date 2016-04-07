@@ -41,21 +41,20 @@ class DatabasePageRenderer implements PageRendererInterface {
 	/**
 	 * Decode string data to create a Page object
 	 *
-	 * @param mixed $data Data using to create the page
+	 * @param Page $page Page using to create the page
 	 * @param array ($options) default page field(s)
-	 * @param bool ($parseContent)
 	 * @return Page
 	 */
-	public function parse($data, array $options = []) {
-		$sections = [];
-		if (isset($data->sections)) {
+	public function parse($page, array $options = []) {
+		if (!empty($page->sections)) {
 			$sections = array_map(function($section) {
-				return $this->contentParser->parse($section);
-			}, iterator_to_array($data->sections));
+				$section->content = $this->contentParser->Parse($section->content);
+				return $section;
+			}, (array) $page->sections);
 		}
 
-		$content = $this->contentParser->parse($data->content);
-		$meta = iterator_to_array($data->meta);
+		$content = $this->contentParser->parse($page->content);
+		$meta = iterator_to_array($page->meta);
 
 		return new Page($meta, $content, $sections);
 	}
