@@ -3,6 +3,7 @@
 namespace Parvula\PageRenderer;
 
 use Parvula\Model\Page;
+use Parvula\Model\Section;
 use Parvula\Parser\ParserInterface;
 use Parvula\Exception\PageException;
 use Parvula\ContentParser\ContentParserInterface;
@@ -109,10 +110,10 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$content = trim($page->getContent());
 
 		// Add sections (if exist)
-		if (($sections = $page->getSections()) !== false) {
-			foreach ($sections as $name => $value) {
-				$content .= PHP_EOL . PHP_EOL . $delimiter . $name . PHP_EOL . $delimiter;
-				$content .= trim($value) . PHP_EOL;
+		if (($sections = $page->getSections())) {
+			foreach ($sections as $section) {
+				$content .= PHP_EOL . PHP_EOL . $delimiter . $section->name . PHP_EOL . $delimiter;
+				$content .= trim($section->content) . PHP_EOL;
 			}
 		}
 
@@ -134,7 +135,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$meta = $this->metadataParser->decode($metaRaw);
 
 		$content = '';
-		$sections = new \StdClass;
+		$sections = [];
 		if (!empty($pageTokens[1])) {
 			// Split into sections
 			$content = preg_split(
@@ -147,10 +148,9 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 					} else {
 						$val = $content[$i];
 						if ($parseContent) {
-							$sections->{$name} = $this->contentParser->parse($val);
-						} else {
-							$sections->{$name} = $val;
+							$val = $this->contentParser->parse($val);
 						}
+						$sections[] = new Section($name, $val);
 					}
 				}
 			}

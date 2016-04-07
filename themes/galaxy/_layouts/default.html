@@ -25,15 +25,15 @@
 
 <?php if ($page->getSections()) : ?>
 	<div class="row cols">
-	<?php foreach ($page->sections as $name => $section) : ?>
-		<div class="col-md-4" editable="<?= $name ?>">
-			<?= $section ?>
+	<?php foreach ($page->sections as $section) : ?>
+		<div class="col-md-4" data-editable="<?= $section->name ?>">
+			<?= $section->content ?>
 		</div>
 	<?php endforeach ?>
 	</div>
 <?php endif; ?>
 
 
-<div class="content" editable=true>
+<div class="content" data-editable=true>
 	<?= $content ?>
 </div>
