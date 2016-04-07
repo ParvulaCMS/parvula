@@ -1,6 +1,7 @@
 # Parvula
 plugins/
 static/
+tests
 
 # Composer
 composer.lock

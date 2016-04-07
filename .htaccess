@@ -10,7 +10,7 @@
     RewriteRule . %1/%2 [R=301,L]
 
     ## Block access to specific files
-    RewriteRule ^(data|Parvula|themes)/(.*)\.(txt|md|html|yaml|yml|xml|json|php|sh|bat|log)$ error [F]
+    RewriteRule ^(data|Parvula|themes)/(.*)\.(txt|md|html|yml|yaml|yml|xml|json|php|sh|bat|log)$ error [F]
     RewriteRule ^plugins/(.*)\.(php|sh|bat|log)$ error [F]
     # Block dot files
     RewriteRule (^|/)\. - [F]
