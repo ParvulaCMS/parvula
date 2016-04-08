@@ -51,23 +51,43 @@ abstract class Plugin
 	}
 
 	/**
+	* Alias for getPath
+	*
+	* @see getPath
+	*/
+	protected function getPluginPath($suffix = '') {
+		return $this->getPath($suffix);
+	}
+
+	/**
 	 * Get the current plugin path, useful for the backend part
 	 * @return string the current plugin path
 	 */
-	protected function getPluginPath() {
+	protected function getPath($suffix = '') {
 		$class = get_called_class();
 		$class = str_replace('\\', '/', $class);
 		$class = dirname($class);
 		$class = str_replace('Plugin/', '', $class);
-		return _PLUGINS_ . $class . '/';
+		return _PLUGINS_ . $class . '/' . $suffix;
 	}
 
 	/**
-	 * Get the current plugin URI, useful for the client part
-	 * @return string the current URI path
-	 */
-	protected function getPluginUri() {
-		return Parvula::getRelativeURIToRoot() . $this->getPluginPath();
+	* Alias for getUri
+	*
+	* @see getUri
+	*/
+	protected function getPluginUri($suffix = '') {
+		return $this->getUri($suffix);
+	}
+
+	/**
+ 	 * Get the current plugin URI, useful for the client part
+ 	 *
+ 	 * @param string $suffix optional Suffix
+ 	 * @return string the current URI path
+ 	 */
+	protected function getUri($suffix = '') {
+		return Parvula::getRelativeURIToRoot() . $this->getPluginPath() . $suffix;
 	}
 
 	/**
