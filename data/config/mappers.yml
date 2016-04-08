@@ -20,8 +20,9 @@ flatfiles:
 
     pageRendererOptions:
         delimiterMatcher: /\s[-=]{3,}\s+/
-        sectionMatcher: /-{3}\s+(\w[\w- ]*?)\s+-{3}/
         delimiterRender: ---
+        sectionDelimiterMatcher: /\s\-{3}\s(\w.*?)\s-{3}\s/s
+        sectionDelimiterRender: ---
 
 mongodb:
     # Pages mapper (must implement CRUDInterface)

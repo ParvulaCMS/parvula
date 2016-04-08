@@ -12,14 +12,15 @@ use Parvula\Exception\SectionException;
  * @version 0.7.0
  * @since 0.7.0
  * @author Patrice Sa
+ * @author Fabien Sa
  * @license MIT License
  */
 class Section {
 
-	/**
-	 * @var string Section's name
-	 */
-	public $name;
+	// /**
+	//  * @var array Section's metadata
+	//  */
+	// public $meta;
 
 	/**
 	 * @var string Section's content
@@ -29,15 +30,19 @@ class Section {
 	/**
 	 * Constructor
 	 *
-	 * @param string name Name
+	 * @param array|object $meta Page's metas
 	 * @param string $content (optional) Content
 	 */
-	public function __construct($name, $content = '') {
-		if (empty($name) || empty($content)) {
-			throw new SectionException('Section cannot be created, section MUST have a `name` and a `content`');
+	public function __construct(array $meta, $content = '') {
+		if (empty($meta)) {
+			throw new SectionException('Section cannot be created, section MUST have a `name`');
 		}
 
-		$this->name = $name;
+		foreach ($meta as $key => $val) {
+			$this->{$key} = $val;
+		}
+
+		// $this->meta = $meta;
 		$this->content = $content;
 	}
 

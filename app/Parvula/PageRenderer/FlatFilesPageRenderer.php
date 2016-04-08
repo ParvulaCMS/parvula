@@ -71,15 +71,17 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 		$defaultOptions = [
 			'delimiterMatcher' => '/\s-{3,}\s+/',
-			'sectionMatcher' => '/-{3}\s+(\w[\w- ]*?)\s+-{3}/',
-			'delimiterRender' => '---'
+			'delimiterRender' => '---',
+			'sectionDelimiterMatcher' => '/\s\-{3}\s(\w.*?)\s-{3}\s/s',
+			'sectionDelimiterRender' => '---'
 		];
 
 		$options += $defaultOptions;
 
 		$this->delimiterMatcher = $options['delimiterMatcher'];
-		$this->sectionMatcher = $options['sectionMatcher'];
 		$this->delimiterRender = $options['delimiterRender'];
+		$this->sectionMatcher = $options['sectionDelimiterMatcher'];
+		$this->sectionDelimiterRender = $options['sectionDelimiterRender'];
 	}
 
 	/**
@@ -94,6 +96,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		}
 
 		$delimiter = $this->delimiterRender . PHP_EOL;
+		$delimiterSection = $this->sectionDelimiterRender . PHP_EOL;
 
 		$metaArr = $page->getMeta();
 		if (isset($metaArr['slug'])) {
@@ -112,7 +115,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		// Add sections (if exist)
 		if (($sections = $page->getSections())) {
 			foreach ($sections as $section) {
-				$content .= PHP_EOL . PHP_EOL . $delimiter . $section->name . PHP_EOL . $delimiter;
+				$content .= PHP_EOL . PHP_EOL . $delimiterSection . $section->name . PHP_EOL . $delimiterSection;
 				$content .= trim($section->content) . PHP_EOL;
 			}
 		}
@@ -144,13 +147,19 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 			if (($len = count($content)) > 1) {
 				for ($i = 1; $i < $len; ++$i) {
 					if ($i % 2 === 1) {
-						$name = $content[$i];
+						$metaRaw = trim($content[$i]);
+						$lines = explode("\n", str_replace(["\r\n","\n\r","\r"], "\n", $metaRaw), 2);
+						$sectionMeta = ['name' => $lines[0]];
+
+						if (count($lines) === 2) {
+							$sectionMeta += (array) $this->metadataParser->decode($lines[1]);
+						}
 					} else {
 						$val = $content[$i];
 						if ($parseContent) {
 							$val = $this->contentParser->parse($val);
 						}
-						$sections[] = new Section($name, $val);
+						$sections[] = new Section($sectionMeta, $val);
 					}
 				}
 			}
