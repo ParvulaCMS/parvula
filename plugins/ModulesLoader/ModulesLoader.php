@@ -13,6 +13,9 @@ class ModulesLoader extends Plugin {
 
 	function onPage(&$page) {
 		foreach ($page->sections as $k => $section) {
+			if ($section->name[0] === ':') {
+				$section->module = ltrim($section->name, ':');
+			}
 			if (isset($section->module)) {
 				$moduleName = basename($section->module);
 
