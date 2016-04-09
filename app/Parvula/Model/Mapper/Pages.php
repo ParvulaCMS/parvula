@@ -178,7 +178,15 @@ abstract class Pages implements CRUDInterface
 	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function toArray() {
-		return $this->pages;
+		$acc = [];
+		foreach ($this->pages as $page) {
+			if (isset($page->children)) {
+				// We have to resolve children to arrays
+				$page->children = $page->children->toArray();
+			}
+			$acc[] = $page;
+		}
+		return $acc;
 	}
 
 	/**
