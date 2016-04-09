@@ -197,7 +197,13 @@ $app['mongodb'] = function (Container $this) {
 	$fp = $this['fileParser'];
 
 	$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
-	$client = new MongoDB\Client;
+
+	if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
+		$mongoUri = "mongodb://{$config->get('mongodb')['username']}
+			:{$config->get('mongodb')['password']}@127.0.0.1";
+	}
+
+	$client = new MongoDB\Client($mongoUri);
 	$db = $client->{$config->get('mongodb')['name']};
 
 	return $db;

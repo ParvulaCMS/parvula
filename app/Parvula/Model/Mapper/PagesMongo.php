@@ -3,7 +3,6 @@
 namespace Parvula\Model\Mapper;
 
 use Parvula\Model\Page;
-use Parvula\Model\Section;
 use Parvula\Exception\IOException;
 use Parvula\Exception\PageException;
 use Parvula\PageRenderer\PageRendererInterface;
@@ -40,22 +39,24 @@ class PagesMongo extends Pages
 	/**
 	 * Get a page object in html string
 	 *
-	 * @param string $pageUID Page unique ID
+	 * @param string $slug Page unique ID
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function read($slug) {
-		$page = $this->collection->findOne(['meta.slug' => $slug]);
+		$page = $this->collection->findOne(['slug' => $slug]);
 		if (empty($page)) {
 			return false;
 		}
+
+		unset($page->_id);
 
 		return $this->renderer->parse($page);
 	}
 
 	/**
 	 *
-	 * @param string $pageUID Page unique ID
+	 * @param string $slug Page unique ID
 	 *
 	 */
 	private function exists($slug) {
@@ -67,7 +68,7 @@ class PagesMongo extends Pages
 	}
 
 	/**
-	 * Create page object in "pageUID" file
+	 * Create page object in "slug" file
 	 *
 	 * @param Page $page Page object
 	 * @throws IOException If the destination folder is not writable
@@ -83,12 +84,6 @@ class PagesMongo extends Pages
 			return false;
 		}
 
-		$page = [
-			'meta' => $page->getMeta(),
-			'content' => $page->content,
-			'sections' => $page->sections
-		];
-
 		try {
 			return $this->collection->insertOne($page)->getInsertedCount() > 0 ? true : false;
 		} catch (Exception $e) {
@@ -99,16 +94,16 @@ class PagesMongo extends Pages
 	/**
 	 * Update page object
 	 *
-	 * @param string $pageUID Page unique ID
+	 * @param string $slug Page unique ID
 	 * @param Page $page Page object
 	 * @throws PageException If the page is not valid
 	 * @throws PageException If the page already exists
 	 * @throws PageException If the page does not exists
 	 * @return bool Return true if page updated
 	 */
-	public function update($pageUID, $page) {
-		if (!$this->exists($pageUID)) {
-			throw new PageException('Page `' . $pageUID . '` does not exists');
+	public function update($slug, $page) {
+		if (!$this->exists($slug)) {
+			throw new PageException('Page `' . $slug . '` does not exists');
 		}
 
 		if (!isset($page->title, $page->slug)) {
@@ -117,13 +112,7 @@ class PagesMongo extends Pages
 
 		try {
 			$res = $this->collection->replaceOne(
-				['meta.slug' => $pageUID],
-				[
-					'content' => $page->content,
-					'sections' => $page->sections,
-					'meta' => $page->getMeta()
-				]
-			);
+				['slug' => $slug], $page);
 
 			if ($res->getModifiedCount() > 0) {
 				return true;
@@ -138,7 +127,7 @@ class PagesMongo extends Pages
 	/**
 	 * Patch page
 	 *
-	 * @param string $pageUID
+	 * @param string $slug
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
@@ -149,16 +138,14 @@ class PagesMongo extends Pages
 
 		$prototype = [];
 		foreach ($infos as $key => $value) {
-			if (in_array($key, ['content', 'sections'])) {
-				$prototype[$key] = $value;
-			} else {
-				$prototype['meta.'.$key] = $value;
-			}
+			$prototype[$key] = $value;
 		}
 
+
 		try {
+
 			$res = $this->collection->updateOne(
-				['meta.slug' => $slug],
+				['slug' => $slug],
 				['$set' => $prototype]
 			);
 
@@ -175,12 +162,12 @@ class PagesMongo extends Pages
 	/**
 	 * Delete a page
 	 *
-	 * @param string $pageUID
+	 * @param string $slug
 	 * @throws IOException If the page does not exists
 	 * @return boolean If page is deleted
 	 */
-	public function delete($pageUID) {
-		if (!is_null($this->collection->findOneAndDelete(['meta.slug' => $pageUID]))) {
+	public function delete($slug) {
+		if (!is_null($this->collection->findOneAndDelete(['slug' => $slug]))) {
 			return true;
 		}
 		return false;
@@ -198,6 +185,6 @@ class PagesMongo extends Pages
 		if ($listHidden) {
 			$exceptions = [];
 		}
-		return $this->collection->distinct('meta.slug', ['meta.hidden' => ['$nin' => $exceptions]]);
+		return $this->collection->distinct('slug', ['hidden' => ['$nin' => $exceptions]]);
 	}
 }
