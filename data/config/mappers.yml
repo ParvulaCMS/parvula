@@ -25,6 +25,19 @@ flatfiles:
         sectionDelimiterRender: ---
 
 mongodb:
+    # Server ip/hostname (default : 127.0.0.1)
+    # address: 127.0.0.1
+
+    # Port (default : 27017)
+    # port: 27017
+
+    # Database name
+    name: myDatabase
+
+    # Username/Password if auth is enabled in mongodb config
+    # username: user
+    # password: mySecretPassword
+
     # Pages mapper (must implement CRUDInterface)
     pagesMapper: Parvula\Model\Mapper\PagesMongo
 

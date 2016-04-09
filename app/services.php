@@ -198,12 +198,27 @@ $app['mongodb'] = function (Container $this) {
 
 	$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
 
+	$uri = "mongodb://";
+
 	if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
-		$mongoUri = "mongodb://{$config->get('mongodb')['username']}
-			:{$config->get('mongodb')['password']}@127.0.0.1";
+
+		#$mongoUri = "mongodb://{$config->get('mongodb')['username']}
+		#	:{$config->get('mongodb')['password']}@{$address}";
+
+		$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}";
 	}
 
-	$client = new MongoDB\Client($mongoUri);
+	if (isset($config->get('mongodb')['address'])) {
+		$uri .= $config->get('mongodb')['address'];
+	} else {
+		$uri .= '127.0.0.1';
+	}
+
+	if (isset($config->get('mongodb')['port'])) {
+		$uri .= ":{$config->get('mongodb')['port']}";
+	}
+
+	$client = new MongoDB\Client($uri);
 	$db = $client->{$config->get('mongodb')['name']};
 
 	return $db;
