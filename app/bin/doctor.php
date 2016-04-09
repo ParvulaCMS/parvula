@@ -95,17 +95,23 @@ $errors += test('Check if needed modules are loaded', function () use ($modulesN
 });
 
 if ($checkAPI) {
+	$mapperConf = $app['config:mapper'];
 
-	// Flatfiles
-	$errors += test('Check if folders are writable [API]', function() use ($shouldBeWritable) {
-		return array_reduce($shouldBeWritable, function ($errors, $path) {
-			if (!is_writable(_ROOT_ . $path)) {
-				++$errors;
-				println(_ROOT_ . $path . ' should be writable');
-			}
-			return $errors;
-		}, 0);
-	});
+	if ($mapperConf->get('mapperName') === 'mongodb') {
+		// Mongo
+		// TODO
+	} else {
+		// Flatfiles
+		$errors += test('Check if folders are writable [API]', function() use ($shouldBeWritable) {
+			return array_reduce($shouldBeWritable, function ($errors, $path) {
+				if (!is_writable(_ROOT_ . $path)) {
+					++$errors;
+					println(_ROOT_ . $path . ' should be writable');
+				}
+				return $errors;
+			}, 0);
+		});
+	}
 }
 
 test('Check Parvula stability', function () {
