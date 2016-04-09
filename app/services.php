@@ -205,7 +205,7 @@ $app['mongodb'] = function (Container $this) {
 
 $app['mappers'] = function (Container $c) {
 	$conf = $c['config:mapper'];
-	$mapperName = $conf->get('name');
+	$mapperName = $conf->get('mapperName');
 
 	$mappers = [
 		'mongodb' => [
@@ -241,7 +241,7 @@ $app['config:mapper'] = function (Container $c) {
 	$mapperName = $mappersConfig->get('mapper');
 
 	$conf = new Config($mappersConfig->get($mapperName));
-	$conf->set('name', $mapperName);
+	$conf->set('mapperName', $mapperName);
 
 	return $conf;
 };
