@@ -33,10 +33,12 @@ class ModulesLoader extends Plugin {
 				}
 				// Simple file
 				else if (is_readable($filePath = $this->getPath('../' . self::MODULE_PATH . '/' . $moduleName . '.php'))) {
-					$page->sections[$k]->content = $this->render($filePath, [
+					$arr = $this->render($filePath, $this->getUri('../' . $moduleName . '/'), $section);
+					$page->sections[$k]->content = $arr['render'];
+					$this->modules[$section->name] = [
 						'section' => $section,
-						'uri' => $this->getUri('../' . $moduleName . '/')
-					]);
+						'instance' => $arr
+					];
 				}
 			}
 		}
@@ -45,21 +47,36 @@ class ModulesLoader extends Plugin {
 	function onPostRender(&$out) {
 		foreach ($this->modules as $module) {
 			$obj = $module['instance'];
-			$module = $module['section']->module;
+			$moduleName = $module['section']->module;
+
 			if (method_exists($obj, 'header')) {
-				$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $module . '/')));
+				$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $moduleName . '/')));
+			}
+			else if (isset($obj['header'])) {
+				$header = $obj['header'];
+				$out = $this->appendToHeader($out, $header($this->getUri('../' . $moduleName . '/')));
 			}
 
 			if (method_exists($obj, 'body')) {
-				$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $module . '/')));
+				$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $moduleName . '/')));
+			}
+			else if (isset($obj['body'])) {
+				$body = $obj['body'];
+				$out = $this->appendToBody($out, $body($this->getUri('../' . $moduleName . '/')));
 			}
 		}
 	}
 
-	private function render($path, $data) {
-		extract($data);
+	private function render($path, $uri, $section) {
 		ob_start();
-		include $path;
-		return ob_get_clean();
+		// TODO check if array
+		$arr = require $path;
+		$out = ob_get_clean();
+		if (!isset($arr['render'])) {
+			$arr['render'] = $out;
+		} else {
+			$arr['render'] = $arr['render']($uri, $section, $out);
+		}
+		return $arr;
 	}
 }
