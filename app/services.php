@@ -194,34 +194,34 @@ $app['pageRendererRAW'] = function (Container $this) {
 };
 
 $app['mongodb'] = function (Container $this) {
-	$fp = $this['fileParser'];
+	if (class_exists('MongoDB\\Client')) {
+		$fp = $this['fileParser'];
+		$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
+		$uri = "mongodb://";
 
-	$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
+		if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
+			$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}@";
+		}
 
-	$uri = "mongodb://";
+		if (isset($config->get('mongodb')['address'])) {
+			$uri .= $config->get('mongodb')['address'];
+		} else {
+			$uri .= '127.0.0.1';
+		}
 
-	if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
+		if (isset($config->get('mongodb')['port'])) {
+			$uri .= ":{$config->get('mongodb')['port']}";
+		}
 
-		#$mongoUri = "mongodb://{$config->get('mongodb')['username']}
-		#	:{$config->get('mongodb')['password']}@{$address}";
+		$uri .= "/{$config->get('mongodb')['name']}";
 
-		$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}";
+		$client = new MongoDB\Client($uri);
+		$db = $client->{$config->get('mongodb')['name']};
+
+		return $db;
 	}
 
-	if (isset($config->get('mongodb')['address'])) {
-		$uri .= $config->get('mongodb')['address'];
-	} else {
-		$uri .= '127.0.0.1';
-	}
-
-	if (isset($config->get('mongodb')['port'])) {
-		$uri .= ":{$config->get('mongodb')['port']}";
-	}
-
-	$client = new MongoDB\Client($uri);
-	$db = $client->{$config->get('mongodb')['name']};
-
-	return $db;
+	return false;
 };
 
 $app['mappers'] = function (Container $c) {

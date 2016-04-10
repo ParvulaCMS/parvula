@@ -141,9 +141,7 @@ class PagesMongo extends Pages
 			$prototype[$key] = $value;
 		}
 
-
 		try {
-
 			$res = $this->collection->updateOne(
 				['slug' => $slug],
 				['$set' => $prototype]
