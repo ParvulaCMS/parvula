@@ -1,11 +1,11 @@
 <?php
-namespace Plugin\ModulesLoader;
+namespace Plugin\ComponentsLoader;
 
 use Parvula\Plugin;
 
 // Dev
 // TODO normalize paths
-class ModulesLoader extends Plugin {
+class ComponentsLoader extends Plugin {
 
 	private $modules = [];
 
