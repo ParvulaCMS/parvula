@@ -79,4 +79,12 @@ class ComponentsLoader extends Plugin {
 		}
 		return $arr;
 	}
+
+	function onRouterAPI(&$router) {
+		$modules = $this->modules;
+
+		$router->group('/components', function () use ($modules) {
+			require 'api.php';
+		});
+	}
 }
