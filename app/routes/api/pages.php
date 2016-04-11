@@ -164,11 +164,14 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 // });
 
 // DEV
-$this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+$this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	$parsedBody = $req->getParsedBody();
 	$bodyJson = json_encode($req->getParsedBody());
 
 	$slug = $args['slug'];
+	if (!isset($req->getQueryParams()['parse'])) {
+		$pages->setRenderer($app['pageRendererRAW']);
+	}
 	$page = $pages->read($slug);
 
 	if (!$page) {

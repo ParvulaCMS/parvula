@@ -60,11 +60,11 @@ class PagesMongo extends Pages
 	 *
 	 */
 	private function exists($slug) {
-		if ($this->read($slug)) {
-			return true;
+		if (empty($this->collection->findOne(['slug' => $slug]))) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -131,31 +131,40 @@ class PagesMongo extends Pages
 	 * @param array $infos Patch infos
 	 * @return boolean True if the page was correctly patched
 	 */
-	public function patch($slug, array $infos) {
-		if (!$this->exists($slug)) {
-			throw new PageException('Page `' . $slug . '` does not exists');
-		}
+	#public function patch($slug, array $infos) {
+	#	if (!$this->exists($slug)) {
+	#		throw new PageException('Page `' . $slug . '` does not exists');
+	#	}
 
-		$prototype = [];
-		foreach ($infos as $key => $value) {
-			$prototype[$key] = $value;
-		}
+	#	$prototype = [];
+	#	var_dump($infos);
+	#	foreach ($infos as $key => $value) {
+	#		if ($key === 'sections') {
+	#			# > db.pages.update({slug: 'home', 'sections.name': 'blabla'}, {$set:{"sections.$.new_attr": 'TG MERCI'}})
+	#			#foreach ($value as
+	#				#$this->collection->updateOne(
+	#				#	['slug': 'home'
+	#				#);
+	#		} else {
+	#			$prototype[$key] = $value;
+	#		}
+	#	}
 
-		try {
-			$res = $this->collection->updateOne(
-				['slug' => $slug],
-				['$set' => $prototype]
-			);
+	#	try {
+	#		$res = $this->collection->updateOne(
+	#			['slug' => $slug],
+	#			['$set' => $prototype]
+	#		);
 
-			if ($res->getModifiedCount() > 0) {
-				return true;
-			}
-			return false;
+	#		if ($res->getModifiedCount() > 0) {
+	#			return true;
+	#		}
+	#		return false;
 
-		} catch (Exception $e) {
-			return false;
-		}
-	}
+	#	} catch (Exception $e) {
+	#		return false;
+	#	}
+	#}
 
 	/**
 	 * Delete a page

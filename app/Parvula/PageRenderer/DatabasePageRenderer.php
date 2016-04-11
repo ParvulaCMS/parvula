@@ -52,11 +52,12 @@ class DatabasePageRenderer implements PageRendererInterface {
 				$section->content = $this->contentParser->parse($section->content);
 				return $section;
 			}, (array) $page->sections);
+
+			unset($page->sections);
 		}
 
 		$content = $this->contentParser->parse($page->content);
 		unset($page->content);
-		unset($page->sections);
 
 		return new Page((array) $page, $content, $sections);
 	}

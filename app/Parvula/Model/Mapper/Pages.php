@@ -37,16 +37,6 @@ abstract class Pages implements CRUDInterface
 	}
 
 	/**
-	 * Patch
-	 * Add patch verb to CRUD interface
-	 *
-	 * @param string $pageUID Page UID
-	 * @param array $infos Patch infos
-	 * @return bool
-	 */
-	public abstract function patch($pageUID, array $infos);
-
-	/**
 	 * Fetch all pages
 	 * This method will read each pages
 	 * If you want an array of Page use `toArray()` method

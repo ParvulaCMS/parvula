@@ -27,6 +27,12 @@ class Section {
 	 */
 	public $content;
 
+	public static function sectionFactory(array $infos) {
+		$content = isset($infos['content']) ? $infos['content'] : '';
+		unset($infos['content']);
+		return new static($infos, $content);
+	}
+
 	/**
 	 * Constructor
 	 *
