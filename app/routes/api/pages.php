@@ -6,6 +6,10 @@ use Exception;
 use Parvula\Model\Page;
 use Parvula\Model\PagesFlatFiles;
 use Parvula\Exception\IOException;
+use Rs\Json\Patch;
+use Rs\Json\Patch\InvalidPatchDocumentJsonException;
+use Rs\Json\Patch\InvalidTargetDocumentJsonException;
+use Rs\Json\Patch\InvalidOperationException;
 
 $pages = $app['pages'];
 
@@ -144,20 +148,55 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
  * @apiSuccess (204) PagePatched
  * @apiError (404) PageException If exception
  */
-$this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
-	$pageArr = (array) $req->getParsedBody();
+// $this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+// 	$pageArr = (array) $req->getParsedBody();
+//
+// 	try {
+// 		$pages->patch($args['slug'], $pageArr);
+// 	} catch (Exception $e) {
+// 		return $this->api->json($res, [
+// 			'error' => 'PageException',
+// 			'message' => $e->getMessage()
+// 		], 500);
+// 	}
+//
+// 	return $res->withStatus(204);
+// });
 
-	try {
-		$pages->patch($args['slug'], $pageArr);
-	} catch (Exception $e) {
+// DEV
+$this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+	$parsedBody = $req->getParsedBody();
+	$bodyJson = json_encode($req->getParsedBody());
+
+	$slug = $args['slug'];
+	$page = $pages->read($slug);
+
+	if (!$page) {
 		return $this->api->json($res, [
-			'error' => 'PageException',
-			'message' => $e->getMessage()
-		], 500);
+			'error' => 'PageDoesNotExists',
+			'message' => 'Page does not exists'
+		], 404);
 	}
 
-	return $res->withStatus(204);
+	try {
+		$patch = new Patch($page, $bodyJson);
+
+		$patchedDocument = $patch->apply();
+
+		$pages->update($slug, $page);
+
+	} catch (InvalidPatchDocumentJsonException $e) {
+		// Will be thrown when using invalid JSON in a patch document
+	} catch (InvalidTargetDocumentJsonException $e) {
+		// Will be thrown when using invalid JSON in a target document
+	} catch (InvalidOperationException $e) {
+		// Will be thrown when using an invalid JSON Pointer operation (i.e. missing property)
+	}
 });
+
+
+
+
 
 /*
  * @api {delete} /page/:slug Delete a page.

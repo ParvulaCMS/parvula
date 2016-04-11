@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://parvulacms.github.io/parvula" target="_blank"><img width="650" src="http://i.imgur.com/igAQPza.png" alt="Parvula"></a>
+  <a href="https://parvulacms.github.io" target="_blank"><img width="650" src="http://i.imgur.com/igAQPza.png" alt="Parvula"></a>
 </p>
 
 <p align="center">
@@ -32,7 +32,7 @@ where `cms` is the destination folder
 
 ## Quick start
 
-**Please read the [documentation](https://parvulacms.github.io/parvula) for more information**
+**Please read the [documentation](https://parvulacms.github.io) for more information**
 
 ### Edit pages
 

@@ -190,12 +190,12 @@ class Page {
 	 * Get section
 	 *
 	 * @param  string $name Section name
-	 * @return string|bool False if no section
+	 * @return Section|bool False if no section
 	 */
 	public function getSection($name) {
 		foreach ($this->sections as $section) {
 			if ($section->name === $name) {
-				return $section->content;
+				return $section;
 			}
 		}
 		return false;

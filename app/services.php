@@ -83,7 +83,7 @@ $app['loggerHandler'] = function ($c) {
 };
 
 $app['errorHandler'] = function (Container $c) {
-	if (class_exists('League\\BooBoo\\Runner')) {
+	if (version_compare(phpversion(), '7.0.0', '<') && class_exists('League\\BooBoo\\Runner')) {
 		$runner = new League\BooBoo\Runner();
 
 		$accept = $c['router']->getContainer()['request']->getHeader('Accept');
