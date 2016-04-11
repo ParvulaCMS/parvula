@@ -4,6 +4,7 @@ namespace Parvula\Model;
 
 use DateTime;
 use Parvula\Model\Mapper\Pages;
+use Parvula\Model\Section;
 use Parvula\Exception\PageException;
 
 /**
@@ -64,9 +65,18 @@ class Page {
 	 */
 	public static function pageFactory(array $infos) {
 		$content = isset($infos['content']) ? $infos['content'] : '';
-		$sections = isset($infos['sections']) ? $infos['sections'] : [];
+
+		if (isset($infos['sections'])) {
+			$sections = array_map(function($section) {
+				return Section::sectionFactory($section);
+			}, $infos['sections']);
+
+			unset($infos['sections']);
+		} else {
+			$sections = [];
+		}
+
 		unset($infos['content']);
-		unset($infos['sections']);
 
 		return new static($infos, $content, $sections);
 	}
