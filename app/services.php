@@ -183,8 +183,8 @@ $app['pageRenderer'] = function (Container $this) {
 };
 
 $app['pageRendererRAW'] = function (Container $this) {
-	$headParser = $this['config']->get('headParser');
-	$pageRenderer = $this['config']->get('pageRenderer');
+	$headParser = $this['config:mapper']->get('headParser');
+	$pageRenderer = $this['config:mapper']->get('pageRenderer');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new Parvula\ContentParser\None);
