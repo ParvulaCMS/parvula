@@ -190,65 +190,6 @@ class PagesFlatFiles extends Pages
 	}
 
 	/**
-	 * Patch page
-	 *
-	 * @param string $pageUID
-	 * @param array $infos Patch infos
-	 * @return boolean True if the page was correctly patched
-	 */
-	public function patch($pageUID, array $infos) {
-		$fs = new Files($this->folder);
-		$pageFile = $pageUID . $this->fileExtension;
-		if (!$fs->exists($pageFile)) {
-			throw new PageException('Page `' . $pageUID . '` does not exists');
-		}
-
-		/**
-		 * Patch helper
-		 * @param  array $struct Array to patch
-		 * @param  array $patch Patch to apply
-		 * @return array Patched array
-		 */
-		function patchHelper($struct, $patch) {
-			foreach ($patch as $key => $value) {
-				if (is_array($value)) {
-					// current value is an array, nothing to replace, use recursion
-					if ((object) $struct === $struct) {
-						$value = patchHelper($struct->$key, $value);
-					}
-					else if ((array) $struct === $struct) {
-						$value = patchHelper($struct[$key], $value);
-					}
-				}
-
-				if ((array) $struct === $struct) {
-					if ($value === null || $value === '') {
-						unset($struct[$key]);
-					} else {
-						$struct[$key] = $value;
-					}
-				}
-				else if ((object) $struct === $struct) {
-					if ($value === null || $value === '') {
-						unset($struct->$key);
-					} else {
-						$struct->$key = $value;
-					}
-				}
-			}
-
-			return $struct;
-		}
-
-		$page = $this->read($pageUID, false);
-		$pagePatched = patchHelper($page->toArray(), $infos);
-
-		$infos = Page::pageFactory($pagePatched);
-
-		return $this->update($pageUID, $infos);
-	}
-
-	/**
 	 * Delete a page
 	 *
 	 * @param string $pageUID
