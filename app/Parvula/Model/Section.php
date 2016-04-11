@@ -52,6 +52,20 @@ class Section {
 		$this->content = $content;
 	}
 
+	/**
+	 * Get section's metadata
+	 *
+	 * @return array
+	 */
+	public function getMeta() {
+		$meta = [];
+		foreach ($this as $key => $value) {
+			if ($key[0] !== '_' && $key !== 'content') {
+				$meta[$key] = $value;
+			}
+		}
+		return $meta;
+	}
 
 	/**
 	 * Override `tostring` when print this object

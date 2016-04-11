@@ -115,7 +115,9 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		// Add sections (if exist)
 		if (($sections = $page->getSections())) {
 			foreach ($sections as $section) {
-				$content .= PHP_EOL . PHP_EOL . $delimiterSection . $section->name . PHP_EOL . $delimiterSection;
+				$metaSection = trim($this->metadataParser->encode($section->getMeta()));
+				// $content .= PHP_EOL . PHP_EOL . $delimiterSection . $section->name . PHP_EOL . $delimiterSection;
+				$content .= PHP_EOL . PHP_EOL . $delimiterSection . $section->name . PHP_EOL . $metaSection . PHP_EOL . $delimiterSection;
 				$content .= trim($section->content) . PHP_EOL;
 			}
 		}
