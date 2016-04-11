@@ -26,7 +26,7 @@ $app['config'] = function (Container $c) {
 $app['router'] = function (Container $c) {
 	$slimConf = [
 		'settings' => [
-			'displayErrorDetails' => !$c['config']->get('debug', false)
+			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
 		'api' => new Parvula\Router\APIRender(),
 		'logger' => $c['loggerHandler']
