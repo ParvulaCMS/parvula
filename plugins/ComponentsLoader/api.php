@@ -18,7 +18,7 @@ $this->get('', function ($req, $res) use ($path) {
 });
 
 // Get components infos
-$this->get('/{name}', function ($req, $res, $args) use ($path, $modules) {
+$this->get('/{name}', function ($req, $res, $args) use ($path, $components) {
 	$filepath = $path . '/' . basename($args['name']) . '.php';
 
 	if (!is_readable($filepath)) {

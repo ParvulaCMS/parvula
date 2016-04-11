@@ -7,35 +7,35 @@ use Parvula\Plugin;
 // TODO normalize paths
 class ComponentsLoader extends Plugin {
 
-	private $modules = [];
+	private $components = [];
 
-	const MODULE_PATH = '_Components';
+	const COMPONENTS_PATH = '_Components';
 
 	function onPage(&$page) {
 		foreach ($page->sections as $k => $section) {
 			if ($section->name[0] === ':') {
-				$section->module = ltrim($section->name, ':');
+				$section->component = ltrim($section->name, ':');
 			}
-			if (isset($section->module)) {
-				$moduleName = basename($section->module);
+			if (isset($section->component)) {
+				$componentName = basename($section->component);
 
-				// Class module
-				if (is_readable($filePath = $this->getPath('../' . $moduleName . '/Module.php'))) {
-					$class = 'Plugin\\' . $moduleName . '\\Module';
+				// Class component
+				if (is_readable($filePath = $this->getPath('../' . $componentName . '/Component.php'))) {
+					$class = 'Plugin\\' . $componentName . '\\Component';
 					$obj = new $class;
-					$this->modules[$section->name] = [
+					$this->components[$section->name] = [
 						'section' => $section,
 						'instance' => $obj
 					];
 					if (method_exists($obj, 'render')) {
-						$page->sections[$k]->content = $obj->render($this->getUri('../' . $moduleName . '/'), $section);
+						$page->sections[$k]->content = $obj->render($this->getUri('../' . $componentName . '/'), $section);
 					}
 				}
 				// Simple file
-				else if (is_readable($filePath = $this->getPath('../' . self::MODULE_PATH . '/' . $moduleName . '.php'))) {
-					$arr = $this->render($filePath, $this->getUri('../' . $moduleName . '/'), $section);
+				else if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
+					$arr = $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
 					$page->sections[$k]->content = $arr['render'];
-					$this->modules[$section->name] = [
+					$this->components[$section->name] = [
 						'section' => $section,
 						'instance' => $arr
 					];
@@ -45,24 +45,24 @@ class ComponentsLoader extends Plugin {
 	}
 
 	function onPostRender(&$out) {
-		foreach ($this->modules as $module) {
-			$obj = $module['instance'];
-			$moduleName = $module['section']->module;
+		foreach ($this->components as $component) {
+			$obj = $component['instance'];
+			$componentName = $component['section']->component;
 
 			if (method_exists($obj, 'header')) {
-				$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $moduleName . '/')));
+				$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $componentName . '/')));
 			}
 			else if (isset($obj['header'])) {
 				$header = $obj['header'];
-				$out = $this->appendToHeader($out, $header($this->getUri('../' . $moduleName . '/')));
+				$out = $this->appendToHeader($out, $header($this->getUri('../' . $componentName . '/')));
 			}
 
 			if (method_exists($obj, 'body')) {
-				$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $moduleName . '/')));
+				$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $componentName . '/')));
 			}
 			else if (isset($obj['body'])) {
 				$body = $obj['body'];
-				$out = $this->appendToBody($out, $body($this->getUri('../' . $moduleName . '/')));
+				$out = $this->appendToBody($out, $body($this->getUri('../' . $componentName . '/')));
 			}
 		}
 	}
@@ -81,9 +81,9 @@ class ComponentsLoader extends Plugin {
 	}
 
 	function onRouterAPI(&$router) {
-		$modules = $this->modules;
+		$components = $this->components;
 
-		$router->group('/components', function () use ($modules) {
+		$router->group('/components', function () use ($components) {
 			require 'api.php';
 		});
 	}
