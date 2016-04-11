@@ -183,14 +183,28 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 
 		$patchedDocument = $patch->apply();
 
-		$pages->update($slug, $page);
+		$newPage = Page::pageFactory(json_decode($patchedDocument, true));
+
+		$pages->update($slug, $newPage);
 
 	} catch (InvalidPatchDocumentJsonException $e) {
 		// Will be thrown when using invalid JSON in a patch document
+		return $this->api->json($res, [
+			'error' => 'InvalidPatchDocumentJsonException',
+			'message' => $e->getMessage()
+		], 400);
 	} catch (InvalidTargetDocumentJsonException $e) {
 		// Will be thrown when using invalid JSON in a target document
+		return $this->api->json($res, [
+			'error' => 'InvalidTargetDocumentJsonException',
+			'message' => $e->getMessage()
+		], 400);
 	} catch (InvalidOperationException $e) {
 		// Will be thrown when using an invalid JSON Pointer operation (i.e. missing property)
+		return $this->api->json($res, [
+			'error' => 'InvalidOperationException',
+			'message' => $e->getMessage()
+		], 400);
 	}
 });
 
