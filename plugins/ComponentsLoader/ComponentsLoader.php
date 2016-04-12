@@ -12,7 +12,7 @@ class ComponentsLoader extends Plugin {
 	const COMPONENTS_PATH = '_Components';
 
 	function onPage(&$page) {
-		foreach ($page->sections as $k => $section) {
+		foreach ($page->sections as $id => $section) {
 			if ($section->name[0] === ':') {
 				$section->component = ltrim($section->name, ':');
 			}
@@ -28,13 +28,13 @@ class ComponentsLoader extends Plugin {
 						'instance' => $obj
 					];
 					if (method_exists($obj, 'render')) {
-						$page->sections[$k]->content = $obj->render($this->getUri('../' . $componentName . '/'), $section);
+						$page->sections[$id]->content = $obj->render($this->getUri('../' . $componentName . '/'), $id, $section);
 					}
 				}
 				// Simple file
 				else if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
-					$arr = $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
-					$page->sections[$k]->content = $arr['render'];
+					$arr = $this->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
+					$page->sections[$id]->content = $arr['render'];
 					$this->components[$section->name] = [
 						'section' => $section,
 						'instance' => $arr
@@ -67,7 +67,7 @@ class ComponentsLoader extends Plugin {
 		}
 	}
 
-	private function render($path, $uri, $section) {
+	private function render($path, $uri, $id, $section) {
 		ob_start();
 		// TODO check if array
 		$arr = require $path;
@@ -75,7 +75,7 @@ class ComponentsLoader extends Plugin {
 		if (!isset($arr['render'])) {
 			$arr['render'] = $out;
 		} else {
-			$arr['render'] = $arr['render']($uri, $section, $out);
+			$arr['render'] = $arr['render']($uri, $id, $section, $out);
 		}
 		return $arr;
 	}
