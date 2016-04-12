@@ -55,30 +55,30 @@ class Page {
 
 	/**
 	 * Page factory, create a new page from an array
-	 * The parameter $infos must contain at least `title` and `slug` fields.
+	 * The parameter $info must contain at least `title` and `slug` fields.
 	 * The `slug` need to be normalized (a-z0-9-_+/).
 	 *
-	 * @param array $infos Array with page informations (must contain `title` and `slug` fields)
+	 * @param array $info Array with page informations (must contain `title` and `slug` fields)
 	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
 	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 * @return Page The created Page
 	 */
-	public static function pageFactory(array $infos) {
-		$content = isset($infos['content']) ? $infos['content'] : '';
+	public static function pageFactory(array $info) {
+		$content = isset($info['content']) ? $info['content'] : '';
 
-		if (isset($infos['sections'])) {
-			$sections = array_map(function($section) {
+		if (isset($info['sections'])) {
+			$sections = array_map(function ($section) {
 				return Section::sectionFactory($section);
-			}, $infos['sections']);
+			}, $info['sections']);
 
-			unset($infos['sections']);
+			unset($info['sections']);
 		} else {
 			$sections = [];
 		}
 
-		unset($infos['content']);
+		unset($info['content']);
 
-		return new static($infos, $content, $sections);
+		return new static($info, $content, $sections);
 	}
 
 	/**
