@@ -1,6 +1,11 @@
 <?php
 namespace Parvula;
 
+use Rs\Json\Patch;
+use Rs\Json\Patch\InvalidPatchDocumentJsonException;
+use Rs\Json\Patch\InvalidTargetDocumentJsonException;
+use Rs\Json\Patch\InvalidOperationException;
+
 // @ALPHA
 
 $confIO = $app['fileParser'];
@@ -139,6 +144,7 @@ $this->put('/{name}', function ($req, $res, $args) use ($confIO) {
 });
 
 /**
+ * TODO - jsonpatch doc
  * @api {patch} /config/:name Update specific field(s) of a config
  * @apiName Patch a config file
  * @apiGroup Config
@@ -157,36 +163,44 @@ $this->put('/{name}', function ($req, $res, $args) use ($confIO) {
  *     HTTP/1.1 204 No Content
  */
 $this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
-	if (!$configName = configPath($args['name'])) {
-		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
-	}
+	$parsedBody = $req->getParsedBody();
+	$bodyJson = json_encode($req->getParsedBody());
+	$name = $args['name'];
 
-	$configOld = $confIO->read($configName);
-
-	if (empty($configOld)) {
-		$configOld = [];
-	}
-
-	$newFields = (array) $req->getParsedBody();
-	if ((array) $configOld === $configOld) { // is array
-		$config = array_replace_recursive($configOld, $newFields);
-	} else if (is_object($configOld)) {
-		$config = (object) array_replace_recursive((array) $configOld, $newFields);
-	} else {
+	// Config must exists
+	if (!($path = configPath($name))) {
 		return $this->api->json($res, [
-			'error' => 'InvalidData',
-			'message' => 'Data type must be array or object'
-		], 400);
-	}
-
-	try {
-		$confIO->write($configName, $config);
-	} catch (Exception $e) {
-		return $this->api->json($res, [
-			'error' => 'ConfigException',
-			'message' => $e->getMessage()
+			'error' => 'ConfigDoesNotExists'
 		], 404);
 	}
 
-	return $res->withStatus(204);
+	$configJson = json_encode((object) $confIO->read(configPath($name)));
+
+	try {
+		$patch = new Patch($configJson, $bodyJson);
+
+		$patchedDocument = $patch->apply();
+
+		$newConfig = (json_decode($patchedDocument, true));
+
+		$confIO->write($path, $newConfig);
+
+		return $res->withStatus(204);
+
+	} catch (InvalidPatchDocumentJsonException $e) {
+		return $this->api->json($res, [
+			'error' => 'InvalidPatchDocumentJsonException',
+			'message' => $e->getMessage()
+		], 400);
+	} catch (InvalidTargetDocumentJsonException $e) {
+		return $this->api->json($res, [
+			'error' => 'InvalidTargetDocumentJsonException',
+			'message' => $e->getMessage()
+		], 400);
+	} catch (InvalidOperationException $e) {
+		return $this->api->json($res, [
+			'error' => 'InvalidOperationException',
+			'message' => $e->getMessage()
+		], 400);
+	}
 });
