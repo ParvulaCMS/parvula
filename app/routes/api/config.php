@@ -1,5 +1,4 @@
 <?php
-
 namespace Parvula;
 
 // @ALPHA
@@ -92,7 +91,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
-	$path = _CONFIG_ . basename($args['name'] . '.yml'); // TODO
+	$path = configPath($args['name']); // TODO
 
 	$config = (array) $parsedBody;
 
@@ -106,6 +105,37 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 	}
 
 	return $res->withStatus(201);
+});
+
+// TODO @DEV
+/**
+ * @api {put} /config/:name Update a config
+ * @apiDescription Config file **must** exists to be updated
+ * @apiName Update config
+ * @apiGroup Config
+ */
+$this->put('/{name}', function ($req, $res, $args) use ($confIO) {
+	$parsedBody = $req->getParsedBody();
+
+	// Config must exists
+	if (!configPath($args['name'])) {
+		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
+	}
+
+	$path = configPath($args['name']); // TODO
+
+	$config = (array) $parsedBody;
+
+	try {
+		$confIO->write($path, $config);
+	} catch (Exception $e) {
+		return $this->api->json($res, [
+			'error' => 'ConfigException',
+			'message' => $e->getMessage()
+		], 404);
+	}
+
+	return $res->withStatus(200);
 });
 
 /**
