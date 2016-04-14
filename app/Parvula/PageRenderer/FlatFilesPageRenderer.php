@@ -72,7 +72,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$defaultOptions = [
 			'delimiterMatcher' => '/\s-{3,}\s+/',
 			'delimiterRender' => '---',
-			'sectionDelimiterMatcher' => '/\s\-{3}\s([-:\w].*?)\s-{3}\s/s',
+			'sectionDelimiterMatcher' => '/\s\-{3}\s([\{\[>\-:\w].*?)\s-{3}\s/s',
 			'sectionDelimiterRender' => '---'
 		];
 
