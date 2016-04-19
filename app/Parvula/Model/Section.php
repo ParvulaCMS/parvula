@@ -15,12 +15,9 @@ use Parvula\Exception\SectionException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Section {
-
-	// /**
-	//  * @var array Section's metadata
-	//  */
-	// public $meta;
+class Section
+{
+	use ModelTrait;
 
 	/**
 	 * @var string Section's content
@@ -40,7 +37,7 @@ class Section {
 	 * @param string $content (optional) Content
 	 */
 	public function __construct(array $meta, $content = '') {
-		if (empty($meta)) {
+		if (empty($meta) || !isset($meta['name'])) {
 			throw new SectionException('Section cannot be created, section MUST have a `name`');
 		}
 
@@ -48,7 +45,6 @@ class Section {
 			$this->{$key} = $val;
 		}
 
-		// $this->meta = $meta;
 		$this->content = $content;
 	}
 

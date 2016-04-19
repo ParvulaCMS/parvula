@@ -16,7 +16,9 @@ use Parvula\Exception\PageException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Page {
+class Page
+{
+	use ModelTrait;
 
 	/**
 	 * @var string Page's title
@@ -130,30 +132,6 @@ class Page {
 	}
 
 	/**
-	 * Get given field of page if exists and not empty
-	 *
-	 * @param  string $field
-	 * @param  string $default (optional)
-	 * @return string Field of page, $default if nothing
-	 */
-	public function get($field, $default = '') {
-		if (isset($this->{$field}) && !empty($this->{$field})) {
-			return $this->{$field};
-		}
-		return $default;
-	}
-
-	/**
-	 * Check if the page has a specific field
-	 *
-	 * @param  string $field
-	 * @return boolean
-	 */
-	public function has($field) {
-		return isset($this->{$field});
-	}
-
-	/**
 	 * Get page's content
 	 *
 	 * @return string
@@ -229,7 +207,7 @@ class Page {
 	 * @return array Array of Page
 	 */
 	public function getChildren() {
-		if ($this->children) {
+		if (!empty($this->children)) {
 			return $this->children->toArray();
 		}
 	}
