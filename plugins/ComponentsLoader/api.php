@@ -1,6 +1,7 @@
 <?php
 
 use Parvula\FilesSystem;
+use Parvula\Model\Section;
 
 $path = _PLUGINS_ . '/_Components';
 
@@ -17,8 +18,25 @@ $this->get('', function ($req, $res) use ($path) {
 	return $this->api->json($res, $acc);
 });
 
+// Get components infos (rendered with default values)
+$this->post('/{name}', function ($req, $res, $args) use ($path, $components, $render) {
+	$filepath = $path . '/' . basename($args['name']) . '.php';
+
+	if (!is_readable($filepath)) {
+		return $this->api->json($res, [
+			'error' => 'Component does not exists.'
+		]);
+	}
+
+	$section = new Section($req->getParsedBody());
+
+	$out = $render($args['name'], $section);
+
+	return $this->api->json($res, $out);
+});
+
 // Get components infos
-$this->get('/{name}', function ($req, $res, $args) use ($path, $components) {
+$this->get('/{name}/props', function ($req, $res, $args) use ($path, $components) {
 	$filepath = $path . '/' . basename($args['name']) . '.php';
 
 	if (!is_readable($filepath)) {

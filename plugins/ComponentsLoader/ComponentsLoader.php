@@ -28,12 +28,12 @@ class ComponentsLoader extends Plugin {
 						'instance' => $obj
 					];
 					if (method_exists($obj, 'render')) {
-						$page->sections[$id]->content = $obj->render($this->getUri('../' . $componentName . '/'), $id, $section);
+						$page->sections[$id]->content = $obj->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
 					}
 				}
 				// Simple file
 				else if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
-					$arr = $this->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
+					$arr = $this->renderComponent($componentName, $id, $section);
 					$page->sections[$id]->content = $arr['render'];
 					$this->components[$section->name] = [
 						'section' => $section,
@@ -67,10 +67,17 @@ class ComponentsLoader extends Plugin {
 		}
 	}
 
+	private function renderComponent($componentName, $id, $section) {
+		if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
+			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
+		}
+	}
+
 	private function render($path, $uri, $id, $section) {
 		ob_start();
 		// TODO check if array
 		$arr = require $path;
+		// Check if props are OK
 		$out = ob_get_clean();
 		if (!isset($arr['render'])) {
 			$arr['render'] = $out;
@@ -82,8 +89,11 @@ class ComponentsLoader extends Plugin {
 
 	function onRouterAPI(&$router) {
 		$components = $this->components;
+		$render = function ($componentName, $section) {
+			return $this->renderComponent($componentName, 0, $section);
+		};
 
-		$router->group('/components', function () use ($components) {
+		$router->group('/components', function () use ($components, $render) {
 			require 'api.php';
 		});
 	}
