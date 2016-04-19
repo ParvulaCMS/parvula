@@ -36,11 +36,7 @@ class Section
 	 * @param array|object $meta Page's metas
 	 * @param string $content (optional) Content
 	 */
-	public function __construct(array $meta, $content = '') {
-		if (empty($meta) || !isset($meta['name'])) {
-			throw new SectionException('Section cannot be created, section MUST have a `name`');
-		}
-
+	public function __construct(array $meta = [], $content = '') {
 		foreach ($meta as $key => $val) {
 			$this->{$key} = $val;
 		}
