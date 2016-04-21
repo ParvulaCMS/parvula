@@ -28,12 +28,12 @@ class ComponentsLoader extends Plugin {
 						'instance' => $obj
 					];
 					if (method_exists($obj, 'render')) {
-						$page->sections[$id]->content = $obj->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
+						$page->sections[$id]->content = $obj->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
 					}
 				}
 				// Simple file
 				else if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
-					$arr = $this->renderComponent($componentName, $id, $section);
+					$arr = $this->renderComponent($componentName, $section);
 					$page->sections[$id]->content = $arr['render'];
 					$this->components[$section->name] = [
 						'section' => $section,
@@ -67,13 +67,13 @@ class ComponentsLoader extends Plugin {
 		}
 	}
 
-	private function renderComponent($componentName, $id, $section) {
+	private function renderComponent($componentName, $section) {
 		if (is_readable($filePath = $this->getPath('../' . self::COMPONENTS_PATH . '/' . $componentName . '.php'))) {
-			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $id, $section);
+			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
 		}
 	}
 
-	private function render($path, $uri, $id, $section) {
+	private function render($path, $uri, $section) {
 		ob_start();
 		// TODO check if array
 		$arr = require $path;
@@ -82,7 +82,7 @@ class ComponentsLoader extends Plugin {
 		if (!isset($arr['render'])) {
 			$arr['render'] = $out;
 		} else {
-			$arr['render'] = $arr['render']($uri, $id, $section, $out);
+			$arr['render'] = $arr['render']($uri, $section, $out);
 		}
 		return $arr;
 	}
@@ -90,7 +90,7 @@ class ComponentsLoader extends Plugin {
 	function onRouterAPI(&$router) {
 		$components = $this->components;
 		$render = function ($componentName, $section) {
-			return $this->renderComponent($componentName, 0, $section);
+			return $this->renderComponent($componentName, $section);
 		};
 
 		$router->group('/components', function () use ($components, $render) {
