@@ -25,8 +25,8 @@
 
 <?php if ($page->getSections()) : ?>
 	<div class="row cols">
-	<?php foreach ($page->sections as $section) : ?>
-		<div class="col-md-4" data-editable="<?= $section->name ?>">
+	<?php foreach ($page->sections as $k => $section) : ?>
+		<div class="col-md-4" data-section-id="<?= $k ?>" data-editable="<?= $section->name ?>">
 			<?= $section->content ?>
 		</div>
 	<?php endforeach ?>
