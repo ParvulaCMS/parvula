@@ -10,6 +10,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	$theme = $app['theme'];
 	$config = $app['config'];
 	$plugins = $app['plugins'];
+	$body = $req->getParsedBody();
 
 	$slug = strtolower(rtrim($args['slug'], '/'));
 	$slug = urldecode($slug);
@@ -28,7 +29,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	if (false === $page) {
 		$res = $res->withStatus(404);
 		$page = $pages->read($config->get('errorPage'));
-		$plugins->trigger('404', [&$page]);
+		$plugins->trigger('404', [&$page, $body]);
 
 		if (false === $page) {
 			// If no 404 page is found
@@ -36,7 +37,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		}
 	}
 
-	$plugins->trigger('page', [&$page]);
+	$plugins->trigger('page', [&$page, $body]);
 
 	// Page layout
 	if ($theme->hasLayout($page->get('layout'))) {
