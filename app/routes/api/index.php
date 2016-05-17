@@ -25,16 +25,16 @@ function checkAuth(array $scope) {
 }
 
 /**
- * @api {post} /login Login
+ * @api {get} /login Login
  * @apiName Login
  * @apiGroup Authorization
- * @apiDescription Create a new session if the credentials are OK
+ * @apiDescription Returns a secret token if the credentials are OK
  *
  * @apiParam {String} Authorization Basic <base 64 />
  *
- * @apiSuccess (200) User logged
+ * @apiSuccess (200) Valid credentials
  * @apiError (400) BadArguments
- * @apiError (400) BadCredentials
+ * @apiError (403) BadCredentials
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -56,7 +56,7 @@ function checkAuth(array $scope) {
  *       "message": "user or password not ok"
  *     }
  */
-$this->post("/login", function ($req, $res, $args) use ($app) {
+$this->map(['GET', 'POST'], '/login', function ($req, $res, $args) use ($app) {
 	$users = $app['users'];
 
 	$server = $req->getServerParams();
@@ -141,7 +141,7 @@ $this->group('/files', function () use ($app) {
 	require 'files.php';
 })->add(checkAuth(['files', 'all']));
 
-// If nothing match in the api group and not loged
+// If nothing match in the api group and client is not loged
 $this->any('/{r:.*}', function ($req, $res) use ($app) {
 	return $this->api->json($res, [
 		'error' => 'RouteOrCredentialsError',
