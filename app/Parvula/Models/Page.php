@@ -3,8 +3,8 @@
 namespace Parvula\Models;
 
 use DateTime;
-use Parvula\Models\Mappers\Pages;
 use Parvula\Models\Section;
+use Parvula\Models\Mappers\Pages;
 use Parvula\Exceptions\PageException;
 
 /**
@@ -16,10 +16,8 @@ use Parvula\Exceptions\PageException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Page
+class Page extends Model
 {
-	use ModelTrait;
-
 	/**
 	 * @var string Page's title
 	 */

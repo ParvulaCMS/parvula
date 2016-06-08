@@ -1,9 +1,9 @@
 <?php
 
-namespace Parvula\Models;
+namespace Parvula;
 
 /**
- * Helper for models
+ * Helper for instances
  *
  * @package Parvula
  * @version 0.7.0
@@ -11,14 +11,14 @@ namespace Parvula\Models;
  * @author Fabien Sa
  * @license MIT License
  */
-trait ModelTrait
+trait AccessorTrait
 {
 	/**
-	 * Get given field of model if exists and not empty
+	 * Get given field of an object if exists and not empty
 	 *
 	 * @param  string $field
 	 * @param  string $default (optional)
-	 * @return string Field of model, $default if nothing
+	 * @return string Field of an object, $default if nothing
 	 */
 	public function get($field, $default = '') {
 		if (isset($this->{$field}) && !empty($this->{$field})) {
@@ -28,7 +28,7 @@ trait ModelTrait
 	}
 
 	/**
-	 * Check if the model has a specific field
+	 * Check if the given object has a specific field
 	 *
 	 * @param  string $field
 	 * @return boolean

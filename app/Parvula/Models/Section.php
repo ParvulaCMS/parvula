@@ -15,10 +15,8 @@ use Parvula\Exceptions\SectionException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Section
+class Section extends Model
 {
-	use ModelTrait;
-
 	/**
 	 * @var string Section's content
 	 */
