@@ -2,10 +2,10 @@
 
 namespace Parvula;
 
-use Parvula\Parser\ParserInterface;
+use Parvula\Parsers\ParserInterface;
 use Parvula\FilesSystem as Files;
 use Parvula\IOInterface;
-use Parvula\Exception\ParseException;
+use Parvula\Exceptions\ParseException;
 
 /**
  * File Parser

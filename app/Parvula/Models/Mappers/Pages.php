@@ -1,10 +1,10 @@
 <?php
 
-namespace Parvula\Model\Mapper;
+namespace Parvula\Models\Mappers;
 
-use Parvula\Model\Page;
-use Parvula\Model\CRUDInterface;
-use Parvula\PageRenderer\PageRendererInterface;
+use Parvula\Models\Page;
+use Parvula\Models\CRUDInterface;
+use Parvula\PageRenderers\PageRendererInterface;
 
 /**
  * Page Manager

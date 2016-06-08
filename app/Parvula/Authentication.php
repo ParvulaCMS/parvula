@@ -2,7 +2,7 @@
 
 namespace Parvula;
 
-use Parvula\Model\User;
+use Parvula\Models\User;
 
 class Authentication {
 

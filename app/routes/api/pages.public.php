@@ -3,9 +3,9 @@
 namespace Parvula;
 
 use Exception;
-use Parvula\Model\Page;
-use Parvula\Model\PagesFlatFiles;
-use Parvula\Exception\IOException;
+use Parvula\Models\Page;
+use Parvula\Models\PagesFlatFiles;
+use Parvula\Exceptions\IOException;
 
 $pages = $app['pages'];
 

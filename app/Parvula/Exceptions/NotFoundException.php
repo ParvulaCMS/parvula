@@ -1,9 +1,10 @@
 <?php
 
-namespace Parvula\Exception;
+namespace Parvula\Exceptions;
 
 /**
- * PageException
+ * NotFoundException
+ * Entry was not found
  *
  * @package Parvula
  * @version 0.5.0
@@ -11,5 +12,5 @@ namespace Parvula\Exception;
  * @author Fabien Sa
  * @license MIT License
  */
-class PageException extends \Exception {
+class NotFoundException extends \Exception {
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Parvula\PageRenderer;
+namespace Parvula\PageRenderers;
 
-use Parvula\Model\Page;
+use Parvula\Models\Page;
 
 /**
  * PageRenderer interface

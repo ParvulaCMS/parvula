@@ -2,7 +2,7 @@
 
 namespace Parvula;
 
-use Parvula\Exception\IOException;
+use Parvula\Exceptions\IOException;
 
 /**
  * Files System

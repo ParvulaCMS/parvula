@@ -5,7 +5,7 @@ namespace Parvula;
 use Exception;
 use RuntimeException;
 use Parvula\FilesSystem;
-use Parvula\Exception\IOException;
+use Parvula\Exceptions\IOException;
 
 // @ALPHA.2
 

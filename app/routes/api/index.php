@@ -5,7 +5,7 @@ namespace Parvula;
 use DateTime;
 use Exception;
 use Firebase\JWT\JWT;
-use Parvula\Exception\IOException;
+use Parvula\Exceptions\IOException;
 
 function checkTokenScope(array $scope, $token) {
 	if (!count(array_intersect($scope, $token->scope))) {

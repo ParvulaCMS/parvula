@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\PageRenderer;
+namespace Parvula\PageRenderers;
 
-use Parvula\Model\Page;
-use Parvula\Parser\ParserInterface;
-use Parvula\Exception\PageException;
-use Parvula\PageRenderer\PageRendererInterface;
+use Parvula\Models\Page;
+use Parvula\Parsers\ParserInterface;
+use Parvula\Exceptions\PageException;
+use Parvula\PageRenderers\PageRendererInterface;
 use Parvula\ContentParser\ContentParserInterface;
 
 class DatabasePageRenderer implements PageRendererInterface {

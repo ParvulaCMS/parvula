@@ -1,12 +1,12 @@
 <?php
 
-namespace Parvula\Model\Mapper;
+namespace Parvula\Models\Mappers;
 
 use Parvula\IOInterface;
 use Parvula\FilesSystem as Files;
-use Parvula\Model\Theme;
-use Parvula\Model\CRUDInterface;
-use Parvula\Exception\NotFoundException;
+use Parvula\Models\Theme;
+use Parvula\Models\CRUDInterface;
+use Parvula\Exceptions\NotFoundException;
 
 /**
  * Themes Manager

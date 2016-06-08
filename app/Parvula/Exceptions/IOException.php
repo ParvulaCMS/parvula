@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Exception;
+namespace Parvula\Exceptions;
 
 /**
  * IOException

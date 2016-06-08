@@ -128,10 +128,10 @@ $app['errorHandler'] = function (Container $c) {
 // To parse serialized files in multiple formats
 $app['fileParser'] = function () {
 	$parsers = [
-		'json' => new \Parvula\Parser\Json,
-		'yaml' => new \Parvula\Parser\Yaml,
-		'yml' => new \Parvula\Parser\Yaml,
-		'php' => new \Parvula\Parser\Php
+		'json' => new \Parvula\Parsers\Json,
+		'yaml' => new \Parvula\Parsers\Yaml,
+		'yml' => new \Parvula\Parsers\Yaml,
+		'php' => new \Parvula\Parsers\Php
 	];
 
 	return new Parvula\FileParser($parsers);
@@ -231,18 +231,18 @@ $app['mappers'] = function (Container $c) {
 	$mappers = [
 		'mongodb' => [
 			'pages' => function () use ($c) {
-				return new Parvula\Model\Mapper\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
+				return new Parvula\Models\Mappers\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Model\Mapper\UsersMongo($c['mongodb']->users);
+				return new Parvula\Models\Mappers\UsersMongo($c['mongodb']->users);
 			}
 		],
 		'flatfiles' => [
 			'pages' => function () use ($c, $conf) {
-				return new Parvula\Model\Mapper\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+				return new Parvula\Models\Mappers\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Model\Mapper\Users($c['fileParser'], _USERS_ . '/users.php');
+				return new Parvula\Models\Mappers\Users($c['fileParser'], _USERS_ . '/users.php');
 			}
 		]
 	];
@@ -273,7 +273,7 @@ $app['pages'] = $app['mappers']['pages'];
 $app['users'] = $app['mappers']['users'];
 
 $app['themes'] = function (Container $c) {
-	return new Parvula\Model\Mapper\Themes(_THEMES_, $c['fileParser']);
+	return new Parvula\Models\Mappers\Themes(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $this) {
@@ -304,7 +304,7 @@ $app['view'] = function (Container $app) {
 	});
 
 	// System date format
-	$view->registerFunction('pageDateFormat', function (Parvula\Model\Page $page) use ($config) {
+	$view->registerFunction('pageDateFormat', function (Parvula\Models\Page $page) use ($config) {
 		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 

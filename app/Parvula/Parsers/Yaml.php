@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Parser;
+namespace Parvula\Parsers;
 
 use Symfony\Component\Yaml\Yaml as YamlSymfony;
 

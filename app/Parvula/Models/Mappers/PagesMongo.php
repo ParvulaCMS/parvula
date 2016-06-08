@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Model\Mapper;
+namespace Parvula\Models\Mappers;
 
-use Parvula\Model\Page;
-use Parvula\Exception\IOException;
-use Parvula\Exception\PageException;
-use Parvula\PageRenderer\PageRendererInterface;
+use Parvula\Models\Page;
+use Parvula\Exceptions\IOException;
+use Parvula\Exceptions\PageException;
+use Parvula\PageRenderers\PageRendererInterface;
 
 /**
  * Mongo pages mapper

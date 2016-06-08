@@ -2,7 +2,7 @@
 
 namespace Parvula;
 
-use Parvula\Exception\BadObjectCallException;
+use Parvula\Exceptions\BadObjectCallException;
 
 /**
  * Plugin Mediator class to handle plugins

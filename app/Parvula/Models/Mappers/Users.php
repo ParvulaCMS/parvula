@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Model\Mapper;
+namespace Parvula\Models\Mappers;
 
-use Parvula\Model\User;
+use Parvula\Models\User;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
-use Parvula\Model\Mapper\AbstractDataMapper;
+use Parvula\Models\Mappers\AbstractDataMapper;
 
 class Users
 {

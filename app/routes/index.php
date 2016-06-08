@@ -1,7 +1,7 @@
 <?php
 
 use Parvula\Parvula;
-use Parvula\Model\PagesFlatFiles;
+use Parvula\Models\PagesFlatFiles;
 
 // Pages handler (slug must be `a-z0-9-_+/` (will be rewrited to lowercase if needed))
 $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $res, $args) use ($app) {

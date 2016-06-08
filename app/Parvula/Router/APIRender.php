@@ -2,7 +2,7 @@
 
 namespace Parvula\Router;
 
-use Parvula\Parser\ParserInterface;
+use Parvula\Parsers\ParserInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**

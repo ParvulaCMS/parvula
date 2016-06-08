@@ -3,7 +3,7 @@
 namespace Parvula;
 
 use Exception;
-use Parvula\Exception\IOException;
+use Parvula\Exceptions\IOException;
 
 $users = $app['users'];
 

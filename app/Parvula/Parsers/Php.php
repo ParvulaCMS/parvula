@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Parser;
+namespace Parvula\Parsers;
 
 class Php implements ParserInterface {
 

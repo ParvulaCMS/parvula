@@ -1,9 +1,9 @@
 <?php
 
-namespace Parvula\Model;
+namespace Parvula\Models;
 
 use DateTime;
-use Parvula\Exception\SectionException;
+use Parvula\Exceptions\SectionException;
 
 /**
  * This class represents a Section

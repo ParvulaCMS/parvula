@@ -7,13 +7,13 @@ mapper: flatfiles
 
 flatfiles:
     # Pages mapper (must implement CRUDInterface)
-    pagesMapper: Parvula\Model\Mapper\PagesFlatFiles
+    pagesMapper: Parvula\Models\Mappers\PagesFlatFiles
 
     # Class to parse pages metadata (must implement ParserInterface)
-    headParser: \Parvula\Parser\Yaml
+    headParser: \Parvula\Parsers\Yaml
 
     # Class to fetch/render pages (must implement PageRendererInterface)
-    pageRenderer: Parvula\PageRenderer\FlatFilesPageRenderer
+    pageRenderer: Parvula\PageRenderers\FlatFilesPageRenderer
 
     # Extension for files in ./data/pages
     fileExtension: md
@@ -40,7 +40,7 @@ mongodb:
     # password: mySecretPassword
 
     # Pages mapper (must implement CRUDInterface)
-    pagesMapper: Parvula\Model\Mapper\PagesMongo
+    pagesMapper: Parvula\Models\Mappers\PagesMongo
 
     # Class to fetch/render pages (must implement PageRendererInterface)
-    pageRenderer: Parvula\PageRenderer\DatabasePageRenderer
+    pageRenderer: Parvula\PageRenderers\DatabasePageRenderer

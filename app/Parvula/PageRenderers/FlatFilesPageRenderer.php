@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\PageRenderer;
+namespace Parvula\PageRenderers;
 
-use Parvula\Model\Page;
-use Parvula\Model\Section;
-use Parvula\Parser\ParserInterface;
-use Parvula\Exception\PageException;
+use Parvula\Models\Page;
+use Parvula\Models\Section;
+use Parvula\Parsers\ParserInterface;
+use Parvula\Exceptions\PageException;
 use Parvula\ContentParser\ContentParserInterface;
 
 /**

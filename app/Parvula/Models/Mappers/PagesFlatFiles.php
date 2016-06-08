@@ -1,12 +1,12 @@
 <?php
 
-namespace Parvula\Model\Mapper;
+namespace Parvula\Models\Mappers;
 
-use Parvula\Model\Page;
+use Parvula\Models\Page;
 use Parvula\FilesSystem as Files;
-use Parvula\Exception\IOException;
-use Parvula\Exception\PageException;
-use Parvula\PageRenderer\PageRendererInterface;
+use Parvula\Exceptions\IOException;
+use Parvula\Exceptions\PageException;
+use Parvula\PageRenderers\PageRendererInterface;
 
 /**
  * Flat file pages

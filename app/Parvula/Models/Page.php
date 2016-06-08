@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Model;
+namespace Parvula\Models;
 
 use DateTime;
-use Parvula\Model\Mapper\Pages;
-use Parvula\Model\Section;
-use Parvula\Exception\PageException;
+use Parvula\Models\Mappers\Pages;
+use Parvula\Models\Section;
+use Parvula\Exceptions\PageException;
 
 /**
  * This class represents a Page

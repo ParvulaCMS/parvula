@@ -1,10 +1,10 @@
 <?php
 
-namespace Parvula\Model;
+namespace Parvula\Models;
 
 use StdClass;
 use Parvula\FilesSystem as FS;
-use Parvula\Exception\NotFoundException;
+use Parvula\Exceptions\NotFoundException;
 
 /**
  * This class represents a Theme
