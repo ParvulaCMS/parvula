@@ -137,29 +137,29 @@ $app['fileParser'] = function () {
 	return new Parvula\FileParser($parsers);
 };
 
-$app['plugins'] = function (Container $this) {
+$app['plugins'] = function (Container $c) {
 	$pluginMediator = new Parvula\PluginMediator;
-	$pluginMediator->attach(getPluginList($this['config']->get('disabledPlugins')));
+	$pluginMediator->attach(getPluginList($c['config']->get('disabledPlugins')));
 	return $pluginMediator;
 };
 
-$app['session'] = function (Container $this) {
-	$session = new Parvula\Session($this['config']->get('sessionName'));
+$app['session'] = function (Container $c) {
+	$session = new Parvula\Session($c['config']->get('sessionName'));
 	$session->start();
 	return $session;
 };
 
-$app['auth'] = function (Container $this) {
-	return new Parvula\Authentication($this['session'], hash('sha1', '@TODO'));
-	// return new Parvula\Authentication($this['session'], hash('sha1', $this['request']->ip . $this['request']->userAgent));
+$app['auth'] = function (Container $c) {
+	return new Parvula\Authentication($c['session'], hash('sha1', '@TODO'));
+	// return new Parvula\Authentication($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
 // Get current logged User if available
-$app['usersession'] = function (Container $this) {
-	$sess = $this['session'];
+$app['usersession'] = function (Container $c) {
+	$sess = $c['session'];
 	if ($username = $sess->get('username')) {
-		if ($this['auth']->isLogged($username)) {
-			return $this['users']->read($username);
+		if ($c['auth']->isLogged($username)) {
+			return $c['users']->read($username);
 		}
 	}
 
@@ -168,12 +168,12 @@ $app['usersession'] = function (Container $this) {
 
 //-- ModelMapper --
 
-$app['pageRenderer'] = function (Container $this) {
-	$contentParser = $this['config']->get('contentParser');
-	$pageRenderer = $this['config:mapper']->get('pageRenderer');
+$app['pageRenderer'] = function (Container $c) {
+	$contentParser = $c['config']->get('contentParser');
+	$pageRenderer = $c['config:mapper']->get('pageRenderer');
 
-	$headParser = $this['config:mapper']->get('headParser');
-	$options = $this['config:mapper']->get('pageRendererOptions');
+	$headParser = $c['config:mapper']->get('headParser');
+	$options = $c['config:mapper']->get('pageRendererOptions');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new $contentParser, $options);
@@ -182,9 +182,9 @@ $app['pageRenderer'] = function (Container $this) {
 	return new $pageRenderer(new $headParser, new $contentParser, $options);
 };
 
-$app['pageRendererRAW'] = function (Container $this) {
-	$headParser = $this['config:mapper']->get('headParser');
-	$pageRenderer = $this['config:mapper']->get('pageRenderer');
+$app['pageRendererRAW'] = function (Container $c) {
+	$headParser = $c['config:mapper']->get('headParser');
+	$pageRenderer = $c['config:mapper']->get('pageRenderer');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new Parvula\ContentParser\None);
@@ -193,9 +193,9 @@ $app['pageRendererRAW'] = function (Container $this) {
 	return new $pageRenderer(new $headParser, new Parvula\ContentParser\None);
 };
 
-$app['mongodb'] = function (Container $this) {
+$app['mongodb'] = function (Container $c) {
 	if (class_exists('MongoDB\\Client')) {
-		$fp = $this['fileParser'];
+		$fp = $c['fileParser'];
 		$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
 		$uri = "mongodb://";
 
@@ -276,17 +276,17 @@ $app['themes'] = function (Container $c) {
 	return new Parvula\Models\Mappers\Themes(_THEMES_, $c['fileParser']);
 };
 
-$app['theme'] = function (Container $this) {
-	if ($this['themes']->has($themeName = $this['config']->get('theme'))) {
-		return $this['themes']->read($themeName);
+$app['theme'] = function (Container $c) {
+	if ($c['themes']->has($themeName = $c['config']->get('theme'))) {
+		return $c['themes']->read($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
 	}
 };
 
-$app['view'] = function (Container $app) {
-	$theme = $app['theme'];
-	$config = $app['config'];
+$app['view'] = function (Container $c) {
+	$theme = $c['theme'];
+	$config = $c['config'];
 
 	// Create new Plates instance to render theme files
 	$path = $theme->getPath();
