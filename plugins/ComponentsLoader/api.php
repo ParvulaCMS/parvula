@@ -1,7 +1,7 @@
 <?php
 
 use Parvula\FilesSystem;
-use Parvula\Model\Section;
+use Parvula\Models\Section;
 
 $path = _PLUGINS_ . '/_Components';
 

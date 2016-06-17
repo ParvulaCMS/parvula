@@ -2,7 +2,7 @@
 
 use Parvula\Core\Config;
 use Parvula\Core\Parvula;
-use Parvula\Core\Model\Pages;
+use Parvula\Core\Models\Pages;
 
 if ($configAdmin->get('password') === 'yourPassword') {
 	die('You MUST change the default password in `' . __DIR__ . '/conf.php`.');
