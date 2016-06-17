@@ -173,8 +173,7 @@ abstract class Pages implements CRUDInterface, ArrayableInterface
 		foreach ($this->pages as $page) {
 			if (isset($page->children)) {
 				// We have to resolve children to arrays
-				$page2 = clone $page;
-				$page2->children = $page->children->toArray();
+				$page->children = $page->children->toArray();
 			}
 			$acc[] = $page;
 		}
