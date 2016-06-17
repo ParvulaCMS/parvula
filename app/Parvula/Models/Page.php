@@ -2,6 +2,7 @@
 
 namespace Parvula\Models;
 
+use Closure;
 use DateTime;
 use Parvula\Models\Section;
 use Parvula\Models\Mappers\Pages;
@@ -152,7 +153,7 @@ class Page extends Model
 	 */
 	public function getMeta() {
 		$meta = [];
-		foreach ($this as $key => $value) {
+		foreach ($this->toArray() as $key => $value) {
 			if ($key[0] !== '_' && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
@@ -271,7 +272,7 @@ class Page extends Model
 	 * @param string $key
 	 * @param Closure $closure
 	 */
-	public function addLazy($key, \Closure $closure) {
+	public function addLazy($key, Closure $closure) {
 		$this->lazyFunctions[$key] = $closure;
 	}
 

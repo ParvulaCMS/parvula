@@ -30,7 +30,7 @@ function getPluginList(array $except = []) {
 
 /**
  * List pages and children
- * 
+ *
  * @param $pages Array of Page
  * @param $options Array of options (options available: ul, li, level, liCallback)
  * @return string Html list of pages
@@ -62,7 +62,7 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 
 /**
  * List parent pages
- * 
+ *
  * @param $pages Array of Page
  * @return array of pages
  */
