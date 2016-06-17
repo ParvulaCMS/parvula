@@ -13,7 +13,8 @@ use Exception;
  * @author Fabien Sa
  * @license MIT License
  */
-class User {
+class User extends Model
+{
 
 	/**
 	 * @var string Username
@@ -31,6 +32,13 @@ class User {
 	public $password;
 
 	// public $group; // @future
+
+	/**
+	 * @var array Choose API fields visibility
+	 */
+	protected $visible = [
+		'username', 'email', 'group'
+	];
 
 	public function __construct(array $infos) {
 		foreach ($infos as $key => $value) {

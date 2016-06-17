@@ -3,6 +3,7 @@
 namespace Parvula\Models\Mappers;
 
 use Parvula\Models\Page;
+use Parvula\ArrayableInterface;
 use Parvula\Models\CRUDInterface;
 use Parvula\PageRenderers\PageRendererInterface;
 
@@ -15,7 +16,7 @@ use Parvula\PageRenderers\PageRendererInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Pages implements CRUDInterface
+abstract class Pages implements CRUDInterface, ArrayableInterface
 {
 	/**
 	 * @var array<Page>

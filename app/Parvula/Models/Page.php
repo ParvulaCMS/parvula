@@ -51,7 +51,14 @@ class Page extends Model
 	/**
 	 * @var array Array of Closure
 	 */
-	protected $_lazyFunctions;
+	protected $lazyFunctions;
+
+	/**
+	 * @var array Re
+	 */
+	protected $invisible = [
+		'lazyFunctions'
+	];
 
 	/**
 	 * Page factory, create a new page from an array
@@ -265,7 +272,7 @@ class Page extends Model
 	 * @param Closure $closure
 	 */
 	public function addLazy($key, \Closure $closure) {
-		$this->_lazyFunctions[$key] = $closure;
+		$this->lazyFunctions[$key] = $closure;
 	}
 
 	/**
@@ -275,26 +282,11 @@ class Page extends Model
 	 * @return mixed Return the result of the lazy function
 	 */
 	public function getLazy($key) {
-		if (isset($this->_lazyFunctions)) {
-			return $this->_lazyFunctions[$key]();
+		if (isset($this->lazyFunctions)) {
+			return $this->lazyFunctions[$key]();
 		}
 
 		return false;
-	}
-
-	/**
-	 * Transform Page to array
-	 *
-	 * @return array Array of Page's fields
-	 */
-	public function toArray() {
-		$arr = [];
-		foreach ($this as $key => $value) {
-			if ($key[0] !== '_') {
-				$arr[$key] = $value;
-			}
-		}
-		return $arr;
 	}
 
 	/**

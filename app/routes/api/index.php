@@ -9,7 +9,7 @@ use Parvula\Exceptions\IOException;
 
 function checkTokenScope(array $scope, $token) {
 	if (!count(array_intersect($scope, $token->scope))) {
-		throw new \Exception('Bad credentials for this path.', 403);
+		throw new Exception('Bad credentials for this path.', 403);
 	}
 
 	return true;

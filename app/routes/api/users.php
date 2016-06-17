@@ -53,7 +53,7 @@ $this->get('', function ($req, $res) use ($users) {
  */
 $this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
 	if (false !== $user = $users->read($args['username'])) {
-		return $this->api->json($res, $user);
+		return $this->api->json($res, $user->toArray());
 	}
 
 	return $this->api->json($res, [

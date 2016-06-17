@@ -3,8 +3,6 @@
 namespace Parvula;
 
 use Exception;
-use Parvula\Models\Page;
-use Parvula\Models\PagesFlatFiles;
 use Parvula\Exceptions\IOException;
 
 $pages = $app['pages'];
@@ -29,20 +27,20 @@ $pages = $app['pages'];
 $this->get('', function ($req, $res) use ($pages) {
 	// List of pages. Array<string> of slugs
 	if (isset($req->getQueryParams()['index'])) {
-		return $res->withJson($pages->index());
+		return $this->api->json($res, $pages->index());
 	}
 
 	$allPages = $pages->all()->order(SORT_ASC, 'slug');
 
 	// List all pages (with or without a parent)
 	if (isset($req->getQueryParams()['all'])) {
-		return $res->withJson($allPages->toArray());
+		return $this->api->json($res, $allPages->toArray());
 	}
 
 	// List root pages, pages without a parent
 	// $jwt = $this->encodeJWT($jwt);
-	// return $res->withJson($jwt);
-	return $res->withJson($allPages->withoutParent()->toArray());
+	// return $this->api->json($res, $jwt);
+	return $this->api->json($res, $allPages->withoutParent()->toArray());
 });
 
 /**
@@ -83,5 +81,5 @@ $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		], 404);
 	}
 
-	return $this->api->json($res, $result);
+	return $this->api->json($res, $result->toArray());
 });
