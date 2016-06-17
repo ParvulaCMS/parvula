@@ -90,9 +90,8 @@ $app['errorHandler'] = function (Container $c) {
 		$accept = join(' ', $accept);
 
 		// If we accept html, show html, else show json
-		if (strpos($accept, 'html') !== false){
-			$runner->pushFormatter(new Parvula\External\HtmlPrettyFormatter);
-			// $runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
+		if (strpos($accept, 'html') !== false) {
+			$runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
 		} else {
 			$runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
 		}
