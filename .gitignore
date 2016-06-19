@@ -1,7 +1,13 @@
 # Parvula
-plugins/
-static/
+plugins/*
+static/*
 tests
+themes/*
+
+# but include
+!plugins/Admin/
+!themes/galaxy/
+!themes/simple/
 
 # Composer
 composer.lock
