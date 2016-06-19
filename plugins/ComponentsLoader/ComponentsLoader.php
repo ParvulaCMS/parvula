@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\ComponentsLoader;
+namespace Plugins\ComponentsLoader;
 
 use Parvula\Plugin;
 
@@ -21,7 +21,7 @@ class ComponentsLoader extends Plugin {
 
 				// Class component
 				if (is_readable($filePath = $this->getPath('../' . $componentName . '/Component.php'))) {
-					$class = 'Plugin\\' . $componentName . '\\Component';
+					$class = 'Plugins\\' . $componentName . '\\Component';
 					$obj = new $class;
 					$this->components[$section->name] = [
 						'section' => $section,

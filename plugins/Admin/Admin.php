@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Admin;
+namespace Plugins\Admin;
 
 use Parvula\Plugin;
 use Parvula\Config;

@@ -10,7 +10,7 @@ use DOMDocument;
  *
  * Minimal exemple :
  * <pre>
- * namespace Plugin\Slider;
+ * namespace Plugins\Slider;
  *
  * class Slider extends \Parvula\Plugin { ... }
  * </pre>

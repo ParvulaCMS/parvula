@@ -38,7 +38,7 @@
 	"autoload": {
 		"psr-4": {
 			"Parvula\\": "app\\Parvula",
-			"Plugin\\": "plugins"
+			"Plugins\\": "plugins"
 		}
 	},
 	"config": {
