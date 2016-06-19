@@ -5,7 +5,7 @@
 </div>
 
 <?php
-use Parvula\Model\Page;
+use Parvula\Models\Page;
 
 $i = 0;
 $limit = 10;
@@ -13,7 +13,7 @@ if (isset($page->options, $page->options['limit'])) {
 	$limit = $page->options['limit'];
 }
 
-$children = $page->getChildren();
+$children = $page->getChildrenArray();
 ?>
 
 <?php
