@@ -55,6 +55,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 				return $pages->all($pagesPath)->visibility(!$listHidden)->
 					order($config->get('typeOfSort'), $config->get('sortField'))->toArray();
 			},
+		'pages'    => $pages,
 		'plugin'   =>
 			function ($name) use ($plugins) {
 				return $plugins->getPlugin($name);

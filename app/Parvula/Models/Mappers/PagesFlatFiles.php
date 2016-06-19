@@ -204,7 +204,7 @@ class PagesFlatFiles extends Pages
 	}
 
 	/**
-	 * Index pages and get an array of pages slug
+	 * Index pages recursively and get an array (list) of pages slug
 	 *
 	 * @param boolean ($listHidden) List hidden files & folders
 	 * @param string ($pagesPath) Pages path
@@ -251,15 +251,15 @@ class PagesFlatFiles extends Pages
 			return;
 		}
 
-		$this->arePagesFetched = true;
-		$_pages = [];
-		$_pagesChildren = [];
+		$pagesTmp = [];
+		$pagesChildrenTmp = [];
 
 		$pagesIndex = $this->index(true);
 
+		$this->arePagesFetched = true;
+
 		foreach ($pagesIndex as $pageUID) {
 			$page = $this->read($pageUID);
-			$_pages[] = $page;
 
 			if (isset($page->parent)) {
 				$parent = $page->parent;
@@ -268,22 +268,25 @@ class PagesFlatFiles extends Pages
 				$page->addLazy('parent', function () use ($parent) {
 					return $this->read($parent);
 				});
-				if (!isset($_pagesChildren[$parent])) {
-					$_pagesChildren[$parent] = [];
+
+				if (!isset($pagesChildrenTmp[$parent])) {
+					$pagesChildrenTmp[$parent] = [];
 				}
-				$_pagesChildren[$parent][] = $page;
+				$pagesChildrenTmp[$parent][] = $page;
 			}
+
+			$pagesTmp[] = $page;
 		}
 
-		foreach ($_pages as $page) {
-			if (isset($_pagesChildren[$page->slug])) {
+		foreach ($pagesTmp as $page) {
+			if (isset($pagesChildrenTmp[$page->slug])) {
 				$pagesChildren = clone $this;
-				$pagesChildren->pages = $_pagesChildren[$page->slug];
+				$pagesChildren->pages = $pagesChildrenTmp[$page->slug];
 				$page->setChildren($pagesChildren);
 			}
 		}
 
-		return $_pages;
+		return $pagesTmp;
 	}
 
 }

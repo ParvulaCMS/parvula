@@ -2,6 +2,7 @@
 
 namespace Parvula\Models\Mappers;
 
+use Iterator;
 use Parvula\Models\Page;
 use Parvula\ArrayableInterface;
 use Parvula\Models\CRUDInterface;
@@ -11,12 +12,12 @@ use Parvula\PageRenderers\PageRendererInterface;
  * Page Manager
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.7.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Pages implements CRUDInterface, ArrayableInterface
+abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 {
 	/**
 	 * @var array<Page>
@@ -169,6 +170,10 @@ abstract class Pages implements CRUDInterface, ArrayableInterface
 	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function toArray() {
+		if (!$this->pages) {
+			return [];
+		}
+
 		$acc = [];
 		foreach ($this->pages as $page) {
 			if (isset($page->children)) {
@@ -177,7 +182,17 @@ abstract class Pages implements CRUDInterface, ArrayableInterface
 			}
 			$acc[] = $page;
 		}
+
 		return $acc;
+	}
+
+	/**
+	 * Return pages
+	 *
+	 * @return array Array of Page
+	 */
+	public function getPages() {
+		return $this->pages;
 	}
 
 	/**
@@ -208,6 +223,51 @@ abstract class Pages implements CRUDInterface, ArrayableInterface
 	 */
 	public function setRenderer(PageRendererInterface $customRenderer) {
 		$this->renderer = $customRenderer;
+	}
+
+	/**
+	 * Rewind pages internal pointer
+	 *
+	 * @return mixed
+	 */
+	public function rewind() {
+		return reset($this->pages);
+	}
+
+	/**
+	 * Get current page
+	 *
+	 * @return Page
+	 */
+	public function current() {
+		return current($this->pages);
+	}
+
+	/**
+	 * Get current key
+	 *
+	 * @return string
+	 */
+	public function key() {
+		return key($this->pages);
+	}
+
+	/**
+	 * Get next page
+	 *
+	 * @return Page
+	 */
+	public function next() {
+		return next($this->pages);
+	}
+
+	/**
+	 * Check if current pages internal pointer is valid
+	 *
+	 * @return bool
+	 */
+	public function valid() {
+		return key($this->pages) !== null;
 	}
 
 }
