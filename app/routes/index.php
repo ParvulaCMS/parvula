@@ -50,12 +50,12 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	$view->addData([
 		'baseUrl'  => Parvula::getRelativeURIToRoot(),
 		'themeUrl' => Parvula::getRelativeURIToRoot() . $theme->getPath(),
-		'pages'    =>
+		'pagesArr' =>
 			function ($listHidden = false, $pagesPath = '') use ($pages, $config) {
 				return $pages->all($pagesPath)->visibility(!$listHidden)->
 					order($config->get('typeOfSort'), $config->get('sortField'))->toArray();
 			},
-		'pages'    => $pages,
+		'pages'    => $pages->order($config->get('typeOfSort'), $config->get('sortField')),
 		'plugin'   =>
 			function ($name) use ($plugins) {
 				return $plugins->getPlugin($name);

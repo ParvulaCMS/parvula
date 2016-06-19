@@ -45,7 +45,7 @@ class Page extends Model
 	public $parent;
 
 	/**
-	 * @var array<Page> Page's children (optional)
+	 * @var Pages Children pages (optional)
 	 */
 	public $children;
 
@@ -225,6 +225,17 @@ class Page extends Model
 		if (!empty($this->children)) {
 			$cp = clone $this->children;
 			return $cp->toArray();
+		}
+	}
+
+	/**
+	 * Get page children
+	 *
+	 * @deprecated see getChildren
+	 */
+	public function getPagesChildren() {
+		if ($this->children) {
+			return $this->children;
 		}
 	}
 
