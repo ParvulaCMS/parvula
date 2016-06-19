@@ -85,17 +85,16 @@ class Theme {
 		}
 
 		$this->layouts = new StdClass;
-		$that = $this;
-		$filter = function($file) use ($that) {
-			return $that->extension === $file->getExtension() && $file->getBasename()[0] !== '_';
+		$filter = function($file) {
+			return $this->extension === $file->getExtension() && $file->getBasename()[0] !== '_';
 		};
 
-		(new FS($this->path))->index($this->layoutsFolder, function ($file, $dir) use ($that) {
+		(new FS($this->path))->index($this->layoutsFolder, function ($file, $dir) {
 			$file = $file->getBasename('.' . $file->getExtension());
 			if ($dir) {
 				$dir .= '/';
 			}
-			$that->layouts->{$file} = $dir . $file;
+			$this->layouts->{$file} = $dir . $file;
 		}, $filter);
 	}
 

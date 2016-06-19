@@ -263,10 +263,10 @@ class PagesFlatFiles extends Pages
 
 			if (isset($page->parent)) {
 				$parent = $page->parent;
-				$that = $this;
+
 				// Add lazy function to resolve parent when function is called
-				$page->addLazy('parent', function () use ($parent, $that) {
-					return $that->read($parent);
+				$page->addLazy('parent', function () use ($parent) {
+					return $this->read($parent);
 				});
 				if (!isset($_pagesChildren[$parent])) {
 					$_pagesChildren[$parent] = [];
