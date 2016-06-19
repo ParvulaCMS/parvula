@@ -45,7 +45,7 @@ class Page extends Model
 	public $parent;
 
 	/**
-	 * @var array Page's children (optional)
+	 * @var array<Page> Page's children (optional)
 	 */
 	public $children;
 
@@ -55,7 +55,7 @@ class Page extends Model
 	protected $lazyFunctions;
 
 	/**
-	 * @var array Re
+	 * @var array
 	 */
 	protected $invisible = [
 		'lazyFunctions'
@@ -154,7 +154,7 @@ class Page extends Model
 	public function getMeta() {
 		$meta = [];
 		foreach ($this->toArray() as $key => $value) {
-			if ($key[0] !== '_' && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
+			if ($key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}
@@ -208,13 +208,23 @@ class Page extends Model
 	}
 
 	/**
+	 * Check if the page has a children
+	 *
+	 * @return bool
+	 */
+	public function hasChildren() {
+		return (bool) $this->children;
+	}
+
+	/**
 	 * Get page children
 	 *
 	 * @return array Array of Page
 	 */
-	public function getChildren() {
+	public function getChildrenArray() {
 		if (!empty($this->children)) {
-			return $this->children->toArray();
+			$cp = clone $this->children;
+			return $cp->toArray();
 		}
 	}
 
@@ -223,7 +233,7 @@ class Page extends Model
 	 *
 	 * @return Pages Pages mapper
 	 */
-	public function getPagesChildren() {
+	public function getChildren() {
 		if ($this->children) {
 			return $this->children;
 		}
@@ -236,6 +246,15 @@ class Page extends Model
 	 */
 	public function getParent() {
 		return $this->getLazy('parent');
+	}
+
+	/**
+	 * Check if the page has a parent
+	 *
+	 * @return bool
+	 */
+	public function hasParent() {
+		return (bool) $this->parent;
 	}
 
 	/**
@@ -283,11 +302,21 @@ class Page extends Model
 	 * @return mixed Return the result of the lazy function
 	 */
 	public function getLazy($key) {
-		if (isset($this->lazyFunctions)) {
+		if ($this->hasLazy($key)) {
 			return $this->lazyFunctions[$key]();
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if the given lazy function exists
+	 *
+	 * @param  string  $key
+	 * @return bool
+	 */
+	public function hasLazy($key) {
+		return isset($this->lazyFunctions, $this->lazyFunctions[$key]);
 	}
 
 	/**
