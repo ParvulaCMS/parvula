@@ -12,14 +12,12 @@ $limit = 10;
 if (isset($page->options, $page->options['limit'])) {
 	$limit = $page->options['limit'];
 }
-
-$children = $page->getChildrenArray();
 ?>
 
 <?php
-if ($children):
-	// Order children by date
-	usort($children, function (Page $p1, Page $p2) {
+if ($page->hasChildren()):
+	// Sort children by date
+	$children = $page->getChildren()->sort(function (Page $p1, Page $p2) {
 		return $p1->getDateTime() < $p2->getDateTime();
 	});
 	foreach ($children as $child): ?>

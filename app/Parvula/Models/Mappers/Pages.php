@@ -83,6 +83,19 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	}
 
 	/**
+	 * Sort pages using a user-defined comparison function
+	 *
+	 * @param  callable $fn
+	 * @return Pages
+	 */
+	public function sort(callable $fn) {
+		$that = clone $this;
+		usort($that->pages, $fn);
+
+		return $that;
+	}
+
+	/**
 	 * Show visible pages
 	 *
 	 * @return Pages
