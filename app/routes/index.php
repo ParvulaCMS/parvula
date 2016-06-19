@@ -49,7 +49,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	// Assign some useful variables
 	$view->addData([
 		'baseUrl'  => Parvula::getRelativeURIToRoot(),
-		'themeUrl' => Parvula::getRelativeURIToRoot() . $theme->getPath(),
+		'themeUrl' => Parvula::getRelativeURIToRoot($theme->getPath()),
 		'pagesArr' =>
 			function ($listHidden = false, $pagesPath = '') use ($pages, $config) {
 				return $pages->all($pagesPath)->visibility(!$listHidden)->

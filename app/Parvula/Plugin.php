@@ -87,7 +87,7 @@ abstract class Plugin
  	 * @return string the current URI path
  	 */
 	protected function getUri($suffix = '') {
-		return Parvula::getRelativeURIToRoot() . $this->getPluginPath() . $suffix;
+		return Parvula::getRelativeURIToRoot($this->getPluginPath() . $suffix);
 	}
 
 	/**

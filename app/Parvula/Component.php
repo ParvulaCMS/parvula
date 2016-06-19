@@ -61,7 +61,7 @@ class Component {
 		if (!isset(static::$isLoaded[$packageNameAliased])) {
 			static::$isLoaded[$packageNameAliased] = true;
 
-			return './' . Parvula::getRelativeURIToRoot() . static::$basePath . $packageName . $path;
+			return './' . Parvula::getRelativeURIToRoot(static::$basePath . $packageName . $path);
 		}
 
 		return false;

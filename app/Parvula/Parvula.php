@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Parvula
  *
  * @package Parvula
- * @version 0.6.0
+ * @version 0.7.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -28,33 +28,12 @@ class Parvula extends Container
 	}
 
 	/**
-	 * Get current URI (without /index.php)
-	 *
-	 * @return string
-	 */
-	// public static function getURI() {
-	// 	return self::$request->getUri();
-	//
-	// 	//TODO stock URI in field (same for relativeURI)
-	// 	$scriptName = self::$request->scriptName;
-	//
-	// 	$uri = parse_url(self::$request->getUri(), PHP_URL_PATH);
-	//
-	// 	if (static::$URL_REWRITING) {
-	// 		$scriptName = dirname($scriptName);
-	// 	}
-	//
-	// 	$uri = implode(explode($scriptName, $uri, 2));
-	//
-	// 	return '/' . ltrim($uri, '/');
-	// }
-
-	/**
 	 * Get relative URI from the root
 	 *
+	 * @param string $path Append a path to the URI
 	 * @return string
 	 */
-	public static function getRelativeURIToRoot() {
+	public static function getRelativeURIToRoot($path = '') {
 		$postUrl = static::$request->getUri()->getPath();
 		$basePath = static::$request->getUri()->getBasePath();
 
@@ -72,7 +51,7 @@ class Parvula extends Container
 			++$slashNb;
 		}
 
-		return str_repeat('../', max($slashNb, 0));
+		return str_repeat('../', max($slashNb, 0)) . $path;
 	}
 
 	/**
