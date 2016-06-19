@@ -21,7 +21,7 @@ abstract class Model implements ArrayableInterface {
 	/**
 	 * Get all visible fields
 	 *
-	 * @return [type] [description]
+	 * @return array Visible fields
 	 */
 	private function getVisibleFields() {
 		$fields = $this->getAllFields();

@@ -59,8 +59,8 @@ class PagesFlatFiles extends Pages
 		$pageUID = trim($pageUID, '/');
 
 		// If page was already loaded, return page
-		if (isset($this->pages[$pageUID])) {
-			return $this->pages[$pageUID];
+		if (isset($this->data[$pageUID])) {
+			return $this->data[$pageUID];
 		}
 
 		$pageFullPath = $pageUID . $this->fileExtension;
@@ -101,7 +101,7 @@ class PagesFlatFiles extends Pages
 		};
 
 		$page = $fs->read($pageFullPath, $fn, $eval);
-		$this->pages[$pageUID] = $page;
+		$this->data[$pageUID] = $page;
 
 		return $page;
 	}
@@ -142,7 +142,7 @@ class PagesFlatFiles extends Pages
 			throw new PageException('Page cannot be created');
 		}
 
-		$this->pages[$slug] = $page;
+		$this->data[$slug] = $page;
 
 		return true;
 	}
@@ -184,7 +184,7 @@ class PagesFlatFiles extends Pages
 
 		$fs->write($pageFile, $data);
 
-		$this->pages[$page->slug] = $page;
+		$this->data[$page->slug] = $page;
 
 		return true;
 	}
@@ -281,7 +281,7 @@ class PagesFlatFiles extends Pages
 		foreach ($pagesTmp as $page) {
 			if (isset($pagesChildrenTmp[$page->slug])) {
 				$pagesChildren = clone $this;
-				$pagesChildren->pages = $pagesChildrenTmp[$page->slug];
+				$pagesChildren->data = $pagesChildrenTmp[$page->slug];
 				$page->setChildren($pagesChildren);
 			}
 		}

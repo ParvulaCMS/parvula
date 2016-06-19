@@ -4,6 +4,7 @@ namespace Parvula\Models\Mappers;
 
 use Iterator;
 use Parvula\Models\Page;
+use Parvula\IterableTrait;
 use Parvula\ArrayableInterface;
 use Parvula\Models\CRUDInterface;
 use Parvula\PageRenderers\PageRendererInterface;
@@ -19,10 +20,13 @@ use Parvula\PageRenderers\PageRendererInterface;
  */
 abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 {
+
+	use IterableTrait;
+
 	/**
 	 * @var array<Page>
 	 */
-	protected $pages;
+	protected $data;
 
 	/**
 	 * @var PageRendererInterface
@@ -49,14 +53,14 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 */
 	public function all($path = '') {
 		$that = clone $this;
-		$that->pages = [];
+		$that->data = [];
 
 		$pagesIndex = $this->index(true, $path);
 
 		foreach ($pagesIndex as $pageUID) {
-			if (!isset($that->pages[$pageUID])) {
+			if (!isset($that->data[$pageUID])) {
 				$page = $this->read($pageUID);
-				$that->pages[$page->slug] = $page;
+				$that->data[$page->slug] = $page;
 			}
 		}
 
@@ -77,7 +81,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 			$sortType = SORT_ASC;
 		}
 
-		$this->arraySortByField($that->pages, $sortField, $sortType);
+		$this->arraySortByField($that->data, $sortField, $sortType);
 
 		return $that;
 	}
@@ -90,7 +94,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 */
 	public function sort(callable $fn) {
 		$that = clone $this;
-		usort($that->pages, $fn);
+		usort($that->data, $fn);
 
 		return $that;
 	}
@@ -166,11 +170,11 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 */
 	public function filter(callable $fn) {
 		$that = clone $this;
-		$that->pages = [];
+		$that->data = [];
 
-		foreach ($this->pages as $page) {
+		foreach ($this->data as $page) {
 			if ($fn($page) === true) {
-				$that->pages[] = $page;
+				$that->data[] = $page;
 			}
 		}
 
@@ -183,12 +187,12 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function toArray() {
-		if (!$this->pages) {
+		if (!$this->data) {
 			return [];
 		}
 
 		$acc = [];
-		foreach ($this->pages as $page) {
+		foreach ($this->data as $page) {
 			if (isset($page->children)) {
 				// We have to resolve children to arrays
 				$page->children = $page->children->toArray();
@@ -205,7 +209,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * @return array Array of Page
 	 */
 	public function getPages() {
-		return $this->pages;
+		return $this->data;
 	}
 
 	/**
@@ -237,50 +241,4 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	public function setRenderer(PageRendererInterface $customRenderer) {
 		$this->renderer = $customRenderer;
 	}
-
-	/**
-	 * Rewind pages internal pointer
-	 *
-	 * @return mixed
-	 */
-	public function rewind() {
-		return reset($this->pages);
-	}
-
-	/**
-	 * Get current page
-	 *
-	 * @return Page
-	 */
-	public function current() {
-		return current($this->pages);
-	}
-
-	/**
-	 * Get current key
-	 *
-	 * @return string
-	 */
-	public function key() {
-		return key($this->pages);
-	}
-
-	/**
-	 * Get next page
-	 *
-	 * @return Page
-	 */
-	public function next() {
-		return next($this->pages);
-	}
-
-	/**
-	 * Check if current pages internal pointer is valid
-	 *
-	 * @return bool
-	 */
-	public function valid() {
-		return key($this->pages) !== null;
-	}
-
 }
