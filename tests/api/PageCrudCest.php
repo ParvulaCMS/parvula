@@ -1,14 +1,10 @@
 <?php
 
-
 class PageCrudCest
 {
 	private $token;
 
 	private $page1;
-
-	public function _before(APITester $I) {
-	}
 
 	public function _after(APITester $I) {
 		if (!empty($I->grabResponse())) {
@@ -51,6 +47,24 @@ class PageCrudCest
 	public function failToGetOnePage(APITester $I) {
 		$I->sendGET('/pages/notapage');
 		$I->seeResponseCodeIs(404);
+	}
+
+	public function indexPagesOnlyIndex(APITester $I) {
+		$I->sendGET('/pages?index');
+		$I->seeResponseCodeIs(200);
+		// Should be an array
+		$I->seeResponseJsonMatchesJsonPath('$.[*]');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[*].*');
+	}
+
+	public function indexPages(APITester $I) {
+		$I->sendGET('/pages');
+		$I->seeResponseCodeIs(200);
+		// Should be deeper than an array
+		$I->seeResponseJsonMatchesJsonPath('$.[*]');
+		$I->seeResponseJsonMatchesJsonPath('$.[*].*');
+		$I->seeResponseJsonMatchesJsonPath('$.[0].slug');
+		$I->seeResponseJsonMatchesJsonPath('$.[0].title');
 	}
 
 	public function createANewPage(APITester $I) {
