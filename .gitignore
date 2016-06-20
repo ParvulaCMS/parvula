@@ -1,7 +1,6 @@
 # Parvula
 plugins/*
 static/*
-tests
 themes/*
 
 # but include
@@ -44,3 +43,10 @@ _site
 
 # Npm
 node_modules/
+
+# Tests
+tests/_output
+tests/_support/_generated
+tests/unit
+tests/functional
+
