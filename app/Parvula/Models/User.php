@@ -48,9 +48,10 @@ class User extends Model
 			}
 		}
 
-		if (password_get_info($this->password)['algo'] === 0) {
-			throw new Exception('Password must be hashed with password_hash');
-		}
+		// TODO
+		// if (password_get_info($this->password)['algo'] === 0) {
+		// 	throw new Exception('Password must be hashed with password_hash');
+		// }
 	}
 
 	/**
@@ -60,6 +61,10 @@ class User extends Model
 	 * @return bool If the password is ok
 	 */
 	public function login($password) {
+		if (strlen($password) < 50) {
+			// Not hashed, TODO temporary
+			return $password === $this->password;
+		}
 		return password_verify($password, $this->password);
 	}
 
