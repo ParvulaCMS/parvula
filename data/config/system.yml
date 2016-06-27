@@ -1,0 +1,68 @@
+# ------------------------------ #
+#  System config
+# ------------------------------ #
+
+# Shows errors and exceptions if 'true' (should set to 'false' in production)
+debug: true
+
+# Log errors and exceptions if 'true' (recommanded in production)
+# To use this option, Monolog package is needed (read the doc for more infos)
+# Note: Errors loggin may be blocked if debug is enable
+logErrors: false
+
+# Class aliases
+aliases:
+    HTML: Parvula\Html
+    Conf: Parvula\Config
+    Asset: Parvula\Asset
+    Component: Parvula\Component
+
+# List of disabled plugins
+disabledPlugins: []
+
+# Default home page
+homePage: home
+
+# Error page
+errorPage: _404
+
+# How to sort pages (SORT_ASC, SORT_DESC) (php.net/manual/en/function.array-multisort.php)
+typeOfSort: SORT_ASC
+
+# Sort pages from specific field (like slug, title, index or whatYouWant)
+sortField: index
+
+# File extensions in media folder
+mediaExtensions: [jpg, jpeg, png, gif]
+
+# Upload options
+upload:
+    maxSize: 200 # Max upload size per file (in MO) (put a negative number for no limit)
+    evilExtensions: [php, html, htm, sh] # Evil extensions which will be renamed to *.txt
+
+# Timezone ('UTC' if nothing)
+# timezones available: https://php.net/manual/en/timezones.php
+timezone: Europe/Zurich
+
+# System time/date format
+# Default: 'l, F j, Y' (will print 'Wednesday, March 2, 2016')
+# Formats available: https://php.net/manual/en/function.date.php
+dateFormat: l, F j, Y
+
+# User config file to read
+userConfig: site.yml
+
+# Class to parse pages (must implement ContentParserInterface), can be null
+contentParser: \Parvula\ContentParser\Markdown
+
+# Prefix to all API paths (must not be empty)
+apiPrefix: /api/0
+
+# Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
+# SSL versions 1, 2, and 3 should no longer be used
+# The best practice is to just provide support for the TLS protocols (1.0, 1.1 and 1.2)
+# For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
+forceLoginOnTLS: false
+
+# Secret token for the API
+secretToken: YourSuperSecretTokenForTheAPI

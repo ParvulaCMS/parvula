@@ -1,6 +1,5 @@
 <?php
 
 return [
-	'adminRoute' => '/admin',
-	'password' => 'yourPassword'
+	'adminRoute' => '/admin'
 ];

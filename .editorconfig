@@ -1,0 +1,23 @@
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{php,html,js}]
+indent_style = tab
+indent_size = 4
+
+[*.{yml,yaml,json,txt}]
+indent_style = space
+indent_size = 4
+
+[*.{scss,sass,less,css}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

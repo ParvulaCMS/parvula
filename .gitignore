@@ -1,6 +1,12 @@
 # Parvula
-plugins/
-static/
+plugins/*
+static/*
+themes/*
+
+# but include
+!plugins/Admin/
+!themes/galaxy/
+!themes/simple/
 
 # Composer
 composer.lock
@@ -19,7 +25,6 @@ Thumbs.db
 *~
 *.sublime-project
 .idea
-.editorconfig
 .vscode
 
 # Others
@@ -38,4 +43,10 @@ _site
 
 # Npm
 node_modules/
+
+# Tests
+tests/_output
+tests/_support/_generated
+tests/unit
+tests/functional
 

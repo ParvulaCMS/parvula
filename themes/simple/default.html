@@ -6,7 +6,7 @@
 		<h1><?= HTML::anchor($site->title, '.') ?></h1>
 
 		<ul class="nav">
-		<?php foreach ($pages() as $p) : ?>
+		<?php foreach ($pages as $p) : ?>
 			<li><?= HTML::anchor($p->title, $p->slug) ?></li>
 		<?php endforeach ?>
 		</ul>

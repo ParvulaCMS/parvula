@@ -1,12 +1,15 @@
 <?php
 
-namespace Parvula;
-
 // Define some useful constants
-define('_ROOT_',        '');
-define('_APP_',         _ROOT_ . 'Parvula/');
-define('_DATA_',        _ROOT_ . 'data/');
-define('_STATIC_',      _ROOT_ . 'static/');
+if (!defined('_ROOT_')) {
+	define('_ROOT_', '');
+}
+if (!defined('_USER_ROOT_')) {
+	define('_USER_ROOT_', '');
+}
+define('_APP_',         _ROOT_ . 'app/');
+define('_DATA_',        _USER_ROOT_ . 'data/');
+define('_STATIC_',      _USER_ROOT_ . 'static/');
 define('_VENDOR_',      _ROOT_ . 'vendor/');
 
 // Data
@@ -19,8 +22,9 @@ define('_LOGS_',        _DATA_ . 'logs/');
 define('_UPLOADS_',     _STATIC_ . 'files/');
 define('_COMPONENTS_',  _STATIC_ . 'components/');
 
+define('_BIN_',         _APP_ . 'bin/');
 define('_THEMES_',      _ROOT_ . 'themes/');
 define('_PLUGINS_',     _ROOT_ . 'plugins/');
-define('_VERSION_',     '0.6.1');
+define('_VERSION_',     '0.7.0-dev');
 
 require_once _APP_ . 'bootstrap.php';

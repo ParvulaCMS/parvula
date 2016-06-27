@@ -20,7 +20,10 @@ api.pages = {
 		$.ajax({
 			type: 'POST',
 			url: API_URL + '/pages',
-			data: page
+			data: page,
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization', 'Bearer ' + getToken())
+			}
 		})
 		.done(function (res) {
 			callback(res.message, false);
@@ -34,7 +37,10 @@ api.pages = {
 		$.ajax({
 			type: 'PUT',
 			url: API_URL + '/pages/' + slug,
-			data: page
+			data: page,
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization', 'Bearer ' + getToken())
+			}
 		})
 		.done(function (res) {
 			window.location.hash = '#' + page.slug;
@@ -53,7 +59,14 @@ api.pages = {
 	delete: function (slug, callback) {
 		$.ajax({
 			type: 'DELETE',
-			url: API_URL + '/pages/' + slug
+			url: API_URL + '/pages/' + slug,
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization', 'Bearer ' + getToken())
+			},
+			success: function () {
+				window.location.hash = '#'
+				window.location.reload()
+			}
 		})
 		.done(function () {
 			callback('', false);
@@ -70,6 +83,15 @@ var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
 	mode: 'markdown',
 	viewportMargin: Infinity
 });
+
+function storeToken (value) {
+	window.sessionStorage.setItem('token', value)
+}
+
+function getToken() {
+	return window.sessionStorage.getItem('token')
+}
+
 
 var onHashChange = function () {
 	var url = window.location.hash.substr(1);
@@ -129,6 +151,45 @@ function stripHtml(html) {
 }
 
 jQuery(function () {
+
+	$('.login').hide()
+
+	$.ajax({
+		type: 'GET',
+		url: 'api/0/credentials',
+		contentType: 'application/json; charset=utf-8',
+		async: true,
+		error: function () {
+			$('.login').show()
+		},
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader('Authorization', 'Bearer ' + getToken())
+		}
+	})
+
+	$('.login form').on('submit', function (event) {
+		event.preventDefault()
+
+		var username = $('.login [name="username"]').val()
+		var password = $('.login [name="password"]').val()
+
+		$.ajax({
+			type: 'POST',
+			url: 'api/0/login',
+			contentType: 'application/json; charset=utf-8',
+			success: function (data) {
+				storeToken(data.token)
+				$('.login').hide()
+			},
+			error: function (xhr) {
+				alert(JSON.parse(xhr.responseText).message)
+			},
+			async: true,
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ':' + password))
+			}
+		})
+	})
 
 	// Main elements
 	previewEl = $('#preview .inner');
@@ -226,8 +287,16 @@ jQuery(function () {
 
 	// Logout
 	$('.logout').on('click', function () {
-		$.get(API_URL + '/logout', function () {
-			location.reload();
+		$.ajax({
+			url: API_URL + '/logout',
+			type: 'GET',
+			complete: function () {
+				storeToken(null)
+				location.reload()
+			},
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Authorization', 'Bearer ' + getToken())
+			}
 		});
 	});
 
