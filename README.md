@@ -54,4 +54,4 @@ There are 2 bundled themes by default: "simple" and "galaxy".
 
 You can edit pages online at **yoursite.com/admin** (admin url can be edited in `plugins/Admin/config.php`).
 
-Don't forget to *chmod 755* `data/pages` and *change the default password* in `plugins/Admin/config.php` !
+Don't forget to *chmod 755* `data/pages` and *change the default password* in `data/users/users.php` !
