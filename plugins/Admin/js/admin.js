@@ -99,7 +99,22 @@ var onHashChange = function () {
 	if (url !== '') {
 		pageTitleEl.val(url).removeClass('notice');
 		api.pages.read(url, function (page) {
-			editor.setValue(page.content || '');
+			var fullContent = page.content || '';
+
+			// Add sections
+			if (page.sections) {
+				for (var i = 0; i < page.sections.length; i++) {
+					var section = page.sections[i];
+					if (section.name && section.content) {
+						fullContent += "\n---\n";
+						fullContent += section.name.replace("\n", '');
+						fullContent += "\n---\n";
+						fullContent += section.content;
+					}
+				}
+			}
+
+			editor.setValue(fullContent);
 			setPageInfo(page);
 			refreshPreview();
 		});
