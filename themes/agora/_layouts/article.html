@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+	<?= $this->fetch('includes::head') ?>
+
+	<body class="article">
+		<?= $this->fetch('includes::navbar') ?>
+
+		<div class="wrapper" role="main" data-editable-background="fullBackground" data-editable-text-color="fullTextColor" data-save="page">
+			<article class="default" data-editable-background="background" data-editable-text-color="textColor" data-save="page">
+				<div class="container full-padded" data-editable=true>
+				<?php if(!empty($page->content)): ?>
+					<?= $page->content;?>
+				<?php else:?>
+					<?= '<h1>' . $this->e($page->title) . '</h1>' ?>
+					<?= 'Le contenu de ' . $this->e($page->title) . ' va ici...';?>
+				<?php endif;?>
+				</div>
+			</article>
+		</div>
+
+		<?= $this->fetch('includes::footer') ?>
+		<?= $this->fetch('includes::scripts') ?>
+	</body>
+</html>

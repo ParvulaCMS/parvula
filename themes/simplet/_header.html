@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title><?= $this->e($page->title . ' · ' . $site->title) ?></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<?php if (isset($site->description)) : ?>
+	<meta name="description" content="<?= $site->description ?>">
+	<?php endif ?>
+	<link rel="icon" type="image/x-icon" href="<?= $themeUrl ?>favicon.png" />
+
+	<?= Asset::css($themeUrl . 'main.css') ?>
+</head>
