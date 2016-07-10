@@ -1,22 +1,9 @@
 <?php
 
-class ConfigCrudCest
+class ConfigCrudCest extends APITest
 {
-	private $token;
-
-	public function _after(APITester $I) {
-		if (!empty($I->grabResponse())) {
-			$I->seeResponseIsJson();
-		}
-	}
-
 	public function boot(APITester $I) {
-		$I->amHttpAuthenticated('admin', 'fofo');
-		$I->sendGET('/login');
-		$I->seeResponseCodeIs(201);
-		$json = $I->grabResponse();
-
-		$this->token = json_decode($json)->token;
+		parent::boot($I);
 	}
 
 	public function testAuth(APITester $I) {

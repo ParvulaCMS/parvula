@@ -16,7 +16,7 @@ class AuthCest
 	}
 
 	public function checkLogin(APITester $I) {
-		$I->amHttpAuthenticated('admin', 'fofo');
+		$I->amHttpAuthenticated('admin', 'testpassword');
 		$I->sendGET('/login');
 		$I->seeResponseCodeIs(201);
 		$I->seeResponseIsJson();
