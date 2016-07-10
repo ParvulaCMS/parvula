@@ -20,7 +20,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 
 	if (empty($slug)) {
 		// Default page
-		$slug = $config->get('homePage');
+		$slug = $config->get('homePage', 'index');
 	}
 
 	$page = $pages->read($slug, true);

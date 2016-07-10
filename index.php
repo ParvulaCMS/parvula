@@ -25,6 +25,6 @@ define('_COMPONENTS_',  _STATIC_ . 'components/');
 define('_BIN_',         _APP_ . 'bin/');
 define('_THEMES_',      _ROOT_ . 'themes/');
 define('_PLUGINS_',     _ROOT_ . 'plugins/');
-define('_VERSION_',     '0.7.0-dev');
+define('_VERSION_',     '0.7.1');
 
 require_once _APP_ . 'bootstrap.php';
