@@ -30,7 +30,7 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Check if file exists
+	 * Check if a file or directory exists
 	 *
 	 * @param string $filename File name
 	 * @return boolean If file exists
@@ -143,6 +143,17 @@ class FilesSystem implements IOInterface {
 	 */
 	public function rename($oldName, $newName) {
 		return rename($this->workingDirectory . $oldName, $this->workingDirectory . $newName);
+	}
+
+	/**
+	 * Makes directory (including sub directories)
+	 *
+	 * @param  string  $path Directory to create
+	 * @param  integer $mode Optional
+	 * @return bool
+	 */
+	public function makeDirectory($path, $mode = 0777) {
+		return mkdir($this->workingDirectory . $path, $mode, true);
 	}
 
 	/**
