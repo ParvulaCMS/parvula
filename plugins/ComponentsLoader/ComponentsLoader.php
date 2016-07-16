@@ -9,7 +9,7 @@ class ComponentsLoader extends Plugin {
 
 	private $components = [];
 
-	const COMPONENTS_PATH = '_Components';
+	const COMPONENTS_PATH = '_components';
 
 	function onPage(&$page) {
 		foreach ($page->sections as $id => $section) {
