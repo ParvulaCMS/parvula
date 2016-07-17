@@ -26,7 +26,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	/**
 	 * @var array<Page>
 	 */
-	protected $data;
+	protected $data = [];
 
 	/**
 	 * @var PageRendererInterface
@@ -81,7 +81,9 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 			$sortType = SORT_ASC;
 		}
 
-		$this->arraySortByField($that->data, $sortField, $sortType);
+		if (!empty($this->data)) {
+			$this->arraySortByField($that->data, $sortField, $sortType);
+		}
 
 		return $that;
 	}
@@ -94,7 +96,10 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 */
 	public function sort(callable $fn) {
 		$that = clone $this;
-		usort($that->data, $fn);
+
+		if (!empty($this->data)) {
+			usort($that->data, $fn);
+		}
 
 		return $that;
 	}
@@ -187,7 +192,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * @return array<Page> Return an array of 'Page'
 	 */
 	public function toArray() {
-		if (!$this->data) {
+		if (empty($this->data)) {
 			return [];
 		}
 

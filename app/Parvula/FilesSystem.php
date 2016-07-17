@@ -2,6 +2,7 @@
 
 namespace Parvula;
 
+use SplFileInfo;
 use Parvula\Exceptions\IOException;
 
 /**
@@ -211,7 +212,7 @@ class FilesSystem implements IOInterface {
 	 */
 	public function index($dir = '', callable $fn = null, $filter = null) {
 		if ($filter === null) {
-			$filter = function ($current) {
+			$filter = function (SplFileInfo $current) {
 				return $current->getFilename()[0] !== '.';
 			};
 		}
