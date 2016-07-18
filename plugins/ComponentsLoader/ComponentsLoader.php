@@ -6,7 +6,6 @@ use Parvula\Plugin;
 
 // Dev.2
 class ComponentsLoader extends Plugin {
-
 	// Components in the page
 	private $components = [];
 
@@ -55,18 +54,20 @@ class ComponentsLoader extends Plugin {
 			$componentName = $component['section']->component;
 
 			// TODO check
-			if (method_exists($obj, 'header')) {
-				$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $componentName . '/')));
-			}
-			else if (isset($obj['header'])) {
+			// if (method_exists($obj, 'header')) {
+			// 	$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $componentName . '/')));
+			// }
+			// else
+			if (isset($obj['header'])) {
 				$header = $obj['header'];
 				$out = $this->appendToHeader($out, $header($this->getUri('../' . $componentName . '/')));
 			}
 
-			if (method_exists($obj, 'body')) {
-				$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $componentName . '/')));
-			}
-			else if (isset($obj['body'])) {
+			// if (method_exists($obj, 'body')) {
+			// 	$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $componentName . '/')));
+			// }
+			// else
+			if (isset($obj['body'])) {
 				$body = $obj['body'];
 				$out = $this->appendToBody($out, $body($this->getUri('../' . $componentName . '/')));
 			}

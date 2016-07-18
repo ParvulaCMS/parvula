@@ -58,14 +58,16 @@ $this->post('/{name}[/{sub}]', function ($req, $res, $args) use ($render, $getCo
 	return $this->api->json($res, $out);
 });
 
-function componentsInfos($req, $res, $args) {
-	$name = (isset($args['plugin']) ? $args['plugin'] . '/' : '') . $args['name'];
-	$filepath = getComponentPath($name);
-
+/**
+ * Get component info (will not call the render function)
+ * 
+ * @param  string $name Component name
+ * @param  string $filepath File path
+ * @return array Components info (props and name)
+ */
+function componentsInfo($name, $filepath) {
 	if (!is_readable($filepath)) {
-		return $this->api->json($res, [
-			'error' => 'Component does not exists.'
-		]);
+		return false;
 	}
 
 	ob_start();
@@ -73,7 +75,7 @@ function componentsInfos($req, $res, $args) {
 	ob_clean();
 
 	$data = [
-		'name' => basename($args['name']),
+		'name' => basename($name),
 		'props' => null,
 	];
 
@@ -85,9 +87,38 @@ function componentsInfos($req, $res, $args) {
 		$data['props'] = $infos['props'];
 	}
 
-	return $this->api->json($res, $infos);
-};
+	return $data;
+}
 
-// Get components infos
-$this->get('/{name}/props', 'componentsInfos');
-$this->get('/{plugin}/{name}/props', 'componentsInfos');
+// Get components info (in _components/{name}.php)
+$this->get('/{name}/props', function ($req, $res, $args) use ($getComponentPath) {
+	$filepath = $getComponentPath($args['name']);
+
+	if ($filepath === false) {
+		return $this->api->json($res, [
+			'error' => 'Component does not exists.'
+		]);
+	}
+
+	return $this->api->json(
+		$res,
+		componentsInfo($args['name'], $filepath)
+	);
+});
+
+// Get components info (in {plugin}/_components/{name}.php)
+$this->get('/{plugin}/{name}/props', function ($req, $res, $args) use ($getComponentPath) {
+	$name = $args['plugin'] . '/' . $args['name'];
+	$filepath = $getComponentPath($name);
+
+	if ($filepath === false) {
+		return $this->api->json($res, [
+			'error' => 'Component does not exists.'
+		]);
+	}
+
+	return $this->api->json(
+		$res,
+		componentsInfo($name, $filepath)
+	);
+});
