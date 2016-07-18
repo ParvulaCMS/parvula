@@ -6,7 +6,7 @@ if (!defined('_ROOT_')) {
 	define('_ROOT_', '');
 }
 if (!defined('_USER_ROOT_')) {
-	define('_USER_ROOT_', _ROOT_);
+	define('_USER_ROOT_', '');
 }
 if (!defined('_RESOURCE_ROOT_')) {
 	define('_RESOURCE_ROOT_', _ROOT_);
