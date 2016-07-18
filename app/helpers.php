@@ -12,14 +12,24 @@ function loadAliases(array $aliases) {
 	}
 }
 
-//@TODO cleaner
+/**
+ * Get plugin fully qualified class name
+ *
+ * @param  string $pluginName
+ * @return string
+ */
+function getPluginClassname($pluginName) {
+	return 'Plugins\\' . $pluginName . '\\' . $pluginName;
+}
+
+//@TODO to clean
 function getPluginList(array $except = []) {
 	$plugins = [];
 	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
 		while (false !== ($entry = readdir($handle))) {
-			if (strlen($entry) > 1 && $entry[0] !== "." && $entry[0] !== "_"
+			if (strlen($entry) > 1 && $entry[0] !== '.' && $entry[0] !== '_'
 				&& is_dir(_PLUGINS_ . $entry) && !in_array($entry, $except)) {
-				$plugins[] =  "Plugins\\" . $entry . "\\$entry";
+				$plugins[] = getPluginClassname($entry);
 			}
 		}
 		closedir($handle);
