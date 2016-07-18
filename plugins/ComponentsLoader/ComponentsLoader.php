@@ -76,18 +76,31 @@ class ComponentsLoader extends Plugin {
 
 	private function renderComponent($componentName, $section) {
 		if (is_readable($filePath = $this->getComponentPath($componentName))) {
-			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
+
+			$plugin = null;
+			if (($pluginName = dirname($componentName)) !== '.') {
+				$pluginsMediator = $this->app['plugins'];
+				$plugin = $pluginsMediator->getPlugin(getPluginClassname($pluginName));
+			}
+
+			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section, $plugin);
 		}
 	}
 
-	private function render($path, $uri, $section) {
-		$pluginsMediator = $this->app['plugins'];
-		$plugin = $pluginsMediator->getPlugin(getPluginClassname('Admin'));
-
+	/**
+	 * Render a given component
+	 *
+	 * @param  string  $path Component file path
+	 * @param  string  $uri
+	 * @param  Section $section
+	 * @param  mixed   $bind To bind $this to the given class
+	 * @return array
+	 */
+	private function render($path, $uri, $section, $bind = null) {
 		ob_start();
 		$arr = (function () use ($path, $uri, $section) {
 			return require $path;
-		})->bindTo($plugin)();
+		})->bindTo($bind)();
 		$out = ob_get_clean();
 
 		if ($arr !== (array) $arr) {
@@ -120,6 +133,7 @@ class ComponentsLoader extends Plugin {
 
 	/**
 	 * Get component path
+	 *
 	 * @param  string $component
 	 * @return string
 	 */

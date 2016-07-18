@@ -28,7 +28,7 @@ $this->get('', function ($req, $res) use ($componentsDir) {
 
 	foreach (glob(_PLUGINS_ . '*', GLOB_NOSORT | GLOB_ONLYDIR) as $pluginDir) {
 		if (is_dir($pluginDir . $componentsDir)) {
-			$acc += listComponents($pluginDir . $componentsDir);
+			$acc = array_merge(listComponents($pluginDir . $componentsDir), $acc);
 		}
 	}
 
@@ -60,7 +60,7 @@ $this->post('/{name}[/{sub}]', function ($req, $res, $args) use ($render, $getCo
 
 /**
  * Get component info (will not call the render function)
- * 
+ *
  * @param  string $name Component name
  * @param  string $filepath File path
  * @return array Components info (props and name)
