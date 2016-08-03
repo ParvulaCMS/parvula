@@ -7,9 +7,9 @@ use Parvula\Models\Page;
 use Parvula\Models\PagesFlatFiles;
 use Parvula\Exceptions\IOException;
 use Rs\Json\Patch;
+use Rs\Json\Patch\InvalidOperationException;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
-use Rs\Json\Patch\InvalidOperationException;
 
 $pages = $app['pages'];
 
@@ -136,34 +136,17 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 
 /**
  * @api {patch} /pages/:slug Update specific field(s) of a page
+ * @apiDescription For more details about json patch: https://tools.ietf.org/html/rfc6902
  * @apiName Patch page
  * @apiGroup Page
  *
- * @apiParamExample Request-Example:
- *     title=My new title
- *
- * @apiParamExample Request-Example:
- *     title=My new title&content=new content
- *
  * @apiSuccess (204) PagePatched
+ * @apiError (400) InvalidPatchDocumentJsonException
+ * @apiError (400) InvalidTargetDocumentJsonException
+ * @apiError (400) InvalidOperationException
+ * @apiError (404) PageDoesNotExists If page does not exists
  * @apiError (404) PageException If exception
  */
-// $this->patch('/{slug:.+}', function ($req, $res, $args) use ($pages) {
-// 	$pageArr = (array) $req->getParsedBody();
-//
-// 	try {
-// 		$pages->patch($args['slug'], $pageArr);
-// 	} catch (Exception $e) {
-// 		return $this->api->json($res, [
-// 			'error' => 'PageException',
-// 			'message' => $e->getMessage()
-// 		], 500);
-// 	}
-//
-// 	return $res->withStatus(204);
-// });
-
-// DEV
 $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	$parsedBody = $req->getParsedBody();
 	$bodyJson = json_encode($req->getParsedBody());
@@ -208,12 +191,13 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 			'error' => 'InvalidOperationException',
 			'message' => $e->getMessage()
 		], 400);
+	} catch (Exception $e) {
+		return $this->api->json($res, [
+			'error' => 'InvalidOperationException',
+			'message' => $e->getMessage()
+		], 500);
 	}
 });
-
-
-
-
 
 /*
  * @api {delete} /page/:slug Delete a page.
