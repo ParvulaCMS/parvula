@@ -61,7 +61,7 @@ class User extends Model
 	 * @return bool If the password is ok
 	 */
 	public function login($password) {
-		if (strlen($password) < 50) {
+		if (strlen($this->password) < 50) {
 			// Not hashed, TODO temporary
 			return $password === $this->password;
 		}

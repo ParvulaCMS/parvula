@@ -15,5 +15,5 @@ modules:
    enabled:
        - REST:
            depends: PhpBrowser
-           url: http://127.0.0.1/parvula/api/0
+           url: http://127.0.0.1:8000/api/0
            part: Json

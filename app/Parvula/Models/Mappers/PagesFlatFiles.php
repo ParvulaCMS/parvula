@@ -133,6 +133,11 @@ class PagesFlatFiles extends Pages
 				return false;
 			}
 
+			// If parent folder does not exists
+			if (!$fs->exists(dirname($pagePath))) {
+				$fs->makeDirectory(dirname($pagePath));
+			}
+
 			$data = $this->renderer->render($page);
 
 			if (!$fs->write($pagePath, $data)) {

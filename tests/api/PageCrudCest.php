@@ -1,16 +1,8 @@
 <?php
 
-class PageCrudCest
+class PageCrudCest extends APITest
 {
-	private $token;
-
 	private $page1;
-
-	public function _after(APITester $I) {
-		if (!empty($I->grabResponse())) {
-			$I->seeResponseIsJson();
-		}
-	}
 
 	public function boot(APITester $I) {
 		$this->page1 = [
@@ -29,12 +21,7 @@ class PageCrudCest
 			'slug'    => 'test1'
 		];
 
-		$I->amHttpAuthenticated('admin', 'fofo');
-		$I->sendGET('/login');
-		$I->seeResponseCodeIs(201);
-		$json = $I->grabResponse();
-
-		$this->token = json_decode($json)->token;
+		parent::boot($I);
 	}
 
 	// tests
