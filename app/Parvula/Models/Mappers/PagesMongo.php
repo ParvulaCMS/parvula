@@ -33,8 +33,6 @@ class PagesMongo extends Pages
 	function __construct(PageRendererInterface $pageRenderer, Collection $collection) {
 		parent::__construct($pageRenderer);
 		$this->collection = $collection;
-
-		$this->iter = new \IteratorIterator($collection->find());
 	}
 
 	public function getCollection() {
@@ -201,6 +199,7 @@ class PagesMongo extends Pages
 	}
 
 	public function rewind() {
+		$this->iter = new \IteratorIterator($this->collection->find());
 		return $this->iter->rewind();
 	}
 
