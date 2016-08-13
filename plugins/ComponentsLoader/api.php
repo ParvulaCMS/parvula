@@ -3,6 +3,8 @@
 use Parvula\FilesSystem;
 use Parvula\Models\Section;
 
+if (!defined('_APP_')) exit;
+
 $componentsDir = '/_components';
 
 /**

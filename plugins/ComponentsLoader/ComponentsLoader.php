@@ -4,6 +4,8 @@ namespace Plugins\ComponentsLoader;
 use Exception;
 use Parvula\Plugin;
 
+if (!defined('_APP_')) exit;
+
 // Dev.2
 class ComponentsLoader extends Plugin {
 	// Components in the page

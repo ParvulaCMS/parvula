@@ -5,6 +5,8 @@ namespace Plugins\Admin;
 use Parvula\Plugin;
 use Parvula\Config;
 
+if (!defined('_APP_')) exit;
+
 class Admin extends Plugin
 {
 	function onRouter(&$router) {
