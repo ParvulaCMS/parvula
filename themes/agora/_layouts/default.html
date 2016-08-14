@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+	<?= $this->fetch('includes::head') ?>
+
+	<body class="push-body">
+
+		<?= $this->fetch('includes::navbar') ?>
+
+		<main>
+			<article class="default" data-editable-background="background" data-editable-text-color="textColor" data-save="page">
+
+				<?php if ($page->getSections()):?>
+				<?php foreach ($page->sections as $id => $section):?>
+
+					<?php if (isset($section->component) && $section->component === 'cover'):?>
+
+					<?= $section->content ?>
+
+					<?php elseif (isset($section->component) && $section->component === 'grid'):?>
+					<div class="container full-padded" data-section="<?= $id ?>" data-editable-grid="<?= $id ?>">
+						<?php $columns = $section->columns; ?>
+						<div class="row">
+						<?php foreach($columns as $column) :?>
+							<div class="size-<?= $column['size'] ?> column">
+								<?= $column['data'] ?>
+							</div>
+						<?php endforeach;?>
+						</div>
+					</div>
+					<?php elseif (isset($section->component) && $section->component === 'gist'):?>
+
+				<div class="container full-padded" data-section="<?= $id ?>">
+					<?= $section->content ?>
+				</div>
+
+				<?php else: ?>
+				<div class="container full-padded" data-section="<?= $id ?>">
+					<div data-editable="<?= $id ?>">
+					<?= $section->content ?>
+					</div>
+				</div>
+				<?php endif;?>
+
+				<?php endforeach;?>
+				<?php endif; ?>
+
+			</article>
+		</main>
+
+		<?= $this->fetch('includes::footer') ?>
+		<?= $this->fetch('includes::scripts') ?>
+
+	</body>
+
+</html>

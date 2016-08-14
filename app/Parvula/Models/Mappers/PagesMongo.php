@@ -2,6 +2,7 @@
 
 namespace Parvula\Models\Mappers;
 
+use MongoDB\Collection;
 use Parvula\Models\Page;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
@@ -19,6 +20,8 @@ use Parvula\PageRenderers\PageRendererInterface;
 class PagesMongo extends Pages
 {
 
+	protected $iter;
+
 	/**
 	 * Constructor
 	 *
@@ -27,7 +30,7 @@ class PagesMongo extends Pages
 	 * @param string $fileExtension File extension
 	 * @param
 	 */
-	function __construct(PageRendererInterface $pageRenderer, $collection) {
+	function __construct(PageRendererInterface $pageRenderer, Collection $collection) {
 		parent::__construct($pageRenderer);
 		$this->collection = $collection;
 	}
@@ -193,5 +196,26 @@ class PagesMongo extends Pages
 			$exceptions = [];
 		}
 		return $this->collection->distinct('slug', ['hidden' => ['$nin' => $exceptions]]);
+	}
+
+	public function rewind() {
+		$this->iter = new \IteratorIterator($this->collection->find());
+		return $this->iter->rewind();
+	}
+
+	public function current() {
+		return $this->renderer->parse($this->iter->current());
+	}
+
+	public function key() {
+		return $this->iter->key();
+	}
+
+	public function next() {
+		return $this->iter->next();
+	}
+
+	public function valid() {
+		return $this->iter->valid();
 	}
 }

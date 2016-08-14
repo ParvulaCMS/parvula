@@ -1,10 +1,12 @@
-# Parvula
+# Exclude some Parvula folders
 plugins/*
 static/*
 themes/*
 
-# but include
+# but include default themes & plugins
 !plugins/Admin/
+!plugins/_components/
+!plugins/ComponentsLoader/
 !themes/galaxy/
 !themes/simple/
 

@@ -19,6 +19,11 @@ function println($str, $level = 0) {
 	echo $str . PHP_EOL;
 }
 
+if (!defined('_ROOT_')) {
+	println('Please run the command from index.php like `php index.php ' . basename($argv[0]) . '`');
+	exit;
+}
+
 $errors = 0;
 $checkAPI = true;
 if (isset($argv[1])) {

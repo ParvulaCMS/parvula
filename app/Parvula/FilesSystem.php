@@ -2,6 +2,7 @@
 
 namespace Parvula;
 
+use SplFileInfo;
 use Parvula\Exceptions\IOException;
 
 /**
@@ -30,7 +31,7 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Check if file exists
+	 * Check if a file or directory exists
 	 *
 	 * @param string $filename File name
 	 * @return boolean If file exists
@@ -146,6 +147,17 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
+	 * Makes directory (including sub directories)
+	 *
+	 * @param  string  $path Directory to create
+	 * @param  integer $mode Optional
+	 * @return bool
+	 */
+	public function makeDirectory($path, $mode = 0777) {
+		return mkdir($this->workingDirectory . $path, $mode, true);
+	}
+
+	/**
 	 * Try to change the mode of the specified file to that given in mode
 	 *
 	 * @param  string $filename
@@ -200,7 +212,7 @@ class FilesSystem implements IOInterface {
 	 */
 	public function index($dir = '', callable $fn = null, $filter = null) {
 		if ($filter === null) {
-			$filter = function ($current) {
+			$filter = function (SplFileInfo $current) {
 				return $current->getFilename()[0] !== '.';
 			};
 		}

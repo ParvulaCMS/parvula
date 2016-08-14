@@ -20,7 +20,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 
 	if (empty($slug)) {
 		// Default page
-		$slug = $config->get('homePage');
+		$slug = $config->get('homePage', 'index');
 	}
 
 	$page = $pages->read($slug, true);
@@ -62,6 +62,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 			},
 		'site'     => $config->toObject(),
 		'page'     => $page,
+		'theme'    => $theme,
 		'config'   => $app['fileParser']->read(_CONFIG_ . 'user.yml'), //TODO tests
 		'__time__' => function () use ($config) {
 			// useful to benchmark

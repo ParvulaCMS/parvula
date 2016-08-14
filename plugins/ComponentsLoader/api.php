@@ -3,24 +3,49 @@
 use Parvula\FilesSystem;
 use Parvula\Models\Section;
 
-$path = _PLUGINS_ . '/_Components';
+if (!defined('_APP_')) exit;
 
-// list components
-$this->get('', function ($req, $res) use ($path) {
+$componentsDir = '/_components';
+
+/**
+ * List components from the given folder
+ * @param string $path
+ * @return array Components files
+ */
+function listComponents($path) {
 	$acc = [];
-	foreach(glob($path . '/*.php', GLOB_NOSORT) as $file) {
-		$file = basename($file);
+	foreach (glob($path . '/*.php', GLOB_NOSORT) as $file) {
+		$file = str_replace(_PLUGINS_, '', dirname($path) . '/') . basename($file, '.php');
 		if ($file[0] !== '_') {
 			$acc[] = $file;
 		}
+	}
+
+	return $acc;
+}
+
+// List components
+$this->get('', function ($req, $res) use ($componentsDir) {
+	$acc = [];
+
+	foreach (glob(_PLUGINS_ . '*', GLOB_NOSORT | GLOB_ONLYDIR) as $pluginDir) {
+		if (is_dir($pluginDir . $componentsDir)) {
+			$acc = array_merge(listComponents($pluginDir . $componentsDir), $acc);
+		}
+	}
+
+	if (is_dir(_PLUGINS_ . $componentsDir)) {
+		$acc = array_merge(listComponents(_PLUGINS_ . $componentsDir), $acc);
 	}
 
 	return $this->api->json($res, $acc);
 });
 
 // Get components infos (rendered with default values)
-$this->post('/{name}', function ($req, $res, $args) use ($path, $components, $render) {
-	$filepath = $path . '/' . basename($args['name']) . '.php';
+$this->post('/{name}[/{sub}]', function ($req, $res, $args) use ($render, $getComponentPath) {
+	$name = $args['name'] . (isset($args['sub']) ? '/' . $args['sub'] : '');
+
+	$filepath = $getComponentPath($name);
 
 	if (!is_readable($filepath)) {
 		return $this->api->json($res, [
@@ -30,19 +55,21 @@ $this->post('/{name}', function ($req, $res, $args) use ($path, $components, $re
 
 	$section = new Section($req->getParsedBody());
 
-	$out = $render($args['name'], $section);
+	$out = $render($name, $section);
 
 	return $this->api->json($res, $out);
 });
 
-// Get components infos
-$this->get('/{name}/props', function ($req, $res, $args) use ($path, $components) {
-	$filepath = $path . '/' . basename($args['name']) . '.php';
-
+/**
+ * Get component info (will not call the render function)
+ *
+ * @param  string $name Component name
+ * @param  string $filepath File path
+ * @return array Components info (props and name)
+ */
+function componentsInfo($name, $filepath) {
 	if (!is_readable($filepath)) {
-		return $this->api->json($res, [
-			'error' => 'Component does not exists.'
-		]);
+		return false;
 	}
 
 	ob_start();
@@ -50,7 +77,7 @@ $this->get('/{name}/props', function ($req, $res, $args) use ($path, $components
 	ob_clean();
 
 	$data = [
-		'name' => basename($args['name']),
+		'name' => basename($name),
 		'props' => null,
 	];
 
@@ -62,5 +89,38 @@ $this->get('/{name}/props', function ($req, $res, $args) use ($path, $components
 		$data['props'] = $infos['props'];
 	}
 
-	return $this->api->json($res, $infos);
+	return $data;
+}
+
+// Get components info (in _components/{name}.php)
+$this->get('/{name}/props', function ($req, $res, $args) use ($getComponentPath) {
+	$filepath = $getComponentPath($args['name']);
+
+	if ($filepath === false) {
+		return $this->api->json($res, [
+			'error' => 'Component does not exists.'
+		]);
+	}
+
+	return $this->api->json(
+		$res,
+		componentsInfo($args['name'], $filepath)
+	);
+});
+
+// Get components info (in {plugin}/_components/{name}.php)
+$this->get('/{plugin}/{name}/props', function ($req, $res, $args) use ($getComponentPath) {
+	$name = $args['plugin'] . '/' . $args['name'];
+	$filepath = $getComponentPath($name);
+
+	if ($filepath === false) {
+		return $this->api->json($res, [
+			'error' => 'Component does not exists.'
+		]);
+	}
+
+	return $this->api->json(
+		$res,
+		componentsInfo($name, $filepath)
+	);
 });

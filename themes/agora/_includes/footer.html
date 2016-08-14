@@ -1,0 +1,27 @@
+<footer class="site-footer" data-editable-background="footerBackground" data-editable-text-color="footerTextColor" data-save="config/user">
+
+	<div class="container">
+
+		<h2 data-update="site.title"><?= $this->e($site->title) ?></h2>
+
+		<ul class="sitemap" data-update="navbar">
+			<?php foreach ($pages as $p) :?>
+			<?php if (!$p->parent) :?>
+			<li>
+				<a href="<?= $baseUrl . $p->slug ?>" data-update-text-color=true><?= $this->e($p->title) ?></a>
+				<?php if ($p->getChildren()) :?>
+				<ul>
+				<?php foreach($p->getChildren()->visible() as $subpage):?>
+					<li>
+						<a href="<?= $baseUrl . $subpage->slug ?>" data-update-text-color=true><?= $this->e($subpage->title) ?></a>
+					</li>
+				<?php endforeach;?>
+				</ul>
+				<?php endif;?>
+			</li>
+			<?php endif;?>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+
+</footer>

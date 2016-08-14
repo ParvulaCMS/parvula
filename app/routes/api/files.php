@@ -3,6 +3,7 @@
 namespace Parvula;
 
 use Exception;
+use SplFileInfo;
 use RuntimeException;
 use Parvula\FilesSystem;
 use Parvula\Exceptions\IOException;
@@ -16,12 +17,30 @@ $fs = new FilesSystem(_UPLOADS_);
  * @apiName Index Files
  * @apiGroup Files
  *
+ * @apiParam {string} [full] Optional You can pass `?full` to get more details
+ *
  * @apiSuccess (200) Array Array of files paths
  */
 $this->get('', function ($req, $res) use ($fs) {
 	///https://weierophinney.github.io/2015-10-20-PSR-7-and-Middleware/#/35
 	//->getUploadedFiles
 	try {
+		// Detailed view
+		if (isset($req->getQueryParams()['full'])) {
+			$files = [];
+			$fs->index('', function (SplFileInfo $file, $cdir) use (&$files) {
+				$files[] = [
+					'filename' => $file->getFileName(),
+					'path' => (string) $cdir,
+					'lastedit' => $file->getMTime(),
+					'size' => $file->getSize(),
+					'type' => $file->getType()
+				];
+			});
+
+			return $this->api->json($res, $files);
+		}
+
 		return $this->api->json($res, $fs->index());
 	} catch (IOException $e) {
 		return $this->api->json($res, [

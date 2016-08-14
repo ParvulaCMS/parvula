@@ -220,6 +220,8 @@ $app['mongodb'] = function (Container $c) {
 		return $db;
 	}
 
+	throw new Exception('MongoDB client not found, please install `mongodb/mongodb`');
+
 	return false;
 };
 
