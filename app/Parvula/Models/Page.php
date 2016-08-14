@@ -5,14 +5,14 @@ namespace Parvula\Models;
 use Closure;
 use DateTime;
 use Parvula\Models\Section;
-use Parvula\Models\Mappers\Pages;
+use Parvula\Repositories\PageRepository;
 use Parvula\Exceptions\PageException;
 
 /**
  * This class represents a Page
  *
  * @package Parvula
- * @version 0.7.0
+ * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -45,7 +45,7 @@ class Page extends Model
 	public $parent;
 
 	/**
-	 * @var Pages Children pages (optional)
+	 * @var PageRepository Children pages (optional)
 	 */
 	public $children;
 
@@ -203,7 +203,7 @@ class Page extends Model
 	 *
 	 * @param array $children Array of Page
 	 */
-	public function setChildren(Pages $children) {
+	public function setChildren(PageRepository $children) {
 		$this->children = $children;
 	}
 
@@ -242,7 +242,7 @@ class Page extends Model
 	/**
 	 * Get page children
 	 *
-	 * @return Pages Pages mapper
+	 * @return PageRepository Pages
 	 */
 	public function getChildren() {
 		if ($this->children) {

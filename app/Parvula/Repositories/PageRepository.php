@@ -1,24 +1,15 @@
 <?php
 
-namespace Parvula\Models\Mappers;
+namespace Parvula\Repositories;
 
 use Iterator;
-use Parvula\Models\Page;
+use Parvula\BaseRepository;
 use Parvula\IterableTrait;
 use Parvula\ArrayableInterface;
-use Parvula\Models\CRUDInterface;
+use Parvula\Models\Page;
 use Parvula\PageRenderers\PageRendererInterface;
 
-/**
- * Page Manager
- *
- * @package Parvula
- * @version 0.7.0
- * @since 0.5.0
- * @author Fabien Sa
- * @license MIT License
- */
-abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
+abstract class PageRepository extends BaseRepository implements Iterator, ArrayableInterface
 {
 
 	use IterableTrait;
@@ -48,8 +39,8 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * If you want an array of Page use `toArray()` method
 	 * Exemple: `$pages->all()->toArray();`
 	 *
-	 * @param string ($path) Pages in a specific sub path
-	 * @return Pages
+	 * @param string ($path) PageRepository in a specific sub path
+	 * @return PageRepository
 	 */
 	public function all($path = '') {
 		$that = clone $this;
@@ -72,7 +63,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 *
 	 * @param integer ($sortType) Sort order
 	 * @param string ($sortField) Sorting field
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function order($sortType = SORT_ASC, $sortField = 'slug') {
 		$that = clone $this;
@@ -92,7 +83,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * Sort pages using a user-defined comparison function
 	 *
 	 * @param  callable $fn
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function sort(callable $fn) {
 		$that = clone $this;
@@ -107,7 +98,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	/**
 	 * Show visible pages
 	 *
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function visible() {
 		return $this->visibility(true);
@@ -116,7 +107,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	/**
 	 * Show hidden pages
 	 *
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function hidden() {
 		return $this->visibility(false);
@@ -126,7 +117,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * Filter pages by visibility (hidden or visible)
 	 *
 	 * @param  boolean $visible
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function visibility($visible) {
 		return $this->filter(function ($page) use ($visible) {
@@ -140,7 +131,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	/**
 	 * Show pages without a parent (the 'root' pages)
 	 *
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function withoutParent() {
 		return $this->filter(function (Page $page) {
@@ -151,7 +142,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	/**
 	 * Show pages with a parent (the children pages)
 	 *
-	 * @return Pages
+	 * @return PageRepository
 	 */
 	public function withParent() {
 		return $this->filter(function (Page $page) {
@@ -171,7 +162,7 @@ abstract class Pages implements Iterator, CRUDInterface, ArrayableInterface
 	 * ```
 	 *
 	 * @param callable $fn
-	 * @return Pages A clone of current object with filtered pages
+	 * @return PageRepository A clone of current object with filtered pages
 	 */
 	public function filter(callable $fn) {
 		$that = clone $this;

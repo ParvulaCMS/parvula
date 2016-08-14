@@ -1,13 +1,12 @@
 <?php
 
-namespace Parvula\Models\Mappers;
+namespace Parvula\Repositories;
 
-use Parvula\Models\User;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
-use Parvula\Models\Mappers\AbstractDataMapper;
+use Parvula\Models\User;
 
-class UsersMongo
+class UserRepositoryMongo extends UserRepository
 {
 	/**
 	 * @var array Array of User

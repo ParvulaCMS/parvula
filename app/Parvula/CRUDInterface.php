@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Models;
+namespace Parvula;
 
 /**
  * CRUDI Interface

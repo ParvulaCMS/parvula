@@ -137,9 +137,8 @@ $app['fileParser'] = function () {
 };
 
 $app['plugins'] = function (Container $c) {
-	$pluginMediator = new Parvula\PluginMediator;
-	$pluginMediator->attach(getPluginList($c['config']->get('disabledPlugins')));
-	return $pluginMediator;
+	return (new Parvula\PluginMediator)
+		->attach(getPluginList($c['config']->get('disabledPlugins')));
 };
 
 $app['session'] = function (Container $c) {
@@ -165,14 +164,12 @@ $app['usersession'] = function (Container $c) {
 	return false;
 };
 
-//-- ModelMapper --
-
 $app['pageRenderer'] = function (Container $c) {
 	$contentParser = $c['config']->get('contentParser');
-	$pageRenderer = $c['config:mapper']->get('pageRenderer');
+	$pageRenderer = $c['config:database']->get('pageRenderer');
 
-	$headParser = $c['config:mapper']->get('headParser');
-	$options = $c['config:mapper']->get('pageRendererOptions');
+	$headParser = $c['config:database']->get('headParser');
+	$options = $c['config:database']->get('pageRendererOptions');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new $contentParser, $options);
@@ -182,8 +179,8 @@ $app['pageRenderer'] = function (Container $c) {
 };
 
 $app['pageRendererRAW'] = function (Container $c) {
-	$headParser = $c['config:mapper']->get('headParser');
-	$pageRenderer = $c['config:mapper']->get('pageRenderer');
+	$headParser = $c['config:database']->get('headParser');
+	$pageRenderer = $c['config:database']->get('pageRenderer');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new Parvula\ContentParser\None);
@@ -192,89 +189,90 @@ $app['pageRendererRAW'] = function (Container $c) {
 	return new $pageRenderer(new $headParser, new Parvula\ContentParser\None);
 };
 
+//-- Databases --
+
 $app['mongodb'] = function (Container $c) {
-	if (class_exists('MongoDB\\Client')) {
-		$fp = $c['fileParser'];
-		$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
-		$uri = "mongodb://";
-
-		if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
-			$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}@";
-		}
-
-		if (isset($config->get('mongodb')['address'])) {
-			$uri .= $config->get('mongodb')['address'];
-		} else {
-			$uri .= '127.0.0.1';
-		}
-
-		if (isset($config->get('mongodb')['port'])) {
-			$uri .= ":{$config->get('mongodb')['port']}";
-		}
-
-		$uri .= "/{$config->get('mongodb')['name']}";
-
-		$client = new MongoDB\Client($uri);
-		$db = $client->{$config->get('mongodb')['name']};
-
-		return $db;
+	if (!class_exists('MongoDB\\Client')) {
+		throw new Exception('MongoDB client not found, please install `mongodb/mongodb`');
 	}
 
-	throw new Exception('MongoDB client not found, please install `mongodb/mongodb`');
+	$fp = $c['fileParser'];
+	$config = new Config($fp->read(_CONFIG_ . 'database.yml'));
+	$uri = "mongodb://";
 
-	return false;
+	if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
+		$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}@";
+	}
+
+	if (isset($config->get('mongodb')['address'])) {
+		$uri .= $config->get('mongodb')['address'];
+	} else {
+		$uri .= '127.0.0.1';
+	}
+
+	if (isset($config->get('mongodb')['port'])) {
+		$uri .= ":{$config->get('mongodb')['port']}";
+	}
+
+	$uri .= "/{$config->get('mongodb')['name']}";
+
+	$client = new MongoDB\Client($uri);
+	$db = $client->{$config->get('mongodb')['name']};
+
+	return $db;
 };
 
-$app['mappers'] = function (Container $c) {
-	$conf = $c['config:mapper'];
-	$mapperName = $conf->get('mapperName');
+$app['repositories'] = function (Container $c) {
+	$conf = $c['config:database'];
+	$dbType = $c['config']->get('database');
 
-	$mappers = [
+	$databases = [
 		'mongodb' => [
 			'pages' => function () use ($c) {
-				return new Parvula\Models\Mappers\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
+				return new Parvula\Repositories\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Models\Mappers\UsersMongo($c['mongodb']->users);
+				return new Parvula\Repositories\UserRepositoryMongo($c['mongodb']->users);
 			}
 		],
 		'flatfiles' => [
 			'pages' => function () use ($c, $conf) {
-				return new Parvula\Models\Mappers\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+				return new Parvula\Repositories\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Models\Mappers\Users($c['fileParser'], _USERS_ . '/users.php');
+				return new Parvula\Repositories\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		]
 	];
 
-	if (!isset($mappers[$mapperName])) {
+	if (!isset($databases[$dbType])) {
 		throw new Exception(
-			'Mapper `' . htmlspecialchars($mapperName) . '` does not exists, please edit your settings.');
+			'Repository `' . htmlspecialchars($dbType) . '` does not exists, please edit your settings.');
 
 	}
 
-	return $mappers[$mapperName];
+	return $databases[$dbType];
 };
 
-$app['config:mapper'] = function (Container $c) {
-	$fp = $c['fileParser'];
-	$mappersConfig = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
-	$mapperName = $mappersConfig->get('mapper');
+$app['config:database'] = function (Container $c) {
+	$dbType = $c['config']->get('database');
 
-	$conf = new Config($mappersConfig->get($mapperName));
-	$conf->set('mapperName', $mapperName);
+	$fp = $c['fileParser'];
+	$databaseConfig = new Config($fp->read(_CONFIG_ . 'database.yml'));
+
+	$conf = new Config($databaseConfig->get($dbType));
+	$conf->set('dbType', $dbType);
 
 	return $conf;
 };
 
 // Aliases
-$app['pages'] = $app['mappers']['pages'];
+$app['pages'] = $app['repositories']['pages'];
 
-$app['users'] = $app['mappers']['users'];
+$app['users'] = $app['repositories']['users'];
 
 $app['themes'] = function (Container $c) {
-	return new Parvula\Models\Mappers\Themes(_THEMES_, $c['fileParser']);
+	return new Parvula\Repositories\ThemeRepository(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $c) {

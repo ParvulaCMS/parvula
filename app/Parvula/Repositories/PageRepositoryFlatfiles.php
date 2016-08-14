@@ -1,24 +1,16 @@
 <?php
 
-namespace Parvula\Models\Mappers;
+namespace Parvula\Repositories;
 
+use Parvula\BaseRepository;
 use Parvula\Models\Page;
 use Parvula\FilesSystem as Files;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 
-/**
- * Flat file pages
- *
- * @package Parvula
- * @version 0.7.0
- * @since 0.5.0
- * @author Fabien Sa
- * @license MIT License
- */
-class PagesFlatFiles extends Pages
-{
+class PageRepositoryFlatFiles extends PageRepository {
+
 	/**
 	 * @var string Pages folder
 	 */

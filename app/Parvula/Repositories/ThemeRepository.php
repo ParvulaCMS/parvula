@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Models\Mappers;
+namespace Parvula\Repositories;
 
 use Parvula\IOInterface;
+use Parvula\CRUDInterface;
 use Parvula\FilesSystem as Files;
 use Parvula\Models\Theme;
-use Parvula\Models\CRUDInterface;
 use Parvula\Exceptions\NotFoundException;
 
 /**
@@ -17,7 +17,7 @@ use Parvula\Exceptions\NotFoundException;
  * @author Fabien Sa
  * @license MIT License
  */
-class Themes implements CRUDInterface
+class ThemeRepository implements CRUDInterface
 {
 
 	/**

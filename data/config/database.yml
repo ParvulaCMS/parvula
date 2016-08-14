@@ -1,16 +1,13 @@
 # ------------------------------ #
-# Mappers specific settings
+# Databases specific settings
 # ------------------------------ #
-
-# Mapper [flatfiles, mongodb]
-mapper: flatfiles
 
 flatfiles:
     # Pages mapper (must implement CRUDInterface)
-    pagesMapper: Parvula\Models\Mappers\PagesFlatFiles
+    # pagesMapper: Parvula\Models\Mappers\PagesFlatFiles
 
     # Class to parse pages metadata (must implement ParserInterface)
-    headParser: \Parvula\Parsers\Yaml
+    headParser: Parvula\Parsers\Yaml
 
     # Class to fetch/render pages (must implement PageRendererInterface)
     pageRenderer: Parvula\PageRenderers\FlatFilesPageRenderer
@@ -40,7 +37,7 @@ mongodb:
     # password: mySecretPassword
 
     # Pages mapper (must implement CRUDInterface)
-    pagesMapper: Parvula\Models\Mappers\PagesMongo
+    # pagesMapper: Parvula\Models\Mappers\PagesMongo
 
     # Class to fetch/render pages (must implement PageRendererInterface)
     pageRenderer: Parvula\PageRenderers\DatabasePageRenderer

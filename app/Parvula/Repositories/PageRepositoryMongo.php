@@ -1,8 +1,9 @@
 <?php
 
-namespace Parvula\Models\Mappers;
+namespace Parvula\Repositories;
 
 use MongoDB\Collection;
+use Parvula\BaseRepository;
 use Parvula\Models\Page;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
@@ -12,12 +13,12 @@ use Parvula\PageRenderers\PageRendererInterface;
  * Mongo pages mapper
  *
  * @package Parvula
- * @version 0.7.0
+ * @version 0.8.0
  * @since 0.7.0
  * @author psych0pat
  * @license MIT License
  */
-class PagesMongo extends Pages
+class PageRepositoryMongo extends PageRepository
 {
 
 	protected $iter;
