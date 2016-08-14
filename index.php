@@ -28,6 +28,6 @@ define('_UPLOADS_',     _STATIC_ . 'files/');
 define('_BIN_',         _APP_ . 'bin/');
 define('_THEMES_',      _RESOURCE_ROOT_ . 'themes/');
 define('_PLUGINS_',     _RESOURCE_ROOT_ . 'plugins/');
-define('_VERSION_',     '0.7.3');
+define('_VERSION_',     '0.7.4');
 
 require_once _APP_ . 'bootstrap.php';
