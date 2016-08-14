@@ -103,7 +103,7 @@ class ComponentsLoader extends Plugin {
 		$arr = (function () use ($path, $uri, $section) {
 			return require $path;
 		});
-		$arr->bindTo($bind);
+		$arr = $arr->bindTo($bind);
 		$arr();
 		$out = ob_get_clean();
 
