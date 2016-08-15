@@ -4,9 +4,12 @@ static/*
 themes/*
 
 # but include default themes & plugins
+!.htaccess
+!plugins/.htaccess
 !plugins/Admin/
 !plugins/_components/
 !plugins/ComponentsLoader/
+!themes/.htaccess
 !themes/galaxy/
 !themes/simple/
 
@@ -51,4 +54,3 @@ tests/_output
 tests/_support/_generated
 tests/unit
 tests/functional
-

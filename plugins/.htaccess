@@ -1,0 +1,4 @@
+<IfModule mod_rewrite.c>
+    ## Block access to specific extensions
+    RewriteRule ^(.*)\.(php|sh|bat|log|html|htm)$ error [F]
+</IfModule>

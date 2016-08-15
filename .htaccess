@@ -9,9 +9,6 @@
     RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
     RewriteRule . %1/%2 [R=301,L]
 
-    ## Block access to specific files
-    RewriteRule ^(data|Parvula|themes)/(.*)\.(txt|md|html|yml|yaml|yml|xml|json|php|sh|bat|log)$ error [F]
-    RewriteRule ^plugins/(.*)\.(php|sh|bat|log)$ error [F]
     # Block dot files
     RewriteRule (^|/)\. - [F]
 
@@ -19,12 +16,26 @@
         Deny from all
     </FilesMatch>
 
+    ## Block everything in those folders
+    RewriteRule ^app/.* index.php [L,NC]
+    RewriteRule ^data/.* index.php [L,NC]
+    RewriteRule ^tests/.* index.php [L,NC]
+    RewriteRule ^static/.* index.php [L,NC]
+    RewriteRule ^vendor/.* index.php [L,NC]
+
+    ## Block all PHP files, except index
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} \.php$
+    RewriteRule !^index.php index.php [L,NC]
+
     ## Handle front controller
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 
-    RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    # Handle authorization header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
 
 # Disable directory browsing
