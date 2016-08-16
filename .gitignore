@@ -6,6 +6,7 @@ themes/*
 # but include default themes & plugins
 !.htaccess
 !plugins/.htaccess
+!plugins/plugins.yml
 !plugins/Admin/
 !plugins/_components/
 !plugins/ComponentsLoader/

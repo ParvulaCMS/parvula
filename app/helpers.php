@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Load aliases
  *
@@ -35,7 +37,10 @@ function getPluginList(array $except = []) {
 		closedir($handle);
 	}
 
-	return $plugins;
+	// TEST - TODO clean parser
+	$pluginsExtra = (array) Yaml::parse(file_get_contents(_PLUGINS_ . 'plugins.yml'));
+
+	return array_merge($plugins, $pluginsExtra);
 }
 
 /**
