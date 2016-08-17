@@ -20,6 +20,7 @@ define('_VENDOR_',      _ROOT_ . 'vendor/');
 define('_PAGES_',       _DATA_ . 'pages/');
 define('_CONFIG_',      _DATA_ . 'config/');
 define('_USERS_',       _DATA_ . 'users/');
+define('_CACHE_',       _DATA_ . 'cache/');
 define('_LOGS_',        _DATA_ . 'logs/');
 
 // Static

@@ -26,6 +26,7 @@ $app['config'] = function (Container $c) {
 $app['router'] = function (Container $c) {
 	$slimConf = [
 		'settings' => [
+			'routerCacheFile' => _CACHE_ . 'routes.php',
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
 		'api' => new Parvula\Router\APIRender(),
@@ -127,10 +128,10 @@ $app['errorHandler'] = function (Container $c) {
 // To parse serialized files in multiple formats
 $app['fileParser'] = function () {
 	$parsers = [
-		'json' => new \Parvula\Parsers\Json,
-		'yaml' => new \Parvula\Parsers\Yaml,
-		'yml' => new \Parvula\Parsers\Yaml,
-		'php' => new \Parvula\Parsers\Php
+		'json' => new Parvula\Parsers\Json,
+		'yaml' => new Parvula\Parsers\Yaml,
+		'yml' => new Parvula\Parsers\Yaml,
+		'php' => new Parvula\Parsers\Php
 	];
 
 	return new Parvula\FileParser($parsers);
