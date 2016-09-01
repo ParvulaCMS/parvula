@@ -61,7 +61,8 @@ Parvula::setRequest($router->getContainer()['request']);
 
 // Load plugins
 $plugins = $app['plugins'];
-$plugins->trigger('bootstrap', [$app]);
+$plugins->trigger('bootstrap', [$app]); // depreciated
+$plugins->trigger('boot', [$app]);
 $plugins->trigger('load');
 
 // Load routes
