@@ -71,9 +71,9 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		'content'  => $page->content
 	]);
 
-	$plugins->trigger('preRender', [&$layout]);
+	$plugins->trigger('preRender', [&$layout, &$page]);
 	$out = $view->render($layout);
-	$plugins->trigger('postRender', [&$out]);
+	$plugins->trigger('postRender', [&$out, &$page]);
 
 	return $res->write($out);
 });

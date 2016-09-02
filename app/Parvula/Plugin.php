@@ -126,8 +126,8 @@ abstract class Plugin
 	/**
 	 * Append string to the header element (<head>)
 	 *
-	 * @param  string $html
-	 * @param  string $append
+	 * @param  string $html Html to modify
+	 * @param  string $append Html to append
 	 * @return string Html ouput
 	 */
 	protected function appendToHeader($html, $append) {
@@ -135,10 +135,10 @@ abstract class Plugin
 	}
 
 	/**
-	 * Append string to the body element (<body>)
+	 * Append string to the end of the body element (right before </body>)
 	 *
-	 * @param  string $html
-	 * @param  string $append
+	 * @param  string $html Html to modify
+	 * @param  string $append Html to append
 	 * @return string Html ouput
 	 */
 	protected function appendToBody($html, $append) {
