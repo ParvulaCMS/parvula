@@ -33,7 +33,7 @@ if (isset($argv[1])) {
 $mustExists = [
 	_CONFIG_ . 'site.yml',
 	_CONFIG_ . 'system.yml',
-	_CONFIG_ . 'mappers.yml',
+	_CONFIG_ . 'database.yml',
 	_ROOT_ . 'composer.json',
 	_ROOT_ . 'index.php'
 ];
@@ -100,9 +100,9 @@ $errors += test('Check if needed modules are loaded', function () use ($modulesN
 });
 
 if ($checkAPI) {
-	$mapperConf = $app['config:mapper'];
+	$dbConf = $app['config:database'];
 
-	if ($mapperConf->get('mapperName') === 'mongodb') {
+	if ($dbConf->get('database') === 'mongodb') {
 		// Mongo
 		// TODO
 	} else {
