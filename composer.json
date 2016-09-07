@@ -46,7 +46,8 @@
         "preferred-install": "dist"
     },
     "scripts": {
-        "doctor": "php index.php doctor"
+        "doctor": "php index.php doctor",
+        "test": "vendor/bin/codecept run"
     },
     "extra": {
         "merge-plugin": {
