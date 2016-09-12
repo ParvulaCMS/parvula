@@ -6,7 +6,7 @@ namespace Parvula;
  * HTML utils
  *
  * @package Parvula
- * @version 0.1.0
+ * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -14,20 +14,8 @@ namespace Parvula;
 class Html {
 
 	/**
-	 * @var string
-	 */
-	private $path;
-
-	/**
-	 * Constructor
-	 * @param string $path Path to prefix all path
-	 */
-	function __construct($path = '/template') {
-		$this->path = rtrim($path, '/') . '/';
-	}
-
-	/**
 	 * Html anchor
+	 *
 	 * @param string $value
 	 * @param string $href
 	 * @param array $attr
@@ -35,48 +23,31 @@ class Html {
 	 */
 	public static function anchor($value, $href = '#', $attr = []) {
 		$attr = implode(' ', $attr);
-
-		$href = static::linkRel($href);
-
 		return sprintf('<a href="%s" %s>%s</a>', $href, $attr, $value);
 	}
 
 	/**
 	 * Html image
+	 *
 	 * @param string $src Image source
 	 * @param array $attr Image attributs
 	 * @return string Html image
 	 */
 	public static function img($src, $attr = []) {
 		$attr = implode(' ', $attr);
-
-		$src = static::linkRel($src);
-
 		return sprintf('<img src="%s" %s>', $src, $attr);
-	}
-
-	/**
-	 * Get relative link
-	 * @param string $src
-	 * @return string
-	 */
-	public static function linkRel($src) {
-		if(!preg_match('/^https?:\/\//', $src)) {
-			$src = Parvula::getRelativeURIToRoot() . $src;
-		}
-
-		return $src;
 	}
 
 	/**
 	 * Secure echo. Return $var if exists, else return $else and encode special
 	 * html chars.
+	 *
 	 * @param mixed $var Value to print
-	 * @param mixed ($else) Value to print if variable doesn't exists
+	 * @param mixed $else (optional) Value to print if variable doesn't exists
 	 * @return string Secure string from XSS
 	 */
 	public static function escape($var, $else = '') {
-		if(isset($var)) {
+		if (isset($var)) {
 			$varCopy = $var;
 		} else {
 			$varCopy = $else;
@@ -92,7 +63,7 @@ class Html {
 	 * @return string Secure string from XSS
 	 */
 	public static function escapeThen($var, $then) {
-		if(isset($var)) {
+		if (isset($var)) {
 			$varCopy = $var . $then;
 		} else {
 			$varCopy = '';
