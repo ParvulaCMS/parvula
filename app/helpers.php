@@ -1,5 +1,6 @@
 <?php
 
+use Parvula\Parvula;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -25,6 +26,11 @@ function getPluginClassname($pluginName) {
 }
 
 //@TODO to clean
+/**
+ * Get plugins list
+ * @param  array $except
+ * @return array
+ */
 function getPluginList(array $except = []) {
 	$plugins = [];
 	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
@@ -78,6 +84,7 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 /**
  * List parent pages
  *
+ * @depreciated
  * @param $pages Array of Page
  * @return array of pages
  */
@@ -86,3 +93,23 @@ function listPagesRoot(array $pages) {
 		return !$page->parent;
 	});
 }
+
+
+/**
+ * url will generates a fully qualified URL
+ *
+ * @param  string $path
+ * @return string
+ */
+function url($path = '') {
+	return Parvula::getRelativeURIToRoot($path);
+}
+
+function app($key = null) {
+	$app = Parvula::getContainer();
+	if ($key === null) {
+		return $app;
+	}
+	return $app[$key];
+}
+

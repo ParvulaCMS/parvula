@@ -11,12 +11,12 @@ if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
 	throw new \RuntimeException('Please install the dependencies with composer: <code>composer install</code>');
 }
 
-$app = new Parvula;
-
-require _APP_ . 'helpers.php';
+$app = Parvula::getContainer();
 
 // Register services
 require _APP_ . 'services.php';
+
+require _APP_ . 'helpers.php';
 
 $config = $app['config'];
 $config->set('__time__', $time);

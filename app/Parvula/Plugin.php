@@ -2,6 +2,8 @@
 
 namespace Parvula;
 
+use Pimple\Container;
+
 use DOMDocument;
 
 /**
@@ -45,8 +47,10 @@ abstract class Plugin
 
 	/**
 	 * Bootstrap plugin to pass the $app
+	 *
+	 * @param  Container $app
 	 */
-	public function onBootstrap(Parvula $app) {
+	public function onBootstrap(Container $app) {
 		$this->app = $app;
 	}
 

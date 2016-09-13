@@ -9,14 +9,28 @@ use Psr\Http\Message\ServerRequestInterface;
  * Parvula
  *
  * @package Parvula
- * @version 0.7.0
+ * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Parvula extends Container
+class Parvula
 {
 	private static $request;
+	private static $container = null;
+
+	protected function __construct() {
+	}
+
+	protected function __clone() {
+	}
+
+	public static function getContainer() {
+		if (self::$container === null) {
+			self::$container = new Container;
+		}
+		return self::$container;
+	}
 
 	/**
 	 * Set Request
