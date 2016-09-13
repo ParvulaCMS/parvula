@@ -53,9 +53,20 @@ $this->post('/{name}[/{sub}]', function ($req, $res, $args) use ($render, $getCo
 		]);
 	}
 
-	$section = new Section($req->getParsedBody());
+	$body = $req->getParsedBody();
+	$data = [];
 
-	$out = $render($name, $section);
+	if (isset($body['data'])) {
+		$data['section'] = new Section($body['data']);
+
+		if (isset($body['pageRef'])) {
+			$data['page'] = app('pages')->read($body['pageRef']);
+		}
+	} else {
+		$data['section'] = new Section($body);
+	}
+
+	$out = $render($name, $data);
 
 	return $this->api->json($res, $out);
 });

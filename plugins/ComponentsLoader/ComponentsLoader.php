@@ -6,9 +6,12 @@ use Parvula\Plugin;
 
 if (!defined('_APP_')) exit;
 
-// Dev.2
+// Dev.3
 class ComponentsLoader extends Plugin {
-	// Components in the page
+
+	/**
+	 * @var array Components in the page
+	 */
 	private $components = [];
 
 	const COMPONENTS_DIR = '_components';
@@ -39,7 +42,11 @@ class ComponentsLoader extends Plugin {
 
 				// Simple file component
 				if (is_readable($path)) {
-					$arr = $this->renderComponent($componentName, $section);
+					$data = [
+						'page' => $page,
+						'section' => $section
+					];
+					$arr = $this->renderComponent($componentName, $data);
 					$page->sections[$id]->content = $arr['render'];
 					$this->components[$section->name] = [
 						'section' => $section,
@@ -55,20 +62,11 @@ class ComponentsLoader extends Plugin {
 			$obj = $component['instance'];
 			$componentName = $component['section']->component;
 
-			// TODO check
-			// if (method_exists($obj, 'header')) {
-			// 	$out = $this->appendToHeader($out, $obj->header($this->getUri('../' . $componentName . '/')));
-			// }
-			// else
 			if (isset($obj['header'])) {
 				$header = $obj['header'];
 				$out = $this->appendToHeader($out, $header($this->getUri('../' . $componentName . '/')));
 			}
 
-			// if (method_exists($obj, 'body')) {
-			// 	$out = $this->appendToBody($out, $obj->body($this->getUri('../' . $componentName . '/')));
-			// }
-			// else
 			if (isset($obj['body'])) {
 				$body = $obj['body'];
 				$out = $this->appendToBody($out, $body($this->getUri('../' . $componentName . '/')));
@@ -76,7 +74,7 @@ class ComponentsLoader extends Plugin {
 		}
 	}
 
-	private function renderComponent($componentName, $section) {
+	private function renderComponent($componentName, array $data) {
 		if (is_readable($filePath = $this->getComponentPath($componentName))) {
 
 			$plugin = null;
@@ -85,7 +83,9 @@ class ComponentsLoader extends Plugin {
 				$plugin = $pluginsMediator->getPlugin(getPluginClassname($pluginName));
 			}
 
-			return $this->render($filePath, $this->getUri('../' . $componentName . '/'), $section, $plugin);
+			$data['uri'] = $this->getUri('../' . $componentName . '/');
+
+			return $this->render($filePath, $data, $plugin);
 		}
 	}
 
@@ -93,14 +93,14 @@ class ComponentsLoader extends Plugin {
 	 * Render a given component
 	 *
 	 * @param  string  $path Component file path
-	 * @param  string  $uri
-	 * @param  Section $section
+	 * @param  array   $data Data to pass to the component
 	 * @param  mixed   $bind To bind $this to the given class
 	 * @return array
 	 */
-	private function render($path, $uri, $section, $bind = null) {
+	private function render($path, array $data, $bind = null) {
 		ob_start();
-		$arr = (function () use ($path, $uri, $section) {
+		$arr = (function () use ($path, $data) {
+			extract($data);
 			return require $path;
 		});
 		$arr = $arr->bindTo($bind);
@@ -114,7 +114,7 @@ class ComponentsLoader extends Plugin {
 		if (!isset($arr['render'])) {
 			$arr['render'] = $out;
 		} else {
-			$arr['render'] = $arr['render']($uri, $section, $out);
+			$arr['render'] = $arr['render']($data, $out);
 		}
 
 		return $arr;
