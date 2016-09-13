@@ -3,6 +3,7 @@
 namespace Parvula\ContentParser;
 
 use ParsedownExtra;
+use Parvula\Parvula;
 
 /**
  * ParvulaParsedownExtra class, extends ParsedownExtra
@@ -25,7 +26,7 @@ class ParvulaParsedownExtra extends ParsedownExtra {
 		$href = $Link['element']['attributes']['href'];
 		if ($href[0] === '/') {
 			$href = str_replace(['../', '..'], '', ltrim($href, '/')); // clean url
-			$href = \HTML::linkRel('') . $href; // absolute from root
+			$href = Parvula::getRelativeURIToRoot($href); // absolute from root
 			$Link['element']['attributes']['href'] = $href;
 		}
 
