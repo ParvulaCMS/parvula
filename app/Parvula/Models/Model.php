@@ -5,6 +5,15 @@ namespace Parvula\Models;
 use Parvula\AccessorTrait;
 use Parvula\ArrayableInterface;
 
+/**
+ * This abstract class represents a Model
+ *
+ * @package Parvula
+ * @version 0.8.0
+ * @since 0.8.0
+ * @author Fabien Sa
+ * @license MIT License
+ */
 abstract class Model implements ArrayableInterface {
 
 	use AccessorTrait;
@@ -12,7 +21,7 @@ abstract class Model implements ArrayableInterface {
 	/**
 	 * Transform the instance fields to an array
 	 *
-	 * @return array Array of instance's fields
+	 * @return array|null Array of instance's fields
 	 */
 	public function toArray() {
 		return $this->getVisibleFields();
@@ -21,7 +30,7 @@ abstract class Model implements ArrayableInterface {
 	/**
 	 * Get all visible fields
 	 *
-	 * @return array Visible fields
+	 * @return array|null Visible fields
 	 */
 	private function getVisibleFields() {
 		$fields = $this->getAllFields();

@@ -99,12 +99,12 @@ class Page extends Model
 	public function __construct(array $meta, $content = '', array $sections = []) {
 		// Check if required meta informations are available
 		if (empty($meta['title']) || empty($meta['slug'])) {
-			throw new PageException('Page cannot be created, $meta MUST contain `title` and `slug` keys');
+			throw new PageException('Page cannot be created, meta must contains `title` and `slug` keys');
 		}
 
 		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $meta['slug'])) {
-			throw new PageException('Page cannot be created, $meta[slug] (' .
-				htmlspecialchars($meta['slug']) . ') value is not normalized');
+			throw new PageException('Page (' . htmlspecialchars($meta['slug']) .
+				') cannot be created, the slug must be normalized (with: a-z0-9-_+/)');
 		}
 
 		foreach ($meta as $key => $value) {
