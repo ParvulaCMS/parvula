@@ -61,6 +61,9 @@ $this->get('', function ($req, $res) use ($fs) {
  * @apiGroup Files
  * @apiDescription Upload file(s) via multipart data upload
  *
+ * @apiParam {mixed} file File to upload
+ * @apiParam {string} ?path Optional ?path to upload in a sub folder
+ *
  * @apiSuccess (201) FileUploaded File uploaded
  * @apiError (400) NoFileSent No file was sent
  * @apiError (400) FileSizeExceeded Exceeded file size limit
@@ -96,6 +99,13 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 		}
 
 		$file = $files['file'];
+
+		$path = '';
+		if (isset($_GET['path']) && !empty($_GET['path'])) {
+			$path = $_GET['path'];
+			$path = str_replace(['.', "\0"], '', $path);
+			$path = trim($path, '/\\') . '/';
+		}
 
 		// Check file name length
 		if (strlen($file->getClientFilename()) > 128) {
@@ -133,7 +143,12 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 
 		// Name should be unique // TODO
 		$filename =  $basename . '.' . $ext;
-		$file->moveTo(_UPLOADS_ . $filename);
+
+		if (!is_dir(_UPLOADS_ . $path)) {
+			mkdir(_UPLOADS_ . $path, 0777, true);
+		}
+
+		$file->moveTo(_UPLOADS_ . $path . $filename);
 
 	} catch (RuntimeException $e) {
 		return $this->api->json($res, [
@@ -144,7 +159,7 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 
 	return $this->api->json($res, [
 		'filename' => $filename,
-		'directory' => _UPLOADS_
+		'directory' => _UPLOADS_ . $path
 	], 201);
 });
 
