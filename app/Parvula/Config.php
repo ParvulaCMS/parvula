@@ -48,7 +48,7 @@ class Config {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
-		foreach($pieces as $step) {
+		foreach ($pieces as $step) {
 			if (!isset($ptr[$step])) {
 				return $default;
 			}

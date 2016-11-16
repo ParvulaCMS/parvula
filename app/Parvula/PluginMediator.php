@@ -13,8 +13,7 @@ use Parvula\Exceptions\BadObjectCallException;
  * @author Fabien Sa
  * @license MIT License
  */
-class PluginMediator
-{
+class PluginMediator {
 	/**
 	 * @var array Plugins container
 	 */
@@ -81,11 +80,21 @@ class PluginMediator
 	 */
 	private function callFunctionArray($obj, $fun, array $args) {
 		switch (count($args)) {
-			case 0: $obj->{$fun}(); break;
-			case 1: $obj->{$fun}($args[0]); break;
-			case 2: $obj->{$fun}($args[0], $args[1]); break;
-			case 3: $obj->{$fun}($args[0], $args[1], $args[2]); break;
-			default: call_user_func_array([$obj, $fun], $args);  break;
+			case 0:
+				$obj->{$fun}();
+				break;
+			case 1:
+				$obj->{$fun}($args[0]);
+				break;
+			case 2:
+				$obj->{$fun}($args[0], $args[1]);
+				break;
+			case 3:
+				$obj->{$fun}($args[0], $args[1], $args[2]);
+				break;
+			default:
+				call_user_func_array([$obj, $fun], $args);
+				break;
 		}
 	}
 }

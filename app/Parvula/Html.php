@@ -83,7 +83,7 @@ class Html {
 		$indent = str_repeat(" ", $level * 2);
 		$ret .= sprintf("%s<ul>\n", $indent);
 		$indent = str_repeat(" ", ++$level * 2);
-		foreach ($items as $item => $subitems) {
+		foreach ($items as $subitems) {
 			if (is_array($subitems)) {
 				$ret .= "\n";
 				$ret .= static::nav($subitems, $level + 1);
@@ -97,5 +97,4 @@ class Html {
 		$ret .= sprintf("%s</ul>\n", $indent);
 		return $ret;
 	}
-
 }

@@ -26,7 +26,7 @@ class FilesSystem implements IOInterface {
 	 *
 	 * @param string $workingDirectory
 	 */
-	function __construct($workingDirectory = '.') {
+	public function __construct($workingDirectory = '.') {
 		$this->workingDirectory = rtrim($workingDirectory, '/') . '/';
 	}
 
@@ -164,7 +164,7 @@ class FilesSystem implements IOInterface {
 	 * @param  int $mode Mode should be an *octal value* (prefixed with a 0)
 	 * @return bool
 	 */
-	public function chmod($filename = '', $mode) {
+	public function chmod($filename, $mode) {
 		return chmod($this->workingDirectory . $filename, $mode);
 	}
 
@@ -254,5 +254,4 @@ class FilesSystem implements IOInterface {
 	public function setCurrentWorkingDirectory($workingDirectory) {
 		$this->workingDirectory = $workingDirectory;
 	}
-
 }

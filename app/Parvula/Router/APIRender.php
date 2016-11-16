@@ -31,4 +31,4 @@ class APIRender {
 			->withHeader('Content-Type', 'application/json')
 			->write(json_encode($data, JSON_PRETTY_PRINT));
 	}
-};
+}

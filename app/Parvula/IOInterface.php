@@ -31,5 +31,4 @@ interface IOInterface {
 	 * @return bool If the data was writen
 	 */
 	public function write($path, $data);
-
 }

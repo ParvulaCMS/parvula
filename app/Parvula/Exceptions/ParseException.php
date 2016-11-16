@@ -13,4 +13,5 @@ use RuntimeException;
  * @author Fabien Sa
  * @license MIT License
  */
-class ParseException extends RuntimeException { }
+class ParseException extends RuntimeException {
+}

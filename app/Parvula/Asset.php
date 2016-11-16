@@ -45,9 +45,9 @@ class Asset {
 	public static function auto($ressource, $pattern = null) {
 		$ext = pathinfo($ressource, PATHINFO_EXTENSION);
 
-		if($ext === 'js') {
+		if ($ext === 'js') {
 			return Asset::js($name, $pattern);
-		} else if($ext === 'css') {
+		} elseif ($ext === 'css') {
 			return Asset::css($name, $pattern);
 		} else {
 			return false;
@@ -61,11 +61,11 @@ class Asset {
 	 * @return string Html output
 	 */
 	public static function css($css, $pattern = null) {
-		if(!$css) {
+		if (!$css) {
 			return;
 		}
 
-		if(!is_string($pattern)) {
+		if (!is_string($pattern)) {
 			$pattern = '<link href="{{file}}" rel="stylesheet" />' . PHP_EOL;
 		}
 
@@ -79,11 +79,11 @@ class Asset {
 	 * @return string Html output
 	 */
 	public static function js($js, $pattern = null) {
-		if(!$js) {
+		if (!$js) {
 			return;
 		}
 
-		if(!is_string($pattern)) {
+		if (!is_string($pattern)) {
 			$pattern = '<script src="{{file}}"></script>' . PHP_EOL;
 		}
 
@@ -98,21 +98,20 @@ class Asset {
 	 * @return string Html output
 	 */
 	private static function renderTag($files, $pattern) {
-		if(is_string($files)) {
+		if (is_string($files)) {
 			$files = [$files];
 		}
 
 		$output = '';
 		foreach ($files as $file) {
-			if($file) {
+			if ($file) {
 				$output .= str_replace('{{file}}', $file, $pattern);
 			}
-			if(!preg_match('/^https?:\/\//', $file)) {
+			if (!preg_match('/^https?:\/\//', $file)) {
 				$file = static::$basePath . $file;
 			}
 		}
 
 		return $output;
 	}
-
 }

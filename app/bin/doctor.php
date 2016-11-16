@@ -79,7 +79,7 @@ $errors += test('Check Composer configuration', function ($errors) {
 });
 
 $errors += test('Check if files exist', function ($errors) use ($mustExists) {
-	return array_reduce($mustExists, function($errors, $path) {
+	return array_reduce($mustExists, function ($errors, $path) {
 		if (!is_readable(_ROOT_ . $path)) {
 			++$errors;
 			println(_ROOT_ . $path . ' must exists');
@@ -107,7 +107,7 @@ if ($checkAPI) {
 		// TODO
 	} else {
 		// Flatfiles
-		$errors += test('Check if folders are writable [API]', function() use ($shouldBeWritable) {
+		$errors += test('Check if folders are writable [API]', function () use ($shouldBeWritable) {
 			return array_reduce($shouldBeWritable, function ($errors, $path) {
 				if (!is_writable(_ROOT_ . $path)) {
 					++$errors;

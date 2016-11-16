@@ -19,8 +19,8 @@ class ParvulaParsedownExtra extends ParsedownExtra {
 	/**
 	 * @inheritdoc
 	 */
-	protected function inlineLink($Excerpt) {
-		$Link = parent::inlineLink($Excerpt);
+	protected function inlineLink($excerpt) {
+		$Link = parent::inlineLink($excerpt);
 
 		// Parvula patch for absolute slug
 		$href = $Link['element']['attributes']['href'];
@@ -32,5 +32,4 @@ class ParvulaParsedownExtra extends ParsedownExtra {
 
 		return $Link;
 	}
-
 }

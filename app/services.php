@@ -47,7 +47,7 @@ $app['router'] = function (Container $c) {
 		],
 		'rules' => [
 			// GET /api/0/pages
-			function($arr) {
+			function ($arr) {
 				$path = trim($arr->getUri()->getPath(), '/');
 				if ($arr->isGet() && preg_match('~^api/0/pages~', $path)) {
 					return false;
@@ -99,7 +99,7 @@ $app['errorHandler'] = function (Container $c) {
 
 		$runner->register();
 
-	} else if (class_exists('Whoops\\Run')) {
+	} elseif (class_exists('Whoops\\Run')) {
 		$run = new Whoops\Run;
 		$handler = new Whoops\Handler\PrettyPageHandler;
 
@@ -248,8 +248,8 @@ $app['repositories'] = function (Container $c) {
 
 	if (!isset($databases[$dbType])) {
 		throw new Exception(
-			'Repository `' . htmlspecialchars($dbType) . '` does not exists, please edit your settings.');
-
+			'Repository `' . htmlspecialchars($dbType) . '` does not exists, please edit your settings.'
+		);
 	}
 
 	return $databases[$dbType];

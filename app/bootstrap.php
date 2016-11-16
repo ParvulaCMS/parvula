@@ -1,7 +1,9 @@
 <?php
 use Parvula\Parvula;
 
-if (!defined('_ROOT_')) exit;
+if (!defined('_ROOT_')) {
+	exit;
+}
 $time = -microtime(true);
 
 // Try to load composer autoloader

@@ -14,8 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-class Parvula
-{
+class Parvula {
 	private static $request;
 	private static $container = null;
 

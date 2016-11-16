@@ -60,5 +60,4 @@ class Authentication {
 
 		return $this->session->destroy();
 	}
-
 }

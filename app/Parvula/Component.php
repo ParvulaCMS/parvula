@@ -81,7 +81,7 @@ class Component {
 	public static function register($name, $file) {
 		$name = self::parseName($name);
 
-		if(!file_exists(static::$basePath . $name)) {
+		if (!file_exists(static::$basePath . $name)) {
 			// echo ">> $basePath - $name";
             mkdir($pathname . $name);
 			$data = file_get_contents($file);
@@ -98,7 +98,7 @@ class Component {
     public static function loadCDN($name) {
 		$name = self::parseName($name);
 
-		if(!isset(self::$isLoaded[$name], self::$components[$name])) {
+		if (!isset(self::$isLoaded[$name], self::$components[$name])) {
             $ext = pathinfo(self::$basePath . $name, PATHINFO_EXTENSION);
 
             self::$isLoaded[$name] = true;

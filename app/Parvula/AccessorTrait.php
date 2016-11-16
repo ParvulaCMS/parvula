@@ -11,8 +11,8 @@ namespace Parvula;
  * @author Fabien Sa
  * @license MIT License
  */
-trait AccessorTrait
-{
+trait AccessorTrait {
+
 	/**
 	 * Get given field of an object if exists and not empty
 	 *

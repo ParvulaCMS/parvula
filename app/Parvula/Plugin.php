@@ -23,8 +23,7 @@ use DOMDocument;
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Plugin
-{
+abstract class Plugin {
 	/**
 	 * @var string Plugin path
 	 */
@@ -40,7 +39,7 @@ abstract class Plugin
 	 */
 	protected $app;
 
-	function __construct() {
+	public function __construct() {
 		$this->pluginPath = $this->getPluginPath();
 		$this->pluginUri = $this->getPluginUri();
 	}

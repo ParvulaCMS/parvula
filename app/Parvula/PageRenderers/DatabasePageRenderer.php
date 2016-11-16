@@ -61,5 +61,4 @@ class DatabasePageRenderer implements PageRendererInterface {
 
 		return new Page((array) $page, $content, $sections);
 	}
-
 }

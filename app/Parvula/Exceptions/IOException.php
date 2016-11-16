@@ -11,4 +11,5 @@ namespace Parvula\Exceptions;
  * @author Fabien Sa
  * @license MIT License
  */
-class IOException extends \RuntimeException { }
+class IOException extends \RuntimeException {
+}

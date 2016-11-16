@@ -64,7 +64,7 @@ class Session {
 	 * @return string|null
 	 */
 	public function get($index, $defaultValue = null) {
-		if(!$this->has($index)) {
+		if (!$this->has($index)) {
 			return $defaultValue;
 		}
 
@@ -117,5 +117,4 @@ class Session {
 	public function isActive() {
 		return session_status() === PHP_SESSION_ACTIVE;
 	}
-
 }

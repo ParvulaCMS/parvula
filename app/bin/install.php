@@ -51,7 +51,7 @@ if ($zip->open($tmpFile) === true) {
 	echo 'Extracting (' . $zip->numFiles . ' files)...';
 
 	// Check if files are in a folder or not
-	for($i = 0; $i < $zip->numFiles; ++$i) {
+	for ($i = 0; $i < $zip->numFiles; ++$i) {
 		$filename = ltrim(($zip->getNameIndex($i)), '/\\');
 		if (!preg_match('/[\\/\\\]/', $filename)) {
 			++$numRootFiles;
