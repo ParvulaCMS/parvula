@@ -200,7 +200,7 @@ jQuery(function () {
 
 		$.ajax({
 			type: 'POST',
-			url: 'api/0/login',
+			url: 'api/0/auth',
 			contentType: 'application/json; charset=utf-8',
 			success: function (data) {
 				storeToken(data.token)

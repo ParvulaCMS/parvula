@@ -13,7 +13,7 @@ class APITest
 
 	public function boot(APITester $I) {
 		$I->amHttpAuthenticated('admin', 'testpassword');
-		$I->sendGET('/login');
+		$I->sendGET('/auth');
 		$I->seeResponseCodeIs(201);
 		$json = $I->grabResponse();
 

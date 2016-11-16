@@ -42,7 +42,7 @@ $app['router'] = function (Container $c) {
 		'secure' => !$c['config']->get('debug', false),
 		// 'cookie' => 'parvula_token',
 		'passthrough' => [
-			'/api/0/login',
+			'/api/0/auth',
 			'/api/0/public'
 		],
 		'rules' => [
