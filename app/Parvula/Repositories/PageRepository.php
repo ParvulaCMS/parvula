@@ -189,7 +189,8 @@ abstract class PageRepository extends BaseRepository implements Iterator, Arraya
 
 		$acc = [];
 		foreach ($this->data as $page) {
-			if (isset($page->children)) {
+			// TODO is is_array really needed ?
+			if (isset($page->children) && !is_array($page->children)) {
 				// We have to resolve children to arrays
 				$page->children = $page->children->toArray();
 			}
