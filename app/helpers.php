@@ -50,6 +50,83 @@ function getPluginList(array $except = []) {
 }
 
 /**
+ * List parent pages
+ *
+ * @depreciated
+ * @param $pages Array of Page
+ * @return array of pages
+ */
+function listPagesRoot(array $pages) {
+	return array_filter($pages, function ($page) {
+		return !$page->parent;
+	});
+}
+
+/**
+ * url will generates a fully qualified URL
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function url($path = '') {
+	return Parvula::getRelativeURIToRoot($path);
+}
+
+/**
+ * Get application instance
+ *
+ * @param  string $key optional
+ * @return mixed
+ */
+function app($key = null) {
+	$app = Parvula::getContainer();
+	if ($key === null) {
+		return $app;
+	}
+	return $app[$key];
+}
+
+/**
+ * Get main app folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function appPath($path = '') {
+	return _APP_ . $path;
+}
+
+/**
+ * Get themes folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function themesPath($path = '') {
+	return _THEMES_ . $path;
+}
+
+/**
+ * Get plugins folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function pluginsPath($path = '') {
+	return _PLUGINS_ . $path;
+}
+
+/**
+ * Get uploads folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function uploadsPath($path = '') {
+	return _UPLOADS_ . $path;
+}
+
+/**
  * List pages and children
  *
  * @param $pages Array of Page
@@ -63,7 +140,7 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 	$level = isset($options['level']) ? $options['level'] : 9;
 	if ($level > 0) {
 		$str = '<ul ' . $ul . '>' . PHP_EOL;
-		foreach($pages as $page) {
+		foreach ($pages as $page) {
 			$anch = $page->title;
 			if ($liCallback !== null) {
 				$anch = $liCallback($page);
@@ -80,36 +157,3 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 	}
 	return '';
 }
-
-/**
- * List parent pages
- *
- * @depreciated
- * @param $pages Array of Page
- * @return array of pages
- */
-function listPagesRoot(array $pages) {
-	return array_filter($pages, function($page) {
-		return !$page->parent;
-	});
-}
-
-
-/**
- * url will generates a fully qualified URL
- *
- * @param  string $path
- * @return string
- */
-function url($path = '') {
-	return Parvula::getRelativeURIToRoot($path);
-}
-
-function app($key = null) {
-	$app = Parvula::getContainer();
-	if ($key === null) {
-		return $app;
-	}
-	return $app[$key];
-}
-
