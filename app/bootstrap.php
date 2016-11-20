@@ -7,11 +7,11 @@ if (!defined('_ROOT_')) {
 $time = -microtime(true);
 
 // Try to load composer autoloader
-if (is_file($autoload = _VENDOR_ . '/autoload.php')) {
-	require $autoload;
-} else {
-	throw new \RuntimeException('Please install the dependencies with composer: <code>composer install</code>');
+if (!is_file($autoload = _VENDOR_ . '/autoload.php')) {
+	throw new RuntimeException('Please install the dependencies with composer: `composer install`');
 }
+
+require $autoload;
 
 $app = Parvula::getContainer();
 
@@ -63,9 +63,7 @@ Parvula::setRequest($router->getContainer()['request']);
 
 // Load plugins
 $plugins = $app['plugins'];
-$plugins->trigger('bootstrap', [$app]); // depreciated
 $plugins->trigger('boot', [$app]);
-$plugins->trigger('load');
 
 // Load routes
 require 'routes.php';
