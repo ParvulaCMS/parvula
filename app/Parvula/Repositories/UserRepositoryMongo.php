@@ -32,9 +32,6 @@ class UserRepositoryMongo extends UserRepository
 		return false;
 	}
 
-
-
-
 	/**
 	 * Index ressources
 	 *
@@ -85,7 +82,6 @@ class UserRepositoryMongo extends UserRepository
 	 */
 	public function create($user) {
 		if (get_class($user) !== 'Parvula\Models\User') {
-
 			#throw ''; # TODO
 			return false;
 		}
@@ -107,15 +103,10 @@ class UserRepositoryMongo extends UserRepository
 	 * @return bool
 	 */
 	public function delete($username) {
-		if ($username === null) {
-			return false;
-		}
-
-		if ($this->collection->findOneAndDelete(['username' => $username]) === null) {
+		if ($username === null || $this->collection->findOneAndDelete(['username' => $username]) === null) {
 			return false;
 		}
 
 		return true;
 	}
-
 }
