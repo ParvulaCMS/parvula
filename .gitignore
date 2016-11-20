@@ -1,18 +1,5 @@
-# Exclude some Parvula folders
-plugins/*
-static/*
-themes/*
-
-# but include default themes & plugins
+# Include htaccess
 !.htaccess
-!plugins/.htaccess
-!plugins/plugins.yml
-!plugins/Admin/
-!plugins/_components/
-!plugins/ComponentsLoader/
-!themes/.htaccess
-!themes/galaxy/
-!themes/simple/
 
 # Composer
 composer.lock
