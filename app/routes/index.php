@@ -76,7 +76,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	$plugins->trigger('postRender', [&$out, &$page]);
 
 	return $res->write($out);
-});
+})->setName('show');
 
 // Files handler (media or uploads) (must have an extension)
 $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res, $args) use ($app) {
@@ -104,4 +104,4 @@ $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res, $args) use ($app) {
 	}
 
 	return $res->withStatus(404);
-});
+})->setName('file-handler');

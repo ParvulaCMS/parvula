@@ -41,7 +41,7 @@ $this->get('', function ($req, $res) use ($pages) {
 	// $jwt = $this->encodeJWT($jwt);
 	// return $this->api->json($res, $jwt);
 	return $this->api->json($res, $allPages->withoutParent()->toArray());
-});
+})->setName('pages.index');
 
 /**
  * @api {get} /pages/:slug Get a specific page
@@ -82,4 +82,4 @@ $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	}
 
 	return $this->api->json($res, $result->toArray());
-});
+})->setName('pages.show');

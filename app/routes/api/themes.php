@@ -23,7 +23,7 @@ $themes = $app['themes'];
  */
 $this->get('', function ($req, $res) use ($themes) {
 	return $this->api->json($res, $themes->index());
-});
+})->setName('themes.index');
 
 /**
  * @api {get} /themes/:name Theme information
@@ -54,7 +54,7 @@ $this->get('/{name}', function ($req, $res, $args) use ($themes) {
 	}
 
 	return $this->api->json($res, $result);
-});
+})->setName('themes.show');
 
  /**
   * @api {get} /themes/:name/:field/:subfield Specific Theme field/subfield
@@ -100,4 +100,4 @@ $this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($th
 	}
 
 	return $this->api->json($res, $themes->read($args['name'])->{$field}->{$subfield});
-});
+})->setName('themes.show.field');

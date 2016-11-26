@@ -40,7 +40,7 @@ $this->get('/{name}', function ($req, $res, $args) use ($confIO) {
 	}
 
 	return $this->api->json($res, $confIO->read(configPath($args['name'])));
-});
+})->setName('configs.show');
 
 /**
 * @api {get} /config/:name/:field Get config field
@@ -70,7 +70,7 @@ $this->get('/{name}/{field}', function ($req, $res, $args) use ($confIO) {
 	}
 
 	return $this->api->json($res, $config->{$args['field']});
-});
+})->setName('configs.show.field');
 
 /**
  * @api {post} /config/:name Create a new config file
@@ -110,7 +110,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 	}
 
 	return $res->withStatus(201);
-});
+})->setName('configs.create');
 
 // TODO @DEV
 /**
@@ -141,7 +141,7 @@ $this->put('/{name}', function ($req, $res, $args) use ($confIO) {
 	}
 
 	return $res->withStatus(200);
-});
+})->setName('configs.update');
 
 /**
  * TODO - jsonpatch doc
@@ -186,7 +186,6 @@ $this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
 		$confIO->write($path, $newConfig);
 
 		return $res->withStatus(204);
-
 	} catch (InvalidPatchDocumentJsonException $e) {
 		return $this->api->json($res, [
 			'error' => 'InvalidPatchDocumentJsonException',
@@ -203,4 +202,4 @@ $this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
 			'message' => $e->getMessage()
 		], 400);
 	}
-});
+})->setName('configs.patch');

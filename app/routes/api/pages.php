@@ -84,7 +84,7 @@ $this->post('', function ($req, $res) use ($pages) {
 	}
 
 	return $res->withStatus(201);
-});
+})->setName('pages.create');
 
 $this->map(['PUT', 'DELETE'], '', function ($req, $res) {
 	return $res->withStatus(405); // Method Not Allowed
@@ -132,7 +132,7 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	}
 
 	$res->withStatus(204);
-});
+})->setName('pages.update');
 
 /**
  * @api {patch} /pages/:slug Update specific field(s) of a page
@@ -197,7 +197,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 			'message' => $e->getMessage()
 		], 500);
 	}
-});
+})->setName('pages.patch');
 
 /*
  * @api {delete} /page/:slug Delete a page.
@@ -224,4 +224,4 @@ $this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	}
 
 	return $res->withStatus(204);
-});
+})->setName('pages.delete');

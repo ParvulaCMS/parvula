@@ -24,7 +24,7 @@ $users = $app['users'];
  */
 $this->get('', function ($req, $res) use ($users) {
 	return $this->api->json($res, $users->index());
-});
+})->setName('users.index');
 
 /**
  * @api {get} /users/:name User information
@@ -60,4 +60,4 @@ $this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
 		'error' => 'UserNotFound',
 		'message' => 'User\'s username was not found'
 	], 404);
-});
+})->setName('users.show');
