@@ -1,9 +1,0 @@
-*
-!.gitignore
-
-# Include default plugins
-!plugins/.htaccess
-!plugins/plugins.yml
-!plugins/Admin/
-!plugins/_components/
-!plugins/ComponentsLoader/

@@ -1,7 +1,0 @@
-*
-!.gitignore
-
-# Include default themes
-!themes/.htaccess
-!themes/galaxy/
-!themes/simple/
