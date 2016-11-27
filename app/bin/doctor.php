@@ -35,7 +35,7 @@ $mustExists = [
 	_CONFIG_ . 'system.yml',
 	_CONFIG_ . 'database.yml',
 	_ROOT_ . 'composer.json',
-	_ROOT_ . 'index.php'
+	_PUBLIC_ . 'index.php'
 ];
 
 $shouldBeWritable = [
@@ -80,9 +80,9 @@ $errors += test('Check Composer configuration', function ($errors) {
 
 $errors += test('Check if files exist', function ($errors) use ($mustExists) {
 	return array_reduce($mustExists, function ($errors, $path) {
-		if (!is_readable(_ROOT_ . $path)) {
+		if (!is_readable($path)) {
 			++$errors;
-			println(_ROOT_ . $path . ' must exists');
+			println($path . ' must exists');
 		}
 		return $errors;
 	}, 0);
@@ -109,9 +109,9 @@ if ($checkAPI) {
 		// Flatfiles
 		$errors += test('Check if folders are writable [API]', function () use ($shouldBeWritable) {
 			return array_reduce($shouldBeWritable, function ($errors, $path) {
-				if (!is_writable(_ROOT_ . $path)) {
+				if (!is_writable($path)) {
 					++$errors;
-					println(_ROOT_ . $path . ' should be writable');
+					println($path . ' should be writable');
 				}
 				return $errors;
 			}, 0);
