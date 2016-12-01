@@ -1,9 +1,12 @@
 <?php
 use Parvula\Parvula;
 
+require 'constants.php';
+
 if (!defined('_ROOT_')) {
 	exit;
 }
+
 $time = -microtime(true);
 
 // Try to load composer autoloader
