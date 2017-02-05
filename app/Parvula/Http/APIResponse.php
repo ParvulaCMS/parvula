@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Router;
+namespace Parvula\Http;
 
 use Parvula\Parsers\ParserInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,8 +14,7 @@ use Psr\Http\Message\ResponseInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-
-class APIRender {
+class APIResponse {
 
 	/**
 	 * Output rendered template

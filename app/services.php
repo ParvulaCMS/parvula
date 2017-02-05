@@ -29,7 +29,7 @@ $app['router'] = function (Container $c) {
 			'routerCacheFile' => _CACHE_ . 'routes.php',
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
-		'api' => new Parvula\Router\APIRender(),
+		'api' => new Parvula\Http\APIResponse(),
 		'logger' => $c['loggerHandler']
 	];
 
