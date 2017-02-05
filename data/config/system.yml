@@ -19,7 +19,6 @@ aliases:
     HTML: Parvula\Html
     Conf: Parvula\Config
     Asset: Parvula\Asset
-    Component: Parvula\Component
 
 # List of disabled plugins
 disabledPlugins: []
