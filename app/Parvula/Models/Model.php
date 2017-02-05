@@ -37,8 +37,7 @@ abstract class Model implements ArrayableInterface {
 
 		if (isset($this->visible)) {
 			return array_intersect_key($fields, array_flip($this->visible));
-		}
-		else if (isset($this->invisible)) {
+		} elseif (isset($this->invisible)) {
 			// Notice: It will also remove the 'invisible' field
 			$this->invisible[] = 'invisible';
 			return array_diff_key($fields, array_flip($this->invisible));

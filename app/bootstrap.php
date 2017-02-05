@@ -48,7 +48,7 @@ if ($debug) {
 }
 
 // Load class aliases
-loadAliases($config->get('aliases'));
+classAliases($config->get('aliases'));
 
 // Command line script loader
 if (php_sapi_name() === 'cli' && count($argv) > 1) {

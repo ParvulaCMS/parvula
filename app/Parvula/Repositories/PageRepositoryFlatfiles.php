@@ -2,6 +2,7 @@
 
 namespace Parvula\Repositories;
 
+use SplFileInfo;
 use Parvula\BaseRepository;
 use Parvula\Models\Page;
 use Parvula\FilesSystem as Files;
@@ -69,7 +70,7 @@ class PageRepositoryFlatFiles extends PageRepository {
 
 		// Anonymous function to use renderer engine
 		$renderer = $this->renderer;
-		$fn = function (\SplFileInfo $fileInfo, $data) use ($pageUID, $renderer) {
+		$fn = function (SplFileInfo $fileInfo, $data) use ($pageUID, $renderer) {
 			// Create the title from the filename
 			if (strpos($pageUID, '/') !== false) {
 				$pageUIDToken = explode('/', $pageUID);
@@ -219,18 +220,21 @@ class PageRepositoryFlatFiles extends PageRepository {
 			};
 
 			$ext = $this->fileExtension;
-			(new Files($this->folder))->index($pagesPath,
-				function (\SplFileInfo $file, $dir) use (&$pages, $ext) {
-				$currExt = '.' . $file->getExtension();
+			(new Files($this->folder))->index(
+				$pagesPath,
+				function (SplFileInfo $file, $dir) use (&$pages, $ext) {
+					$currExt = '.' . $file->getExtension();
 
-				// If files have the right extension
-				if ($currExt === $ext) {
-					if ($dir) {
-						$dir = trim($dir, '/\\') . '/';
+					// If files have the right extension
+					if ($currExt === $ext) {
+						if ($dir) {
+							$dir = trim($dir, '/\\') . '/';
+						}
+						$pages[] = $dir . $file->getBasename($currExt); // page path
 					}
-					$pages[] = $dir . $file->getBasename($currExt); // page path
-				}
-			}, $filter);
+				},
+				$filter
+			);
 
 			return $pages;
 		} catch (IOException $e) {
@@ -285,5 +289,4 @@ class PageRepositoryFlatFiles extends PageRepository {
 
 		return $pagesTmp;
 	}
-
 }

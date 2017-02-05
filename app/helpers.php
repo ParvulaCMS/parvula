@@ -4,12 +4,11 @@ use Parvula\Parvula;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Load aliases
+ * Create multiple class aliases
  *
  * @param array $aliases
- * @return
  */
-function loadAliases(array $aliases) {
+function classAliases(array $aliases) {
 	foreach ($aliases as $alias => $className) {
 		class_alias($className, $alias);
 	}
