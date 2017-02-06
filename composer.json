@@ -46,7 +46,7 @@
         "preferred-install": "dist"
     },
     "scripts": {
-        "serve": "php -S 0.0.0.0:8000 -t public",
+        "serve" : "Parvula\\Console\\DevTasks::runDevelopmentServer",
         "doctor": "php index.php doctor",
         "test": "vendor/bin/codecept run"
     },
