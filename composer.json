@@ -47,8 +47,13 @@
     },
     "scripts": {
         "serve" : "Parvula\\Console\\DevTasks::runDevelopmentServer",
-        "test": "vendor/bin/codecept run"
         "doctor" : "Parvula\\Console\\Doctor::analyse",
+        "unit": "codecept run",
+        "cs": "phpcs --standard=./phpcs.xml -n app --colors",
+        "test": [
+            "@unit",
+            "@cs"
+        ]
     },
     "extra": {
         "merge-plugin": {
