@@ -47,8 +47,8 @@
     },
     "scripts": {
         "serve" : "Parvula\\Console\\DevTasks::runDevelopmentServer",
-        "doctor": "php index.php doctor",
         "test": "vendor/bin/codecept run"
+        "doctor" : "Parvula\\Console\\Doctor::analyse",
     },
     "extra": {
         "merge-plugin": {
