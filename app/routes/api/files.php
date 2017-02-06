@@ -17,9 +17,9 @@ $fs = new FilesSystem(_UPLOADS_);
  * @apiName Index Files
  * @apiGroup Files
  *
- * @apiParam {string} [full] Optional You can pass `?full` to get more details
+ * @apiParam {string} [full] Query `?full` to get more details
  *
- * @apiSuccess (200) Array Array of files paths
+ * @apiSuccess (200) String[] Array of files paths
  */
 $this->get('', function ($req, $res) use ($fs) {
 	///https://weierophinney.github.io/2015-10-20-PSR-7-and-Middleware/#/35
@@ -62,7 +62,7 @@ $this->get('', function ($req, $res) use ($fs) {
  * @apiDescription Upload file(s) via multipart data upload
  *
  * @apiParam {mixed} file File to upload
- * @apiParam {string} ?path Optional ?path to upload in a sub folder
+ * @apiParam {string} [path] Query `?path` to upload in a specific sub folder
  *
  * @apiSuccess (201) FileUploaded File uploaded
  * @apiError (400) NoFileSent No file was sent
@@ -164,7 +164,7 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 });
 
 /**
- * @api {delete} /files/:file delete file
+ * @api {delete} /files/:file Delete a file
  * @apiName Delete File
  * @apiGroup Files
  *

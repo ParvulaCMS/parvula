@@ -49,7 +49,7 @@ $this->get('', function ($req, $res) use ($pages) {
  * @apiGroup Page
  *
  * @apiParam {string} slug The slug of the page
- * @apiParam {string} [raw] Optional You can pass `?raw` to not parse the content.
+ * @apiParam {string} [raw] Optional Query `?raw` to not parse the content.
  *
  * @apiSuccess (200) {Object} page A Page
  * @apiError (404) PageDoesNotExists This page does not exists
@@ -59,7 +59,7 @@ $this->get('', function ($req, $res) use ($pages) {
  *     {
  *       "title": "Home page",
  *       "slug": "home",
- *       "content": "<h1>Home page<\/h1>"
+ *       "content": "&lt;h1>Home page<\/h1>"
  *     }
  *
  * @apiErrorExample {json} Error-Response:

@@ -24,8 +24,12 @@ $pages = $app['pages'];
  * @apiParam {string} [content] Optional Page content
  * @apiParam {mixed} [field] Optional Custom(s) field(s)
  *
- * @apiParamExample Request-Example:
- *     title=My new title&slug=my_new_slug&content=Some content
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "title": "My title",
+ *       "slug": "my_new_slug",
+ *       "content": "Some content"
+ *     }
  *
  * @apiSuccess (201) PageCreated Page was created
  * @apiError (400) BadField This page need at least a slug and a title
@@ -101,8 +105,12 @@ $this->map(['PUT', 'DELETE'], '', function ($req, $res) {
  * @apiParam {string} [content] Optional Page content
  * @apiParam {mixed} [field] Optional Custom(s) field(s)
  *
- * @apiParamExample Request-Example:
- *     title=My new title&slug=my_new_slug&content=Some content
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "title": "My updated title",
+ *       "slug": "updated_slug",
+ *       "content": "Some edited content"
+ *     }
  *
  * @apiSuccess (204) PageUpdated
  * @apiError (400) BadField This page need at least a `slug` and a `title`
@@ -172,7 +180,6 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		$newPage = Page::pageFactory(json_decode($patchedDocument, true));
 
 		$pages->update($slug, $newPage);
-
 	} catch (InvalidPatchDocumentJsonException $e) {
 		// Will be thrown when using invalid JSON in a patch document
 		return $this->api->json($res, [
