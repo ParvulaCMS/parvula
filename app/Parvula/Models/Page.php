@@ -62,52 +62,28 @@ class Page extends Model
 	];
 
 	/**
-	 * Page factory, create a new page from an array
+	 * Create a new page from the given array
 	 * The parameter $info must contain at least `title` and `slug` fields.
-	 * The `slug` need to be normalized (a-z0-9-_+/).
+	 * The `slug` field need to be normalized (a-z0-9-_+/).
 	 *
-	 * @param array $info Array with page informations (must contain `title` and `slug` fields)
-	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
-	 * @throws PageException if `$pageInfo[slug]` value is not normalized
-	 * @return Page The created Page
-	 */
-	public static function pageFactory(array $info) {
-		$content = isset($info['content']) ? $info['content'] : '';
-
-		if (isset($info['sections'])) {
-			$sections = array_map(function ($section) {
-				return Section::sectionFactory($section);
-			}, $info['sections']);
-
-			unset($info['sections']);
-		} else {
-			$sections = [];
-		}
-
-		unset($info['content']);
-
-		return new static($info, $content, $sections);
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param array $meta Metadata
+	 * @param array $info Array with page information (must contain `title` and `slug` fields)
 	 * @param string $content (optional) Content
 	 * @param array $sections (optional) array of Section
+     * @throws PageException if `$pageInfo` does not have field `title` and `slug`
+	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 */
-	public function __construct(array $meta, $content = '', array $sections = []) {
+	public function __construct(array $info, $content = '', array $sections = []) {
 		// Check if required meta informations are available
-		if (empty($meta['title']) || empty($meta['slug'])) {
+		if (empty($info['title']) || empty($info['slug'])) {
 			throw new PageException('Page cannot be created, meta must contains `title` and `slug` keys');
 		}
 
-		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $meta['slug'])) {
-			throw new PageException('Page (' . htmlspecialchars($meta['slug']) .
+		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $info['slug'])) {
+			throw new PageException('Page (' . htmlspecialchars($info['slug']) .
 				') cannot be created, the slug must be normalized (with: a-z0-9-_+/)');
 		}
 
-		foreach ($meta as $key => $value) {
+		foreach ($info as $key => $value) {
 			// object with private fields casted to array will have keys prepended with \0
 			// https://php.net/manual/en/language.types.array.php#language.types.array.casting
 			if (!is_null($value) && $key[0] !== "\0") {
@@ -115,8 +91,25 @@ class Page extends Model
 			}
 		}
 
-		$this->content = $content;
-		$this->sections = $sections;
+		if (func_num_args() === 1) {
+			$this->content = '';
+			if (isset($info['content'])) {
+				$this->content = $info['content'];
+				unset($info['content']);
+			}
+
+			$this->sections = [];
+			if (isset($info['sections'])) {
+				$this->sections = array_map(function ($section) {
+					return new Section($section);
+				}, $info['sections']);
+
+				unset($info['sections']);
+			}
+		} else {
+			$this->content = $content;
+			$this->sections = $sections;
+		}
 	}
 
 	/**

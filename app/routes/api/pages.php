@@ -71,7 +71,7 @@ $this->post('', function ($req, $res) use ($pages) {
 	$pageArr = (array) $parsedBody;
 
 	try {
-		$page = Page::pageFactory($pageArr);
+		$page = new Page($pageArr);
 
 		$result = $pages->create($page);
 	} catch (Exception $e) {
@@ -129,7 +129,7 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	$pageArr = (array) $parsedBody;
 
 	try {
-		$page = Page::pageFactory($pageArr);
+		$page = new Page($pageArr);
 
 		$pages->update($args['slug'], $page);
 	} catch (Exception $e) {
@@ -177,7 +177,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 
 		$patchedDocument = $patch->apply();
 
-		$newPage = Page::pageFactory(json_decode($patchedDocument, true));
+		$newPage = new Page(json_decode($patchedDocument, true));
 
 		$pages->update($slug, $newPage);
 	} catch (InvalidPatchDocumentJsonException $e) {

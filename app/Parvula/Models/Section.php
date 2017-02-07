@@ -22,24 +22,26 @@ class Section extends Model
 	 */
 	public $content;
 
-	public static function sectionFactory(array $infos) {
-		$content = isset($infos['content']) ? $infos['content'] : '';
-		unset($infos['content']);
-		return new static($infos, $content);
-	}
-
 	/**
 	 * Constructor
 	 *
-	 * @param array|object $meta Page's metas
+	 * @param array|object $info Section information
 	 * @param string $content (optional) Content
 	 */
-	public function __construct(array $meta = [], $content = '') {
-		foreach ($meta as $key => $val) {
-			$this->{$key} = $val;
+	public function __construct(array $info = [], $content = '') {
+		if (func_num_args() === 1) {
+			$this->content = '';
+			if (isset($infos['content'])) {
+				$this->content = $infos['content'];
+				unset($infos['content']);
+			}
+		} else {
+			$this->content = $content;
 		}
 
-		$this->content = $content;
+		foreach ($info as $key => $val) {
+			$this->{$key} = $val;
+		}
 	}
 
 	/**
