@@ -54,7 +54,7 @@ $this->map(['GET', 'POST'], '', function ($req, $res, $args) use ($app) {
 	$username = $server['PHP_AUTH_USER'];
 	$password = $server['PHP_AUTH_PW'];
 
-	if (!($user = $users->read($username))
+	if (!($user = $users->findBy('username', $username))
 		|| !$user->login($password)) {
 		return $this->api->json($res, [
 			'error' => 'BadCredentials',

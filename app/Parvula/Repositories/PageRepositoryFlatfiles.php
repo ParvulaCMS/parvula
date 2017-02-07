@@ -10,7 +10,16 @@ use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 
-class PageRepositoryFlatFiles extends PageRepository {
+class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
+// extends PageRepository
+
+	use PageRepositoryTrait;
+	use IterableTrait;
+
+	/**
+	 * @var array Array of pages (array<Page>)
+	 */
+	protected $data = [];
 
 	/**
 	 * @var string Pages folder
@@ -31,8 +40,9 @@ class PageRepositoryFlatFiles extends PageRepository {
 	 * @param string $folder Pages folder
 	 * @param string $fileExtension File extension
 	 */
-	function __construct(PageRendererInterface $pageRenderer, $folder, $fileExtension) {
-		parent::__construct($pageRenderer);
+	public function __construct(PageRendererInterface $pageRenderer, $folder, $fileExtension) {
+		// parent::__construct($pageRenderer);
+		$this->setRenderer($pageRenderer);
 
 		$this->folder = $folder;
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
@@ -47,7 +57,7 @@ class PageRepositoryFlatFiles extends PageRepository {
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function read($pageUID, $eval = false) {
+	public function find($pageUID, $eval = false) {
 		$this->fetchPages();
 		$pageUID = trim($pageUID, '/');
 
@@ -260,14 +270,14 @@ class PageRepositoryFlatFiles extends PageRepository {
 		$this->arePagesFetched = true;
 
 		foreach ($pagesIndex as $pageUID) {
-			$page = $this->read($pageUID);
+			$page = $this->find($pageUID);
 
 			if (isset($page->parent)) {
 				$parent = $page->parent;
 
 				// Add lazy function to resolve parent when function is called
 				$page->addLazy('parent', function () use ($parent) {
-					return $this->read($parent);
+					return $this->find($parent);
 				});
 
 				if (!isset($pagesChildrenTmp[$parent])) {
@@ -288,5 +298,9 @@ class PageRepositoryFlatFiles extends PageRepository {
 		}
 
 		return $pagesTmp;
+	}
+
+	protected function model() {
+		return Page;
 	}
 }

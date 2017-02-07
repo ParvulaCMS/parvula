@@ -23,7 +23,9 @@ $users = $app['users'];
  *     ]
  */
 $this->get('', function ($req, $res) use ($users) {
-	return $this->api->json($res, $users->index());
+	return $this->api->json($res, array_map(function ($u) {
+			return $u->toArray();
+	}, $users->all()));
 })->setName('users.index');
 
 /**
@@ -52,7 +54,7 @@ $this->get('', function ($req, $res) use ($users) {
  *     }
  */
 $this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
-	if (false !== $user = $users->read($args['username'])) {
+	if (false !== $user = $users->findBy('username', $args['username'])) {
 		return $this->api->json($res, $user->toArray());
 	}
 

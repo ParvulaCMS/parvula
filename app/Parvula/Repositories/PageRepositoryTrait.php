@@ -3,35 +3,30 @@
 namespace Parvula\Repositories;
 
 use Iterator;
-use Parvula\BaseRepository;
-use Parvula\IterableTrait;
 use Parvula\ArrayableInterface;
 use Parvula\Models\Page;
 use Parvula\PageRenderers\PageRendererInterface;
 
-abstract class PageRepository extends BaseRepository implements Iterator, ArrayableInterface
-{
+// abstract class PageRepository extends BaseRepository implements Iterator, ArrayableInterface {
+trait PageRepositoryTrait {
+	// /**
+	//  * @var array Cache (array<string, Page>)
+	//  */
+	// protected $cache;
 
-	use IterableTrait;
+	// /**
+	//  * @var PageRendererInterface
+	//  */
+	// protected $renderer;
 
-	/**
-	 * @var array<Page>
-	 */
-	protected $data = [];
-
-	/**
-	 * @var PageRendererInterface
-	 */
-	protected $renderer;
-
-	/**
-	 * Constructor
-	 *
-	 * @param ContentParserInterface $contentParser (optional)
-	 */
-	function __construct(PageRendererInterface $pageRenderer) {
-		$this->setRenderer($pageRenderer);
-	}
+	// /**
+	//  * Constructor
+	//  *
+	//  * @param ContentParserInterface $contentParser (optional)
+	//  */
+	// public function __construct(PageRendererInterface $pageRenderer) {
+	// 	$this->setRenderer($pageRenderer);
+	// }
 
 	/**
 	 * Fetch all pages
@@ -44,14 +39,14 @@ abstract class PageRepository extends BaseRepository implements Iterator, Arraya
 	 */
 	public function all($path = '') {
 		$that = clone $this;
-		$that->data = [];
+		$that->cache = [];
 
 		$pagesIndex = $this->index(true, $path);
 
 		foreach ($pagesIndex as $pageUID) {
-			if (!isset($that->data[$pageUID])) {
-				$page = $this->read($pageUID);
-				$that->data[$page->slug] = $page;
+			if (!isset($that->cache[$pageUID])) {
+				$page = $this->find($pageUID);
+				$that->cache[$page->slug] = $page;
 			}
 		}
 
@@ -180,7 +175,7 @@ abstract class PageRepository extends BaseRepository implements Iterator, Arraya
 	/**
 	 * Get all pages to array
 	 *
-	 * @return array<Page> Return an array of 'Page'
+	 * @return array Return an array of 'Page' (array<Page>)
 	 */
 	public function toArray() {
 		if (empty($this->data)) {
@@ -212,7 +207,7 @@ abstract class PageRepository extends BaseRepository implements Iterator, Arraya
 	/**
 	 * Sort array of objects from a specific field
 	 *
-	 * @param array<?> &$arr An array of objects
+	 * @param array &$arr An array of objects (array<?>)
 	 * @param string $field Field name to sort
 	 * @param integer $sortType Sorting type (flag)
 	 * @return boolean

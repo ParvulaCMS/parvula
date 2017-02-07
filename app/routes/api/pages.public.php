@@ -74,7 +74,7 @@ $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
 
-	if (false === $result = $pages->read($args['slug'])) {
+	if (false === $result = $pages->find($args['slug'])) {
 		return $this->api->json($res, [
 			'error' => 'PageDoesNotExists',
 			'message' => 'This page does not exists'

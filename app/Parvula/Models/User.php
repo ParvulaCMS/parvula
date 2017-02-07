@@ -43,7 +43,6 @@ class User extends Model
 	public function __construct(array $infos) {
 		foreach ($infos as $key => $value) {
 			if (property_exists($this, $key)) {
-
 				$this->{$key} = $value;
 			}
 		}
@@ -87,5 +86,4 @@ class User extends Model
 	public function hasRole($role) {
 		return true;
 	}
-
 }

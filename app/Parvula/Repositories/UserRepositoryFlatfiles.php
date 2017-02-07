@@ -5,8 +5,9 @@ namespace Parvula\Repositories;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
+// use Parvula\Transformers\UserTransformer;
 
-class UserRepositoryFlatfiles extends UserRepository
+class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 {
 	/**
 	 * @var array Array of User
@@ -27,33 +28,8 @@ class UserRepositoryFlatfiles extends UserRepository
 		$this->data = $parser->read($usersFile);
 	}
 
-	/**
-	 * Index ressources
-	 *
-	 * @return array List of ressources
-	 */
-	public function index() {
-		// Return users username
-		return array_map(function($user) {
-			return $user['username'];
-		}, $this->data);
-	}
-
-	/**
-	 * Read a user from ID
-	 *
-	 * @param  string $id ID (username)
-	 * //@throws Exception If the ressource does not exists
-	 * @return User|bool The user or false if user not found
-	 */
-	public function read($id) {
-		foreach ($this->data as $user) {
-			if ($user['username'] === $id) {
-				return new User($user);
-			}
-		}
-
-		return false;
+	protected function model() {
+		return User::class;
 	}
 
 	/**
@@ -65,7 +41,6 @@ class UserRepositoryFlatfiles extends UserRepository
 	 */
 	public function update($username, $user) {
 		if ($userOld = $parser->read($user->username)) {
-
 		}
 
 		return false;
@@ -79,7 +54,6 @@ class UserRepositoryFlatfiles extends UserRepository
 	 */
 	public function create($user) {
 		if (!$parser->read($user->username)) {
-
 		}
 
 		return false;
@@ -92,7 +66,5 @@ class UserRepositoryFlatfiles extends UserRepository
 	 * @return bool
 	 */
 	public function delete($id) {
-
 	}
-
 }

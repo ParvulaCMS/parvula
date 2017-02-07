@@ -61,10 +61,10 @@ $this->post('', function ($req, $res) use ($pages) {
 		], 400);
 	}
 
-	if ($pages->read($parsedBody['slug'])) {
+	if ($pages->find($parsedBody['slug'])) {
 		return $this->api->json($res, [
 			'error' => 'PageAlreadyExists',
-			'message' => 'This page already exists'
+			'message' => 'Page `' . htmlspecialchars($parsedBody['slug']) . '` already exists'
 		], 409);
 	}
 
@@ -144,7 +144,7 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 
 /**
  * @api {patch} /pages/:slug Update specific field(s) of a page
- * @apiDescription For more details about json patch: https://tools.ietf.org/html/rfc6902
+ * @apiDescription Patch uses [Json patch (rfc6902)](https://tools.ietf.org/html/rfc6902)
  * @apiName Patch page
  * @apiGroup Page
  *
@@ -163,7 +163,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	if (!isset($req->getQueryParams()['parse'])) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
-	$page = $pages->read($slug);
+	$page = $pages->find($slug);
 
 	if (!$page) {
 		return $this->api->json($res, [
