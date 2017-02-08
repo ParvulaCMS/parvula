@@ -10,7 +10,7 @@ use Parvula\Exceptions\IOException;
 /**
  * @api {get} /auth Login
  * @apiName Login
- * @apiGroup Authorization
+ * @apiGroup Authentication
  * @apiDescription Returns a secret token if the credentials are OK
  *
  * @apiParam {String} Authorization Basic <base 64 />

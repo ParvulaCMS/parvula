@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula;
+namespace Parvula\Service;
 
 use Parvula\Models\User;
 

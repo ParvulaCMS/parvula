@@ -148,7 +148,7 @@ $app['session'] = function (Container $c) {
 };
 
 $app['auth'] = function (Container $c) {
-	return new Parvula\Authentication($c['session'], hash('sha1', '@TODO'));
+	return new Parvula\Service\Authentication($c['session'], hash('sha1', '@TODO'));
 	// return new Parvula\Authentication($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
@@ -272,7 +272,7 @@ $app['pages'] = $app['repositories']['pages'];
 $app['users'] = $app['repositories']['users'];
 
 $app['themes'] = function (Container $c) {
-	return new Parvula\Repositories\ThemeRepository(_THEMES_, $c['fileParser']);
+	return new Parvula\Services\ThemesService(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $c) {
