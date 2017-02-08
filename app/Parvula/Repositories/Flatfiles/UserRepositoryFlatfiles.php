@@ -6,7 +6,6 @@ use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
 use Illuminate\Support\Collection;
-// use Parvula\Transformers\UserTransformer;
 
 class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 {

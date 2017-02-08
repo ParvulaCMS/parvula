@@ -30,7 +30,11 @@ $this->get('', function ($req, $res) use ($pages) {
 		return $this->api->json($res, $pages->index());
 	}
 
-	$allPages = $pages->all()->order(SORT_ASC, 'slug');
+	$allPages = $pages
+		->all()
+		->sortBy(function ($p) {
+			return $p->slug;
+		});
 
 	// List all pages (with or without a parent)
 	if (isset($req->getQueryParams()['all'])) {

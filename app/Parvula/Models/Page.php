@@ -5,7 +5,7 @@ namespace Parvula\Models;
 use Closure;
 use DateTime;
 use Parvula\Models\Section;
-use Parvula\Repositories\PageRepository;
+use Parvula\Repositories\BaseRepository; // TODO PageRepo
 use Parvula\Exceptions\PageException;
 
 /**
@@ -196,7 +196,7 @@ class Page extends Model
 	 *
 	 * @param array $children Array of Page
 	 */
-	public function setChildren(PageRepository $children) {
+	public function setChildren(BaseRepository $children) {
 		$this->children = $children;
 	}
 

@@ -10,17 +10,18 @@ use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 use Parvula\Repositories\PageRepositoryTrait;
+use Illuminate\Support\Collection;
 
 class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
-// extends PageRepository
 
 	use PageRepositoryTrait;
 	use IterableTrait;
 
 	/**
+	 * Collection
 	 * @var array Array of pages (array<Page>)
 	 */
-	protected $data = [];
+	protected $data;
 
 	/**
 	 * @var string Pages folder
@@ -44,12 +45,50 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @param string $fileExtension File extension
 	 */
 	public function __construct(PageRendererInterface $pageRenderer, $folder, $fileExtension) {
-		// parent::__construct($pageRenderer);
 		$this->setRenderer($pageRenderer);
 
 		$this->folder = $folder;
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
 		$this->arePagesFetched = false;
+
+		$this->data = new Collection;
+
+
+		// Filter pages by visibility (hidden or visible)
+		$visibility = function ($visible) {
+			return $this->data->filter(function ($page) use ($visible) {
+				if ($visible) {
+					return !isset($page->hidden) || !$page->hidden || $page->hidden === 'false';
+				}
+				return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
+			});
+		};
+
+		// Show visible pages
+        Collection::macro('visible', function ($visible = true) use ($visibility) {
+			return $visibility($visible);
+        });
+
+		// Show hidden pages
+        Collection::macro('hidden', function () use ($visibility) {
+			return $visibility(false);
+        });
+
+		// Show pages with a parent (the children pages)
+        Collection::macro('withParent', function () {
+			return $this->filter(function (Page $page) {
+				return (bool) $page->get('parent');
+			});
+        });
+
+		// Show pages without a parent (the 'root' pages)
+        Collection::macro('withoutParent', function () {
+			return $this->filter(function (Page $page) {
+				return (bool) !$page->get('parent');
+			});
+            //     ->unique()
+            //     ->values();
+        });
 	}
 
 	/**
@@ -110,6 +149,33 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		$this->data[$pageUID] = $page;
 
 		return $page;
+	}
+
+	/**
+	 * Fetch all pages
+	 * This method will read each pages
+	 * If you want an array of Page use `toArray()` method
+	 * Exemple: `$pages->all()->toArray();`
+	 *
+	 * @param string ($path) PageRepository in a specific sub path
+	 * @return PageRepository
+	 */
+	public function all($path = '') {
+		// $that = clone $this;
+		// $that->cache = [];
+
+		$pagesIndex = $this->index(true, $path);
+
+		foreach ($pagesIndex as $pageUID) {
+			// if (!isset($that->cache[$pageUID])) {
+				$page = $this->find($pageUID);
+				$that->cache[$page->slug] = $page;
+			// }
+		}
+
+		return $this->data;
+
+		// return $that;
 	}
 
 	/**
@@ -264,7 +330,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		}
 	}
 
-	private function fetchPages() {
+	private function fetchPages0() {
 		if ($this->arePagesFetched) {
 			return;
 		}
@@ -289,7 +355,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 *
 	 * @return array Array of all Page
 	 */
-	private function fetchPages1() {
+	private function fetchPages() {
 		if ($this->arePagesFetched) {
 			return;
 		}

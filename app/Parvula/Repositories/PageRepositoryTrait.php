@@ -20,157 +20,15 @@ trait PageRepositoryTrait {
 	// protected $renderer;
 
 	// /**
-	//  * Constructor
+	//  * Order pages
 	//  *
-	//  * @param ContentParserInterface $contentParser (optional)
+	//  * @param integer ($sortType) Sort order
+	//  * @param string ($sortField) Sorting field
+	//  * @return PageRepository
 	//  */
-	// public function __construct(PageRendererInterface $pageRenderer) {
-	// 	$this->setRenderer($pageRenderer);
+	// public function order($sortType = SORT_ASC, $sortField = 'slug') {
+	// TODO remove
 	// }
-
-	/**
-	 * Fetch all pages
-	 * This method will read each pages
-	 * If you want an array of Page use `toArray()` method
-	 * Exemple: `$pages->all()->toArray();`
-	 *
-	 * @param string ($path) PageRepository in a specific sub path
-	 * @return PageRepository
-	 */
-	public function all($path = '') {
-		$that = clone $this;
-		$that->cache = [];
-
-		$pagesIndex = $this->index(true, $path);
-
-		foreach ($pagesIndex as $pageUID) {
-			if (!isset($that->cache[$pageUID])) {
-				$page = $this->find($pageUID);
-				$that->cache[$page->slug] = $page;
-			}
-		}
-
-		return $that;
-	}
-
-	/**
-	 * Order pages
-	 *
-	 * @param integer ($sortType) Sort order
-	 * @param string ($sortField) Sorting field
-	 * @return PageRepository
-	 */
-	public function order($sortType = SORT_ASC, $sortField = 'slug') {
-		$that = clone $this;
-
-		if (!is_integer($sortType)) {
-			$sortType = SORT_ASC;
-		}
-
-		if (!empty($this->data)) {
-			$this->arraySortByField($that->data, $sortField, $sortType);
-		}
-
-		return $that;
-	}
-
-	/**
-	 * Sort pages using a user-defined comparison function
-	 *
-	 * @param  callable $fn
-	 * @return PageRepository
-	 */
-	public function sort(callable $fn) {
-		$that = clone $this;
-
-		if (!empty($this->data)) {
-			usort($that->data, $fn);
-		}
-
-		return $that;
-	}
-
-	/**
-	 * Show visible pages
-	 *
-	 * @return PageRepository
-	 */
-	public function visible() {
-		return $this->visibility(true);
-	}
-
-	/**
-	 * Show hidden pages
-	 *
-	 * @return PageRepository
-	 */
-	public function hidden() {
-		return $this->visibility(false);
-	}
-
-	/**
-	 * Filter pages by visibility (hidden or visible)
-	 *
-	 * @param  boolean $visible
-	 * @return PageRepository
-	 */
-	public function visibility($visible) {
-		return $this->filter(function ($page) use ($visible) {
-			if ($visible) {
-				return !isset($page->hidden) || !$page->hidden || $page->hidden === 'false';
-			}
-			return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
-		});
-	}
-
-	/**
-	 * Show pages without a parent (the 'root' pages)
-	 *
-	 * @return PageRepository
-	 */
-	public function withoutParent() {
-		return $this->filter(function (Page $page) {
-			return (bool) !$page->get('parent');
-		});
-	}
-
-	/**
-	 * Show pages with a parent (the children pages)
-	 *
-	 * @return PageRepository
-	 */
-	public function withParent() {
-		return $this->filter(function (Page $page) {
-			return (bool) $page->get('parent');
-		});
-	}
-
-	/**
-	 * Filter pages
-	 *
-	 * Example:
-	 * ```
-	 * // Will just keep pages with a title < 10 characters
-	 * $pages->filter(function ($page) {
-	 *     return strlen($page->title) < 10;
-	 * })
-	 * ```
-	 *
-	 * @param callable $fn
-	 * @return PageRepository A clone of current object with filtered pages
-	 */
-	public function filter(callable $fn) {
-		$that = clone $this;
-		$that->data = [];
-
-		foreach ($this->data as $page) {
-			if ($fn($page) === true) {
-				$that->data[] = $page;
-			}
-		}
-
-		return $that;
-	}
 
 	/**
 	 * Get all pages to array
@@ -212,18 +70,9 @@ trait PageRepositoryTrait {
 	 * @param integer $sortType Sorting type (flag)
 	 * @return boolean
 	 */
-	private function arraySortByField(array &$arr, $field, $sortType) {
-		$sortFields = [];
-		foreach ($arr as $key => $obj) {
-			$sortFields[$key] = [];
-
-			if (isset($obj->$field)) {
-				$sortFields[$key] = $obj->$field;
-			}
-		}
-
-		return array_multisort($sortFields, $sortType, $arr);
-	}
+	// TODO remove
+	// private function arraySortByField(array &$arr, $field, $sortType) {
+	// }
 
 	/**
 	 * Set page renderer
