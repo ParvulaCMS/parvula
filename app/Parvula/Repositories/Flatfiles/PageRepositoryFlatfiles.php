@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 	use PageRepositoryTrait;
-	use IterableTrait;
+	use IterableTrait; // ?
 
 	/**
 	 * Collection
@@ -53,7 +53,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 		$this->data = new Collection;
 
-
 		// Filter pages by visibility (hidden or visible)
 		$visibility = function ($visible) {
 			return $this->data->filter(function ($page) use ($visible) {
@@ -86,8 +85,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			return $this->filter(function (Page $page) {
 				return (bool) !$page->get('parent');
 			});
-            //     ->unique()
-            //     ->values();
         });
 	}
 
@@ -398,6 +395,9 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		return $pagesTmp;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function model() {
 		return Page;
 	}

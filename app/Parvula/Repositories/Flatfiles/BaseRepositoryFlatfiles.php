@@ -48,22 +48,4 @@ abstract class BaseRepositoryFlatfiles extends BaseRepository {
 			return new $modelClassName($model);
 		});
 	}
-
-	/**
-	 * Return all data from a collection
-	 */
-	// public function all($fields = ['*']) {
-	// 	$modelName = get_class($this->model);
-
-	// }
-	// abstract public function lists($value, $key = null);
-	// abstract public function paginate($perPage = 1, $columns = ['*']);
-	// abstract public function create(array $data);
-	// if you use mongodb then you'll need to specify primary key $attribute
-	// abstract public function update(array $data, $id, $attribute = "id");
-	// abstract public function delete($id);
-	// abstract public function find($id, $columns = ['*']);
-	// abstract public function findBy($field, $value, $columns = ['*']);
-	// abstract public function findAllBy($field, $value, $columns = ['*']);
-	// abstract public function findWhere($where, $columns = ['*']);
 }

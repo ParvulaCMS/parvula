@@ -148,8 +148,8 @@ $app['session'] = function (Container $c) {
 };
 
 $app['auth'] = function (Container $c) {
-	return new Parvula\Service\Authentication($c['session'], hash('sha1', '@TODO'));
-	// return new Parvula\Authentication($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
+	return new Parvula\Service\AuthenticationService($c['session'], hash('sha1', '@TODO'));
+	// Parvula\Service\AuthenticationService($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
 // Get current logged User if available
@@ -157,7 +157,7 @@ $app['usersession'] = function (Container $c) {
 	$sess = $c['session'];
 	if ($username = $sess->get('username')) {
 		if ($c['auth']->isLogged($username)) {
-			return $c['users']->read($username);
+			return $c['users']->find($username);
 		}
 	}
 
@@ -277,7 +277,7 @@ $app['themes'] = function (Container $c) {
 
 $app['theme'] = function (Container $c) {
 	if ($c['themes']->has($themeName = $c['config']->get('theme'))) {
-		return $c['themes']->read($themeName);
+		return $c['themes']->get($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
 	}

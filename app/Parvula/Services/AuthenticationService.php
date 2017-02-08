@@ -4,7 +4,7 @@ namespace Parvula\Service;
 
 use Parvula\Models\User;
 
-class Authentication {
+class AuthenticationService {
 
 	/**
 	 * @var mixed Token
