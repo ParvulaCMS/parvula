@@ -1,24 +1,22 @@
 <?php
 
-namespace Parvula\Repositories;
+namespace Parvula\Services;
 
 use Parvula\IOInterface;
-use Parvula\CRUDInterface;
 use Parvula\FilesSystem as Files;
 use Parvula\Models\Theme;
 use Parvula\Exceptions\NotFoundException;
 
 /**
- * Themes Manager
+ * Themes service
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.8.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-class ThemeRepository implements CRUDInterface
-{
+class ThemesService {
 
 	/**
 	 * @var FilesSystem
@@ -53,7 +51,7 @@ class ThemeRepository implements CRUDInterface
 	 * @throws IOException If the page does not exists
 	 * @return Page Return the selected page
 	 */
-	public function read($themeName) {
+	public function get($themeName) {
 		if (!$this->has($themeName)) {
 			return false;
 		}
@@ -99,17 +97,5 @@ class ThemeRepository implements CRUDInterface
 		}));
 
 		// return $this->fs->index(); // TODO no recusrion
-	}
-
-	public function update($theme, $data) {
-		return false;
-	}
-
-	public function create($data) {
-		return false;
-	}
-
-	public function delete($data) {
-		return false;
 	}
 }
