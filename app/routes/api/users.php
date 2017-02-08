@@ -23,9 +23,9 @@ $users = $app['users'];
  *     ]
  */
 $this->get('', function ($req, $res) use ($users) {
-	return $this->api->json($res, array_map(function ($u) {
+	return $this->api->json($res, $users->all()->map(function ($u) {
 			return $u->toArray();
-	}, $users->all()));
+	}));
 })->setName('users.index');
 
 /**

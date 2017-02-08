@@ -1,14 +1,15 @@
 <?php
 
-namespace Parvula\Repositories;
+namespace Parvula\Repositories\Flatfiles;
 
 use SplFileInfo;
-use Parvula\BaseRepository;
 use Parvula\Models\Page;
+use Parvula\IterableTrait;
 use Parvula\FilesSystem as Files;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
+use Parvula\Repositories\PageRepositoryTrait;
 
 class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 // extends PageRepository
@@ -32,6 +33,8 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	private $folderDefaultFile = '/index';
 
 	private $arePagesFetched = false;
+
+	private $pagesCache = [];
 
 	/**
 	 * Constructor
@@ -252,12 +255,41 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		}
 	}
 
+	private function addPage(Page $page, $route = null) {
+		if ($page->hasParent()) {
+			$parent = $this->find($page->parent);
+			$parent->addChild($page);
+		} else {
+			$this->pages[$page->slug] = $page;
+		}
+	}
+
+	private function fetchPages() {
+		if ($this->arePagesFetched) {
+			return;
+		}
+
+		// check cache
+
+		$pagesIndex = $this->index(true);
+
+		$this->arePagesFetched = true;
+
+		foreach ($pagesIndex as $pageUID) {
+			$page = $this->find($pageUID);
+
+			$this->addPage($page);
+		}
+
+		return $this->pages;
+	}
+
 	/**
 	 * Fetch pages
 	 *
 	 * @return array Array of all Page
 	 */
-	private function fetchPages() {
+	private function fetchPages1() {
 		if ($this->arePagesFetched) {
 			return;
 		}

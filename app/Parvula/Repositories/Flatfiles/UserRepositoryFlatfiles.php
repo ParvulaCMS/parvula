@@ -1,10 +1,11 @@
 <?php
 
-namespace Parvula\Repositories;
+namespace Parvula\Repositories\Flatfiles;
 
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
+use Illuminate\Support\Collection;
 // use Parvula\Transformers\UserTransformer;
 
 class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
@@ -16,6 +17,7 @@ class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 
 	/**
 	 * @var array User[]
+	 * Collection
 	 */
 	protected $data;
 
@@ -25,7 +27,7 @@ class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 	 */
 	public function __construct(FileParser $parser, $usersFile) {
 		$this->parser = $parser;
-		$this->data = $parser->read($usersFile);
+		$this->data = new Collection($parser->read($usersFile));
 	}
 
 	protected function model() {

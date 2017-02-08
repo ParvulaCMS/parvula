@@ -23,12 +23,12 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		$slug = $config->get('homePage', 'index');
 	}
 
-	$page = $pages->read($slug, true);
+	$page = $pages->find($slug, true);
 
 	// 404
 	if (false === $page) {
 		$res = $res->withStatus(404);
-		$page = $pages->read($config->get('errorPage'));
+		$page = $pages->find($config->get('errorPage'));
 		$plugins->trigger('404', [&$page, $body]);
 
 		if (false === $page) {

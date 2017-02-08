@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Repositories;
+namespace Parvula\Repositories\Mongo;
 
 use MongoDB\Collection;
 use Parvula\BaseRepository;

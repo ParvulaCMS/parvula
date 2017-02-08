@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Repositories;
+namespace Parvula\Repositories\Mongo;
 
 use Parvula\ArrayTrait;
 use Parvula\FileParser;

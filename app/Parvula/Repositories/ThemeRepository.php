@@ -60,7 +60,7 @@ class ThemeRepository implements CRUDInterface
 
 		$path = $this->fs->getCWD() . $themeName . '/';
 
-		if(!file_exists($path . self::$THEME_INFO_FILE)) {
+		if (!file_exists($path . self::$THEME_INFO_FILE)) {
 			throw new NotFoundException('Invalid theme: `' . self::$THEME_INFO_FILE .
 				'` does not exists for theme ` ' . $path . '`');
 		}

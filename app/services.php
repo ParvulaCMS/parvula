@@ -98,7 +98,6 @@ $app['errorHandler'] = function (Container $c) {
 		}
 
 		$runner->register();
-
 	} elseif (class_exists('Whoops\\Run')) {
 		$run = new Whoops\Run;
 		$handler = new Whoops\Handler\PrettyPageHandler;
@@ -230,18 +229,18 @@ $app['repositories'] = function (Container $c) {
 	$databases = [
 		'mongodb' => [
 			'pages' => function () use ($c) {
-				return new Parvula\Repositories\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
+				return new Parvula\Repositories\Mongo\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Repositories\UserRepositoryMongo($c['mongodb']->users);
+				return new Parvula\Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
 			}
 		],
 		'flatfiles' => [
 			'pages' => function () use ($c, $conf) {
-				return new Parvula\Repositories\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+				return new Parvula\Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Repositories\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
+				return new Parvula\Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		]
 	];
