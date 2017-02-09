@@ -11,4 +11,8 @@ abstract class BaseRepository {
 	 */
 	abstract protected function model();
 
+	abstract public function find($id);
+
+	abstract public function findBy($field, $value);
+
 }

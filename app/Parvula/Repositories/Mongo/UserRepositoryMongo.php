@@ -6,7 +6,7 @@ use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
 
-class UserRepositoryMongo extends UserRepository
+class UserRepositoryMongo extends BaseRepositoryMongo
 {
 	/**
 	 * @var array Array of User
@@ -23,6 +23,10 @@ class UserRepositoryMongo extends UserRepository
 	 */
 	public function __construct($collection) {
 		$this->collection = $collection;
+	}
+
+	protected function model() {
+		return User::class;
 	}
 
 	private function exists($username) {
