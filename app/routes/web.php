@@ -26,14 +26,17 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 	$page = $pages->find($slug, true);
 
 	// 404
-	if (false === $page) {
+	if (!$page) {
 		$res = $res->withStatus(404);
 		$page = $pages->find($config->get('errorPage'));
 		$plugins->trigger('404', [&$page, $body]);
 
-		if (false === $page) {
-			// If no 404 page is found
-			return $res->write('404 - Page ' . htmlspecialchars($page) . ' not found');
+		if (!$page) {
+			// Default 'not found' message if 404 page does not exists
+			return $res->write(
+				'<h1>Page not found</h1>' .
+				'Error 404, Page "' . htmlspecialchars($slug) . '" not found.'
+			);
 		}
 	}
 
@@ -70,7 +73,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		'site'     => $config->toObject(),
 		'page'     => $page,
 		'theme'    => $theme,
-		'config'   => $app['fileParser']->read(_CONFIG_ . 'user.yml'), //TODO tests
+		'config'   => $app['fileParser']->read(_CONFIG_ . 'user.yml'), // TODO tests
 		'__time__' => function () use ($config) {
 			// useful to benchmark
 			return sprintf('%.4f', $config->get('__time__') + microtime(true));
@@ -106,7 +109,7 @@ $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res, $args) use ($app) {
 		// ->set('Content-Length', $f->size);
 		$res = $res->withHeader('Content-type', $contentType);
 
-		//stream_get_contents
+		// stream_get_contents
 		return $res->write(file_get_contents($filePath));
 	}
 
