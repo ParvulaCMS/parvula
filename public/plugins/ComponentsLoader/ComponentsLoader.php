@@ -3,6 +3,7 @@ namespace Plugins\ComponentsLoader;
 
 use Exception;
 use Parvula\Plugin;
+use Parvula\Models\Page;
 
 if (!defined('_APP_')) exit;
 
@@ -16,7 +17,7 @@ class ComponentsLoader extends Plugin {
 
 	const COMPONENTS_DIR = '_components';
 
-	function onPage(&$page) {
+	public function onPage(Page &$page) {
 		foreach ($page->sections as $id => $section) {
 			if ($section->name[0] === ':') {
 				$section->component = ltrim($section->name, ':');
@@ -57,7 +58,7 @@ class ComponentsLoader extends Plugin {
 		}
 	}
 
-	function onPostRender(&$out) {
+	public function onPostRender(&$out) {
 		foreach ($this->components as $component) {
 			$obj = $component['instance'];
 			$componentName = $component['section']->component;
@@ -76,7 +77,6 @@ class ComponentsLoader extends Plugin {
 
 	private function renderComponent($componentName, array $data) {
 		if (is_readable($filePath = $this->getComponentPath($componentName))) {
-
 			$plugin = null;
 			if (($pluginName = dirname($componentName)) !== '.') {
 				$pluginsMediator = $this->app['plugins'];
@@ -120,7 +120,7 @@ class ComponentsLoader extends Plugin {
 		return $arr;
 	}
 
-	function onRouterAPI(&$router) {
+	public function onRouterAPI(&$router) {
 		$components = $this->components;
 		$render = function ($componentName, $section) {
 			return $this->renderComponent($componentName, $section);

@@ -22,8 +22,7 @@ class DatabasePageRenderer implements PageRendererInterface {
 	 * @param ContentParserInterface $contentParser
 	 * @param array $options
 	 */
-	public function __construct(
-		ContentParserInterface $contentParser, $options = []) {
+	public function __construct(ContentParserInterface $contentParser, $options = []) {
 		$this->contentParser = $contentParser;
 		$this->options = $options;
 	}

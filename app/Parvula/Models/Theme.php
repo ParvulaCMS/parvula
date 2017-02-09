@@ -85,7 +85,7 @@ class Theme {
 		}
 
 		$this->layouts = new StdClass;
-		$filter = function($file) {
+		$filter = function ($file) {
 			return $this->extension === $file->getExtension() && $file->getBasename()[0] !== '_';
 		};
 

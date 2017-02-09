@@ -24,7 +24,6 @@ class PluginMediator {
 	 *
 	 * @param array $plugins
 	 * @throws BadObjectCallException
-	 * @return
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {

@@ -149,7 +149,6 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 		}
 
 		$file->moveTo(_UPLOADS_ . $path . $filename);
-
 	} catch (RuntimeException $e) {
 		return $this->api->json($res, [
 			'error' => 'UploadException',

@@ -65,7 +65,10 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	 * @param array $options
 	 */
 	public function __construct(
-		ParserInterface $metadataParser, ContentParserInterface $contentParser, $options = []) {
+		ParserInterface $metadataParser,
+		ContentParserInterface $contentParser,
+		$options = []
+	) {
 		$this->metadataParser = $metadataParser;
 		$this->contentParser = $contentParser;
 
@@ -144,7 +147,11 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		if (!empty($pageTokens[1])) {
 			// Split into sections
 			$content = preg_split(
-				$this->sectionMatcher, $pageTokens[1] . ' ', -1, PREG_SPLIT_DELIM_CAPTURE);
+				$this->sectionMatcher,
+				$pageTokens[1] . ' ',
+				-1,
+				PREG_SPLIT_DELIM_CAPTURE
+			);
 
 			if (($len = count($content)) > 1) {
 				for ($i = 1; $i < $len; ++$i) {
@@ -178,5 +185,4 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 		return new Page($meta, $content, $sections);
 	}
-
 }
