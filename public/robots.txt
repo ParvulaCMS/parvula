@@ -2,10 +2,9 @@ User-agent: *
 # Assets
 
 # Directories
+Disallow: /files/
 Disallow: /plugins/
-Disallow: /data/
-Disallow: /Parvula/
-Disallow: /vendor/
-Disallow: /components/
+Disallow: /themes/
+
 # Paths URI
 Disallow: /admin/
