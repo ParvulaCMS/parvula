@@ -193,33 +193,28 @@ $app['pageRendererRAW'] = function (Container $c) {
 
 $app['mongodb'] = function (Container $c) {
 	if (!class_exists('MongoDB\\Client')) {
-		throw new Exception('MongoDB client not found, please install `mongodb/mongodb`');
+		throw new Exception('MongoDB client not found, please install the package `mongodb/mongodb`');
 	}
 
 	$fp = $c['fileParser'];
-	$config = new Config($fp->read(_CONFIG_ . 'database.yml'));
+	$options = (new Config($fp->read(_CONFIG_ . 'database.yml')))->get('mongodb');
 	$uri = "mongodb://";
 
-	if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
-		$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}@";
+	if (isset($options['username'], $options['password'])) {
+		$uri .= $options['username'] . ':' . $options['password'] . '@';
 	}
 
-	if (isset($config->get('mongodb')['address'])) {
-		$uri .= $config->get('mongodb')['address'];
+	if (isset($options['address'])) {
+		$uri .= $options['address'];
 	} else {
-		$uri .= '127.0.0.1';
+		$uri .= 'localhost';
 	}
 
-	if (isset($config->get('mongodb')['port'])) {
-		$uri .= ":{$config->get('mongodb')['port']}";
+	if (isset($options['port'])) {
+		$uri .= ':' . $options['port'];
 	}
 
-	$uri .= "/{$config->get('mongodb')['name']}";
-
-	$client = new MongoDB\Client($uri);
-	$db = $client->{$config->get('mongodb')['name']};
-
-	return $db;
+	return (new MongoDB\Client($uri))->{$options['name']};
 };
 
 $app['repositories'] = function (Container $c) {
