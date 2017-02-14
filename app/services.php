@@ -193,12 +193,12 @@ $app['pageRendererRAW'] = function (Container $c) {
 
 $app['mongodb'] = function (Container $c) {
 	if (!class_exists('MongoDB\\Client')) {
-		throw new Exception('MongoDB client not found, please install the package `mongodb/mongodb`');
+		throw new RuntimeException('MongoDB client not found, please install the package `mongodb/mongodb`');
 	}
 
 	$fp = $c['fileParser'];
 	$options = (new Config($fp->read(_CONFIG_ . 'database.yml')))->get('mongodb');
-	$uri = "mongodb://";
+	$uri = 'mongodb://';
 
 	if (isset($options['username'], $options['password'])) {
 		$uri .= $options['username'] . ':' . $options['password'] . '@';
@@ -241,7 +241,7 @@ $app['repositories'] = function (Container $c) {
 	];
 
 	if (!isset($databases[$dbType])) {
-		throw new Exception(
+		throw new RuntimeException(
 			'Repository `' . htmlspecialchars($dbType) . '` does not exists, please edit your settings.'
 		);
 	}

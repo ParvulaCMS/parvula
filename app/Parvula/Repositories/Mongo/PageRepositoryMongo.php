@@ -3,13 +3,15 @@
 namespace Parvula\Repositories\Mongo;
 
 use IteratorIterator;
-use MongoDB\Collection as MongoCollection;
+use MongoDB\Collection as MongoCollectionBase;
 use Parvula\BaseRepository;
 use Parvula\Models\Page;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 use Illuminate\Support\Collection;
+use Parvula\Collections\MongoCollection;
+use MongoDB\Driver\Manager;
 
 /**
  * Mongo pages mapper
@@ -33,10 +35,13 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @param string $folder Pages folder
 	 * @param string $fileExtension File extension
 	 */
-	public function __construct(PageRendererInterface $pageRenderer, MongoCollection $collection) {
+	public function __construct(PageRendererInterface $pageRenderer, MongoCollectionBase $collection) {
+		// Manager $manager) {
+		// MongoCollectionBase $collection) {
 		// parent::__construct($pageRenderer);
 		$this->renderer = $pageRenderer;
 		$this->collection = $collection;
+		// $this->manager = $manager;
 
 		// Filter pages by visibility (hidden or visible)
 		$visibility = function ($col, $visible) {
@@ -240,10 +245,16 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	}
 
 	public function all($listHidden = false) {
+		return new MongoCollection($this->collection, \Parvula\Models\Page::class);
+
+		return $rows;
+
 		$exceptions = [true];
 		if ($listHidden) {
 			$exceptions = [];
 		}
+
+		return new MongoCollection($this->collection, \Parvula\Models\Page::class);
 
 		$col = new Collection();
 		foreach ($this->collection->find(['hidden' => ['$nin' => $exceptions]]) as $pageInfo) {
