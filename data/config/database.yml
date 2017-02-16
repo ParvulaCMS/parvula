@@ -3,9 +3,6 @@
 # ------------------------------ #
 
 flatfiles:
-    # Pages mapper (must implement CRUDInterface)
-    # pagesMapper: Parvula\Models\Mappers\PagesFlatFiles
-
     # Class to parse pages metadata (must implement ParserInterface)
     headParser: Parvula\Parsers\Yaml
 
@@ -30,10 +27,10 @@ mongodb:
     # port: 27017
 
     # Database name
-    name: myDatabase
+    name: Parvula
 
-    # Username/Password if auth is enabled in mongodb config
-    # username: user
+    # Username/Password if authentication is enabled in mongodb config
+    # username: myUsername
     # password: mySecretPassword
 
     # Pages mapper (must implement CRUDInterface)

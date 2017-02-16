@@ -36,8 +36,6 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @param string $fileExtension File extension
 	 */
 	public function __construct(PageRendererInterface $pageRenderer, MongoCollectionBase $collection) {
-		// Manager $manager) {
-		// MongoCollectionBase $collection) {
 		// parent::__construct($pageRenderer);
 		$this->renderer = $pageRenderer;
 		$this->collection = $collection;
@@ -53,30 +51,6 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 				return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
 			});
 		};
-
-		// Show visible pages
-        Collection::macro('visible', function ($visible = true) use ($visibility) {
-			return $visibility($this, $visible);
-        });
-
-		// Show hidden pages
-        Collection::macro('hidden', function () use ($visibility) {
-			return $visibility($this, false);
-        });
-
-		// Show pages with a parent (the children pages)
-        Collection::macro('withParent', function () {
-			return $this->filter(function (Page $page) {
-				return (bool) $page->get('parent');
-			});
-        });
-
-		// Show pages without a parent (the 'root' pages)
-        Collection::macro('withoutParent', function () {
-			return $this->filter(function (Page $page) {
-				return (bool) !$page->get('parent');
-			});
-        });
 	}
 
 	protected function model() {
@@ -245,43 +219,12 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	}
 
 	public function all($listHidden = false) {
-		return new MongoCollection($this->collection, \Parvula\Models\Page::class);
+		$col = new MongoCollection($this->collection, Page::class);
 
-		return $rows;
-
-		$exceptions = [true];
 		if ($listHidden) {
-			$exceptions = [];
+			return $col;
 		}
 
-		return new MongoCollection($this->collection, \Parvula\Models\Page::class);
-
-		$col = new Collection();
-		foreach ($this->collection->find(['hidden' => ['$nin' => $exceptions]]) as $pageInfo) {
-			$col->push(new Page((array) $pageInfo));
-		}
-
-		return $col;
+		return $col->visible();
 	}
-
-	// public function rewind() {
-	// 	$this->iter = new IteratorIterator($this->collection->find());
-	// 	return $this->iter->rewind();
-	// }
-
-	// public function current() {
-	// 	return $this->renderer->parse($this->iter->current());
-	// }
-
-	// public function key() {
-	// 	return $this->iter->key();
-	// }
-
-	// public function next() {
-	// 	return $this->iter->next();
-	// }
-
-	// public function valid() {
-	// 	return $this->iter->valid();
-	// }
 }

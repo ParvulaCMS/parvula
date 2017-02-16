@@ -58,7 +58,7 @@ class Page extends Model
 	 * @var array
 	 */
 	protected $invisible = [
-		'lazyFunctions'
+		'lazyFunctions', '_id'
 	];
 
 	/**

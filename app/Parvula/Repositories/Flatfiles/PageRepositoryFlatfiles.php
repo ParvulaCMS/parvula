@@ -4,7 +4,6 @@ namespace Parvula\Repositories\Flatfiles;
 
 use SplFileInfo;
 use Parvula\Models\Page;
-use Parvula\IterableTrait;
 use Parvula\FilesSystem as Files;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
@@ -15,7 +14,6 @@ use Parvula\Collections\Collection;
 class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 	use PageRepositoryTrait;
-	use IterableTrait; // ?
 
 	/**
 	 * Collection
@@ -51,7 +49,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
 		$this->arePagesFetched = false;
 
-		$this->data = [];// new Collection;
+		$this->data = []; // new Collection;
 	}
 
 	/**
@@ -121,7 +119,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * Exemple: `$pages->all()->toArray();`
 	 *
 	 * @param string ($path) PageRepository in a specific sub path
-	 * @return PageRepository
+	 * @return Parvula\Collections\Collection
 	 */
 	public function all($path = '') {
 		// $that = clone $this;

@@ -23,23 +23,6 @@ abstract class BaseRepositoryMongo extends BaseRepository {
 		return $model;
 	}
 
-	// Filename // TODO
-	/**
-	 * Find one by "id" -> filename
-	 *
-	 * @return Model
-	 */
-	public function find($uid) {
-	// 	$modelClassName = $this->model();
-	// 	foreach ($this->data as $model) {
-	// 		if ($model[$attr] === $value) {
-	// 			return new $modelClassName($model);
-	// 		}
-	// 	}
-
-	// 	return false;
-	}
-
 	/**
 	 * @return Collection Collection of Model
 	 */
