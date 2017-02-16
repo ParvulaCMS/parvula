@@ -3,13 +3,16 @@
 namespace Parvula\Collections;
 
 use Countable;
+use JsonSerializable;
 use IteratorAggregate;
 use Parvula\ArrayableInterface;
 use Parvula\Models\Model;
 use MongoDB\Driver\Manager;
 use Parvula\Models\Page;
 
-class Collection implements Countable, IteratorAggregate {
+class Collection implements Countable, IteratorAggregate, JsonSerializable {
+
+	use CollectionTraits\PageCollectionTrait;
 
 	/**
 	 * @var array
@@ -26,10 +29,17 @@ class Collection implements Countable, IteratorAggregate {
 		$this->model = $model;
 	}
 
+	/**
+	 * Sort items by a specific field
+	 *
+	 * @param string $field
+	 * @param boolean $ascending (optional) Default true
+	 * @return Parvula\Collections\Collection
+	 */
 	public function sortBy($field, $ascending = true) {
 		$callback = function ($a, $b) use ($field) {
 			if (isset($a->$field, $b->$field)) {
-				return $a->$field - $b->$field;
+				return strcmp($a->$field, $b->$field);
 			}
 			return 1;
 		};
@@ -44,35 +54,33 @@ class Collection implements Countable, IteratorAggregate {
 			};
 		}
 
-		 $sortedItems = $this->items;
+		$sortedItems = $this->items;
 
 		usort($sortedItems, $callbackAsc);
 
 		return new static($sortedItems, $this->model);
 	}
 
+	/**
+	 * Filter items from the collection
+	 *
+	 * @param string $field
+	 * @param array $values Values to filter (it will keep items with one of those values)
+	 * @return Parvula\Collections\Collection New collection
+	 */
 	public function filter($field, array $values) {
-		// $new = array_filter($this->items, function ($item) use ($field, $values) {
-		// 	return in_array($item[$field], [false]);
-		// });
+		$filteredItems = array_filter($this->items, function ($item) use ($field, $values) {
+			if (isset($item->$field)) {
+				return in_array($item->$field, $values, true);
+			}
 
-		// $new = array_filter($this->items, function ($item) use ($field, $values) {
-		// 	return in_array($item, $values);
-		// });
+			return in_array(null, $values, true);
+		});
 
-		$new = $this->items;
-
-		return new static($new, $this->model);
+		return new static($filteredItems, $this->model);
 	}
 
-	public function withoutParent() {
-		return $this->clone();
-	}
-
-	public function visible() {
-		return $this->filter('hidden', [false, null]);
-	}
-
+	// TEST
 	public function map(callable $cb) {
 		foreach ($this->all() as $key => $item) {
 			yield $item => $cb($item);
@@ -88,6 +96,11 @@ class Collection implements Countable, IteratorAggregate {
 		return count($this->items);
 	}
 
+	/**
+	 * Transform the collection to an array
+	 *
+	 * @return array
+	 */
     public function toArray() {
 		$accumulator = [];
 		$model = $this->model;
@@ -103,6 +116,31 @@ class Collection implements Countable, IteratorAggregate {
 		return $accumulator;
     }
 
+    /**
+     * Convert the collection into json
+     *
+     * @return array
+     */
+    public function jsonSerialize() {
+		$accumulator = [];
+		foreach ($this->all() as $items) {
+            if ($value instanceof JsonSerializable) {
+                $accumulator[] = $value->jsonSerialize();
+            } elseif ($value instanceof ArrayableInterface) {
+                $accumulator[] = $value->toArray();
+            } else {
+                $accumulator[] = $value;
+            }
+		}
+
+        return $accumulator;
+    }
+
+	/**
+	 * Collection iterator
+	 *
+	 * @return Traversable
+	 */
 	public function getIterator() {
 		$model = $this->model;
 

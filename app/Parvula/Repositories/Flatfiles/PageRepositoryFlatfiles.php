@@ -10,7 +10,7 @@ use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 use Parvula\Repositories\PageRepositoryTrait;
-use Illuminate\Support\Collection;
+use Parvula\Collections\Collection;
 
 class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
@@ -51,41 +51,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		$this->fileExtension =  '.' . ltrim($fileExtension, '.');
 		$this->arePagesFetched = false;
 
-		$this->data = new Collection;
-
-		// Filter pages by visibility (hidden or visible)
-		$visibility = function ($visible) {
-			return $this->data->filter(function ($page) use ($visible) {
-				if ($visible) {
-					return !isset($page->hidden) || !$page->hidden || $page->hidden === 'false';
-				}
-				return isset($page->hidden) && ($page->hidden || $page->hidden !== 'false');
-			});
-		};
-
-		// Show visible pages
-        Collection::macro('visible', function ($visible = true) use ($visibility) {
-			return $visibility($visible);
-        });
-
-		// Show hidden pages
-        Collection::macro('hidden', function () use ($visibility) {
-			return $visibility(false);
-        });
-
-		// Show pages with a parent (the children pages)
-        Collection::macro('withParent', function () {
-			return $this->filter(function (Page $page) {
-				return (bool) $page->get('parent');
-			});
-        });
-
-		// Show pages without a parent (the 'root' pages)
-        Collection::macro('withoutParent', function () {
-			return $this->filter(function (Page $page) {
-				return (bool) !$page->get('parent');
-			});
-        });
+		$this->data = [];// new Collection;
 	}
 
 	/**
@@ -166,11 +132,12 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		foreach ($pagesIndex as $pageUID) {
 			// if (!isset($that->cache[$pageUID])) {
 				$page = $this->find($pageUID);
-				$that->cache[$page->slug] = $page;
+				$this->data[$page->slug] = $page;
 			// }
 		}
 
-		return $this->data;
+		// print_r($this->data);
+		return new Collection($this->data);
 
 		// return $that;
 	}
