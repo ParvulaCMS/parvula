@@ -21,5 +21,6 @@ class AuthCest
 		$I->seeResponseCodeIs(201);
 		$I->seeResponseIsJson();
 		$I->seeResponseContainsJson(['status' => 'ok']);
+		$I->seeResponseJsonMatchesJsonPath('$.token');
 	}
 }

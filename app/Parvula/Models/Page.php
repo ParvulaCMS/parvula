@@ -147,7 +147,7 @@ class Page extends Model
 	public function getMeta() {
 		$meta = [];
 		foreach ($this->toArray() as $key => $value) {
-			if ($key !== 'sections' && $key !== 'content' && $key !== 'children') {
+			if ($value !== null && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}

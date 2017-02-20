@@ -7,38 +7,76 @@ class PageCrudCest extends APITest
 	private $page1UpdateIncomplete;
 
 	public function boot(APITester $I) {
+		$page1Slug = 'test001' . substr(uniqid('', true), -5);
+		$page2Slug = 'test002' . substr(uniqid('', true), -5);
+
 		$this->page1 = [
-			'slug'    => 'test1',
+			'slug'    => $page1Slug,
 			'title'   => 'Test 1',
 			'content' => '# My content'
 		];
 
+		$this->page2 = [
+			'slug'    => $page2Slug,
+			'title'   => 'Test 2',
+			'content' => 'some *content*'
+		];
+
+		$this->page2child1 = [
+			'slug'    => $page2Slug . '/child01',
+			'title'   => 'A Child',
+			'content' => 'some other content'
+		];
+
 		$this->page1Update = [
-			'slug'    => 'test1',
+			'slug'    => $page1Slug,
 			'title'   => 'Test 1 updated',
 			'content' => '# My updated content'
 		];
 
 		$this->page1UpdateIncomplete = [
-			'slug'    => 'test1'
+			'slug'    => $page1Slug
 		];
 
 		parent::boot($I);
 	}
 
 	// tests
+	public function createANewPage(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/pages', $this->page1);
+		$I->seeResponseCodeIs(201);
+	}
+
+	public function createANewPageWithChild(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/pages', $this->page2);
+		$I->seeResponseCodeIs(201);
+
+		$I->sendPOST('/pages', $this->page2child1);
+		$I->seeResponseCodeIs(201);
+	}
+
+	public function cannotCreateANewPage(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/pages', $this->page1);
+		$I->seeResponseCodeIs(409);
+	}
+
 	public function getOnePage(APITester $I) {
-		$I->sendGET('/pages/home');
+		$slug = $this->page1['slug'];
+		$I->sendGET('/pages/' . $slug);
 		$I->seeResponseCodeIs(200);
-		$I->seeResponseContainsJson(['slug' => 'home']);
+		$I->seeResponseContainsJson(['slug' => $slug]);
 		$I->seeResponseJsonMatchesJsonPath('$.slug');
 		$I->seeResponseJsonMatchesJsonPath('$.title');
 	}
 
 	public function getOnePageWithChildren(APITester $I) {
-		$I->sendGET('/pages/parent');
+		$slug = $this->page2['slug'];
+		$I->sendGET('/pages/' . $slug);
 		$I->seeResponseCodeIs(200);
-		$I->seeResponseContainsJson(['slug' => 'parent']);
+		$I->seeResponseContainsJson(['slug' => $slug]);
 		$I->seeResponseJsonMatchesJsonPath('$.slug');
 		$I->seeResponseJsonMatchesJsonPath('$.title');
 		$I->seeResponseJsonMatchesJsonPath('$.children.[*]');
@@ -69,18 +107,6 @@ class PageCrudCest extends APITest
 		$I->seeResponseJsonMatchesJsonPath('$.[0].title');
 	}
 
-	public function createANewPage(APITester $I) {
-		$I->amBearerAuthenticated($this->token);
-		$I->sendPOST('/pages', $this->page1);
-		$I->seeResponseCodeIs(201);
-	}
-
-	public function cannotCreateANewPage(APITester $I) {
-		$I->amBearerAuthenticated($this->token);
-		$I->sendPOST('/pages', $this->page1);
-		$I->seeResponseCodeIs(409);
-	}
-
 	public function updateAPage(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
 		$I->sendPUT('/pages/' . $this->page1['slug'], $this->page1Update);
@@ -102,6 +128,15 @@ class PageCrudCest extends APITest
 	public function deleteAPage(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
 		$I->sendDelete('/pages/' . $this->page1['slug']);
+		$I->seeResponseCodeIs(204);
+	}
+
+	public function deleteAPageAndAChild(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendDelete('/pages/' . $this->page2['slug']);
+		$I->seeResponseCodeIs(204);
+
+		$I->sendDelete('/pages/' . $this->page2child1['slug']);
 		$I->seeResponseCodeIs(204);
 	}
 

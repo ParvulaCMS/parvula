@@ -52,7 +52,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @param string $pageUID Page unique ID
 	 * @param boolean ($eval) Evaluate PHP
 	 * @throws IOException If the page does not exists
-	 * @return Page|bool Return the selected page if exists, false if not
+	 * @return Page|bool Return the selected page if possible, false if not
 	 */
 	public function find($pageUID, $eval = false) {
 		$this->fetchPages();
