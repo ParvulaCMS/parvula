@@ -71,9 +71,7 @@ $this->post('', function ($req, $res) use ($pages) {
 	$pageArr = (array) $parsedBody;
 
 	try {
-		$page = new Page($pageArr);
-
-		$result = $pages->create($page);
+		$result = $pages->create($pageArr);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
@@ -129,9 +127,7 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	$pageArr = (array) $parsedBody;
 
 	try {
-		$page = new Page($pageArr);
-
-		$pages->update($args['slug'], $page);
+		$pages->update($args['slug'], $pageArr);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
@@ -153,7 +149,8 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
  * @apiError (400) InvalidTargetDocumentJsonException
  * @apiError (400) InvalidOperationException
  * @apiError (404) PageDoesNotExists If page does not exists
- * @apiError (404) PageException If exception
+ * @apiError (404) PageException
+ * @apiError (500) ServerException
  */
 $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	$parsedBody = $req->getParsedBody();
@@ -177,9 +174,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 
 		$patchedDocument = $patch->apply();
 
-		$newPage = new Page(json_decode($patchedDocument, true));
-
-		$pages->update($slug, $newPage);
+		$pages->update($slug, json_decode($patchedDocument, true));
 	} catch (InvalidPatchDocumentJsonException $e) {
 		// Will be thrown when using invalid JSON in a patch document
 		return $this->api->json($res, [
@@ -200,7 +195,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		], 400);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
-			'error' => 'InvalidOperationException',
+			'error' => 'ServerException',
 			'message' => $e->getMessage()
 		], 500);
 	}

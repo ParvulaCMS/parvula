@@ -7,6 +7,12 @@ use Parvula\Repositories\BaseRepository;
 abstract class BaseRepositoryFlatfiles extends BaseRepository {
 
 	/**
+	 * Collection
+	 * @var array Array of model
+	 */
+	protected $data;
+
+	/**
 	 * Find by field
 	 * @return Model
 	 */

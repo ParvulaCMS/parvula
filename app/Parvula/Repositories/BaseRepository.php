@@ -15,4 +15,7 @@ abstract class BaseRepository {
 
 	abstract public function findBy($field, $value);
 
+	abstract public function create(array $data);
+
+	abstract public function update($id, array $data);
 }

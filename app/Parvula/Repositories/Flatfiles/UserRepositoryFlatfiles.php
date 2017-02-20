@@ -10,15 +10,9 @@ use Illuminate\Support\Collection;
 class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 {
 	/**
-	 * @var array Array of User
+	 * @var Parvula\FileParser
 	 */
 	private $parser;
-
-	/**
-	 * @var array User[]
-	 * Collection
-	 */
-	protected $data;
 
 	/**
 	 * @param FileParser $parser
@@ -40,7 +34,7 @@ class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 	 * @param mixed $data Data
 	 * @return bool
 	 */
-	public function update($username, $user) {
+	public function update($username, array $userData) {
 		if ($userOld = $parser->read($user->username)) {
 		}
 
@@ -53,7 +47,7 @@ class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 	 * @param User $user User
 	 * @return bool
 	 */
-	public function create($user) {
+	public function create(array $userData) {
 		if (!$parser->read($user->username)) {
 		}
 

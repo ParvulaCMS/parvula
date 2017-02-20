@@ -16,12 +16,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	use PageRepositoryTrait;
 
 	/**
-	 * Collection
-	 * @var array Array of pages (array<Page>)
-	 */
-	protected $data;
-
-	/**
 	 * @var string Pages folder
 	 */
 	private $folder;
@@ -143,13 +137,13 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	/**
 	 * Create page object in "pageUID" file
 	 *
-	 * @param Page $page Page object
+	 * @param array $pageData Page data
 	 * @throws IOException If the destination folder is not writable
 	 * @throws PageException If the page does not exists
 	 * @return bool
 	 */
-	public function create($page) {
-		if (!isset($page->slug)) {
+	public function create(array $pageData) {
+		if (!isset($pageData['slug'])) {
 			throw new IOException('Page cannot be created. It must have a slug');
 		}
 
@@ -158,6 +152,8 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		if (!$fs->isWritable()) {
 			throw new IOException('Page destination folder is not writable');
 		}
+
+		$page = new Page($pageData);
 
 		$slug = $page->slug;
 		$pagePath = $slug . $this->fileExtension;
@@ -190,22 +186,24 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * Update page object
 	 *
 	 * @param string $pageUID Page unique ID
-	 * @param Page $page Page object
+	 * @param array $pageData Page data
 	 * @throws PageException If the page is not valid
 	 * @throws PageException If the page already exists
 	 * @throws PageException If the page does not exists
 	 * @return bool Return true if page updated
 	 */
-	public function update($pageUID, $page) {
+	public function update($pageUID, array $pageData) {
 		$fs = new Files($this->folder);
 		$pageFile = $pageUID . $this->fileExtension;
 		if (!$fs->exists($pageFile)) {
 			throw new PageException('Page `' . $pageUID . '` does not exists');
 		}
 
-		if (!isset($page->title, $page->slug)) {
+		if (!isset($pageData['title'], $pageData['slug'])) {
 			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
+
+		$page = new Page($pageData);
 
 		// New slug, need to rename
 		if ($pageUID !== $page->slug) {
