@@ -116,9 +116,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @return Parvula\Collections\Collection
 	 */
 	public function all($path = '') {
-		// $that = clone $this;
-		// $that->cache = [];
-
 		$pagesIndex = $this->index(true, $path);
 
 		foreach ($pagesIndex as $pageUID) {
@@ -130,8 +127,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 		// print_r($this->data);
 		return new Collection($this->data);
-
-		// return $that;
 	}
 
 	/**
@@ -286,28 +281,8 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			$parent = $this->find($page->parent);
 			$parent->addChild($page);
 		} else {
-			$this->pages[$page->slug] = $page;
+			$this->data[$page->slug] = $page;
 		}
-	}
-
-	private function fetchPages0() {
-		if ($this->arePagesFetched) {
-			return;
-		}
-
-		// check cache
-
-		$pagesIndex = $this->index(true);
-
-		$this->arePagesFetched = true;
-
-		foreach ($pagesIndex as $pageUID) {
-			$page = $this->find($pageUID);
-
-			$this->addPage($page);
-		}
-
-		return $this->pages;
 	}
 
 	/**
@@ -316,6 +291,29 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @return array Array of all Page
 	 */
 	private function fetchPages() {
+		if ($this->arePagesFetched) {
+			return;
+		}
+
+		// TODO check cache
+		$pagesIndex = $this->index(true);
+
+		$this->arePagesFetched = true;
+
+		foreach ($pagesIndex as $pageUID) {
+			$page = $this->find($pageUID);
+			$this->addPage($page);
+		}
+
+		return $this->data;
+	}
+
+	/**
+	 * Fetch pages
+	 *
+	 * @return array Array of all Page
+	 */
+	private function fetchPages0() {
 		if ($this->arePagesFetched) {
 			return;
 		}

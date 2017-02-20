@@ -3,6 +3,8 @@
 class PageCrudCest extends APITest
 {
 	private $page1;
+	private $page1Update;
+	private $page1UpdateIncomplete;
 
 	public function boot(APITester $I) {
 		$this->page1 = [
@@ -29,6 +31,19 @@ class PageCrudCest extends APITest
 		$I->sendGET('/pages/home');
 		$I->seeResponseCodeIs(200);
 		$I->seeResponseContainsJson(['slug' => 'home']);
+		$I->seeResponseJsonMatchesJsonPath('$.slug');
+		$I->seeResponseJsonMatchesJsonPath('$.title');
+	}
+
+	public function getOnePageWithChildren(APITester $I) {
+		$I->sendGET('/pages/parent');
+		$I->seeResponseCodeIs(200);
+		$I->seeResponseContainsJson(['slug' => 'parent']);
+		$I->seeResponseJsonMatchesJsonPath('$.slug');
+		$I->seeResponseJsonMatchesJsonPath('$.title');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[*]');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[0].slug');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[0].title');
 	}
 
 	public function failToGetOnePage(APITester $I) {
@@ -39,7 +54,7 @@ class PageCrudCest extends APITest
 	public function indexPagesOnlyIndex(APITester $I) {
 		$I->sendGET('/pages?index');
 		$I->seeResponseCodeIs(200);
-		// Should be an array
+		// Should be a flat array
 		$I->seeResponseJsonMatchesJsonPath('$.[*]');
 		$I->dontSeeResponseJsonMatchesJsonPath('$.[*].*');
 	}
@@ -47,7 +62,7 @@ class PageCrudCest extends APITest
 	public function indexPages(APITester $I) {
 		$I->sendGET('/pages');
 		$I->seeResponseCodeIs(200);
-		// Should be deeper than an array
+		// Should be deeper than a flat array
 		$I->seeResponseJsonMatchesJsonPath('$.[*]');
 		$I->seeResponseJsonMatchesJsonPath('$.[*].*');
 		$I->seeResponseJsonMatchesJsonPath('$.[0].slug');
