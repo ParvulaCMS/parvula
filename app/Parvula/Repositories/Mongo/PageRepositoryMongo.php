@@ -92,15 +92,17 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	/**
 	 * Create page object in "slug" file
 	 *
-	 * @param Page $page Page object
+	 * @param array $pageData Page data
 	 * @throws IOException If the destination folder is not writable
 	 * @throws PageException If the page does not exists
 	 * @return bool
 	 */
-	public function create($page) {
-		if (!isset($page->slug)) {
+	public function create(array $pageData) {
+		if (!isset($page['slug'])) {
 			throw new IOException('Page cannot be created. It must have a slug');
 		}
+
+		$page = new Page($pageData);
 
 		if ($this->exists($page->slug)) {
 			return false;
@@ -117,20 +119,22 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * Update page object
 	 *
 	 * @param string $slug Page unique ID
-	 * @param Page $page Page object
+	 * @param Page $pageData array
 	 * @throws PageException If the page is not valid
 	 * @throws PageException If the page already exists
 	 * @throws PageException If the page does not exists
 	 * @return bool Return true if page updated
 	 */
-	public function update($slug, $page) {
+	public function update($slug, array $pageData) {
 		if (!$this->exists($slug)) {
 			throw new PageException('Page `' . $slug . '` does not exists');
 		}
 
-		if (!isset($page->title, $page->slug)) {
+		if (!isset($page['title'], $page['slug'])) {
 			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
+
+		$page = new Page($pageData);
 
 		try {
 			$res = $this->collection->replaceOne(

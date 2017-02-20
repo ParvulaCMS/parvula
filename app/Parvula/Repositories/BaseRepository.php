@@ -11,11 +11,45 @@ abstract class BaseRepository {
 	 */
 	abstract protected function model();
 
+	/**
+	 * Find one model by id
+	 *
+	 * @param mixed $id
+	 * @return Model
+	 */
 	abstract public function find($id);
 
-	abstract public function findBy($field, $value);
+	/**
+	 * Find one model by a given field
+	 *
+	 * @param mixed $field
+	 * @param mixed $value
+	 * @return Model
+	 */
+	abstract public function findBy($field, $value); // TODO findOneBy ?
 
+	/**
+	 * Create a new model from an array of data
+	 *
+	 * @param array $data
+	 * @return bool
+	 */
 	abstract public function create(array $data);
 
+	/**
+	 * Update a given model
+	 *
+	 * @param mixed $id
+	 * @param array $data
+	 * @return bool
+	 */
 	abstract public function update($id, array $data);
+
+	/**
+	 * Delete a given model
+	 *
+	 * @param mixed $id
+	 * @return bool
+	 */
+	abstract public function delete($id);
 }
