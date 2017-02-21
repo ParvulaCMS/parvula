@@ -98,7 +98,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return bool
 	 */
 	public function create(array $pageData) {
-		if (!isset($page['slug'])) {
+		if (!isset($pageData['slug'])) {
 			throw new IOException('Page cannot be created. It must have a slug');
 		}
 
@@ -130,7 +130,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 			throw new PageException('Page `' . $slug . '` does not exists');
 		}
 
-		if (!isset($page['title'], $page['slug'])) {
+		if (!isset($pageData['title'], $pageData['slug'])) {
 			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
 
@@ -200,10 +200,8 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return boolean If page is deleted
 	 */
 	public function delete($slug) {
-		if (!is_null($this->collection->findOneAndDelete(['slug' => $slug]))) {
-			return true;
-		}
-		return false;
+		$deleteResult = $this->collection->deleteOne(['slug' => $slug]);
+		return $deleteResult->getDeletedCount() > 0;
 	}
 
 	/**

@@ -279,7 +279,9 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	private function addPage(Page $page, $route = null) {
 		if ($page->hasParent()) {
 			$parent = $this->find($page->parent);
-			$parent->addChild($page);
+			if ($parent !== false) {
+				$parent->addChild($page);
+			}
 		} else {
 			$this->data[$page->slug] = $page;
 		}

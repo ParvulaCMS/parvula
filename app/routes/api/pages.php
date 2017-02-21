@@ -207,9 +207,19 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
  * @apiGroup Page
  *
  * @apiSuccess (204) PagePatched
+ * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
  * @apiError (404) PageException If not ok or exception
  */
 $this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+	$page = $pages->find($args['slug']);
+
+	if (!$page) {
+		return $this->api->json($res, [
+			'error' => 'PageDoesNotExists',
+			'message' => 'Page does not exists and thus cannot be deleted'
+		], 404);
+	}
+
 	try {
 		$result = $pages->delete($args['slug']);
 	} catch (Exception $e) {

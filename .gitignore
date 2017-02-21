@@ -42,3 +42,4 @@ tests/_output
 tests/_support/_generated
 tests/unit
 tests/functional
+data/pages/test0*
