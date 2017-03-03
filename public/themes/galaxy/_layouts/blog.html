@@ -1,0 +1,38 @@
+<?php $this->layout('layouts::_base') ?>
+
+<div class="content" editable=true>
+	<?= $content ?>
+</div>
+
+<?php
+use Parvula\Models\Page;
+
+$i = 0;
+$limit = 10;
+if (isset($page->options, $page->options['limit'])) {
+	$limit = $page->options['limit'];
+}
+?>
+
+<?php
+if ($page->hasChildren()):
+	// Sort children by date
+	//$children = $page->getChildren()->sort(function (Page $p1, Page $p2) {
+	//	return $p1->getDateTime() < $p2->getDateTime();
+	//});
+	foreach ($page->getChildren() as $child):
+	//foreach ($children as $child):
+	?>
+	<div class="card">
+		<div class="card-block">
+			<h4 class="card-title"><?= $child->title ?></h4>
+			<h6 class="card-subtitle text-muted"><?= $this->e($child, 'pageDateFormat') ?></h6>
+			<p class="p-t-1"><?= $this->excerpt($child->content) ?>...</p>
+			<a href="<?= $baseUrl . $child->slug ?>" class="btn btn-primary-outline btn-sm card-link">Read more</a>
+		</div>
+	</div>
+	<?php if (++$i >= $limit) { break; } ?>
+	<?php endforeach; ?>
+<?php else: ?>
+	<em>Nothing for the moment...</em>
+<?php endif; ?>

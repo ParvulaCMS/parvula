@@ -1,7 +1,5 @@
 *
-!.gitignore
 
-# Include default themes
+# Include some hidden files
+!.gitignore
 !.htaccess
-!galaxy/
-!simple/
