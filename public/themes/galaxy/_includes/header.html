@@ -1,6 +1,5 @@
 <nav class="navbar navbar-default">
 	<a class="navbar-brand" href="./<?= $baseUrl ?>"><?= $site->title ?></a>
-	<?php for($i=0; $i<10; ++$i): ?>
 	<ul class="nav nav-pills">
 		<?php foreach ($pages->visible() as $myPage) : ?>
 			<?php if (!$myPage->parent) : ?>
@@ -10,7 +9,6 @@
 		<?php endif; ?>
 		<?php endforeach; ?>
 	</ul>
-	<?php endfor; ?>
 </nav>
 
 <header class="intro-header">
