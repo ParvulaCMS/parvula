@@ -42,8 +42,12 @@ function getPluginList(array $except = []) {
 		closedir($handle);
 	}
 
-	// TEST - TODO clean parser
-	$pluginsExtra = (array) Yaml::parse(file_get_contents(_PLUGINS_ . 'plugins.yml'));
+	// Excluded plugins
+	if (is_file(_PLUGINS_ . 'plugins.yml')) {
+		$pluginsExtra = (array) Yaml::parse(file_get_contents(_PLUGINS_ . 'plugins.yml'));
+	} else {
+		$pluginsExtra = [];
+	}
 
 	return array_merge($plugins, $pluginsExtra);
 }
