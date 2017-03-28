@@ -17,6 +17,10 @@ if (!defined('_STORAGE_')) {
 	define('_STORAGE_', _ROOT_ . 'storage/');
 }
 
+if (!defined('_VENDOR_')) {
+	define('_VENDOR_', _ROOT_ . 'vendor/');
+}
+
 // Public (the only accessible point from the outside)
 define('_THEMES_', _PUBLIC_ . 'themes/');
 define('_PLUGINS_', _PUBLIC_ . 'plugins/');
@@ -31,8 +35,7 @@ define('_USERS_', _DATA_ . 'users/');
 define('_CACHE_', _STORAGE_ . 'cache/');
 define('_LOGS_', _STORAGE_ . 'logs/');
 
-// Core
+// Main
 define('_APP_', _ROOT_ . 'app/');
 define('_BIN_', _APP_ . 'bin/');
-define('_VENDOR_', _ROOT_ . 'vendor/');
 define('_VERSION_', '0.8.0-DEV.2');
