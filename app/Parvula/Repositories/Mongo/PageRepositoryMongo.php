@@ -9,9 +9,8 @@ use Parvula\Models\Page;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
-use Illuminate\Support\Collection;
+use Parvula\Collections\Collection;
 use Parvula\Collections\MongoCollection;
-use MongoDB\Driver\Manager;
 
 /**
  * Mongo pages mapper
@@ -53,6 +52,9 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 		};
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function model() {
 		return Page::class;
 	}

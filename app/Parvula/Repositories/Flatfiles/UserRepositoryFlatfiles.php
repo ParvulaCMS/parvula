@@ -5,7 +5,7 @@ namespace Parvula\Repositories\Flatfiles;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
-use Illuminate\Support\Collection;
+use Parvula\Collections\Collection;
 
 class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 {
@@ -23,6 +23,9 @@ class UserRepositoryFlatfiles extends BaseRepositoryFlatfiles
 		$this->data = new Collection($parser->read($usersFile));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function model() {
 		return User::class;
 	}

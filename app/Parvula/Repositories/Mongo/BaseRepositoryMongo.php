@@ -2,7 +2,6 @@
 
 namespace Parvula\Repositories\Mongo;
 
-use Illuminate\Support\Collection;
 use Parvula\Repositories\BaseRepository;
 
 abstract class BaseRepositoryMongo extends BaseRepository {
