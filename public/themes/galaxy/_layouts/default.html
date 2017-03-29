@@ -1,10 +1,10 @@
 <?php $this->layout('layouts::_base') ?>
 
-<?php if ($page->parent || $page->children) : ?>
+<?php if ($page->parent || $page->children): ?>
 <ol class="breadcrumb">
 	<?php
 	$breadcrumb = $page->getBreadcrumb();
-	foreach ($breadcrumb as $myPage) : ?>
+	foreach ($breadcrumb as $myPage): ?>
 	<li>
 		<a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title; ?></a>
 	</li>
@@ -23,9 +23,9 @@
 </ul>
 <?php endif; ?>
 
-<?php if ($page->getSections()) : ?>
+<?php if ($page->getSections()): ?>
 	<div class="row cols">
-	<?php foreach ($page->sections as $k => $section) : ?>
+	<?php foreach ($page->sections as $k => $section): ?>
 		<div class="col-md-4" data-section-id="<?= $k ?>" data-editable="<?= $section->name ?>">
 			<?= $section->content ?>
 		</div>

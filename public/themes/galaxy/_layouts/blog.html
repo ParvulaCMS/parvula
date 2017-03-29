@@ -23,12 +23,12 @@ if ($page->hasChildren()):
 	foreach ($page->getChildren() as $child):
 	//foreach ($children as $child):
 	?>
-	<div class="card">
+	<div class="card mb-2">
 		<div class="card-block">
 			<h4 class="card-title"><?= $child->title ?></h4>
-			<h6 class="card-subtitle text-muted"><?= $this->e($child, 'pageDateFormat') ?></h6>
-			<p class="p-t-1"><?= $this->excerpt($child->content) ?>...</p>
-			<a href="<?= $baseUrl . $child->slug ?>" class="btn btn-primary-outline btn-sm card-link">Read more</a>
+			<h6 class="card-subtitle mb-2 text-muted"><?= $this->e($child, 'pageDateFormat') ?></h6>
+			<p><?= $this->excerpt($child->content) ?>...</p>
+			<a href="<?= $baseUrl . $child->slug ?>" class="btn btn-outline-primary btn-sm card-link">Read more</a>
 		</div>
 	</div>
 	<?php if (++$i >= $limit) { break; } ?>
