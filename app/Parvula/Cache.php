@@ -2,9 +2,9 @@
 
 namespace Parvula;
 
-use Interop\Container\Exception\ContainerException;
-use Interop\Container\Exception\NotFoundException;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 // DEV TODO
 class Cache implements ContainerInterface {

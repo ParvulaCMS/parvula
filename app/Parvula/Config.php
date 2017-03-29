@@ -2,7 +2,7 @@
 
 namespace Parvula;
 
-use Parvula\ArrayableInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Configuration wrapper for config array
@@ -13,7 +13,7 @@ use Parvula\ArrayableInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-class Config implements ArrayableInterface {
+class Config implements ContainerInterface, ArrayableInterface {
 
 	/**
 	 * @var array
@@ -33,10 +33,12 @@ class Config implements ArrayableInterface {
 	 * Append config to Config class
 	 *
 	 * @param array $config
-	 * @return
+	 * @return Config
 	 */
 	public function append(array $config) {
 		$this->config = $config + $this->config;
+
+		return $this;
 	}
 
 	/**

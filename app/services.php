@@ -18,9 +18,7 @@ $app['config'] = function (Container $c) {
 	// Load user config
 	// Append user config to Config wrapper (override if exists)
 	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
-	$config->append((array) $userConfig);
-
-	return $config;
+	return $config->append((array) $userConfig);
 };
 
 $app['router'] = function (Container $c) {
