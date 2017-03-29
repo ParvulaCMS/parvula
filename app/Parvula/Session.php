@@ -15,6 +15,10 @@ use Exception;
  * $sess->set('user_id', $userID); // Set user_id
  * $sess->get('user_id'); // Get previous value
  * ```
+ *
+ * @package Parvula
+ * @author Fabien Sa
+ * @license MIT License
  */
 class Session {
 

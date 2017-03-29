@@ -19,7 +19,7 @@ use Parvula\Exceptions\ParseException;
 class FileParser implements IOInterface {
 
 	/**
-	 * @var array<string, ParserInterface>
+	 * @var array array<string, ParserInterface>
 	 */
 	protected $parsers;
 

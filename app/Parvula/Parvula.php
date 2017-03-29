@@ -24,6 +24,11 @@ class Parvula {
 	protected function __clone() {
 	}
 
+	/**
+	 * Get core container
+	 *
+	 * @return Pimple\Container
+	 */
 	public static function getContainer() {
 		if (self::$container === null) {
 			self::$container = new Container;
