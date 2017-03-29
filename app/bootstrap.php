@@ -1,5 +1,6 @@
 <?php
-use Parvula\Parvula;
+
+namespace Parvula;
 
 require 'constants.php';
 

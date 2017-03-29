@@ -4,6 +4,7 @@ namespace Parvula\ContentParser;
 
 use ParsedownExtra;
 use Parvula\Parvula;
+use function Parvula\url;
 
 /**
  * ParvulaParsedownExtra class, extends ParsedownExtra
@@ -20,16 +21,16 @@ class ParvulaParsedownExtra extends ParsedownExtra {
 	 * @inheritdoc
 	 */
 	protected function inlineLink($excerpt) {
-		$Link = parent::inlineLink($excerpt);
+		$link = parent::inlineLink($excerpt);
 
 		// Parvula patch for absolute slug
-		$href = $Link['element']['attributes']['href'];
+		$href = $link['element']['attributes']['href'];
 		if ($href[0] === '/') {
 			$href = str_replace(['../', '..'], '', ltrim($href, '/')); // clean url
 			$href = url($href); // absolute from root
-			$Link['element']['attributes']['href'] = $href;
+			$link['element']['attributes']['href'] = $href;
 		}
 
-		return $Link;
+		return $link;
 	}
 }

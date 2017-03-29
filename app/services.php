@@ -3,6 +3,11 @@
 // Register services
 // ----------------------------- //
 
+namespace Parvula;
+
+use DateTime;
+use Exception;
+use RuntimeException;
 use Pimple\Container;
 use Parvula\Config;
 use Parvula\FilesSystem as Files;
@@ -27,11 +32,11 @@ $app['router'] = function (Container $c) {
 			'routerCacheFile' => _CACHE_ . 'routes.php',
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
-		'api' => new Parvula\Http\APIResponse(),
+		'api' => new \Parvula\Http\APIResponse(),
 		'logger' => $c['loggerHandler']
 	];
 
-	$router = new Slim\App($slimConf);
+	$router = new \Slim\App($slimConf);
 
 	$container = $router->getContainer();
 	$router->add(new \Slim\Middleware\JwtAuthentication([
@@ -70,10 +75,10 @@ $app['loggerHandler'] = function ($c) {
 		$logger = new Logger('parvula');
 		$file = (new DateTime('now'))->format('Y-m-d') . '.log';
 
-		$logger->pushProcessor(new Monolog\Processor\UidProcessor());
+		$logger->pushProcessor(new \Monolog\Processor\UidProcessor());
 		$logger->pushHandler(new StreamHandler(_LOGS_ . $file, Logger::WARNING));
 
-		Monolog\ErrorHandler::register($logger);
+		\Monolog\ErrorHandler::register($logger);
 
 		return $logger;
 	}
@@ -83,22 +88,22 @@ $app['loggerHandler'] = function ($c) {
 
 $app['errorHandler'] = function (Container $c) {
 	if (version_compare(phpversion(), '7.0.0', '<') && class_exists('League\\BooBoo\\Runner')) {
-		$runner = new League\BooBoo\Runner();
+		$runner = new \League\BooBoo\Runner();
 
 		$accept = $c['router']->getContainer()['request']->getHeader('Accept');
 		$accept = join(' ', $accept);
 
 		// If we accept html, show html, else show json
 		if (strpos($accept, 'html') !== false) {
-			$runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
+			$runner->pushFormatter(new \League\BooBoo\Formatter\HtmlTableFormatter);
 		} else {
-			$runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
+			$runner->pushFormatter(new \League\BooBoo\Formatter\JsonFormatter);
 		}
 
 		$runner->register();
 	} elseif (class_exists('Whoops\\Run')) {
-		$run = new Whoops\Run;
-		$handler = new Whoops\Handler\PrettyPageHandler;
+		$run = new \Whoops\Run;
+		$handler = new \Whoops\Handler\PrettyPageHandler;
 
 		$handler->setPageTitle('Parvula Error');
 		$handler->addDataTable('Parvula', [
@@ -107,15 +112,15 @@ $app['errorHandler'] = function (Container $c) {
 
 		$run->pushHandler($handler);
 
-		if (Whoops\Util\Misc::isAjaxRequest()) {
-			$run->pushHandler(new Whoops\Handler\JsonResponseHandler);
+		if (\Whoops\Util\Misc::isAjaxRequest()) {
+			$run->pushHandler(new \Whoops\Handler\JsonResponseHandler);
 		}
 
 		$run->register();
 
 		if (class_exists('Monolog\\Logger')) {
 			// Be sure that Monolog is still register
-			Monolog\ErrorHandler::register($c['loggerHandler']);
+			\Monolog\ErrorHandler::register($c['loggerHandler']);
 		}
 
 		return $run;
@@ -125,29 +130,29 @@ $app['errorHandler'] = function (Container $c) {
 // To parse serialized files in multiple formats
 $app['fileParser'] = function () {
 	$parsers = [
-		'json' => new Parvula\Parsers\Json,
-		'yaml' => new Parvula\Parsers\Yaml,
-		'yml' => new Parvula\Parsers\Yaml,
-		'php' => new Parvula\Parsers\Php
+		'json' => new Parsers\Json,
+		'yaml' => new Parsers\Yaml,
+		'yml' => new Parsers\Yaml,
+		'php' => new Parsers\Php
 	];
 
-	return new Parvula\FileParser($parsers);
+	return new FileParser($parsers);
 };
 
 $app['plugins'] = function (Container $c) {
-	return (new Parvula\PluginMediator)
+	return (new PluginMediator)
 		->attach(getPluginList($c['config']->get('disabledPlugins')));
 };
 
 $app['session'] = function (Container $c) {
-	$session = new Parvula\Session($c['config']->get('sessionName'));
+	$session = new Session($c['config']->get('sessionName'));
 	$session->start();
 	return $session;
 };
 
 $app['auth'] = function (Container $c) {
-	return new Parvula\Service\AuthenticationService($c['session'], hash('sha1', '@TODO'));
-	// Parvula\Service\AuthenticationService($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
+	return new Service\AuthenticationService($c['session'], hash('sha1', '@TODO'));
+	// Service\AuthenticationService($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
 // Get current logged User if available
@@ -181,10 +186,10 @@ $app['pageRendererRAW'] = function (Container $c) {
 	$pageRenderer = $c['config:database']->get('pageRenderer');
 
 	if ($headParser === null) {
-		return new $pageRenderer(new Parvula\ContentParser\None);
+		return new $pageRenderer(new ContentParser\None);
 	}
 
-	return new $pageRenderer(new $headParser, new Parvula\ContentParser\None);
+	return new $pageRenderer(new $headParser, new ContentParser\None);
 };
 
 //-- Databases --
@@ -212,7 +217,7 @@ $app['mongodb'] = function (Container $c) {
 		$uri .= ':' . $options['port'];
 	}
 
-	return (new MongoDB\Client($uri))->{$options['name']};
+	return (new \MongoDB\Client($uri))->{$options['name']};
 };
 
 $app['repositories'] = function (Container $c) {
@@ -222,10 +227,11 @@ $app['repositories'] = function (Container $c) {
 	$databases = [
 		'mongodb' => [
 			'pages' => function () use ($c) {
-				return new Parvula\Repositories\Mongo\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
+				return new Repositories\Mongo\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
+				return new Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
+				// return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		],
 		'flatfiles' => [
@@ -233,7 +239,7 @@ $app['repositories'] = function (Container $c) {
 				return new Parvula\Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
+				return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		]
 	];
@@ -265,7 +271,7 @@ $app['pages'] = $app['repositories']['pages'];
 $app['users'] = $app['repositories']['users'];
 
 $app['themes'] = function (Container $c) {
-	return new Parvula\Services\ThemesService(_THEMES_, $c['fileParser']);
+	return new Services\ThemesService(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $c) {
@@ -282,7 +288,7 @@ $app['view'] = function (Container $c) {
 
 	// Create new Plates instance to render theme files
 	$path = $theme->getPath();
-	$view = new League\Plates\Engine($path, $theme->getExtension());
+	$view = new \League\Plates\Engine($path, $theme->getExtension());
 
 	// Helper function
 	// List pages
@@ -296,7 +302,7 @@ $app['view'] = function (Container $c) {
 	});
 
 	// System date format
-	$view->registerFunction('pageDateFormat', function (Parvula\Models\Page $page) use ($config) {
+	$view->registerFunction('pageDateFormat', function (Models\Page $page) use ($config) {
 		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 
