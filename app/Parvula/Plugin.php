@@ -49,7 +49,7 @@ abstract class Plugin {
 	 *
 	 * @param  Container $app
 	 */
-	public function onBootstrap(Container $app) {
+	public function onBoot(Container $app) {
 		$this->app = $app;
 	}
 
