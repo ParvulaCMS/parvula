@@ -32,7 +32,7 @@ $app['router'] = function (Container $c) {
 			'routerCacheFile' => _CACHE_ . 'routes.php',
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
-		'api' => new \Parvula\Http\APIResponse(),
+		'api' => new Http\APIResponse(),
 		'logger' => $c['loggerHandler']
 	];
 
@@ -236,7 +236,7 @@ $app['repositories'] = function (Container $c) {
 		],
 		'flatfiles' => [
 			'pages' => function () use ($c, $conf) {
-				return new Parvula\Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+				return new Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
 				return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
