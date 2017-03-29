@@ -26,7 +26,7 @@ class ParvulaParsedownExtra extends ParsedownExtra {
 		$href = $Link['element']['attributes']['href'];
 		if ($href[0] === '/') {
 			$href = str_replace(['../', '..'], '', ltrim($href, '/')); // clean url
-			$href = Parvula::getRelativeURIToRoot($href); // absolute from root
+			$href = url($href); // absolute from root
 			$Link['element']['attributes']['href'] = $href;
 		}
 

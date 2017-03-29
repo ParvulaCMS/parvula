@@ -2,20 +2,19 @@
 
 namespace Parvula;
 
-use Pimple\Container;
-
 use DOMDocument;
+use Pimple\Container;
 
 /**
  * Plugin class @TODO
  * Abstract class, need to be inherited to create a new plugin
  *
  * Minimal exemple :
- * <pre>
+ * ```
  * namespace Plugins\Slider;
  *
  * class Slider extends \Parvula\Plugin { ... }
- * </pre>
+ * ```
  *
  * @package Parvula
  * @version 0.5.0
@@ -90,7 +89,7 @@ abstract class Plugin {
  	 * @return string the current URI path
  	 */
 	protected function getUri($suffix = '') {
-		return Parvula::getRelativeURIToRoot($this->getPluginPath() . $suffix);
+		return url($this->getPluginPath() . $suffix);
 	}
 
 	/**

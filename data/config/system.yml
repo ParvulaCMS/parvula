@@ -58,8 +58,15 @@ userConfig: site.yml
 # Class to parse pages (must implement ContentParserInterface), can be null
 contentParser: \Parvula\ContentParser\Markdown
 
+# Optional, give the full url base (example: 'http://yoursite.com/')
+# This option will disable the relative urls
+# urlBase: http://localhost:8000/
+
 # Prefix to all API paths (must not be empty)
 apiPrefix: /api/0
+
+# Optional, prefix all urls paths
+# urlPrefix: ../
 
 # Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
 # SSL versions 1, 2, and 3 should no longer be used

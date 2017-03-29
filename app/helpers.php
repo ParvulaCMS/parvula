@@ -66,13 +66,19 @@ function listPagesRoot(array $pages) {
 }
 
 /**
- * url will generates a fully qualified URL
+ * Url will generates a fully qualified URL
  *
  * @param  string $path optional
  * @return string
  */
 function url($path = '') {
-	return Parvula::getRelativeURIToRoot($path);
+	$base = app('config')->get('urlBase');
+	if ($base) {
+		return $base . $path;
+	}
+
+	$prefix = app('config')->get('urlPrefix', '');
+	return $prefix . Parvula::getRelativeURIToRoot($path);
 }
 
 /**
