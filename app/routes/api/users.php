@@ -23,9 +23,15 @@ $users = $app['users'];
  *     ]
  */
 $this->get('', function ($req, $res) use ($users) {
-	return $this->api->json($res, $users->all()->map(function ($u) {
-			return $u->toArray();
-	}));
+	$accumulator = [];
+	foreach ($users->all() as $user) {
+		$accumulator[] = $user->toArray();
+	}
+	return $this->api->json($res, $accumulator);
+
+	// return $this->api->json($res, $users->all()->map(function ($u) {
+	// 		return $u->toArray();
+	// }));
 })->setName('users.index');
 
 /**
