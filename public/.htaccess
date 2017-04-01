@@ -12,17 +12,6 @@
     # Block dot files
     RewriteRule (^|/)\. - [F]
 
-    <FilesMatch (?i:(composer\.(json|lock|phar)|(readme|license|copyright)\.(md|txt)))>
-        Deny from all
-    </FilesMatch>
-
-    ## Block everything in those folders
-    RewriteRule ^app/.* index.php [L,NC]
-    RewriteRule ^data/.* index.php [L,NC]
-    RewriteRule ^tests/.* index.php [L,NC]
-    RewriteRule ^static/.* index.php [L,NC]
-    RewriteRule ^vendor/.* index.php [L,NC]
-
     ## Block all PHP files, except index
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteCond %{REQUEST_FILENAME} \.php$
