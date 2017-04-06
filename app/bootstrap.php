@@ -19,26 +19,22 @@ require $autoload;
 
 $app = Parvula::getContainer();
 
-// Register services
+// Register services and helpers
 require _APP_ . 'services.php';
-
 require _APP_ . 'helpers.php';
 
 $config = $app['config'];
 $config->set('__time__', $time);
 
-// Set timezone
+// Set timezone (default to UTC)
 date_default_timezone_set($config->get('timezone', 'UTC'));
 
-$debug = (bool) $config->get('debug', false);
-$logErrors = (bool) $config->get('logErrors', false);
-
-if ($logErrors) {
+if ($config->get('logErrors', false)) {
 	// Register the logger
 	$app['loggerHandler'];
 }
 
-if ($debug) {
+if ($config->get('debug', false)) {
 	// Report all errors
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
