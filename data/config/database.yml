@@ -29,12 +29,9 @@ mongodb:
     # Database name
     name: Parvula
 
-    # Username/Password if authentication is enabled in mongodb config
+    # Optional authentication if enabled in mongodb config
     # username: myUsername
     # password: mySecretPassword
-
-    # Pages mapper (must implement CRUDInterface)
-    # pagesMapper: Parvula\Models\Mappers\PagesMongo
 
     # Class to fetch/render pages (must implement PageRendererInterface)
     pageRenderer: Parvula\PageRenderers\DatabasePageRenderer
