@@ -81,11 +81,11 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	}
 
 	// TEST
-	public function map(callable $cb) {
-		foreach ($this->all() as $key => $item) {
-			yield $item => $cb($item);
-		}
-	}
+	// public function map(callable $cb) {
+	// 	foreach ($this as $key => $item) {
+	// 		yield $item => $cb($item);
+	// 	}
+	// }
 
 	/**
 	 * Count the number of items in this collection
@@ -94,6 +94,21 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 */
 	public function count() {
 		return count($this->items);
+	}
+
+	public function map(callable $fun) {
+		$model = $this->model;
+		$transformedItems = [];
+
+		foreach ($this as $item) {
+			if ($model !== null) {
+				$transformedItems[] = $fun(new $model((array) $item));
+			} else {
+				$transformedItems[] = $fun($item);
+			}
+		}
+
+		return new static($transformedItems, $model);
 	}
 
 	/**
@@ -123,13 +138,13 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
      */
     public function jsonSerialize() {
 		$accumulator = [];
-		foreach ($this->all() as $items) {
-            if ($value instanceof JsonSerializable) {
-                $accumulator[] = $value->jsonSerialize();
-            } elseif ($value instanceof ArrayableInterface) {
-                $accumulator[] = $value->toArray();
+		foreach ($this->all() as $item) {
+            if ($item instanceof JsonSerializable) {
+                $accumulator[] = $item->jsonSerialize();
+            } elseif ($item instanceof ArrayableInterface) {
+                $accumulator[] = $item->toArray();
             } else {
-                $accumulator[] = $value;
+                $accumulator[] = $item;
             }
 		}
 

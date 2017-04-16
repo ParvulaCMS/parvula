@@ -23,8 +23,8 @@ abstract class Model implements ArrayableInterface {
 	 *
 	 * @return array|null Array of instance's fields
 	 */
-	public function toArray() {
-		return $this->getVisibleFields();
+	public function toArray($removeNull = false) {
+		return $this->getVisibleFields($removeNull);
 	}
 
 	/**
@@ -32,18 +32,25 @@ abstract class Model implements ArrayableInterface {
 	 *
 	 * @return array|null Visible fields
 	 */
-	private function getVisibleFields() {
+	private function getVisibleFields($removeNull = false) {
 		$fields = $this->getAllFields();
+		$res = [];
 
 		if (isset($this->visible)) {
-			return array_intersect_key($fields, array_flip($this->visible));
+			$res = array_intersect_key($fields, array_flip($this->visible));
 		} elseif (isset($this->invisible)) {
 			// Notice: It will also remove the 'invisible' field
 			$this->invisible[] = 'invisible';
-			return array_diff_key($fields, array_flip($this->invisible));
+			$res = array_diff_key($fields, array_flip($this->invisible));
 		}
 
-		return;
+		if ($removeNull) {
+			return array_filter($res, function ($value) {
+				return $value !== null;
+			});
+		}
+
+		return $res;
 	}
 
 	/**
@@ -57,5 +64,15 @@ abstract class Model implements ArrayableInterface {
 			$acc[$key] = $value;
 		}
 		return $acc;
+	}
+
+	/**
+	 * Transform model
+	 *
+	 * @param callable $fun Callback function for the model
+	 * @return mixed
+	 */
+	public function transform(callable $fun) {
+		return $fun($this);
 	}
 }
