@@ -4,6 +4,7 @@ namespace Parvula;
 
 use Exception;
 use Parvula\Exceptions\IOException;
+use Parvula\Transformers\PageHeadTransformer;
 
 $pages = $app['pages'];
 
@@ -30,47 +31,15 @@ $this->get('', function ($req, $res) use ($pages) {
 		return $this->api->json($res, $pages->index());
 	}
 
-	$allPages = $pages
-		->all()
-		->sortBy('slug');
-		// ->sortBy(function ($p) {
-		// 	return $p->slug;
-		// });
+	$allPages = $pages->all();
 
 	// List all pages (with or without a parent)
-	if (isset($req->getQueryParams()['all'])) {
-		return $this->api->json($res, $allPages->toArray());
+	if (!isset($req->getQueryParams()['all'])) {
+		$allPages = $allPages->withoutParent();
 	}
 
-	$transformer = function (Models\Page $page) use (&$transformer) {
-		unset($page->content);
-		$arr = (array) $page->toArray(true);
-		$arr['title'] = $page->title;
-		if ($page->hasChildren()) {
-			$arr['children'] = $page->children->map($transformer);
-		} else {
-			unset($arr['children']);
-		}
-		$arr['content'] = [
-			'href' => '/pages/' . $page->slug
-		];
-
-		if ($page->sections !== []) {
-			$arr['sections'] = [
-				'href' => '/pages/' . $page->slug
-			];
-		} else {
-			unset($arr['sections']);
-		}
-
-		return $arr;
-	};
-
 	// List root pages, pages without a parent
-	// $jwt = $this->encodeJWT($jwt);
-	// return $this->api->json($res, $jwt);
-	return $this->api->json($res, $allPages->withoutParent()->map($transformer));
-	// return $this->api->json($res, $allPages->withoutParent()->toArray());
+	return $this->api->json($res, $allPages->sortBy('slug')->map(new PageHeadTransformer));
 })->setName('pages.index');
 
 /**

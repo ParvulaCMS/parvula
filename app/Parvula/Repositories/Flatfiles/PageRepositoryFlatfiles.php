@@ -27,8 +27,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 	private $arePagesFetched = false;
 
-	private $pagesCache = [];
-
 	/**
 	 * Constructor
 	 *
@@ -59,12 +57,8 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		$pageUID = trim($pageUID, '/');
 
 		// If page was already loaded, return page
-		// if (isset($this->data[$pageUID])) {
-		// 	return $this->data[$pageUID];
-		// }
-
-		if (isset($this->cache[$pageUID])) {
-			return $this->cache[$pageUID];
+		if (isset($this->data[$pageUID])) {
+			return $this->data[$pageUID];
 		}
 
 		$pageFullPath = $pageUID . $this->fileExtension;
@@ -105,7 +99,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		};
 
 		$page = $fs->read($pageFullPath, $fn, $eval);
-		$this->cache[$pageUID] = $page;
+		$this->data[$pageUID] = $page;
 
 		return $page;
 	}
@@ -166,7 +160,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			throw new PageException('Page cannot be created');
 		}
 
-		$this->cache[$slug] = $page;
+		$this->data[$slug] = $page;
 
 		return true;
 	}
@@ -210,7 +204,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 		$fs->write($pageFile, $data);
 
-		$this->cache[$page->slug] = $page;
+		$this->data[$page->slug] = $page;
 
 		return true;
 	}
@@ -281,6 +275,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			}
 
 
+			// TODO: Read cache and add lazy ->read for content
 			// echo $page->title . "\n\n";
 		} else {
 			// We add the page to the root
@@ -312,55 +307,6 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		// exit;
 
 		return $this->data;
-	}
-
-	/**
-	 * Fetch pages
-	 *
-	 * @return array Array of all Page
-	 */
-	private function fetchPages0() {
-		if ($this->arePagesFetched) {
-			return;
-		}
-
-		$pagesTmp = [];
-		$pagesChildrenTmp = [];
-
-		$pagesIndex = $this->index(true);
-
-		$this->arePagesFetched = true;
-
-		foreach ($pagesIndex as $pageUID) {
-			$page = $this->find($pageUID);
-
-			if (isset($page->parent)) {
-				$parent = $page->parent;
-
-				// Add lazy function to resolve parent when function is called
-				$page->parent = $this->find($parent);
-				// function () use ($parent) {
-				// 	return $this->find($parent);
-				// };
-
-				if (!isset($pagesChildrenTmp[$parent])) {
-					$pagesChildrenTmp[$parent] = [];
-				}
-				$pagesChildrenTmp[$parent][] = $page;
-			}
-
-			$pagesTmp[] = $page;
-		}
-
-		foreach ($pagesTmp as $page) {
-			if (isset($pagesChildrenTmp[$page->slug])) {
-				$pagesChildren = clone $this;
-				$pagesChildren->data = $pagesChildrenTmp[$page->slug];
-				$page->setChildren($pagesChildren);
-			}
-		}
-
-		return $pagesTmp;
 	}
 
 	/**

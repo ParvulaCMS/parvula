@@ -180,9 +180,12 @@ class Page extends Model
 	 * Add page child
 	 *
 	 * @param Page $child
+	 * @return Page
 	 */
 	public function addChild(Page $child) {
 		$this->children = $this->children->add($child);
+
+		return $this;
 	}
 
 	/**
@@ -211,7 +214,7 @@ class Page extends Model
 	 * @return Page Parent Page
 	 */
 	public function getParent() {
-		return ($this->parent)();
+		return ($this->parent);
 	}
 
 	/**

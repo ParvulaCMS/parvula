@@ -34,7 +34,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 *
 	 * @param string $field
 	 * @param boolean $ascending (optional) Default true
-	 * @return Parvula\Collections\Collection
+	 * @return \Parvula\Collections\Collection
 	 */
 	public function sortBy($field, $ascending = true) {
 		$callback = function ($a, $b) use ($field) {
@@ -66,7 +66,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 *
 	 * @param string $field
 	 * @param array $values Values to filter (it will keep items with one of those values)
-	 * @return Parvula\Collections\Collection New collection
+	 * @return \Parvula\Collections\Collection New collection
 	 */
 	public function filter($field, array $values) {
 		$filteredItems = array_filter($this->items, function ($item) use ($field, $values) {
@@ -79,13 +79,6 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 
 		return new static($filteredItems, $this->model);
 	}
-
-	// TEST
-	// public function map(callable $cb) {
-	// 	foreach ($this as $key => $item) {
-	// 		yield $item => $cb($item);
-	// 	}
-	// }
 
 	/**
 	 * Count the number of items in this collection
@@ -100,7 +93,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * Map each item of the collection
 	 *
 	 * @param callable $fun Callback function
-	 * @return Parvula\Collections\Collection New collection
+	 * @return \Parvula\Collections\Collection New collection
 	 */
 	public function map(callable $fun) {
 		$model = $this->model;
@@ -130,7 +123,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * Add item to the collection
 	 *
 	 * @param mixed $item
-	 * @return Parvula\Collections\Collection New collection
+	 * @return \Parvula\Collections\Collection New collection
 	 */
 	public function add($item) {
 		return new static(array_merge($this->items, [$item]), $this->model);
@@ -179,7 +172,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	/**
 	 * Collection iterator
 	 *
-	 * @return Traversable
+	 * @return \Traversable
 	 */
 	public function getIterator() {
 		$model = $this->model;
@@ -194,14 +187,16 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	}
 
 	/**
-	 * @return Traversable Iterable items
+	 * Get all items
+	 *
+	 * @return \Traversable Iterable items
 	 */
 	protected function all() {
 		return $this->items;
 	}
 
 	/**
-	 * @return Parvula\Collections\Collection
+	 * @return \Parvula\Collections\Collection
 	 */
 	protected function clone() {
 		return new static($this->items, $this->model);
