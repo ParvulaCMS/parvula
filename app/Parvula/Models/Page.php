@@ -5,6 +5,7 @@ namespace Parvula\Models;
 use Closure;
 use DateTime;
 use Parvula\Models\Section;
+use Parvula\Collections\Collection;
 use Parvula\Repositories\BaseRepository; // TODO PageRepo
 use Parvula\Exceptions\PageException;
 
@@ -32,7 +33,7 @@ class Page extends Model
 	/**
 	 * @var string Page's content
 	 */
-	public $content;
+	protected $content;
 
 	/**
 	 * @var array Page's sections (optional)
@@ -45,20 +46,15 @@ class Page extends Model
 	public $parent;
 
 	/**
-	 * @var PageRepository Children pages (optional)
+	 * @var array Children pages (optional)
 	 */
 	public $children;
-
-	/**
-	 * @var array Array of Closure
-	 */
-	protected $lazyFunctions;
 
 	/**
 	 * @var array
 	 */
 	protected $invisible = [
-		'lazyFunctions', '_id'
+		'_id'
 	];
 
 	/**
@@ -82,6 +78,8 @@ class Page extends Model
 			throw new PageException('Page (' . htmlspecialchars($info['slug']) .
 				') cannot be created, the slug must be normalized (with: a-z0-9-_+/)');
 		}
+
+		$this->children = new Collection;
 
 		foreach ($info as $key => $value) {
 			// object with private fields casted to array will have keys prepended with \0
@@ -184,20 +182,7 @@ class Page extends Model
 	 * @param Page $child
 	 */
 	public function addChild(Page $child) {
-		if (!$this->children) {
-			$this->children = [];
-		}
-
-		$this->children[] = $child;
-	}
-
-	/**
-	 * Set page children
-	 *
-	 * @param array $children Array of Page
-	 */
-	public function setChildren(BaseRepository $children) {
-		$this->children = $children;
+		$this->children = $this->children->add($child);
 	}
 
 	/**
@@ -206,36 +191,13 @@ class Page extends Model
 	 * @return bool
 	 */
 	public function hasChildren() {
-		return (bool) $this->children;
+		return !$this->children->isEmpty();
 	}
 
 	/**
 	 * Get page children
 	 *
-	 * @return array Array of Page
-	 */
-	public function getChildrenArray() {
-		if (!empty($this->children)) {
-			$cp = clone $this->children;
-			return $cp->toArray();
-		}
-	}
-
-	/**
-	 * Get page children
-	 *
-	 * @deprecated see getChildren
-	 */
-	public function getPagesChildren() {
-		if ($this->children) {
-			return $this->children;
-		}
-	}
-
-	/**
-	 * Get page children
-	 *
-	 * @return PageRepository Pages
+	 * @return \Parvula\Collections\Collection Pages
 	 */
 	public function getChildren() {
 		if ($this->children) {
@@ -249,7 +211,7 @@ class Page extends Model
 	 * @return Page Parent Page
 	 */
 	public function getParent() {
-		return $this->getLazy('parent');
+		return ($this->parent)();
 	}
 
 	/**
@@ -287,40 +249,6 @@ class Page extends Model
 			$pages[] = $page;
 		}
 		return array_reverse($pages);
-	}
-
-	/**
-	 * Add a lazy function
-	 *
-	 * @param string $key
-	 * @param Closure $closure
-	 */
-	public function addLazy($key, Closure $closure) {
-		$this->lazyFunctions[$key] = $closure;
-	}
-
-	/**
-	 * Resolve a given lazy function
-	 *
-	 * @param string $key
-	 * @return mixed Return the result of the lazy function
-	 */
-	public function getLazy($key) {
-		if ($this->hasLazy($key)) {
-			return $this->lazyFunctions[$key]();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check if the given lazy function exists
-	 *
-	 * @param  string  $key
-	 * @return bool
-	 */
-	public function hasLazy($key) {
-		return isset($this->lazyFunctions, $this->lazyFunctions[$key]);
 	}
 
 	/**

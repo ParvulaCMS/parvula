@@ -59,6 +59,12 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 		return Page::class;
 	}
 
+	public function all($fields = []) {
+		$col = new MongoCollection($this->collection, Page::class);
+
+		return $col;
+	}
+
 	/**
 	 * Get a page object in html string
 	 *
@@ -220,15 +226,5 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 		}
 
 		return new Collection($this->collection->distinct('slug', ['hidden' => ['$nin' => $exceptions]]));
-	}
-
-	public function all($listHidden = false) {
-		$col = new MongoCollection($this->collection, Page::class);
-
-		if ($listHidden) {
-			return $col;
-		}
-
-		return $col->visible();
 	}
 }

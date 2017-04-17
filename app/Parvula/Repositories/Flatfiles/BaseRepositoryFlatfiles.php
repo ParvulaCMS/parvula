@@ -8,7 +8,7 @@ abstract class BaseRepositoryFlatfiles extends BaseRepository {
 
 	/**
 	 * Collection
-	 * @var array Array of model
+	 * @var Parvula\Collections\Collection Collection of model
 	 */
 	protected $data;
 
@@ -42,6 +42,14 @@ abstract class BaseRepositoryFlatfiles extends BaseRepository {
 		}
 
 		return false;
+	}
+
+	public function map($callback) {
+		$modelClassName = $this->model();
+
+		return $this->data->map(function ($model) use ($modelClassName) {
+			return $callback(new $modelClassName($model));
+		});
 	}
 
 	/**

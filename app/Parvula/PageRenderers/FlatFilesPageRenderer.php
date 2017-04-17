@@ -133,10 +133,9 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	 *
 	 * @param mixed $data Data using to create the page
 	 * @param array ($options) default page field(s)
-	 * @param bool ($parseContent)
 	 * @return Page
 	 */
-	public function parse($data, array $options = [], $parseContent = true) {
+	public function parse($data, array $options = []) {
 		$pageTokens = preg_split($this->delimiterMatcher, ltrim($data), 2);
 		$metaRaw = trim($pageTokens[0]);
 
@@ -175,9 +174,10 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 			// First section is always the main content
 			$content = $content[0];
-			if ($parseContent) {
-				$content = $this->contentParser->parse($content);
-			}
+			$contentParser = $this->contentParser;
+			$content = function () use ($content, $contentParser) {
+				return $contentParser->parse($content);
+			};
 		}
 
 		// Append $options to $meta

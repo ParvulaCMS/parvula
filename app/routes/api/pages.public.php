@@ -42,10 +42,35 @@ $this->get('', function ($req, $res) use ($pages) {
 		return $this->api->json($res, $allPages->toArray());
 	}
 
+	$transformer = function (Models\Page $page) use (&$transformer) {
+		unset($page->content);
+		$arr = (array) $page->toArray(true);
+		$arr['title'] = $page->title;
+		if ($page->hasChildren()) {
+			$arr['children'] = $page->children->map($transformer);
+		} else {
+			unset($arr['children']);
+		}
+		$arr['content'] = [
+			'href' => '/pages/' . $page->slug
+		];
+
+		if ($page->sections !== []) {
+			$arr['sections'] = [
+				'href' => '/pages/' . $page->slug
+			];
+		} else {
+			unset($arr['sections']);
+		}
+
+		return $arr;
+	};
+
 	// List root pages, pages without a parent
 	// $jwt = $this->encodeJWT($jwt);
 	// return $this->api->json($res, $jwt);
-	return $this->api->json($res, $allPages->withoutParent()->toArray());
+	return $this->api->json($res, $allPages->withoutParent()->map($transformer));
+	// return $this->api->json($res, $allPages->withoutParent()->toArray());
 })->setName('pages.index');
 
 /**

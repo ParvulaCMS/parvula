@@ -59,8 +59,12 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		$pageUID = trim($pageUID, '/');
 
 		// If page was already loaded, return page
-		if (isset($this->data[$pageUID])) {
-			return $this->data[$pageUID];
+		// if (isset($this->data[$pageUID])) {
+		// 	return $this->data[$pageUID];
+		// }
+
+		if (isset($this->cache[$pageUID])) {
+			return $this->cache[$pageUID];
 		}
 
 		$pageFullPath = $pageUID . $this->fileExtension;
@@ -101,7 +105,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		};
 
 		$page = $fs->read($pageFullPath, $fn, $eval);
-		$this->data[$pageUID] = $page;
+		$this->cache[$pageUID] = $page;
 
 		return $page;
 	}
@@ -112,20 +116,10 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * If you want an array of Page use `toArray()` method
 	 * Exemple: `$pages->all()->toArray();`
 	 *
-	 * @param string ($path) PageRepository in a specific sub path
 	 * @return Parvula\Collections\Collection
 	 */
-	public function all($path = '') {
-		$pagesIndex = $this->index(true, $path);
-
-		foreach ($pagesIndex as $pageUID) {
-			// if (!isset($that->cache[$pageUID])) {
-				$page = $this->find($pageUID);
-				$this->data[$page->slug] = $page;
-			// }
-		}
-
-		// print_r($this->data);
+	public function all() {
+		$this->fetchPages();
 		return new Collection($this->data);
 	}
 
@@ -172,7 +166,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			throw new PageException('Page cannot be created');
 		}
 
-		$this->data[$slug] = $page;
+		$this->cache[$slug] = $page;
 
 		return true;
 	}
@@ -216,7 +210,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 
 		$fs->write($pageFile, $data);
 
-		$this->data[$page->slug] = $page;
+		$this->cache[$page->slug] = $page;
 
 		return true;
 	}
@@ -229,6 +223,7 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @return boolean If page is deleted
 	 */
 	public function delete($pageUID) {
+		// TODO remove parent folder if folder is empty !
 		$pageFullPath = $pageUID . $this->fileExtension;
 
 		$fs = new Files($this->folder);
@@ -276,13 +271,19 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 		}
 	}
 
-	private function addPage(Page $page, $route = null) {
+	private function addPage(Page $page) {
 		if ($page->hasParent()) {
+			// It's a child
 			$parent = $this->find($page->parent);
 			if ($parent !== false) {
 				$parent->addChild($page);
+				// unset($this->data[$page->slug]);
 			}
+
+
+			// echo $page->title . "\n\n";
 		} else {
+			// We add the page to the root
 			$this->data[$page->slug] = $page;
 		}
 	}
@@ -306,6 +307,9 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			$page = $this->find($pageUID);
 			$this->addPage($page);
 		}
+
+		// print_r($this->data);
+		// exit;
 
 		return $this->data;
 	}
@@ -334,9 +338,10 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 				$parent = $page->parent;
 
 				// Add lazy function to resolve parent when function is called
-				$page->addLazy('parent', function () use ($parent) {
-					return $this->find($parent);
-				});
+				$page->parent = $this->find($parent);
+				// function () use ($parent) {
+				// 	return $this->find($parent);
+				// };
 
 				if (!isset($pagesChildrenTmp[$parent])) {
 					$pagesChildrenTmp[$parent] = [];

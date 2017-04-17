@@ -2,6 +2,7 @@
 
 namespace Parvula\Models;
 
+use Closure;
 use Parvula\AccessorTrait;
 use Parvula\ArrayableInterface;
 
@@ -24,7 +25,19 @@ abstract class Model implements ArrayableInterface {
 	 * @return array|null Array of instance's fields
 	 */
 	public function toArray($removeNull = false) {
-		return $this->getVisibleFields($removeNull);
+		$arr = $this->getVisibleFields($removeNull);
+
+		foreach ($arr as $key => $value) {
+			if ($value instanceof Closure) {
+				$value = $value();
+				$arr[$key] = $value;
+			}
+			if ($value instanceof Model) {
+				$arr[$key] = $value->toArray($removeNull);
+			}
+		}
+
+		return $arr;
 	}
 
 	/**
@@ -75,4 +88,21 @@ abstract class Model implements ArrayableInterface {
 	public function transform(callable $fun) {
 		return $fun($this);
 	}
+
+	public function __get($name) {
+		if (isset($this->$name) && $this->$name instanceof Closure) {
+			$fun = $this->$name;
+			return $fun();
+		}
+	}
+
+    public function __isset($name) {
+        return isset($this->$name) && $this->$name instanceof Closure;
+    }
+
+    public function __unset($name) {
+        if (isset($this->$name) && $this->$name instanceof Closure) {
+        	unset($this->$name);
+		}
+    }
 }

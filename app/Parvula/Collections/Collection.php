@@ -96,6 +96,12 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 		return count($this->items);
 	}
 
+	/**
+	 * Map each item of the collection
+	 *
+	 * @param callable $fun Callback function
+	 * @return Parvula\Collections\Collection New collection
+	 */
 	public function map(callable $fun) {
 		$model = $this->model;
 		$transformedItems = [];
@@ -112,17 +118,36 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	}
 
 	/**
+	 * Check if the collection is empty
+	 *
+	 * @return bool
+	 */
+	public function isEmpty() {
+		return $this->items === [];
+	}
+
+	/**
+	 * Add item to the collection
+	 *
+	 * @param mixed $item
+	 * @return Parvula\Collections\Collection New collection
+	 */
+	public function add($item) {
+		return new static(array_merge($this->items, [$item]), $this->model);
+	}
+
+	/**
 	 * Transform the collection to an array
 	 *
 	 * @return array
 	 */
-    public function toArray() {
+    public function toArray($removeNull = false) {
 		$accumulator = [];
 		$model = $this->model;
 		foreach ($this->all() as $item) {
 			if ($model !== null) {
 				$modelObject = new $model((array) $item);
-				$accumulator[] = $modelObject instanceof ArrayableInterface ? $modelObject->toArray() : $modelObject;
+				$accumulator[] = $modelObject instanceof ArrayableInterface ? $modelObject->toArray($removeNull) : $modelObject;
 			} else {
 				$accumulator[] = $item;
 			}
