@@ -91,8 +91,7 @@ abstract class Model implements ArrayableInterface {
 
 	public function __get($name) {
 		if (isset($this->$name) && $this->$name instanceof Closure) {
-			$fun = $this->$name;
-			return $fun();
+			return ($this->$name)();
 		}
 	}
 

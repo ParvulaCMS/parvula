@@ -80,5 +80,15 @@ $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		], 404);
 	}
 
-	return $this->api->json($res, $result->toArray());
+	return $this->api->json($res, $result->transform(function (Models\Page $page) {
+		$append = [];
+		if ($page->hasParent()) {
+			$append = [
+				'parent' => [
+					'href' => '/pages/' . $page->parent->slug
+				]
+			];
+		}
+		return $page->toArray() + $append;
+	}));
 })->setName('pages.show');

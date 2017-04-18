@@ -271,12 +271,13 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 			$parent = $this->find($page->parent);
 			if ($parent !== false) {
 				$parent->addChild($page);
-				// unset($this->data[$page->slug]);
+
+				// Add parent, avoid parent-child double inclusion
+				if (!$parent->hasParent() || !$parent->parent->equals($page)) {
+					// TODO ?: Read cache and add lazy ->read for content
+					$page->parent = $parent;
+				}
 			}
-
-
-			// TODO: Read cache and add lazy ->read for content
-			// echo $page->title . "\n\n";
 		} else {
 			// We add the page to the root
 			$this->data[$page->slug] = $page;

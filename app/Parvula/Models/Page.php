@@ -54,7 +54,7 @@ class Page extends Model
 	 * @var array
 	 */
 	protected $invisible = [
-		'_id'
+		'_id', 'parent'
 	];
 
 	/**
