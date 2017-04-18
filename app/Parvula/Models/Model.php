@@ -89,16 +89,28 @@ abstract class Model implements ArrayableInterface {
 		return $fun($this);
 	}
 
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
 	public function __get($name) {
 		if (isset($this->$name) && $this->$name instanceof Closure) {
 			return ($this->$name)();
 		}
 	}
 
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
     public function __isset($name) {
         return isset($this->$name) && $this->$name instanceof Closure;
     }
 
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
     public function __unset($name) {
         if (isset($this->$name) && $this->$name instanceof Closure) {
         	unset($this->$name);

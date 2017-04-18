@@ -31,7 +31,7 @@ class User extends Model
 	 */
 	public $password;
 
-	// public $group; // @future
+	// public $group; // @next
 
 	/**
 	 * @var array Choose API fields visibility
@@ -43,7 +43,7 @@ class User extends Model
 	public function __construct(array $infos) {
 		foreach ($infos as $key => $value) {
 			if (property_exists($this, $key)) {
-				$this->{$key} = $value;
+				$this->$key = $value;
 			}
 		}
 
@@ -61,9 +61,9 @@ class User extends Model
 	 */
 	public function login($password) {
 		if (strlen($this->password) < 50) {
-			// Not hashed, TODO temporary
 			return $password === $this->password;
 		}
+
 		return password_verify($password, $this->password);
 	}
 
@@ -79,7 +79,7 @@ class User extends Model
 
 	/**
 	 * Check if the user has the given role
-	 * [Always true for Parvula 0.5 @future]
+	 * [Always true for Parvula 0.5+ @next]
 	 *
 	 * @return boolean
 	 */

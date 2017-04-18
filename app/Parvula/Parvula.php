@@ -63,7 +63,6 @@ class Parvula {
 			$slashNb = substr_count($postUrl, '/');
 		}
 
-		// TODO tests
 		// Add a '../' to URL if there is no URL rewriting
 		if (substr($basePath, -9) === 'index.php') {
 			++$slashNb;

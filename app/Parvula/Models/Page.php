@@ -41,12 +41,12 @@ class Page extends Model
 	public $sections;
 
 	/**
-	 * @var string Page's parent slug (optional)
+	 * @var Page Parent page (optional)
 	 */
 	public $parent;
 
 	/**
-	 * @var array Children pages (optional)
+	 * @var \Parvula\Collections\Collection Children pages (optional)
 	 */
 	public $children;
 
