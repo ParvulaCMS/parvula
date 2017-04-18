@@ -18,9 +18,9 @@ use Parvula\Exceptions\SectionException;
 class Section extends Model
 {
 	/**
-	 * @var string Section's content
+	 * @var Closure Section's content
 	 */
-	public $content;
+	protected $content;
 
 	/**
 	 * Constructor
@@ -30,7 +30,6 @@ class Section extends Model
 	 */
 	public function __construct(array $info = [], $content = '') {
 		if (func_num_args() === 1) {
-			$this->content = '';
 			if (isset($infos['content'])) {
 				$this->content = $infos['content'];
 				unset($infos['content']);

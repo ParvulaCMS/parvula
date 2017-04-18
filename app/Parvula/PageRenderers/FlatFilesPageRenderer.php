@@ -163,11 +163,13 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 							$sectionMeta += (array) $this->metadataParser->decode($lines[1]);
 						}
 					} else {
-						$val = $content[$i];
-						if ($parseContent) {
-							$val = $this->contentParser->parse($val);
-						}
-						$sections[] = new Section($sectionMeta, $val);
+						$sectionContent = $content[$i];
+
+						$sectionContent = function () use ($sectionContent) {
+							return $this->contentParser->parse($sectionContent);
+						};
+
+						$sections[] = new Section($sectionMeta, $sectionContent);
 					}
 				}
 			}
