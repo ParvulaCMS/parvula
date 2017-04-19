@@ -97,6 +97,8 @@ abstract class Model implements ArrayableInterface {
 		if (isset($this->$name) && $this->$name instanceof Closure) {
 			return ($this->$name)();
 		}
+
+		return $this->$name;
 	}
 
 	/**

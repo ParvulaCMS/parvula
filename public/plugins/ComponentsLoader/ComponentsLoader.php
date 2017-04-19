@@ -28,20 +28,6 @@ class ComponentsLoader extends Plugin {
 				$componentName = str_replace('../', '', $section->component);
 				$path = $this->getComponentPath($componentName);
 
-				// Class component
-				// if (is_readable($filePath = $this->getPath('../' . $componentName . '/component.php'))) {
-				// 	$class = 'Plugins\\' . $componentName . '\\Component';
-				// 	$obj = new $class;
-				// 	$this->components[$section->name] = [
-				// 		'section' => $section,
-				// 		'instance' => $obj
-				// 	];
-				// 	if (method_exists($obj, 'render')) {
-				// 		$page->sections[$id]->content = $obj->render($filePath, $this->getUri('../' . $componentName . '/'), $section);
-				// 	}
-				// }
-				//
-
 				// Simple file component
 				if (is_readable($path)) {
 					$data = [
@@ -100,12 +86,12 @@ class ComponentsLoader extends Plugin {
 	 */
 	private function render($path, array $data, $bind = null) {
 		ob_start();
-		$arr = (function () use ($path, $data) {
+		$fun = (function () use ($path, $data) {
 			extract($data);
 			return require $path;
 		});
-		$arr = $arr->bindTo($bind);
-		$arr();
+		$fun = $fun->bindTo($bind);
+		$arr = $fun();
 		$out = ob_get_clean();
 
 		if ($arr !== (array) $arr) {
@@ -113,13 +99,9 @@ class ComponentsLoader extends Plugin {
 		}
 
 		if (!isset($arr['render'])) {
-			$arr['render'] = function () use ($out) {
-				return $out;
-			};
+			$arr['render'] = $out;
 		} else {
-			$arr['render'] =  function () use ($arr, $data, $out) {
-				return $arr['render']($data, $out);
-			};
+			$arr['render'] = $arr['render']($data, $out);
 		}
 
 		return $arr;
