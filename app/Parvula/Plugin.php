@@ -3,7 +3,6 @@
 namespace Parvula;
 
 use DOMDocument;
-use Pimple\Container;
 
 /**
  * Plugin class @TODO
@@ -17,7 +16,7 @@ use Pimple\Container;
  * ```
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.8.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
@@ -34,52 +33,36 @@ abstract class Plugin {
 	protected $pluginUri;
 
 	/**
-	 * @var Parvula Application to avoid global variables or static class
+	 * @var \Pimple\Container Application to avoid global variables or static class
 	 */
 	protected $app;
 
 	public function __construct() {
+		$this->app = app();
 		$this->pluginPath = $this->getPluginPath();
 		$this->pluginUri = $this->getPluginUri();
 	}
 
 	/**
-	 * Bootstrap plugin to pass the $app
-	 *
-	 * @param  Container $app
-	 */
-	public function onBoot(Container $app) {
-		$this->app = $app;
-	}
-
-	/**
-	* Alias for getPath
-	*
-	* @see getPath
-	*/
-	protected function getPluginPath($suffix = '') {
-		return $this->getPath($suffix);
-	}
-
-	/**
 	 * Get the current plugin path, useful for the backend part
+	 *
+	 * @param string $suffix optional Suffix
 	 * @return string the current plugin path
 	 */
 	protected function getPath($suffix = '') {
-		$class = get_called_class();
-		$class = str_replace('\\', '/', $class);
+		$class = str_replace('\\', '/', get_called_class());
 		$class = dirname($class);
 		$class = str_replace('Plugins/', '', $class);
 		return _PLUGINS_ . $class . '/' . $suffix;
 	}
 
 	/**
-	* Alias for getUri
-	*
-	* @see getUri
-	*/
-	protected function getPluginUri($suffix = '') {
-		return $this->getUri($suffix);
+	 * Alias for getPath
+	 *
+	 * @see getPath
+	 */
+	protected function getPluginPath($suffix = '') {
+		return $this->getPath($suffix);
 	}
 
 	/**
@@ -90,6 +73,15 @@ abstract class Plugin {
  	 */
 	protected function getUri($suffix = '') {
 		return url($this->getPluginPath() . $suffix);
+	}
+
+	/**
+	 * Alias for getUri
+	 *
+	 * @see getUri
+	 */
+	protected function getPluginUri($suffix = '') {
+		return $this->getUri($suffix);
 	}
 
 	/**
