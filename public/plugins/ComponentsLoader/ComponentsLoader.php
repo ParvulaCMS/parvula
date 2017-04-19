@@ -1,4 +1,5 @@
 <?php
+
 namespace Plugins\ComponentsLoader;
 
 use Exception;
@@ -7,7 +8,7 @@ use Parvula\Models\Page;
 
 if (!defined('_APP_')) exit;
 
-// Dev.3
+// Dev.4
 class ComponentsLoader extends Plugin {
 
 	/**
@@ -112,9 +113,13 @@ class ComponentsLoader extends Plugin {
 		}
 
 		if (!isset($arr['render'])) {
-			$arr['render'] = $out;
+			$arr['render'] = function () use ($out) {
+				return $out;
+			};
 		} else {
-			$arr['render'] = $arr['render']($data, $out);
+			$arr['render'] =  function () use ($arr, $data, $out) {
+				return $arr['render']($data, $out);
+			};
 		}
 
 		return $arr;
@@ -144,7 +149,6 @@ class ComponentsLoader extends Plugin {
 	protected function getComponentPath($component) {
 		$file = basename($component) . '.php';
 		$path = rtrim(dirname($component), '/') . '/';
-
-		return _PLUGINS_ . $path . self::COMPONENTS_DIR . '/' . $file;
+		return pluginsPath($path . self::COMPONENTS_DIR . '/' . $file);
 	}
 }

@@ -101,6 +101,15 @@ abstract class Model implements ArrayableInterface {
 
 	/**
 	 * @param string $name
+	 * @param Closure $val
+	 * @return mixed
+	 */
+	public function __set($name, $val) {
+		return $this->$name = $val;
+	}
+
+	/**
+	 * @param string $name
 	 * @return mixed
 	 */
     public function __isset($name) {
