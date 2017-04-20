@@ -17,10 +17,11 @@ use Parvula\Exceptions\SectionException;
  */
 class Section extends Model
 {
+
 	/**
-	 * @var \Closure|string Section's content
+	 * @var array
 	 */
-	protected $content;
+	protected $invisible = ['_id'];
 
 	/**
 	 * Constructor
@@ -50,7 +51,7 @@ class Section extends Model
 	 */
 	public function getMeta() {
 		$meta = [];
-		foreach ($this as $key => $value) {
+		foreach ($this->getVisibleFields() as $key => $value) {
 			if ($key[0] !== '_' && $key !== 'content') {
 				$meta[$key] = $value;
 			}
@@ -64,6 +65,6 @@ class Section extends Model
 	 * @return string
 	 */
 	public function __tostring() {
-		return json_encode($this);
+		return json_encode($this->toArray());
 	}
 }

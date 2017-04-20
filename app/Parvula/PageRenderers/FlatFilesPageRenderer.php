@@ -113,7 +113,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$meta .= PHP_EOL . $delimiter . PHP_EOL;
 
 		// Add the content
-		$content = trim($page->getContent());
+		$content = trim($page->content);
 
 		// Add sections (if exist)
 		if (($sections = $page->getSections())) {

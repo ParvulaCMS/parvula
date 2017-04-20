@@ -19,6 +19,8 @@ abstract class Model implements ArrayableInterface {
 
 	use AccessorTrait;
 
+	protected $lazy = [];
+
 	/**
 	 * Transform the instance fields to an array
 	 *
@@ -28,12 +30,18 @@ abstract class Model implements ArrayableInterface {
 		$arr = $this->getVisibleFields($removeNull);
 
 		foreach ($arr as $key => $value) {
-			if ($value instanceof Closure) {
-				$value = $value();
-				$arr[$key] = $value;
-			}
 			if ($value instanceof Model) {
 				$arr[$key] = $value->toArray($removeNull);
+			}
+			else if ($value instanceof Closure) {
+				$arr[$key] = $value();
+			}
+		}
+
+		// Resolve lazy functions
+		foreach ($this->lazy as $key => $value) {
+			if ($value instanceof Closure) {
+				$arr[$key] = $value();
 			}
 		}
 
@@ -52,8 +60,9 @@ abstract class Model implements ArrayableInterface {
 		if (isset($this->visible)) {
 			$res = array_intersect_key($fields, array_flip($this->visible));
 		} elseif (isset($this->invisible)) {
-			// Notice: It will also remove the 'invisible' field
+			// Notice: It will also remove the 'invisible' and 'lazy' field
 			$this->invisible[] = 'invisible';
+			$this->invisible[] = 'lazy';
 			$res = array_diff_key($fields, array_flip($this->invisible));
 		}
 
@@ -94,11 +103,9 @@ abstract class Model implements ArrayableInterface {
 	 * @return mixed
 	 */
 	public function __get($name) {
-		if (isset($this->$name) && $this->$name instanceof Closure) {
-			return ($this->$name)();
+		if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
+			return ($this->lazy[$name])();
 		}
-
-		return $this->$name;
 	}
 
 	/**
@@ -107,6 +114,10 @@ abstract class Model implements ArrayableInterface {
 	 * @return mixed
 	 */
 	public function __set($name, $val) {
+		if ($val instanceof Closure) {
+			return $this->lazy[$name] = $val;
+		}
+
 		return $this->$name = $val;
 	}
 
@@ -115,7 +126,7 @@ abstract class Model implements ArrayableInterface {
 	 * @return mixed
 	 */
     public function __isset($name) {
-        return isset($this->$name) && $this->$name instanceof Closure;
+        return isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure;
     }
 
 	/**
@@ -123,8 +134,8 @@ abstract class Model implements ArrayableInterface {
 	 * @return mixed
 	 */
     public function __unset($name) {
-        if (isset($this->$name) && $this->$name instanceof Closure) {
-        	unset($this->$name);
+        if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
+        	unset($this->lazy[$name]);
 		}
     }
 }

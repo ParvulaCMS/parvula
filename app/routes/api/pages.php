@@ -170,7 +170,8 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	}
 
 	try {
-		$patch = new Patch($page, $bodyJson);
+		// string concatenation convert page to json
+		$patch = new Patch((string) $page, $bodyJson);
 
 		$patchedDocument = $patch->apply();
 

@@ -31,11 +31,6 @@ class Page extends Model
 	public $slug;
 
 	/**
-	 * @var string Page's content
-	 */
-	protected $content;
-
-	/**
 	 * @var array Page's sections (optional)
 	 */
 	public $sections;
@@ -54,7 +49,7 @@ class Page extends Model
 	 * @var array
 	 */
 	protected $invisible = [
-		'_id', 'parent'
+		'_id', 'parent', 'lazy'
 	];
 
 	/**
@@ -214,7 +209,7 @@ class Page extends Model
 	 * @return Page Parent Page
 	 */
 	public function getParent() {
-		return ($this->parent);
+		return $this->parent;
 	}
 
 	/**
@@ -255,11 +250,25 @@ class Page extends Model
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray() {
+		$arr = parent::toArray();
+
+		// Convert each section to array
+		$arr['sections'] = array_map(function ($section) {
+			return $section->toArray();
+		}, $this->sections);
+
+		return $arr;
+	}
+
+	/**
 	 * Override `tostring` when print this object
 	 *
 	 * @return string
 	 */
 	public function __tostring() {
-		return json_encode($this);
+		return json_encode($this->toArray());
 	}
 }

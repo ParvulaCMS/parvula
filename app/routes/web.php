@@ -91,7 +91,7 @@ $router->get('/{file:.+\.[^.]{2,10}}', function ($req, $res, $args) use ($app) {
 	// }
 
 	if (is_file($filePath)) {
-		$info = new finfo(FILEINFO_MIME_TYPE);
+		$info = new \finfo(FILEINFO_MIME_TYPE);
 		$contentType = $info->file($filePath);
 
 		// ->set('Content-Type', $f->type);
