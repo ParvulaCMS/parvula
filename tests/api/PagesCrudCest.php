@@ -1,6 +1,6 @@
 <?php
 
-class PageCrudCest extends APITest
+class PagesCrudCest extends APITest
 {
 	private $page1;
 	private $page1Update;
@@ -34,6 +34,12 @@ class PageCrudCest extends APITest
 			'content' => '# My updated content'
 		];
 
+		$this->page1Patch = [[
+			'op' => 'replace',
+			'path' => '/content',
+			'value' => 'Test 1 patched'
+		]];
+
 		$this->page1UpdateIncomplete = [
 			'slug'    => $page1Slug
 		];
@@ -55,6 +61,18 @@ class PageCrudCest extends APITest
 
 		$I->sendPOST('/pages', $this->page2child1);
 		$I->seeResponseCodeIs(201);
+	}
+
+	public function getPageWithChild(APITester $I) {
+		$slug = $this->page2['slug'];
+		$I->sendGET('/pages/' . $slug . '?raw');
+		$I->seeResponseCodeIs(200);
+
+		$I->seeResponseContainsJson(['slug' => $slug]);
+		$I->seeResponseJsonMatchesJsonPath('$.title');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[0].slug');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[0].title');
+		$I->seeResponseJsonMatchesJsonPath('$.children.[0].content');
 	}
 
 	public function cannotCreateANewPage(APITester $I) {
@@ -111,6 +129,42 @@ class PageCrudCest extends APITest
 		$I->amBearerAuthenticated($this->token);
 		$I->sendPUT('/pages/' . $this->page1['slug'], $this->page1Update);
 		$I->seeResponseCodeIs(200);
+	}
+
+	public function testUpdatedPage(APITester $I) {
+		$slug = $this->page1['slug'];
+		$I->sendGET('/pages/' . $slug . '?raw');
+		$I->seeResponseCodeIs(200);
+
+		$I->seeResponseContainsJson([
+			'slug' => $this->page1Update['slug'],
+			'title' => $this->page1Update['title']
+		]);
+
+		$I->seeResponseMatchesJsonType([
+			'content' => 'string:regex(~' . preg_quote($this->page1Update['content']) . '\s*~)'
+		]);
+	}
+
+	public function patchAPage(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPATCH('/pages/' . $this->page1['slug'], $this->page1Patch);
+		$I->seeResponseCodeIs(200);
+	}
+
+	public function testPatchedPage(APITester $I) {
+		$slug = $this->page1['slug'];
+		$I->sendGET('/pages/' . $slug . '?raw');
+		$I->seeResponseCodeIs(200);
+
+		$I->seeResponseContainsJson([
+			'slug' => $this->page1Update['slug'],
+			'title' => $this->page1Update['title']
+		]);
+
+		$I->seeResponseMatchesJsonType([
+			'content' => 'string:regex(~' . preg_quote($this->page1Patch[0]['value']) . '\s*~)'
+		]);
 	}
 
 	public function updateAPageWithIncompleteData(APITester $I) {
