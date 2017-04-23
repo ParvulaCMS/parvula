@@ -1,7 +1,6 @@
 <?php
 
-namespace Parvula;
-
+use Parvula\Parvula;
 use Symfony\Component\Yaml\Yaml;
 
 /**

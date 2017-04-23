@@ -4,7 +4,6 @@ namespace Parvula\ContentParser;
 
 use ParsedownExtra;
 use Parvula\Parvula;
-use function Parvula\url;
 
 /**
  * ParvulaParsedownExtra class, extends ParsedownExtra
