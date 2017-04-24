@@ -14,12 +14,6 @@ logErrors: false
 # See database.yml to configure each database
 database: flatfiles
 
-# Class aliases
-aliases:
-    HTML: Parvula\Html
-    Conf: Parvula\Config
-    Asset: Parvula\Asset
-
 # List of disabled plugins
 disabledPlugins: []
 
@@ -35,6 +29,24 @@ typeOfSort: SORT_ASC
 # Sort pages from specific field (like slug, title, index or whatYouWant)
 sortField: index
 
+# System time/date format
+# Default: 'l, F j, Y' (will print 'Wednesday, March 2, 2016')
+# Formats available: https://php.net/manual/en/function.date.php
+dateFormat: l, F j, Y
+
+# Timezone (optional, 'UTC' if nothing)
+# timezones available: https://php.net/manual/en/timezones.php
+# timezone: Europe/Zurich
+
+# Secret token for the API
+secretToken: YourSuperSecretTokenForTheAPI
+
+# Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
+# SSL versions 1, 2, and 3 should no longer be used
+# The best practice is to just provide support for the TLS protocols (1.0, 1.1 and 1.2)
+# For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
+forceLoginOnTLS: false
+
 # File extensions in media folder
 mediaExtensions: [jpg, jpeg, png, gif]
 
@@ -43,36 +55,28 @@ upload:
     maxSize: 200 # Max upload size per file (in MO) (negative number for no limit)
     evilExtensions: [php, php3, php4, phtml, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
-# Timezone ('UTC' if nothing)
-# timezones available: https://php.net/manual/en/timezones.php
-timezone: Europe/Zurich
-
-# System time/date format
-# Default: 'l, F j, Y' (will print 'Wednesday, March 2, 2016')
-# Formats available: https://php.net/manual/en/function.date.php
-dateFormat: l, F j, Y
-
 # User config file to read
 userConfig: site.yml
+
+# Class aliases
+aliases:
+    HTML: Parvula\Html
+    Conf: Parvula\Config
+    Asset: Parvula\Asset
 
 # Class to parse pages (must implement ContentParserInterface), can be null
 contentParser: \Parvula\ContentParser\Markdown
 
-# Optional, give the full url base (example: 'http://yoursite.com/')
+# Give the full url base (example: 'http://yoursite.com/') (optional)
 # This option will disable the relative urls
 # urlBase: http://localhost:8000/
 
 # Prefix to all API paths (must not be empty)
 apiPrefix: /api/0
 
-# Optional, prefix all urls paths
+# Prefix all urls paths (optional)
 # urlPrefix: ../
 
-# Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
-# SSL versions 1, 2, and 3 should no longer be used
-# The best practice is to just provide support for the TLS protocols (1.0, 1.1 and 1.2)
-# For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
-forceLoginOnTLS: false
-
-# Secret token for the API
-secretToken: YourSuperSecretTokenForTheAPI
+# Routes can be cached (exanple: 'routes.php') (optional, false if nothing)
+# Must be set to to a valid filename within a writeable directory
+# routerCacheFile: routes.php

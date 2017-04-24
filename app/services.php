@@ -27,9 +27,14 @@ $app['config'] = function (Container $c) {
 };
 
 $app['router'] = function (Container $c) {
+	$cacheFile = $c['config']->get('routerCacheFile', false);
+	if ($cacheFile) {
+		$cacheFile = _CACHE_ . 'routes.php';
+	}
+
 	$slimConf = [
 		'settings' => [
-			'routerCacheFile' => _CACHE_ . 'routes.php',
+			'routerCacheFile' => $cacheFile,
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
 		'api' => new Http\APIResponse(),
