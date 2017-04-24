@@ -2,13 +2,13 @@
 	<a class="navbar-brand" href="./<?= $baseUrl ?>"><?= $site->title ?></a>
 	<div class="mr-auto"></div>
 	<ul class="navbar-nav">
-		<?php foreach ($pages->visible() as $myPage): ?>
-			<?php if (!$myPage->parent): ?>
+	<?php foreach ($pages->visible() as $myPage): ?>
+		<?php if (!$myPage->parent): ?>
 		<li class="nav-item <?= !$page->is($myPage) ?: 'active' ?>">
 			<a class="nav-link" href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title ?></a>
 		</li>
 		<?php endif; ?>
-		<?php endforeach; ?>
+	<?php endforeach; ?>
 	</ul>
 </nav>
 
