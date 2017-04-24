@@ -60,7 +60,8 @@
         "merge-plugin": {
             "include": [
                 "composer.local.json",
-                "plugins/*/composer.json"
+                "plugins/*/composer.json",
+                "public/plugins/*/composer.json"
             ]
         }
     }
