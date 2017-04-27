@@ -19,7 +19,7 @@ if (count($argv) === 2) {
 }
 
 // Override global $_SERVER
-$_SERVER['DOCUMENT_ROOT'] = '/Users/fabiens/Sites/parvula';
+$_SERVER['DOCUMENT_ROOT'] = dirname(dirname(dirname(__FILE__)));
 $_SERVER['REQUEST_METHOD'] = $method;
 $_SERVER['REQUEST_URI'] = $uri;
 $_SERVER['PATH_INFO'] = $uri;
