@@ -27,6 +27,7 @@ function getPluginClassname($pluginName) {
 //@TODO to clean
 /**
  * Get plugins list
+ *
  * @param  array $except
  * @return array
  */
@@ -42,14 +43,19 @@ function getPluginList(array $except = []) {
 		closedir($handle);
 	}
 
-	// Excluded plugins
+	// Add extra plugins
 	if (is_file(_PLUGINS_ . 'plugins.yml')) {
-		$pluginsExtra = (array) Yaml::parse(file_get_contents(_PLUGINS_ . 'plugins.yml'));
-	} else {
-		$pluginsExtra = [];
+		$pluginsExtra = (array) app('fileParser')->read(_PLUGINS_ . 'plugins.yml');
+		$plugins = array_merge($plugins, $pluginsExtra);
 	}
 
-	return array_merge($plugins, $pluginsExtra);
+	// Excluded plugins
+	if (is_file(_PLUGINS_ . 'plugins-disabled.yml')) {
+		$pluginsDisabled = (array) app('fileParser')->read(_PLUGINS_ . 'plugins-disabled.yml');
+		$plugins = array_diff($plugins, $pluginsDisabled);
+	}
+
+	return $plugins;
 }
 
 /**
