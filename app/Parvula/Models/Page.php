@@ -94,7 +94,7 @@ class Page extends Model
 			$this->sections = [];
 			if (isset($info['sections'])) {
 				$this->sections = array_map(function ($section) {
-					return new Section($section);
+					return new Section((array) $section);
 				}, (array) $info['sections']);
 
 				unset($info['sections']);
