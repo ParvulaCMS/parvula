@@ -97,8 +97,8 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 */
 	public function map(callable $fun) {
 		$model = $this->model;
-		$transformedItems = [];
 
+		$transformedItems = [];
 		foreach ($this as $item) {
 			if ($model !== null) {
 				$transformedItems[] = $fun(new $model((array) $item));
@@ -107,7 +107,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 			}
 		}
 
-		return new static($transformedItems, $model);
+		return new self($transformedItems, $model);
 	}
 
 	/**
