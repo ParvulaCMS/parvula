@@ -84,7 +84,7 @@ $this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		$pageArr = $page->toArray();
 
 		if ($page->hasParent()) {
-			$pageArr = [
+			$pageArr += [
 				'parent' => [
 					'href' => '/pages/' . $page->parent->slug
 				]
