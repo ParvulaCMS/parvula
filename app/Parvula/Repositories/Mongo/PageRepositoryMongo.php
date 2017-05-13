@@ -11,6 +11,7 @@ use Parvula\Exceptions\PageException;
 use Parvula\PageRenderers\PageRendererInterface;
 use Parvula\Collections\Collection;
 use Parvula\Collections\MongoCollection;
+use Parvula\Repositories\PageRepositoryTrait;
 
 /**
  * Mongo pages mapper
@@ -22,6 +23,8 @@ use Parvula\Collections\MongoCollection;
  * @license MIT License
  */
 class PageRepositoryMongo extends BaseRepositoryMongo {
+
+	use PageRepositoryTrait;
 
 	protected $iter;
 

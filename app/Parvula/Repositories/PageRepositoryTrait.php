@@ -54,15 +54,6 @@ trait PageRepositoryTrait {
 	}
 
 	/**
-	 * Return pages
-	 *
-	 * @return array Array of Page
-	 */
-	public function getPages() {
-		return $this->data;
-	}
-
-	/**
 	 * Sort array of objects from a specific field
 	 *
 	 * @param array &$arr An array of objects (array<?>)
