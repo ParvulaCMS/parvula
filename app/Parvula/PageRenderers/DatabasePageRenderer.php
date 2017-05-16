@@ -48,7 +48,9 @@ class DatabasePageRenderer implements PageRendererInterface {
 		$sections = [];
 		if (!empty($page->sections)) {
 			$page->sections = array_map(function ($section) {
-				$section->content = $this->contentParser->parse($section->content);
+				if (isset($section->content)) {
+					$section->content = $this->contentParser->parse($section->content);
+				}
 				return $section;
 			}, (array) $page->sections);
 		}

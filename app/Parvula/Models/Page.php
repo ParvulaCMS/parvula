@@ -74,7 +74,13 @@ class Page extends Model
 				') cannot be created, the slug must be normalized (with: a-z0-9-_+/)');
 		}
 
-		$this->children = new Collection;
+		// Add children as a collection of child
+		if (isset($info['children'])) {
+			$this->children = new Collection($info['children'], Page::class);
+			unset($info['children']);
+		} else {
+			$this->children = new Collection();
+		}
 
 		foreach ($info as $key => $value) {
 			// object with private fields casted to array will have keys prepended with \0
