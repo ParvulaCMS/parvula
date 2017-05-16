@@ -124,10 +124,8 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 		], 400);
 	}
 
-	$pageArr = (array) $parsedBody;
-
 	try {
-		$pages->update($args['slug'], $pageArr);
+		$pages->update($args['slug'], (array) $parsedBody);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
