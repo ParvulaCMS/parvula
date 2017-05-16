@@ -75,14 +75,19 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @throws IOException If the page does not exists
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
-	public function find($slug) {
+	public function find($slug, $fields = []) {
 		$page = $this->findBy('slug', $slug);
+		unset($page->_id);
 
 		if (!$page) {
 			return false;
 		}
 
-		unset($page->_id);
+		// Add children
+		$children = $this->findAllBy('parent', $slug);
+		foreach ($children as $child) {
+			$page->children[] = $this->renderer->parse($child);
+		}
 
 		return $this->renderer->parse($page);
 	}
