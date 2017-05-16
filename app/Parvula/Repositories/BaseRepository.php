@@ -26,7 +26,16 @@ abstract class BaseRepository {
 	 * @param mixed $value
 	 * @return Model
 	 */
-	abstract public function findBy($field, $value); // TODO findOneBy ?
+	abstract public function findBy($field, $value);
+
+	/**
+	 * Find all models by a given field
+	 *
+	 * @param mixed $field
+	 * @param mixed $value
+	 * @return array List of models
+	 */
+	abstract public function findAllBy($field, $value);
 
 	/**
 	 * Create a new model from an array of data

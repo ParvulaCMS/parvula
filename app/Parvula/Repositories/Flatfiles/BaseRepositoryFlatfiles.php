@@ -27,6 +27,22 @@ abstract class BaseRepositoryFlatfiles extends BaseRepository {
 		return false;
 	}
 
+	/**
+	 * Find all by field
+	 * @return array
+	 */
+	public function findAllBy($attr, $value) {
+		$modelClassName = $this->model();
+		$acc = [];
+		foreach ($this->data as $model) {
+			if ($model[$attr] === $value) {
+				$acc[] = new $modelClassName($model);
+			}
+		}
+
+		return $acc;
+	}
+
 	// Filename // TODO
 	/**
 	 * Find one by "id" -> filename
