@@ -1,12 +1,14 @@
 <?php
 
+use Parvula\Parvula;
+use Symfony\Component\Yaml\Yaml;
+
 /**
- * Load aliases
+ * Create multiple class aliases
  *
  * @param array $aliases
- * @return
  */
-function loadAliases(array $aliases) {
+function classAliases(array $aliases) {
 	foreach ($aliases as $alias => $className) {
 		class_alias($className, $alias);
 	}
@@ -23,6 +25,12 @@ function getPluginClassname($pluginName) {
 }
 
 //@TODO to clean
+/**
+ * Get plugins list
+ *
+ * @param  array $except
+ * @return array
+ */
 function getPluginList(array $except = []) {
 	$plugins = [];
 	if (is_dir(_PLUGINS_) && $handle = opendir(_PLUGINS_)) {
@@ -35,7 +43,102 @@ function getPluginList(array $except = []) {
 		closedir($handle);
 	}
 
+	// Add extra plugins
+	if (is_file(_PLUGINS_ . 'plugins.yml')) {
+		$pluginsExtra = (array) app('fileParser')->read(_PLUGINS_ . 'plugins.yml');
+		$plugins = array_merge($plugins, $pluginsExtra);
+	}
+
+	// Excluded plugins
+	if (is_file(_PLUGINS_ . 'plugins-disabled.yml')) {
+		$pluginsDisabled = (array) app('fileParser')->read(_PLUGINS_ . 'plugins-disabled.yml');
+		$plugins = array_diff($plugins, $pluginsDisabled);
+	}
+
 	return $plugins;
+}
+
+/**
+ * List parent pages
+ *
+ * @depreciated
+ * @param $pages Array of Page
+ * @return array of pages
+ */
+function listPagesRoot(array $pages) {
+	return array_filter($pages, function ($page) {
+		return !$page->parent;
+	});
+}
+
+/**
+ * Url will generates a fully qualified URL
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function url($path = '') {
+	$base = app('config')->get('urlBase');
+	if ($base) {
+		return $base . $path;
+	}
+
+	$prefix = app('config')->get('urlPrefix', '');
+	return $prefix . Parvula::getRelativeURIToRoot($path);
+}
+
+/**
+ * Get application instance
+ *
+ * @param  string $key optional
+ * @return mixed
+ */
+function app($key = null) {
+	$app = Parvula::getContainer();
+	if ($key === null) {
+		return $app;
+	}
+	return $app[$key];
+}
+
+/**
+ * Get main app folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function appPath($path = '') {
+	return _APP_ . $path;
+}
+
+/**
+ * Get themes folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function themesPath($path = '') {
+	return _THEMES_ . $path;
+}
+
+/**
+ * Get plugins folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function pluginsPath($path = '') {
+	return _PLUGINS_ . $path;
+}
+
+/**
+ * Get uploads folder path
+ *
+ * @param  string $path optional
+ * @return string
+ */
+function uploadsPath($path = '') {
+	return _UPLOADS_ . $path;
 }
 
 /**
@@ -52,7 +155,7 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 	$level = isset($options['level']) ? $options['level'] : 9;
 	if ($level > 0) {
 		$str = '<ul ' . $ul . '>' . PHP_EOL;
-		foreach($pages as $page) {
+		foreach ($pages as $page) {
 			$anch = $page->title;
 			if ($liCallback !== null) {
 				$anch = $liCallback($page);
@@ -68,16 +171,4 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 		return $str . '</ul>' . PHP_EOL;
 	}
 	return '';
-}
-
-/**
- * List parent pages
- *
- * @param $pages Array of Page
- * @return array of pages
- */
-function listPagesRoot(array $pages) {
-	return array_filter($pages, function($page) {
-		return !$page->parent;
-	});
 }

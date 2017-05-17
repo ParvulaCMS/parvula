@@ -24,8 +24,12 @@ $pages = $app['pages'];
  * @apiParam {string} [content] Optional Page content
  * @apiParam {mixed} [field] Optional Custom(s) field(s)
  *
- * @apiParamExample Request-Example:
- *     title=My new title&slug=my_new_slug&content=Some content
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "title": "My title",
+ *       "slug": "my_new_slug",
+ *       "content": "Some content"
+ *     }
  *
  * @apiSuccess (201) PageCreated Page was created
  * @apiError (400) BadField This page need at least a slug and a title
@@ -57,19 +61,17 @@ $this->post('', function ($req, $res) use ($pages) {
 		], 400);
 	}
 
-	if ($pages->read($parsedBody['slug'])) {
+	if ($pages->find($parsedBody['slug'])) {
 		return $this->api->json($res, [
 			'error' => 'PageAlreadyExists',
-			'message' => 'This page already exists'
+			'message' => 'Page `' . htmlspecialchars($parsedBody['slug']) . '` already exists'
 		], 409);
 	}
 
 	$pageArr = (array) $parsedBody;
 
 	try {
-		$page = Page::pageFactory($pageArr);
-
-		$result = $pages->create($page);
+		$result = $pages->create($pageArr);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
@@ -84,7 +86,7 @@ $this->post('', function ($req, $res) use ($pages) {
 	}
 
 	return $res->withStatus(201);
-});
+})->setName('pages.create');
 
 $this->map(['PUT', 'DELETE'], '', function ($req, $res) {
 	return $res->withStatus(405); // Method Not Allowed
@@ -101,8 +103,12 @@ $this->map(['PUT', 'DELETE'], '', function ($req, $res) {
  * @apiParam {string} [content] Optional Page content
  * @apiParam {mixed} [field] Optional Custom(s) field(s)
  *
- * @apiParamExample Request-Example:
- *     title=My new title&slug=my_new_slug&content=Some content
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "title": "My updated title",
+ *       "slug": "updated_slug",
+ *       "content": "Some edited content"
+ *     }
  *
  * @apiSuccess (204) PageUpdated
  * @apiError (400) BadField This page need at least a `slug` and a `title`
@@ -118,12 +124,8 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 		], 400);
 	}
 
-	$pageArr = (array) $parsedBody;
-
 	try {
-		$page = Page::pageFactory($pageArr);
-
-		$pages->update($args['slug'], $page);
+		$pages->update($args['slug'], (array) $parsedBody);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
@@ -132,11 +134,11 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	}
 
 	$res->withStatus(204);
-});
+})->setName('pages.update');
 
 /**
  * @api {patch} /pages/:slug Update specific field(s) of a page
- * @apiDescription For more details about json patch: https://tools.ietf.org/html/rfc6902
+ * @apiDescription Patch uses [Json patch (rfc6902)](https://tools.ietf.org/html/rfc6902)
  * @apiName Patch page
  * @apiGroup Page
  *
@@ -145,7 +147,8 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
  * @apiError (400) InvalidTargetDocumentJsonException
  * @apiError (400) InvalidOperationException
  * @apiError (404) PageDoesNotExists If page does not exists
- * @apiError (404) PageException If exception
+ * @apiError (404) PageException
+ * @apiError (500) ServerException
  */
 $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	$parsedBody = $req->getParsedBody();
@@ -155,7 +158,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	if (!isset($req->getQueryParams()['parse'])) {
 		$pages->setRenderer($app['pageRendererRAW']);
 	}
-	$page = $pages->read($slug);
+	$page = $pages->find($slug);
 
 	if (!$page) {
 		return $this->api->json($res, [
@@ -165,14 +168,12 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 	}
 
 	try {
-		$patch = new Patch($page, $bodyJson);
+		// string concatenation convert page to json
+		$patch = new Patch((string) $page, $bodyJson);
 
 		$patchedDocument = $patch->apply();
 
-		$newPage = Page::pageFactory(json_decode($patchedDocument, true));
-
-		$pages->update($slug, $newPage);
-
+		$pages->update($slug, json_decode($patchedDocument, true));
 	} catch (InvalidPatchDocumentJsonException $e) {
 		// Will be thrown when using invalid JSON in a patch document
 		return $this->api->json($res, [
@@ -193,11 +194,11 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
 		], 400);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
-			'error' => 'InvalidOperationException',
+			'error' => 'ServerException',
 			'message' => $e->getMessage()
 		], 500);
 	}
-});
+})->setName('pages.patch');
 
 /*
  * @api {delete} /page/:slug Delete a page.
@@ -205,9 +206,19 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
  * @apiGroup Page
  *
  * @apiSuccess (204) PagePatched
+ * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
  * @apiError (404) PageException If not ok or exception
  */
 $this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+	$page = $pages->find($args['slug']);
+
+	if (!$page) {
+		return $this->api->json($res, [
+			'error' => 'PageDoesNotExists',
+			'message' => 'Page does not exists and thus cannot be deleted'
+		], 404);
+	}
+
 	try {
 		$result = $pages->delete($args['slug']);
 	} catch (Exception $e) {
@@ -224,4 +235,4 @@ $this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	}
 
 	return $res->withStatus(204);
-});
+})->setName('pages.delete');

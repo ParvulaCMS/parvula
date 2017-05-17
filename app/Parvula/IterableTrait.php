@@ -12,8 +12,7 @@ namespace Parvula;
  * @author Fabien Sa
  * @license MIT License
  */
-trait IterableTrait
-{
+trait IterableTrait {
 	/**
 	 * Rewind pages internal pointer
 	 *

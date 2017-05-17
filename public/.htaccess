@@ -1,0 +1,31 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+
+    RewriteEngine On
+
+    ## Redirect if more than 2 slashes
+    RewriteCond %{REQUEST_URI} ^(.*)/{2,}(.*)$
+    RewriteRule . %1/%2 [R=301,L]
+
+    # Block dot files
+    RewriteRule (^|/)\. - [F]
+
+    ## Block all PHP files, except index
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} \.php$
+    RewriteRule !^index.php index.php [L,NC]
+
+    ## Handle front controller
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+    # Handle authorization header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# Disable directory browsing
+Options All -Indexes

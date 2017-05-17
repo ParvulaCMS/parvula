@@ -2,16 +2,18 @@
 
 namespace Parvula;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Configuration wrapper for config array
  *
  * @package Parvula
- * @version 0.5.0
+ * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Config {
+class Config implements ContainerInterface, ArrayableInterface {
 
 	/**
 	 * @var array
@@ -31,10 +33,12 @@ class Config {
 	 * Append config to Config class
 	 *
 	 * @param array $config
-	 * @return
+	 * @return Config
 	 */
 	public function append(array $config) {
 		$this->config = $config + $this->config;
+
+		return $this;
 	}
 
 	/**
@@ -48,7 +52,7 @@ class Config {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
-		foreach($pieces as $step) {
+		foreach ($pieces as $step) {
 			if (!isset($ptr[$step])) {
 				return $default;
 			}
@@ -69,7 +73,7 @@ class Config {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
-		foreach($pieces as $step) {
+		foreach ($pieces as $step) {
 			$ptr = &$ptr[$step];
 			if (!isset($ptr[$step])) {
 				$ptr = [];
@@ -90,7 +94,7 @@ class Config {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
-		foreach($pieces as $step) {
+		foreach ($pieces as $step) {
 			if (!isset($ptr[$step])) {
 				return false;
 			}
@@ -110,7 +114,7 @@ class Config {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
-		foreach($pieces as $step) {
+		foreach ($pieces as $step) {
 			if (!isset($ptr[$step])) {
 				return false;
 			}
@@ -137,5 +141,4 @@ class Config {
 	public function toObject() {
 		return (object) $this->config;
 	}
-
 }

@@ -16,11 +16,10 @@ use Parvula\Exceptions\ParseException;
  * @author Fabien Sa
  * @license MIT License
  */
-class FileParser implements IOInterface
-{
+class FileParser implements IOInterface {
 
 	/**
-	 * @var array<string, ParserInterface>
+	 * @var array array<string, ParserInterface>
 	 */
 	protected $parsers;
 

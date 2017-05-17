@@ -13,7 +13,7 @@ $router->group($prefix, function () use ($app) {
 	require _APP_ . 'routes/api/index.php';
 });
 
-// Index namespace
-require _APP_ . 'routes/index.php';
+// Web namespace
+require _APP_ . 'routes/web.php';
 
 $router->run();

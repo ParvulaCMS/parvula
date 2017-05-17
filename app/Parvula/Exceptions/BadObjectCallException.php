@@ -11,4 +11,5 @@ namespace Parvula\Exceptions;
  * @author Fabien Sa
  * @license MIT License
  */
-class BadObjectCallException extends \LogicException {}
+class BadObjectCallException extends \LogicException {
+}

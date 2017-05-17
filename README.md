@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/PHP-5.5+-brightgreen.svg?style=flat-square" alt="PHP 5.5+">
+  <img src="https://img.shields.io/badge/PHP-5.6+-brightgreen.svg?style=flat-square" alt="PHP 5.5+">
   <img src="https://img.shields.io/packagist/v/bafs/parvula.svg?style=flat-square" alt="version">
   <img src="https://img.shields.io/packagist/l/BafS/parvula.svg?style=flat-square" alt="license">
   <img src="https://www.versioneye.com/user/projects/56fcfa82905db1003b29956e/badge.svg?style=flat" alt="dependecies">
@@ -16,7 +16,7 @@
 
 ### Requirements
 
-* PHP 5.5+
+* PHP 5.6+
 * [Composer](http://getcomposer.org/)
 * URL Rewriting (recommended)
 

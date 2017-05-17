@@ -15,6 +15,10 @@ use Exception;
  * $sess->set('user_id', $userID); // Set user_id
  * $sess->get('user_id'); // Get previous value
  * ```
+ *
+ * @package Parvula
+ * @author Fabien Sa
+ * @license MIT License
  */
 class Session {
 
@@ -64,7 +68,7 @@ class Session {
 	 * @return string|null
 	 */
 	public function get($index, $defaultValue = null) {
-		if(!$this->has($index)) {
+		if (!$this->has($index)) {
 			return $defaultValue;
 		}
 
@@ -117,5 +121,4 @@ class Session {
 	public function isActive() {
 		return session_status() === PHP_SESSION_ACTIVE;
 	}
-
 }

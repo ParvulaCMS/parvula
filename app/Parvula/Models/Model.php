@@ -2,40 +2,77 @@
 
 namespace Parvula\Models;
 
+use Closure;
 use Parvula\AccessorTrait;
 use Parvula\ArrayableInterface;
 
+/**
+ * This abstract class represents a Model
+ *
+ * @package Parvula
+ * @version 0.8.0
+ * @since 0.8.0
+ * @author Fabien Sa
+ * @license MIT License
+ */
 abstract class Model implements ArrayableInterface {
 
 	use AccessorTrait;
 
+	protected $lazy = [];
+
 	/**
 	 * Transform the instance fields to an array
 	 *
-	 * @return array Array of instance's fields
+	 * @return array|null Array of instance's fields
 	 */
-	public function toArray() {
-		return $this->getVisibleFields();
+	public function toArray($removeNull = false) {
+		$arr = $this->getVisibleFields($removeNull);
+
+		foreach ($arr as $key => $value) {
+			if ($value instanceof Model) {
+				$arr[$key] = $value->toArray($removeNull);
+			}
+			else if ($value instanceof Closure) {
+				$arr[$key] = $value();
+			}
+		}
+
+		// Resolve lazy functions
+		foreach ($this->lazy as $key => $value) {
+			if ($value instanceof Closure) {
+				$arr[$key] = $value();
+			}
+		}
+
+		return $arr;
 	}
 
 	/**
 	 * Get all visible fields
 	 *
-	 * @return array Visible fields
+	 * @return array|null Visible fields
 	 */
-	private function getVisibleFields() {
+	protected function getVisibleFields($removeNull = false) {
 		$fields = $this->getAllFields();
+		$res = [];
 
 		if (isset($this->visible)) {
-			return array_intersect_key($fields, array_flip($this->visible));
-		}
-		else if (isset($this->invisible)) {
-			// Notice: It will also remove the 'invisible' field
+			$res = array_intersect_key($fields, array_flip($this->visible));
+		} elseif (isset($this->invisible)) {
+			// Notice: It will also remove the 'invisible' and 'lazy' field
 			$this->invisible[] = 'invisible';
-			return array_diff_key($fields, array_flip($this->invisible));
+			$this->invisible[] = 'lazy';
+			$res = array_diff_key($fields, array_flip($this->invisible));
 		}
 
-		return;
+		if ($removeNull) {
+			return array_filter($res, function ($value) {
+				return $value !== null;
+			});
+		}
+
+		return $res;
 	}
 
 	/**
@@ -50,4 +87,55 @@ abstract class Model implements ArrayableInterface {
 		}
 		return $acc;
 	}
+
+	/**
+	 * Transform model
+	 *
+	 * @param callable $fun Callback function for the model
+	 * @return mixed
+	 */
+	public function transform(callable $fun) {
+		return $fun($this);
+	}
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function __get($name) {
+		if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
+			return ($this->lazy[$name])();
+		}
+	}
+
+	/**
+	 * @param string $name
+	 * @param Closure $val
+	 * @return mixed
+	 */
+	public function __set($name, $val) {
+		if ($val instanceof Closure) {
+			return $this->lazy[$name] = $val;
+		}
+
+		return $this->$name = $val;
+	}
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+    public function __isset($name) {
+        return isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure;
+    }
+
+	/**
+	 * @param string $name
+	 * @return mixed
+	 */
+    public function __unset($name) {
+        if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
+        	unset($this->lazy[$name]);
+		}
+    }
 }

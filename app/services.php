@@ -3,6 +3,11 @@
 // Register services
 // ----------------------------- //
 
+namespace Parvula;
+
+use DateTime;
+use Exception;
+use RuntimeException;
 use Pimple\Container;
 use Parvula\Config;
 use Parvula\FilesSystem as Files;
@@ -18,21 +23,25 @@ $app['config'] = function (Container $c) {
 	// Load user config
 	// Append user config to Config wrapper (override if exists)
 	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
-	$config->append((array) $userConfig);
-
-	return $config;
+	return $config->append((array) $userConfig);
 };
 
 $app['router'] = function (Container $c) {
+	$cacheFile = $c['config']->get('routerCacheFile', false);
+	if ($cacheFile) {
+		$cacheFile = _CACHE_ . 'routes.php';
+	}
+
 	$slimConf = [
 		'settings' => [
+			'routerCacheFile' => $cacheFile,
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
-		'api' => new Parvula\Router\APIRender(),
+		'api' => new Http\APIResponse(),
 		'logger' => $c['loggerHandler']
 	];
 
-	$router = new Slim\App($slimConf);
+	$router = new \Slim\App($slimConf);
 
 	$container = $router->getContainer();
 	$router->add(new \Slim\Middleware\JwtAuthentication([
@@ -41,12 +50,12 @@ $app['router'] = function (Container $c) {
 		'secure' => !$c['config']->get('debug', false),
 		// 'cookie' => 'parvula_token',
 		'passthrough' => [
-			'/api/0/login',
+			'/api/0/auth',
 			'/api/0/public'
 		],
 		'rules' => [
 			// GET /api/0/pages
-			function($arr) {
+			function ($arr) {
 				$path = trim($arr->getUri()->getPath(), '/');
 				if ($arr->isGet() && preg_match('~^api/0/pages~', $path)) {
 					return false;
@@ -71,10 +80,10 @@ $app['loggerHandler'] = function ($c) {
 		$logger = new Logger('parvula');
 		$file = (new DateTime('now'))->format('Y-m-d') . '.log';
 
-		$logger->pushProcessor(new Monolog\Processor\UidProcessor());
+		$logger->pushProcessor(new \Monolog\Processor\UidProcessor());
 		$logger->pushHandler(new StreamHandler(_LOGS_ . $file, Logger::WARNING));
 
-		Monolog\ErrorHandler::register($logger);
+		\Monolog\ErrorHandler::register($logger);
 
 		return $logger;
 	}
@@ -84,23 +93,22 @@ $app['loggerHandler'] = function ($c) {
 
 $app['errorHandler'] = function (Container $c) {
 	if (version_compare(phpversion(), '7.0.0', '<') && class_exists('League\\BooBoo\\Runner')) {
-		$runner = new League\BooBoo\Runner();
+		$runner = new \League\BooBoo\Runner();
 
 		$accept = $c['router']->getContainer()['request']->getHeader('Accept');
 		$accept = join(' ', $accept);
 
 		// If we accept html, show html, else show json
 		if (strpos($accept, 'html') !== false) {
-			$runner->pushFormatter(new League\BooBoo\Formatter\HtmlTableFormatter);
+			$runner->pushFormatter(new \League\BooBoo\Formatter\HtmlTableFormatter);
 		} else {
-			$runner->pushFormatter(new League\BooBoo\Formatter\JsonFormatter);
+			$runner->pushFormatter(new \League\BooBoo\Formatter\JsonFormatter);
 		}
 
 		$runner->register();
-
-	} else if (class_exists('Whoops\\Run')) {
-		$run = new Whoops\Run;
-		$handler = new Whoops\Handler\PrettyPageHandler;
+	} elseif (class_exists('Whoops\\Run')) {
+		$run = new \Whoops\Run;
+		$handler = new \Whoops\Handler\PrettyPageHandler;
 
 		$handler->setPageTitle('Parvula Error');
 		$handler->addDataTable('Parvula', [
@@ -109,15 +117,15 @@ $app['errorHandler'] = function (Container $c) {
 
 		$run->pushHandler($handler);
 
-		if (Whoops\Util\Misc::isAjaxRequest()) {
-			$run->pushHandler(new Whoops\Handler\JsonResponseHandler);
+		if (\Whoops\Util\Misc::isAjaxRequest()) {
+			$run->pushHandler(new \Whoops\Handler\JsonResponseHandler);
 		}
 
 		$run->register();
 
 		if (class_exists('Monolog\\Logger')) {
 			// Be sure that Monolog is still register
-			Monolog\ErrorHandler::register($c['loggerHandler']);
+			\Monolog\ErrorHandler::register($c['loggerHandler']);
 		}
 
 		return $run;
@@ -127,30 +135,29 @@ $app['errorHandler'] = function (Container $c) {
 // To parse serialized files in multiple formats
 $app['fileParser'] = function () {
 	$parsers = [
-		'json' => new \Parvula\Parsers\Json,
-		'yaml' => new \Parvula\Parsers\Yaml,
-		'yml' => new \Parvula\Parsers\Yaml,
-		'php' => new \Parvula\Parsers\Php
+		'json' => new Parsers\Json,
+		'yaml' => new Parsers\Yaml,
+		'yml' => new Parsers\Yaml,
+		'php' => new Parsers\Php
 	];
 
-	return new Parvula\FileParser($parsers);
+	return new FileParser($parsers);
 };
 
 $app['plugins'] = function (Container $c) {
-	$pluginMediator = new Parvula\PluginMediator;
-	$pluginMediator->attach(getPluginList($c['config']->get('disabledPlugins')));
-	return $pluginMediator;
+	return (new PluginMediator)
+		->attach(getPluginList($c['config']->get('disabledPlugins')));
 };
 
 $app['session'] = function (Container $c) {
-	$session = new Parvula\Session($c['config']->get('sessionName'));
+	$session = new Session($c['config']->get('sessionName'));
 	$session->start();
 	return $session;
 };
 
 $app['auth'] = function (Container $c) {
-	return new Parvula\Authentication($c['session'], hash('sha1', '@TODO'));
-	// return new Parvula\Authentication($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
+	return new Service\AuthenticationService($c['session'], hash('sha1', '@TODO'));
+	// Service\AuthenticationService($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
 // Get current logged User if available
@@ -158,21 +165,19 @@ $app['usersession'] = function (Container $c) {
 	$sess = $c['session'];
 	if ($username = $sess->get('username')) {
 		if ($c['auth']->isLogged($username)) {
-			return $c['users']->read($username);
+			return $c['users']->find($username);
 		}
 	}
 
 	return false;
 };
 
-//-- ModelMapper --
-
 $app['pageRenderer'] = function (Container $c) {
 	$contentParser = $c['config']->get('contentParser');
-	$pageRenderer = $c['config:mapper']->get('pageRenderer');
+	$pageRenderer = $c['config:database']->get('pageRenderer');
 
-	$headParser = $c['config:mapper']->get('headParser');
-	$options = $c['config:mapper']->get('pageRendererOptions');
+	$headParser = $c['config:database']->get('headParser');
+	$options = $c['config:database']->get('pageRendererOptions');
 
 	if ($headParser === null) {
 		return new $pageRenderer(new $contentParser, $options);
@@ -182,104 +187,101 @@ $app['pageRenderer'] = function (Container $c) {
 };
 
 $app['pageRendererRAW'] = function (Container $c) {
-	$headParser = $c['config:mapper']->get('headParser');
-	$pageRenderer = $c['config:mapper']->get('pageRenderer');
+	$headParser = $c['config:database']->get('headParser');
+	$pageRenderer = $c['config:database']->get('pageRenderer');
 
 	if ($headParser === null) {
-		return new $pageRenderer(new Parvula\ContentParser\None);
+		return new $pageRenderer(new ContentParser\None);
 	}
 
-	return new $pageRenderer(new $headParser, new Parvula\ContentParser\None);
+	return new $pageRenderer(new $headParser, new ContentParser\None);
 };
+
+//-- Databases --
 
 $app['mongodb'] = function (Container $c) {
-	if (class_exists('MongoDB\\Client')) {
-		$fp = $c['fileParser'];
-		$config = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
-		$uri = "mongodb://";
-
-		if (isset($config->get('mongodb')['username'], $config->get('mongodb')['password'])) {
-			$uri .= "{$config->get('mongodb')['username']}:{$config->get('mongodb')['password']}@";
-		}
-
-		if (isset($config->get('mongodb')['address'])) {
-			$uri .= $config->get('mongodb')['address'];
-		} else {
-			$uri .= '127.0.0.1';
-		}
-
-		if (isset($config->get('mongodb')['port'])) {
-			$uri .= ":{$config->get('mongodb')['port']}";
-		}
-
-		$uri .= "/{$config->get('mongodb')['name']}";
-
-		$client = new MongoDB\Client($uri);
-		$db = $client->{$config->get('mongodb')['name']};
-
-		return $db;
+	if (!class_exists('MongoDB\\Client')) {
+		throw new RuntimeException('MongoDB client not found, please install the package `mongodb/mongodb`');
 	}
 
-	throw new Exception('MongoDB client not found, please install `mongodb/mongodb`');
+	$fp = $c['fileParser'];
+	$options = (new Config($fp->read(_CONFIG_ . 'database.yml')))->get('mongodb');
+	$uri = 'mongodb://';
 
-	return false;
+	if (isset($options['username'], $options['password'])) {
+		$uri .= $options['username'] . ':' . $options['password'] . '@';
+	}
+
+	if (isset($options['address'])) {
+		$uri .= $options['address'];
+	} else {
+		$uri .= 'localhost';
+	}
+
+	if (isset($options['port'])) {
+		$uri .= ':' . $options['port'];
+	}
+
+	return (new \MongoDB\Client($uri))->{$options['name']};
 };
 
-$app['mappers'] = function (Container $c) {
-	$conf = $c['config:mapper'];
-	$mapperName = $conf->get('mapperName');
+$app['repositories'] = function (Container $c) {
+	$conf = $c['config:database'];
+	$dbType = $c['config']->get('database');
 
-	$mappers = [
+	$databases = [
 		'mongodb' => [
 			'pages' => function () use ($c) {
-				return new Parvula\Models\Mappers\PagesMongo($c['pageRenderer'], $c['mongodb']->pages);
+				return new Repositories\Mongo\PageRepositoryMongo($c['pageRenderer'], $c['mongodb']->pages);
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Models\Mappers\UsersMongo($c['mongodb']->users);
+				return new Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
+				// return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		],
 		'flatfiles' => [
 			'pages' => function () use ($c, $conf) {
-				return new Parvula\Models\Mappers\PagesFlatFiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+				return new Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
 			},
 			'users' => function () use ($c) {
-				return new Parvula\Models\Mappers\Users($c['fileParser'], _USERS_ . '/users.php');
+				return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			}
 		]
 	];
 
-	if (!isset($mappers[$mapperName])) {
-		throw new Exception(
-			'Mapper `' . htmlspecialchars($mapperName) . '` does not exists, please edit your settings.');
-
+	if (!isset($databases[$dbType])) {
+		throw new RuntimeException(
+			'Repository `' . htmlspecialchars($dbType) . '` does not exists, please edit your settings.'
+		);
 	}
 
-	return $mappers[$mapperName];
+	return $databases[$dbType];
 };
 
-$app['config:mapper'] = function (Container $c) {
-	$fp = $c['fileParser'];
-	$mappersConfig = new Config($fp->read(_CONFIG_ . 'mappers.yml'));
-	$mapperName = $mappersConfig->get('mapper');
+$app['config:database'] = function (Container $c) {
+	$dbType = $c['config']->get('database');
 
-	$conf = new Config($mappersConfig->get($mapperName));
-	$conf->set('mapperName', $mapperName);
+	$fp = $c['fileParser'];
+	$databaseConfig = new Config($fp->read(_CONFIG_ . 'database.yml'));
+
+	$conf = new Config($databaseConfig->get($dbType));
+	$conf->set('dbType', $dbType);
 
 	return $conf;
 };
 
 // Aliases
-$app['pages'] = $app['mappers']['pages'];
+$app['pages'] = $app['repositories']['pages'];
 
-$app['users'] = $app['mappers']['users'];
+$app['users'] = $app['repositories']['users'];
 
 $app['themes'] = function (Container $c) {
-	return new Parvula\Models\Mappers\Themes(_THEMES_, $c['fileParser']);
+	return new Services\ThemesService(_THEMES_, $c['fileParser']);
 };
 
 $app['theme'] = function (Container $c) {
 	if ($c['themes']->has($themeName = $c['config']->get('theme'))) {
-		return $c['themes']->read($themeName);
+		return $c['themes']->get($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
 	}
@@ -291,7 +293,7 @@ $app['view'] = function (Container $c) {
 
 	// Create new Plates instance to render theme files
 	$path = $theme->getPath();
-	$view = new League\Plates\Engine($path, $theme->getExtension());
+	$view = new \League\Plates\Engine($path, $theme->getExtension());
 
 	// Helper function
 	// List pages
@@ -305,7 +307,7 @@ $app['view'] = function (Container $c) {
 	});
 
 	// System date format
-	$view->registerFunction('pageDateFormat', function (Parvula\Models\Page $page) use ($config) {
+	$view->registerFunction('pageDateFormat', function (Models\Page $page) use ($config) {
 		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 

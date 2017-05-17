@@ -1,0 +1,37 @@
+# ------------------------------ #
+# Databases specific settings
+# ------------------------------ #
+
+flatfiles:
+    # Class to parse pages metadata (must implement ParserInterface)
+    headParser: Parvula\Parsers\Yaml
+
+    # Class to fetch/render pages (must implement PageRendererInterface)
+    pageRenderer: Parvula\PageRenderers\FlatFilesPageRenderer
+
+    # Extension for files in ./data/pages
+    fileExtension: md
+
+    pageRendererOptions:
+        delimiterMatcher: /\s[-=]{3,}\s+/
+        delimiterRender: ---
+        sectionDelimiterMatcher: /\s\-{3}\s([\{\[\-:>\w].*?)\s-{3}\s/s
+        # sectionDelimiterMatcher: /\s\-{3}\s([-:\w].*?)\s-{3}\s/s
+        sectionDelimiterRender: ---
+
+mongodb:
+    # Server ip/hostname (default : 127.0.0.1)
+    # address: 127.0.0.1
+
+    # Port (default : 27017)
+    # port: 27017
+
+    # Database name
+    name: Parvula
+
+    # Optional authentication if enabled in mongodb config
+    # username: myUsername
+    # password: mySecretPassword
+
+    # Class to fetch/render pages (must implement PageRendererInterface)
+    pageRenderer: Parvula\PageRenderers\DatabasePageRenderer

@@ -23,8 +23,16 @@ $users = $app['users'];
  *     ]
  */
 $this->get('', function ($req, $res) use ($users) {
-	return $this->api->json($res, $users->index());
-});
+	$accumulator = [];
+	foreach ($users->all() as $user) {
+		$accumulator[] = $user->toArray();
+	}
+	return $this->api->json($res, $accumulator);
+
+	// return $this->api->json($res, $users->all()->map(function ($u) {
+	// 		return $u->toArray();
+	// }));
+})->setName('users.index');
 
 /**
  * @api {get} /users/:name User information
@@ -52,7 +60,7 @@ $this->get('', function ($req, $res) use ($users) {
  *     }
  */
 $this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
-	if (false !== $user = $users->read($args['username'])) {
+	if (false !== $user = $users->findBy('username', $args['username'])) {
 		return $this->api->json($res, $user->toArray());
 	}
 
@@ -60,4 +68,4 @@ $this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
 		'error' => 'UserNotFound',
 		'message' => 'User\'s username was not found'
 	], 404);
-});
+})->setName('users.show');

@@ -5,14 +5,15 @@ namespace Parvula\Models;
 use Closure;
 use DateTime;
 use Parvula\Models\Section;
-use Parvula\Models\Mappers\Pages;
+use Parvula\Collections\Collection;
+use Parvula\Repositories\BaseRepository; // TODO PageRepo
 use Parvula\Exceptions\PageException;
 
 /**
  * This class represents a Page
  *
  * @package Parvula
- * @version 0.7.0
+ * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
@@ -30,84 +31,58 @@ class Page extends Model
 	public $slug;
 
 	/**
-	 * @var string Page's content
-	 */
-	public $content;
-
-	/**
 	 * @var array Page's sections (optional)
 	 */
 	public $sections;
 
 	/**
-	 * @var string Page's parent slug (optional)
+	 * @var Page Parent page (optional)
 	 */
 	public $parent;
 
 	/**
-	 * @var Pages Children pages (optional)
+	 * @var \Parvula\Collections\Collection Children pages (optional)
 	 */
 	public $children;
-
-	/**
-	 * @var array Array of Closure
-	 */
-	protected $lazyFunctions;
 
 	/**
 	 * @var array
 	 */
 	protected $invisible = [
-		'lazyFunctions'
+		'_id', 'parent', 'lazy'
 	];
 
 	/**
-	 * Page factory, create a new page from an array
+	 * Create a new page from the given array
 	 * The parameter $info must contain at least `title` and `slug` fields.
-	 * The `slug` need to be normalized (a-z0-9-_+/).
+	 * The `slug` field need to be normalized (a-z0-9-_+/).
 	 *
-	 * @param array $info Array with page informations (must contain `title` and `slug` fields)
-	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
-	 * @throws PageException if `$pageInfo[slug]` value is not normalized
-	 * @return Page The created Page
-	 */
-	public static function pageFactory(array $info) {
-		$content = isset($info['content']) ? $info['content'] : '';
-
-		if (isset($info['sections'])) {
-			$sections = array_map(function ($section) {
-				return Section::sectionFactory($section);
-			}, $info['sections']);
-
-			unset($info['sections']);
-		} else {
-			$sections = [];
-		}
-
-		unset($info['content']);
-
-		return new static($info, $content, $sections);
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param array $meta Metadata
+	 * @param array $info Array with page information (must contain `title` and `slug` fields)
 	 * @param string $content (optional) Content
 	 * @param array $sections (optional) array of Section
+     * @throws PageException if `$pageInfo` does not have field `title` and `slug`
+	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 */
-	public function __construct(array $meta, $content = '', array $sections = []) {
+	public function __construct(array $info, $content = '', array $sections = []) {
 		// Check if required meta informations are available
-		if (empty($meta['title']) || empty($meta['slug'])) {
-			throw new PageException('Page cannot be created, $meta MUST contain `title` and `slug` keys');
+		if (empty($info['title']) || empty($info['slug'])) {
+			throw new PageException('Page cannot be created, meta must contains `title` and `slug` keys');
 		}
 
-		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $meta['slug'])) {
-			throw new PageException('Page cannot be created, $meta[slug] (' .
-				htmlspecialchars($meta['slug']) . ') value is not normalized');
+		if (!preg_match('/^[a-z0-9\-_\+\/]+$/', $info['slug'])) {
+			throw new PageException('Page (' . htmlspecialchars($info['slug']) .
+				') cannot be created, the slug must be normalized (with: a-z0-9-_+/)');
 		}
 
-		foreach ($meta as $key => $value) {
+		// Add children as a collection of child
+		if (isset($info['children'])) {
+			$this->children = new Collection($info['children'], Page::class);
+			unset($info['children']);
+		} else {
+			$this->children = new Collection();
+		}
+
+		foreach ($info as $key => $value) {
 			// object with private fields casted to array will have keys prepended with \0
 			// https://php.net/manual/en/language.types.array.php#language.types.array.casting
 			if (!is_null($value) && $key[0] !== "\0") {
@@ -115,8 +90,25 @@ class Page extends Model
 			}
 		}
 
-		$this->content = $content;
-		$this->sections = $sections;
+		if (func_num_args() === 1) {
+			$this->content = '';
+			if (isset($info['content'])) {
+				$this->content = $info['content'];
+				unset($info['content']);
+			}
+
+			$this->sections = [];
+			if (isset($info['sections'])) {
+				$this->sections = array_map(function ($section) {
+					return new Section((array) $section);
+				}, (array) $info['sections']);
+
+				unset($info['sections']);
+			}
+		} else {
+			$this->content = $content;
+			$this->sections = $sections;
+		}
 	}
 
 	/**
@@ -153,8 +145,8 @@ class Page extends Model
 	 */
 	public function getMeta() {
 		$meta = [];
-		foreach ($this->toArray() as $key => $value) {
-			if ($key !== 'sections' && $key !== 'content' && $key !== 'children') {
+		foreach ($this->getVisibleFields() as $key => $value) {
+			if ($value !== null && $key !== 'sections' && $key !== 'content' && $key !== 'children') {
 				$meta[$key] = $value;
 			}
 		}
@@ -189,22 +181,12 @@ class Page extends Model
 	 * Add page child
 	 *
 	 * @param Page $child
+	 * @return Page
 	 */
 	public function addChild(Page $child) {
-		if (!$this->children) {
-			$this->children = [];
-		}
+		$this->children = $this->children->add($child);
 
-		$this->children[] = $child;
-	}
-
-	/**
-	 * Set page children
-	 *
-	 * @param array $children Array of Page
-	 */
-	public function setChildren(Pages $children) {
-		$this->children = $children;
+		return $this;
 	}
 
 	/**
@@ -213,36 +195,13 @@ class Page extends Model
 	 * @return bool
 	 */
 	public function hasChildren() {
-		return (bool) $this->children;
+		return !$this->children->isEmpty();
 	}
 
 	/**
 	 * Get page children
 	 *
-	 * @return array Array of Page
-	 */
-	public function getChildrenArray() {
-		if (!empty($this->children)) {
-			$cp = clone $this->children;
-			return $cp->toArray();
-		}
-	}
-
-	/**
-	 * Get page children
-	 *
-	 * @deprecated see getChildren
-	 */
-	public function getPagesChildren() {
-		if ($this->children) {
-			return $this->children;
-		}
-	}
-
-	/**
-	 * Get page children
-	 *
-	 * @return Pages Pages mapper
+	 * @return \Parvula\Collections\Collection Pages
 	 */
 	public function getChildren() {
 		if ($this->children) {
@@ -256,7 +215,7 @@ class Page extends Model
 	 * @return Page Parent Page
 	 */
 	public function getParent() {
-		return $this->getLazy('parent');
+		return $this->parent;
 	}
 
 	/**
@@ -297,37 +256,17 @@ class Page extends Model
 	}
 
 	/**
-	 * Add a lazy function
-	 *
-	 * @param string $key
-	 * @param Closure $closure
+	 * {@inheritDoc}
 	 */
-	public function addLazy($key, Closure $closure) {
-		$this->lazyFunctions[$key] = $closure;
-	}
+	public function toArray() {
+		$arr = parent::toArray();
 
-	/**
-	 * Resolve a given lazy function
-	 *
-	 * @param string $key
-	 * @return mixed Return the result of the lazy function
-	 */
-	public function getLazy($key) {
-		if ($this->hasLazy($key)) {
-			return $this->lazyFunctions[$key]();
-		}
+		// Convert each section to array
+		$arr['sections'] = array_map(function ($section) {
+			return $section->toArray();
+		}, $this->sections);
 
-		return false;
-	}
-
-	/**
-	 * Check if the given lazy function exists
-	 *
-	 * @param  string  $key
-	 * @return bool
-	 */
-	public function hasLazy($key) {
-		return isset($this->lazyFunctions, $this->lazyFunctions[$key]);
+		return $arr;
 	}
 
 	/**
@@ -336,6 +275,6 @@ class Page extends Model
 	 * @return string
 	 */
 	public function __tostring() {
-		return json_encode($this);
+		return json_encode($this->toArray());
 	}
 }

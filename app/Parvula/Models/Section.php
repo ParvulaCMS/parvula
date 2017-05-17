@@ -17,29 +17,31 @@ use Parvula\Exceptions\SectionException;
  */
 class Section extends Model
 {
-	/**
-	 * @var string Section's content
-	 */
-	public $content;
 
-	public static function sectionFactory(array $infos) {
-		$content = isset($infos['content']) ? $infos['content'] : '';
-		unset($infos['content']);
-		return new static($infos, $content);
-	}
+	/**
+	 * @var array
+	 */
+	protected $invisible = ['_id'];
 
 	/**
 	 * Constructor
 	 *
-	 * @param array|object $meta Page's metas
-	 * @param string $content (optional) Content
+	 * @param array|object $info Section information
+	 * @param \Closure|string $content (optional) Content
 	 */
-	public function __construct(array $meta = [], $content = '') {
-		foreach ($meta as $key => $val) {
-			$this->{$key} = $val;
+	public function __construct(array $info = [], $content = null) {
+		if (func_num_args() === 1) {
+			if (isset($info['content'])) {
+				$this->content = $info['content'];
+				unset($info['content']);
+			}
+		} else {
+			$this->content = $content;
 		}
 
-		$this->content = $content;
+		foreach ($info as $key => $val) {
+			$this->$key = $val;
+		}
 	}
 
 	/**
@@ -49,7 +51,7 @@ class Section extends Model
 	 */
 	public function getMeta() {
 		$meta = [];
-		foreach ($this as $key => $value) {
+		foreach ($this->getVisibleFields() as $key => $value) {
 			if ($key[0] !== '_' && $key !== 'content') {
 				$meta[$key] = $value;
 			}
@@ -63,6 +65,6 @@ class Section extends Model
 	 * @return string
 	 */
 	public function __tostring() {
-		return json_encode($this);
+		return json_encode($this->toArray());
 	}
 }

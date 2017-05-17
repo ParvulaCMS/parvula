@@ -9,6 +9,7 @@ $themes = $app['themes'];
 
 /**
  * @api {get} /themes List of themes
+ * @apiDescription Get the list of installed themes
  * @apiName Index Themes
  * @apiGroup Theme
  *
@@ -23,10 +24,11 @@ $themes = $app['themes'];
  */
 $this->get('', function ($req, $res) use ($themes) {
 	return $this->api->json($res, $themes->index());
-});
+})->setName('themes.index');
 
 /**
  * @api {get} /themes/:name Theme information
+ * @apiDescription Get a specific theme information
  * @apiName Get Theme
  * @apiGroup Theme
  *
@@ -47,14 +49,14 @@ $this->get('', function ($req, $res) use ($themes) {
  *     }
  */
 $this->get('/{name}', function ($req, $res, $args) use ($themes) {
-	if (false === $result = $themes->read($args['name'])) {
+	if (false === $result = $themes->get($args['name'])) {
 		return $this->api->json($res, [
 			'error' => 'ThemeNotFound'
 		], 404);
 	}
 
 	return $this->api->json($res, $result);
-});
+})->setName('themes.show');
 
  /**
   * @api {get} /themes/:name/:field/:subfield Specific Theme field/subfield
@@ -75,7 +77,7 @@ $this->get('/{name}', function ($req, $res, $args) use ($themes) {
   *     }
   */
 $this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($themes) {
-	$theme = $themes->read($args['name']);
+	$theme = $themes->get($args['name']);
 
 	$field = $args['field'];
 
@@ -87,7 +89,7 @@ $this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($th
 	}
 
 	if (!isset($args['subfield'])) {
-		return $this->api->json($res, $themes->read($args['name'])->{$field});
+		return $this->api->json($res, $themes->get($args['name'])->{$field});
 	}
 
 	$subfield = $args['subfield'];
@@ -99,5 +101,5 @@ $this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($th
 		], 404); // TODO bad args
 	}
 
-	return $this->api->json($res, $themes->read($args['name'])->{$field}->{$subfield});
-});
+	return $this->api->json($res, $themes->get($args['name'])->{$field}->{$subfield});
+})->setName('themes.show.field');

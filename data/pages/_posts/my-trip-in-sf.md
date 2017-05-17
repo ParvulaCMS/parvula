@@ -3,7 +3,7 @@ title: The story of my trip in San Francisco
 date: 02-03-2016
 ---
 
-![A cat](/picture_1.jpg) {.m-a-1 .pull-xs-right}
+![A cat](/picture_1.jpg) {.m-a-1 .float-right}
 
 # Pomponius quidem
 

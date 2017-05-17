@@ -1,14 +1,5 @@
-# Exclude some Parvula folders
-plugins/*
-static/*
-themes/*
-
-# but include default themes & plugins
-!plugins/Admin/
-!plugins/_components/
-!plugins/ComponentsLoader/
-!themes/galaxy/
-!themes/simple/
+# Include htaccess
+!.htaccess
 
 # Composer
 composer.lock
@@ -51,4 +42,4 @@ tests/_output
 tests/_support/_generated
 tests/unit
 tests/functional
-
+data/pages/test0*

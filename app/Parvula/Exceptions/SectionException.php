@@ -2,6 +2,8 @@
 
 namespace Parvula\Exceptions;
 
+use Exception;
+
 /**
  * PageException
  *
@@ -11,5 +13,5 @@ namespace Parvula\Exceptions;
  * @author Patrice Sa
  * @license MIT License
  */
-class SectionException extends \Exception {
+class SectionException extends Exception {
 }

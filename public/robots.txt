@@ -1,0 +1,10 @@
+User-agent: *
+# Assets
+
+# Directories
+Disallow: /files/
+Disallow: /plugins/
+Disallow: /themes/
+
+# Paths URI
+Disallow: /admin/

@@ -22,8 +22,7 @@ class DatabasePageRenderer implements PageRendererInterface {
 	 * @param ContentParserInterface $contentParser
 	 * @param array $options
 	 */
-	public function __construct(
-		ContentParserInterface $contentParser, $options = []) {
+	public function __construct(ContentParserInterface $contentParser, $options = []) {
 		$this->contentParser = $contentParser;
 		$this->options = $options;
 	}
@@ -48,18 +47,16 @@ class DatabasePageRenderer implements PageRendererInterface {
 	public function parse($page, array $options = []) {
 		$sections = [];
 		if (!empty($page->sections)) {
-			$sections = array_map(function ($section) {
-				$section->content = $this->contentParser->parse($section->content);
+			$page->sections = array_map(function ($section) {
+				if (isset($section->content)) {
+					$section->content = $this->contentParser->parse($section->content);
+				}
 				return $section;
 			}, (array) $page->sections);
-
-			unset($page->sections);
 		}
 
-		$content = $this->contentParser->parse($page->content);
-		unset($page->content);
+		$page->content = $this->contentParser->parse($page->content);
 
-		return new Page((array) $page, $content, $sections);
+		return new Page((array) $page);
 	}
-
 }

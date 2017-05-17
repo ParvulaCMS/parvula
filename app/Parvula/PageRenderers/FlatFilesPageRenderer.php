@@ -65,7 +65,10 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	 * @param array $options
 	 */
 	public function __construct(
-		ParserInterface $metadataParser, ContentParserInterface $contentParser, $options = []) {
+		ParserInterface $metadataParser,
+		ContentParserInterface $contentParser,
+		$options = []
+	) {
 		$this->metadataParser = $metadataParser;
 		$this->contentParser = $contentParser;
 
@@ -110,7 +113,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		$meta .= PHP_EOL . $delimiter . PHP_EOL;
 
 		// Add the content
-		$content = trim($page->getContent());
+		$content = trim($page->content);
 
 		// Add sections (if exist)
 		if (($sections = $page->getSections())) {
@@ -130,10 +133,9 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	 *
 	 * @param mixed $data Data using to create the page
 	 * @param array ($options) default page field(s)
-	 * @param bool ($parseContent)
 	 * @return Page
 	 */
-	public function parse($data, array $options = [], $parseContent = true) {
+	public function parse($data, array $options = []) {
 		$pageTokens = preg_split($this->delimiterMatcher, ltrim($data), 2);
 		$metaRaw = trim($pageTokens[0]);
 
@@ -144,7 +146,11 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 		if (!empty($pageTokens[1])) {
 			// Split into sections
 			$content = preg_split(
-				$this->sectionMatcher, $pageTokens[1] . ' ', -1, PREG_SPLIT_DELIM_CAPTURE);
+				$this->sectionMatcher,
+				$pageTokens[1] . ' ',
+				-1,
+				PREG_SPLIT_DELIM_CAPTURE
+			);
 
 			if (($len = count($content)) > 1) {
 				for ($i = 1; $i < $len; ++$i) {
@@ -157,20 +163,23 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 							$sectionMeta += (array) $this->metadataParser->decode($lines[1]);
 						}
 					} else {
-						$val = $content[$i];
-						if ($parseContent) {
-							$val = $this->contentParser->parse($val);
-						}
-						$sections[] = new Section($sectionMeta, $val);
+						$sectionContent = $content[$i];
+
+						$sectionContent = function () use ($sectionContent) {
+							return $this->contentParser->parse($sectionContent);
+						};
+
+						$sections[] = new Section($sectionMeta, $sectionContent);
 					}
 				}
 			}
 
 			// First section is always the main content
 			$content = $content[0];
-			if ($parseContent) {
-				$content = $this->contentParser->parse($content);
-			}
+			$contentParser = $this->contentParser;
+			$content = function () use ($content, $contentParser) {
+				return $contentParser->parse($content);
+			};
 		}
 
 		// Append $options to $meta
@@ -178,5 +187,4 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 		return new Page($meta, $content, $sections);
 	}
-
 }

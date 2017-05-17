@@ -13,8 +13,7 @@ use Parvula\Exceptions\BadObjectCallException;
  * @author Fabien Sa
  * @license MIT License
  */
-class PluginMediator
-{
+class PluginMediator {
 	/**
 	 * @var array Plugins container
 	 */
@@ -25,7 +24,6 @@ class PluginMediator
 	 *
 	 * @param array $plugins
 	 * @throws BadObjectCallException
-	 * @return
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {
@@ -57,7 +55,7 @@ class PluginMediator
 		$event = 'on' . ucfirst($event);
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $event)) {
-				$this->callFunctionArray($plugin, $event, $args);
+				$plugin->$event(...$args);
 			}
 		}
 	}
@@ -70,22 +68,5 @@ class PluginMediator
 	 */
 	public function &getPlugin($className) {
 		return $this->plugins[$className];
-	}
-
-	/**
-	 * Call function (alias for call_user_func_array)
-	 *
-	 * @param Object $obj Object
-	 * @param callable|string $fun Function
-	 * @param array $args Arguments
-	 */
-	private function callFunctionArray($obj, $fun, array $args) {
-		switch (count($args)) {
-			case 0: $obj->{$fun}(); break;
-			case 1: $obj->{$fun}($args[0]); break;
-			case 2: $obj->{$fun}($args[0], $args[1]); break;
-			case 3: $obj->{$fun}($args[0], $args[1], $args[2]); break;
-			default: call_user_func_array([$obj, $fun], $args);  break;
-		}
 	}
 }
