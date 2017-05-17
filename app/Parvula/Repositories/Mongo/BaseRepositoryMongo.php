@@ -6,6 +6,9 @@ use Parvula\Repositories\BaseRepository;
 
 abstract class BaseRepositoryMongo extends BaseRepository {
 
+	/**
+	 * @var MongoDB\Collection
+	 */
 	protected $collection;
 
 	/**

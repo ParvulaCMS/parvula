@@ -12,7 +12,7 @@ logErrors: false
 
 # Database type [flatfiles, mongodb]
 # See database.yml to configure each database
-database: flatfiles
+database: mongodb
 
 # List of disabled plugins
 disabledPlugins: []

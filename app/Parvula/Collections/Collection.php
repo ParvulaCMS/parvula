@@ -100,7 +100,8 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 
 		$transformedItems = [];
 		foreach ($this as $item) {
-			if ($model !== null) {
+			// Do not re create the same model if it's already done
+			if ($model !== null && !$item instanceof $model) {
 				$transformedItems[] = $fun(new $model((array) $item));
 			} else {
 				$transformedItems[] = $fun($item);
