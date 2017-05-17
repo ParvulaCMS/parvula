@@ -63,9 +63,9 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	}
 
 	public function all($fields = []) {
-		$col = new MongoCollection($this->collection, Page::class);
-
-		return $col;
+		return new MongoCollection($this->collection, Page::class, $fields, [
+			'projection' => ['_id' => 0]
+		]);
 	}
 
 	/**
@@ -233,6 +233,8 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 			$exceptions = [];
 		}
 
-		return new Collection($this->collection->distinct('slug', ['hidden' => ['$nin' => $exceptions]]));
+		return new Collection($this->collection->distinct('slug', [
+			'hidden' => ['$nin' => $exceptions]
+		]));
 	}
 }
