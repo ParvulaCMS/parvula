@@ -69,7 +69,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @return \Parvula\Collections\Collection New collection
 	 */
 	public function filter($field, array $values) {
-		$filteredItems = array_filter($this->items, function ($item) use ($field, $values) {
+		$filteredItems = array_filter((array) $this->items, function ($item) use ($field, $values) {
 			if (isset($item->$field)) {
 				return in_array($item->$field, $values, true);
 			}
