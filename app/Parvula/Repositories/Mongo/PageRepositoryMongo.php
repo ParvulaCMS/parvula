@@ -63,8 +63,20 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	}
 
 	public function all($fields = []) {
-		return new MongoCollection($this->collection, Page::class, $fields, [
-			'projection' => ['_id' => 0]
+		// Aggregate to add children
+		return new MongoCollection($this->collection, Page::class, [
+			'$$aggregate' => [
+				[
+					'$lookup' => [
+						'from' => 'pages',
+						'localField' => 'slug',
+						'foreignField' => 'parent',
+						'as' => 'children'
+					],
+				]
+			]
+		], [
+			'projection' => ['_id' => 0],
 		]);
 	}
 
