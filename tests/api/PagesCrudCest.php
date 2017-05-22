@@ -118,11 +118,53 @@ class PagesCrudCest extends APITest
 	public function indexPages(APITester $I) {
 		$I->sendGET('/pages');
 		$I->seeResponseCodeIs(200);
+
+		// Index should contains slug and title of pages
+		$I->seeResponseContainsJson([
+			[
+				'slug' => $this->page1['slug'],
+				'title' => $this->page1['title'],
+			],
+			[
+				'slug' => $this->page2['slug'],
+				'title' => $this->page2['title'],
+			],
+		]);
+
+		// Index should contains slug and title of children too
+		$I->seeResponseContainsJson([
+			[
+				'slug' => $this->page2['slug'],
+				'title' => $this->page2['title'],
+				'children' => [
+					'slug' => $this->page2child1['slug'],
+					'title' => $this->page2child1['title'],
+				]
+			],
+		]);
+
 		// Should be deeper than a flat array
 		$I->seeResponseJsonMatchesJsonPath('$.[*]');
 		$I->seeResponseJsonMatchesJsonPath('$.[*].*');
 		$I->seeResponseJsonMatchesJsonPath('$.[0].slug');
 		$I->seeResponseJsonMatchesJsonPath('$.[0].title');
+
+		// Link to content
+		$I->seeResponseJsonMatchesJsonPath('$.[0].content');
+		$I->seeResponseJsonMatchesJsonPath('$.[0].content.href');
+
+		// Check if children exist
+		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].slug');
+		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[*].title');
+
+		// Link to content for children too
+		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].content');
+		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].content.href');
+
+		// Next page should not have any children
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children.[*].children');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children.[*].slug');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children');
 	}
 
 	public function updateAPage(APITester $I) {
@@ -132,12 +174,12 @@ class PagesCrudCest extends APITest
 	}
 
 	public function testUpdatedPage(APITester $I) {
-		$slug = $this->page1['slug'];
+		$slug = $this->page1Update['slug'];
 		$I->sendGET('/pages/' . $slug . '?raw');
 		$I->seeResponseCodeIs(200);
 
 		$I->seeResponseContainsJson([
-			'slug' => $this->page1Update['slug'],
+			'slug' => $slug,
 			'title' => $this->page1Update['title']
 		]);
 
