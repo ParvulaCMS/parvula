@@ -2,4 +2,4 @@ languages:
     PHP: true
 exclude_paths:
     - "tests/*"
-    - "plugins/*"
+    - "public/plugins/*"
