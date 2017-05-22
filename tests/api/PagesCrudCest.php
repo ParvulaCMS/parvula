@@ -144,6 +144,15 @@ class PagesCrudCest extends APITest
 			],
 		]);
 
+		// First page should not have children
+		$I->dontSeeResponseContainsJson([
+			[
+				'slug' => $this->page1['slug'],
+				'title' => $this->page1['title'],
+				'children' => []
+			],
+		]);
+
 		// Should be deeper than a flat array
 		$I->seeResponseJsonMatchesJsonPath('$.[*]');
 		$I->seeResponseJsonMatchesJsonPath('$.[*].*');
@@ -153,19 +162,6 @@ class PagesCrudCest extends APITest
 		// Link to content
 		$I->seeResponseJsonMatchesJsonPath('$.[0].content');
 		$I->seeResponseJsonMatchesJsonPath('$.[0].content.href');
-
-		// Check if children exist
-		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].slug');
-		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].title');
-
-		// Link to content for children too
-		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].content');
-		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].content.href');
-
-		// Next page should not have any children
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children.[*].children');
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children.[*].slug');
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children');
 	}
 
 	public function updateAPage(APITester $I) {
