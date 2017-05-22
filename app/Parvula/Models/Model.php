@@ -32,8 +32,7 @@ abstract class Model implements ArrayableInterface {
 		foreach ($arr as $key => $value) {
 			if ($value instanceof Model) {
 				$arr[$key] = $value->toArray($removeNull);
-			}
-			else if ($value instanceof Closure) {
+			} elseif ($value instanceof Closure) {
 				$arr[$key] = $value();
 			}
 		}

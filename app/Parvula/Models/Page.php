@@ -76,7 +76,7 @@ class Page extends Model
 
 		// Add children as a collection of child
 		if (isset($info['children'])) {
-			$this->children = new Collection($info['children'], Page::class);
+			$this->children = new Collection($info['children'], static::class);
 			unset($info['children']);
 		} else {
 			$this->children = new Collection();

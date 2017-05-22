@@ -16,7 +16,7 @@ class RoboFile extends Tasks {
 			->run();
 
 		// Run unit tests
-		$this->taskCodecept()
+		return $this->taskCodecept()
 			->run();
 	}
 }
