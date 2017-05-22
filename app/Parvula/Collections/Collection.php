@@ -117,7 +117,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @return bool
 	 */
 	public function isEmpty() {
-		return $this->items === [];
+		return (array) $this->items === [];
 	}
 
 	/**
