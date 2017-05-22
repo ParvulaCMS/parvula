@@ -43,7 +43,7 @@ class MongoCollection extends Collection {
 
 		$this->options['sort'][$field] = $ascending ? 1 : -1;
 
-		return $this->clone();
+		return $this->cloneCollection();
 	}
 
 	/**
@@ -53,7 +53,7 @@ class MongoCollection extends Collection {
 	public function filter($field, array $values = [true]) {
 		$this->filter[$field] = ['$in' => $values];
 
-		return $this->clone();
+		return $this->cloneCollection();
 	}
 
 	/**
@@ -88,7 +88,7 @@ class MongoCollection extends Collection {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function clone() {
+	protected function cloneCollection() {
 		return new static($this->collection, $this->model, $this->filter, $this->options);
 	}
 }

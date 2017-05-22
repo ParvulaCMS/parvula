@@ -199,7 +199,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	/**
 	 * @return \Parvula\Collections\Collection
 	 */
-	protected function clone() {
+	protected function cloneCollection() {
 		return new static($this->items, $this->model);
 	}
 }

@@ -103,7 +103,7 @@ abstract class Model implements ArrayableInterface {
 	 */
 	public function __get($name) {
 		if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
-			return ($this->lazy[$name])();
+			return $this->lazy[$name]();
 		}
 	}
 
