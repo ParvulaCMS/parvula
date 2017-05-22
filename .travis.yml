@@ -3,7 +3,10 @@ php:
   - '5.6'
   - '7.0'
   - '7.1'
-  - nightly
 
-before_script: composer require codeception/codeception flow/jsonpath
-script: composer serve & vendor/bin/codecept run
+before_script:
+  - composer require codeception/codeception flow/jsonpath
+  - wget http://robo.li/robo.phar
+  - chmod +x robo.phar
+
+script: ./robo.phar test
