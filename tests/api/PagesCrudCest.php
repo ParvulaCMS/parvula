@@ -25,6 +25,7 @@ class PagesCrudCest extends APITest
 		$this->page2child1 = [
 			'slug'    => $page2Slug . '/child01',
 			'title'   => 'A Child',
+			'parent'  => $page2Slug,
 			'content' => 'some other content'
 		];
 
@@ -154,17 +155,17 @@ class PagesCrudCest extends APITest
 		$I->seeResponseJsonMatchesJsonPath('$.[0].content.href');
 
 		// Check if children exist
-		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].slug');
-		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[*].title');
+		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].slug');
+		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].title');
 
 		// Link to content for children too
-		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].content');
-		$I->seeResponseJsonMatchesJsonPath('$.[0].children.[0].content.href');
+		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].content');
+		$I->seeResponseJsonMatchesJsonPath('$.[1].children.[0].content.href');
 
 		// Next page should not have any children
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children.[*].children');
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children.[*].slug');
-		$I->dontSeeResponseJsonMatchesJsonPath('$.[1].children');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children.[*].children');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children.[*].slug');
+		$I->dontSeeResponseJsonMatchesJsonPath('$.[0].children');
 	}
 
 	public function updateAPage(APITester $I) {
