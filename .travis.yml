@@ -4,5 +4,6 @@ php:
   - '7.0'
   - '7.1'
   - nightly
+
 before_script: composer require codeception/codeception flow/jsonpath
-script: vendor/bin/codecept run
+script: composer serve & vendor/bin/codecept run
