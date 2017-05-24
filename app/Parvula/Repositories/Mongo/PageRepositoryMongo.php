@@ -64,7 +64,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 
 	public function all($fields = []) {
 		// Aggregate to add children
-		return new MongoCollection($this->collection, Page::class, [
+		return new MongoCollection($this->collection, $this->model(), [
 			'$$aggregate' => [
 				[
 					'$lookup' => [

@@ -2,6 +2,7 @@
 
 namespace Parvula\Repositories\Mongo;
 
+use Parvula\Collections\MongoCollection;
 use Parvula\Repositories\BaseRepository;
 
 abstract class BaseRepositoryMongo extends BaseRepository {
@@ -40,13 +41,22 @@ abstract class BaseRepositoryMongo extends BaseRepository {
 	}
 
 	/**
+	 * Find one by Mongo _id
+	 *
+	 * @return Model
+	 */
+	public function find($id) {
+		return $this->findBy('_id', $id);
+	}
+
+	/**
 	 * @return Collection Collection of Model
 	 */
 	public function all() {
-	// 	$modelClassName = $this->model();
-
-	// 	return $this->data->map(function ($model) use ($modelClassName) {
-	// 		return new $modelClassName($model);
-	// 	});
+		$modelClassName = $this->model();
+		return (new MongoCollection($this->collection, $this->model()))
+			->map(function ($model) use ($modelClassName) {
+				return new $modelClassName((array) $model);
+			});
 	}
 }

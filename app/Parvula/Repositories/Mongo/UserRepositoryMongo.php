@@ -5,35 +5,25 @@ namespace Parvula\Repositories\Mongo;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
+use MongoDB\Collection as MongoCollectionBase;
 
 class UserRepositoryMongo extends BaseRepositoryMongo
 {
-	/**
-	 * @var array Array of User
-	 */
-	private $parser;
 
 	/**
-	 * @var array User[]
-	 */
-	protected $data;
-
-	/**
+	 * Constructor
+	 *
 	 * @param Collection $collection
 	 */
-	public function __construct($collection) {
+	public function __construct(MongoCollectionBase $collection) {
 		$this->collection = $collection;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function model() {
 		return User::class;
-	}
-
-	private function exists($username) {
-		if ($this->read($username)) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -52,7 +42,7 @@ class UserRepositoryMongo extends BaseRepositoryMongo
 	 * @throws Exception If the ressource does not exists
 	 * @return User|bool The user or false if user not found
 	 */
-	public function read($username) {
+	public function find($username) {
 		if ($username === null) {
 			return false;
 		}
@@ -73,7 +63,7 @@ class UserRepositoryMongo extends BaseRepositoryMongo
 	 * @param mixed $data Data
 	 * @return bool
 	 */
-	public function update($username, $data) {
+	public function update($username, array $data) {
 		return false;
 	}
 
@@ -81,11 +71,10 @@ class UserRepositoryMongo extends BaseRepositoryMongo
 	 * Create @next
 	 *
 	 * @param User $user User
-	 * @throws
 	 * @return bool
 	 */
-	public function create($user) {
-		if (get_class($user) !== 'Parvula\Models\User') {
+	public function create(array $user) {
+		if (get_class($user) !== $this->model()) {
 			#throw ''; # TODO
 			return false;
 		}
