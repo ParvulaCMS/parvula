@@ -88,20 +88,21 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return Page|bool Return the selected page if exists, false if not
 	 */
 	public function find($slug, $fields = []) {
-		$page = $this->findBy('slug', $slug);
-		unset($page->_id);
+		$bsonData = $this->collection->findOne(['slug' => $slug]);
+		unset($bsonData->_id);
 
-		if (!$page) {
+		if (!$bsonData) {
 			return false;
 		}
 
 		// Add children
-		$children = $this->findAllBy('parent', $slug);
-		foreach ($children as $child) {
-			$page->children[] = $this->renderer->parse($child);
+		$childrenCol = $this->collection->find(['parent' => $slug]);
+
+		foreach ($childrenCol as $child) {
+			$bsonData->children[] = $this->renderer->parse($child);
 		}
 
-		return $this->renderer->parse($page);
+		return $this->renderer->parse($bsonData);
 	}
 
 	/**

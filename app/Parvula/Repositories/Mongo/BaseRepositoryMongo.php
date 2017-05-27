@@ -8,36 +8,44 @@ use Parvula\Repositories\BaseRepository;
 abstract class BaseRepositoryMongo extends BaseRepository {
 
 	/**
-	 * @var MongoDB\Collection
+	 * @var \MongoDB\Collection
 	 */
 	protected $collection;
 
 	/**
 	 * Find by given field
 	 *
-	 * @return Model|boolean
+	 * @return \Parvula\Models\Model|boolean
 	 */
 	public function findBy($attr, $value) {
-		$model = $this->collection->findOne([$attr => $value]);
-		if (empty($model)) {
+		$bsonData = $this->collection->findOne([$attr => $value]);
+		if (empty($bsonData)) {
 			return false;
 		}
 
-		return $model;
+
+		$modelClass = $this->model();
+		return new $modelClass((array) $bsonData);
 	}
 
 	/**
 	 * Find all by given field
 	 *
-	 * @return array|boolean
+	 * @return array|boolean List of Model
 	 */
 	public function findAllBy($attr, $value) {
-		$model = $this->collection->find([$attr => $value]);
-		if (empty($model)) {
+		$bsonDataCol = $this->collection->find([$attr => $value]);
+		if (empty($bsonDataCol)) {
 			return false;
 		}
 
-		return $model;
+		$modelClass = $this->model();
+		$acc = [];
+		foreach ($bsonDataCol as $data) {
+			$acc[] = new $modelClass((array) $data);
+		}
+
+		return $acc;
 	}
 
 	/**
@@ -54,9 +62,11 @@ abstract class BaseRepositoryMongo extends BaseRepository {
 	 */
 	public function all() {
 		$modelClassName = $this->model();
-		return (new MongoCollection($this->collection, $this->model()))
-			->map(function ($model) use ($modelClassName) {
-				return new $modelClassName((array) $model);
+		return (new MongoCollection($this->collection, $this->model(), [
+			// 'projection' => ['_id' => 0]
+		]))
+			->map(function ($bsonData) use ($modelClassName) {
+				return new $modelClassName((array) $bsonData);
 			});
 	}
 }

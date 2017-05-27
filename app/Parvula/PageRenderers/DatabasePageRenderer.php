@@ -40,7 +40,7 @@ class DatabasePageRenderer implements PageRendererInterface {
 	/**
 	 * Decode string data to create a Page object
 	 *
-	 * @param Page $page Page using to create the page
+	 * @param \MongoDB\Model\BSONDocument $page Page using to create the page
 	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */

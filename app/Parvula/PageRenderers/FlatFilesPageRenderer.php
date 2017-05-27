@@ -131,7 +131,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	/**
 	 * Decode string data to create a Page object
 	 *
-	 * @param mixed $data Data using to create the page
+	 * @param string $data Data using to create the page
 	 * @param array ($options) default page field(s)
 	 * @return Page
 	 */
