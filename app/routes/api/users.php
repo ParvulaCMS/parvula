@@ -4,8 +4,7 @@ namespace Parvula;
 
 use Exception;
 use Parvula\Exceptions\IOException;
-
-$users = $app['users'];
+use Parvula\Models\User;
 
 /**
  * @api {get} /users List of users usernames
@@ -22,16 +21,10 @@ $users = $app['users'];
  *       "pat1987"
  *     ]
  */
-$this->get('', function ($req, $res) use ($users) {
-	$accumulator = [];
-	foreach ($users->all() as $user) {
-		$accumulator[] = $user->toArray();
-	}
-	return $this->api->json($res, $accumulator);
-
-	// return $this->api->json($res, $users->all()->map(function ($u) {
-	// 		return $u->toArray();
-	// }));
+$this->get('', function ($req, $res) {
+	return $this->api->json($res, app('users')->all()->map(function (User $u) {
+			return $u->toArray();
+	}));
 })->setName('users.index');
 
 /**
@@ -59,8 +52,8 @@ $this->get('', function ($req, $res) use ($users) {
  *       "message": "User's username was not found"
  *     }
  */
-$this->get('/{username:\w+}', function ($req, $res, $args) use ($users) {
-	if (false !== $user = $users->findBy('username', $args['username'])) {
+$this->get('/{username:\w+}', function ($req, $res, $args) {
+	if (false !== $user = app('users')->findBy('username', $args['username'])) {
 		return $this->api->json($res, $user->toArray());
 	}
 
