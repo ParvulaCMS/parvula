@@ -81,7 +81,9 @@ $this->get('/{name}/{field}', function ($req, $res, $args) {
  * @apiParam {string} Config content
  *
  * @apiParamExample Request-Example:
- *     myfield=My new value&other=123
+ *     {
+ *       "field": "value"
+ *     }
  *
  * @apiSuccess (201) ConfigCreate
  * @apiError (409) ConfigAlreadyExists
@@ -97,9 +99,8 @@ $this->post('/{name}', function ($req, $res, $args) {
 		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
-	$path = configPath($args['name']); // TODO
-
 	$config = (array) $parsedBody;
+	$path = _CONFIG_ . basename($args['name'] . '.yml'); // TODO not force yml
 
 	try {
 		app('fileParser')->write($path, $config);
@@ -184,7 +185,7 @@ $this->patch('/{name}', function ($req, $res, $args) {
 
 		$newConfig = (json_decode($patchedDocument, true));
 
-		$confIO->write($path, $newConfig);
+		app('fileParser')->write($path, $newConfig);
 
 		return $res->withStatus(204);
 	} catch (InvalidPatchDocumentJsonException $e) {

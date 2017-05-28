@@ -26,6 +26,30 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseJsonMatchesJsonPath('$.theme');
 	}
 
+	public function createConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/config/newConfigTest', [
+			'foo' => 'bar'
+		]);
+		$I->seeResponseCodeIs(201);
+	}
+
+	public function showNewConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/newConfigTest');
+		$I->seeResponseCodeIs(200);
+		$I->seeResponseJsonMatchesJsonPath('$.foo');
+		$I->seeResponseContainsJson([
+			'foo' => 'bar'
+		]);
+	}
+
+	public function deleteNewConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendDELETE('/config/newConfigTest');
+		$I->seeResponseCodeIs(204);
+	}
+
 	// public function updateConfig(APITester $I) {
 	// 	$I->amBearerAuthenticated($this->token);
 	// 	$I->sendPUT('/config/site', [
