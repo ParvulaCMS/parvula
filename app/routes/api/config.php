@@ -212,21 +212,41 @@ $this->patch('/{name}', function ($req, $res, $args) {
 	}
 })->setName('configs.patch');
 
+/*
+ * @api {delete} /page/:name Delete a config.
+ * @apiName Delete config
+ * @apiGroup Config
+ *
+ * @apiSuccess (204) ConfigDeleted
+ * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
+ * @apiError (404) ConfigCannotBeDeleted
+ * @apiError (404) ConfigCannotBeDeleted
+ */
 $this->delete('/{name}', function ($req, $res, $args) use ($coreConfigs) {
 	$file = urldecode($args['name']);
 
 	if (in_array($file, $coreConfigs)) {
 		return $this->api->json($res, [
-			'error' => 'CannotBeDeleted',
+			'error' => 'ConfigCannotBeDeleted',
 			'message' => 'Core configurations cannot be deleted'
 		], 404);
 	}
 
+	$fs = new Files(_CONFIG_);
+	$filename = $file . '.yml';
+
+	if (!$fs->exists($filename)) {
+		return $this->api->json($res, [
+			'error' => 'ConfigDoesNotExists',
+			'message' => 'Configuration cannot be found'
+		], 404);
+	}
+
 	try {
-		$result = (new Files(_CONFIG_))->delete($file . '.yml');
+		$result = (new Files(_CONFIG_))->delete($filename);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
-			'error' => 'CannotBeDeleted',
+			'error' => 'ConfigCannotBeDeleted',
 			'message' => $e->getMessage()
 		], 404);
 	}

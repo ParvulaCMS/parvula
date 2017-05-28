@@ -62,6 +62,12 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseCodeIs(404);
 	}
 
+	public function shouldNotBePossibleToDeleteInexistingConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendDELETE('/config/foobartest');
+		$I->seeResponseCodeIs(404);
+	}
+
 	// public function updateConfig(APITester $I) {
 	// 	$I->amBearerAuthenticated($this->token);
 	// 	$I->sendPUT('/config/site', [
