@@ -2,6 +2,7 @@
 
 namespace Parvula;
 
+use Parvula\FilesSystem as Files;
 use Rs\Json\Patch;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
@@ -9,7 +10,12 @@ use Rs\Json\Patch\InvalidOperationException;
 
 // @ALPHA
 
-$confIO = $app['fileParser'];
+$coreConfigs = [
+	'database',
+	'site',
+	'system',
+	'parvula',
+];
 
 /**
  * Return config path if the config file exists
@@ -205,3 +211,24 @@ $this->patch('/{name}', function ($req, $res, $args) {
 		], 400);
 	}
 })->setName('configs.patch');
+
+$this->delete('/{name}', function ($req, $res, $args) use ($coreConfigs) {
+	$file = urldecode($args['name']);
+
+	if (in_array($file, $coreConfigs)) {
+		return $this->api->json($res, [
+			'error' => 'CannotBeDeleted',
+			'message' => 'Core configurations cannot be deleted'
+		], 404);
+	}
+
+	try {
+		$result = (new Files(_CONFIG_))->delete($file . '.yml');
+	} catch (Exception $e) {
+		return $this->api->json($res, [
+			'error' => 'CannotBeDeleted',
+			'message' => $e->getMessage()
+		], 404);
+	}
+	return $res->withStatus(204);
+});

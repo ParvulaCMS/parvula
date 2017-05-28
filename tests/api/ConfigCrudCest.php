@@ -50,6 +50,18 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseCodeIs(204);
 	}
 
+	public function shouldNotBePossibleToDeleteCoreConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendDELETE('/config/system');
+		$I->seeResponseCodeIs(404);
+	}
+
+	public function shouldNotBePossibleToDeleteCoreConfig2(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendDELETE('/config/database');
+		$I->seeResponseCodeIs(404);
+	}
+
 	// public function updateConfig(APITester $I) {
 	// 	$I->amBearerAuthenticated($this->token);
 	// 	$I->sendPUT('/config/site', [
