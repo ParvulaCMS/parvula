@@ -6,8 +6,6 @@ use Exception;
 use Parvula\Exceptions\IOException;
 use Parvula\Transformers\PageHeadTransformer;
 
-$pages = $app['pages'];
-
 /**
  * @api {get} /pages Get all pages
  * @apiName Get all pages
@@ -25,7 +23,9 @@ $pages = $app['pages'];
  *       {"title": "about me", "slug": "about", "content": "..."}
  *     ]
  */
-$this->get('', function ($req, $res) use ($pages) {
+$this->get('', function ($req, $res) {
+	$pages = app('pages');
+
 	// List of pages. Array<string> of slugs
 	if (isset($req->getQueryParams()['index'])) {
 		return $this->api->json($res, $pages->index());
@@ -68,9 +68,11 @@ $this->get('', function ($req, $res) use ($pages) {
  *       "message": "This page does not exists"
  *     }
  */
-$this->get('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
+$this->get('/{slug:.+}', function ($req, $res, $args) {
+	$pages = app('pages');
+
 	if (isset($req->getQueryParams()['raw'])) {
-		$pages->setRenderer($app['pageRendererRAW']);
+		$pages->setRenderer(app('pageRendererRAW'));
 	}
 
 	if (false === $result = $pages->find($args['slug'])) {

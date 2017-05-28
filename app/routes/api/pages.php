@@ -11,8 +11,6 @@ use Rs\Json\Patch\InvalidOperationException;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
 
-$pages = $app['pages'];
-
 /**
  * @api {post} /pages Create a new page
  * @apiDescription Page **must not** exists
@@ -51,7 +49,7 @@ $pages = $app['pages'];
  *     }
  */
 // TODO 'Location' header with link to /pages/{id} containing new ID.
-$this->post('', function ($req, $res) use ($pages) {
+$this->post('', function ($req, $res) {
 	$parsedBody = $req->getParsedBody();
 
 	if (!isset($parsedBody['slug'], $parsedBody['title'])) {
@@ -61,6 +59,7 @@ $this->post('', function ($req, $res) use ($pages) {
 		], 400);
 	}
 
+	$pages = app('pages');
 	if ($pages->find($parsedBody['slug'])) {
 		return $this->api->json($res, [
 			'error' => 'PageAlreadyExists',
@@ -114,7 +113,7 @@ $this->map(['PUT', 'DELETE'], '', function ($req, $res) {
  * @apiError (400) BadField This page need at least a `slug` and a `title`
  * @apiError (404) PageException If page does not exists or exception
  */
-$this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+$this->put('/{slug:.+}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
 
 	if (!isset($parsedBody['slug'], $parsedBody['title'])) {
@@ -125,7 +124,7 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
 	}
 
 	try {
-		$pages->update($args['slug'], (array) $parsedBody);
+		app('pages')->update($args['slug'], (array) $parsedBody);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'PageException',
@@ -150,13 +149,14 @@ $this->put('/{slug:.+}', function ($req, $res, $args) use ($pages) {
  * @apiError (404) PageException
  * @apiError (500) ServerException
  */
-$this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
+$this->patch('/{slug:.+}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
 	$bodyJson = json_encode($req->getParsedBody());
 
 	$slug = $args['slug'];
+	$pages = app('pages');
 	if (!isset($req->getQueryParams()['parse'])) {
-		$pages->setRenderer($app['pageRendererRAW']);
+		$pages->setRenderer(app('pageRendererRAW'));
 	}
 	$page = $pages->find($slug);
 
@@ -209,7 +209,8 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) use ($app, $pages) {
  * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
  * @apiError (404) PageException If not ok or exception
  */
-$this->delete('/{slug:.+}', function ($req, $res, $args) use ($pages) {
+$this->delete('/{slug:.+}', function ($req, $res, $args) {
+	$pages = app('pages');
 	$page = $pages->find($args['slug']);
 
 	if (!$page) {

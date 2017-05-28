@@ -1,4 +1,5 @@
 <?php
+
 namespace Parvula;
 
 use Rs\Json\Patch;
@@ -34,12 +35,12 @@ function configPath($name) {
  * @apiSuccess (200) {mixed} Config object
  * @apiError (404) ConfigDoesNotExists
  */
-$this->get('/{name}', function ($req, $res, $args) use ($confIO) {
+$this->get('/{name}', function ($req, $res, $args) {
 	if (!configPath($args['name'])) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	return $this->api->json($res, $confIO->read(configPath($args['name'])));
+	return $this->api->json($res, app('fileParser')->read(configPath($args['name'])));
 })->setName('configs.show');
 
 /**
@@ -54,12 +55,12 @@ $this->get('/{name}', function ($req, $res, $args) use ($confIO) {
  * @apiError (404) ConfigDoesNotExists Config does not exists
  * @apiError (404) FieldError The field :field does not exists
  */
-$this->get('/{name}/{field}', function ($req, $res, $args) use ($confIO) {
+$this->get('/{name}/{field}', function ($req, $res, $args) {
 	if (!$configName = configPath($args['name'])) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	$config = (object) $confIO->read($configName);
+	$config = (object) app('fileParser')->read($configName);
 
 	$field = $args['field'];
 	if (!isset($config->{$field})) {
@@ -89,7 +90,7 @@ $this->get('/{name}/{field}', function ($req, $res, $args) use ($confIO) {
  * @apiSuccessExample ConfigCreated
  *     HTTP/1.1 201 No Content
  */
-$this->post('/{name}', function ($req, $res, $args) use ($confIO) {
+$this->post('/{name}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
 
 	if (configPath($args['name'])) {
@@ -101,7 +102,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
 	$config = (array) $parsedBody;
 
 	try {
-		$confIO->write($path, $config);
+		app('fileParser')->write($path, $config);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'ConfigException',
@@ -119,7 +120,7 @@ $this->post('/{name}', function ($req, $res, $args) use ($confIO) {
  * @apiName Update config
  * @apiGroup Config
  */
-$this->put('/{name}', function ($req, $res, $args) use ($confIO) {
+$this->put('/{name}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
 
 	// Config must exists
@@ -132,7 +133,7 @@ $this->put('/{name}', function ($req, $res, $args) use ($confIO) {
 	$config = (array) $parsedBody;
 
 	try {
-		$confIO->write($path, $config);
+		app('fileParser')->write($path, $config);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'ConfigException',
@@ -162,7 +163,7 @@ $this->put('/{name}', function ($req, $res, $args) use ($confIO) {
  * @apiSuccessExample ConfigPatched
  *     HTTP/1.1 204 No Content
  */
-$this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
+$this->patch('/{name}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
 	$bodyJson = json_encode($req->getParsedBody());
 	$name = $args['name'];
@@ -174,7 +175,7 @@ $this->patch('/{name}', function ($req, $res, $args) use ($confIO) {
 		], 404);
 	}
 
-	$configJson = json_encode((object) $confIO->read(configPath($name)));
+	$configJson = json_encode((object) app('fileParser')->read(configPath($name)));
 
 	try {
 		$patch = new Patch($configJson, $bodyJson);

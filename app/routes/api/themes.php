@@ -5,8 +5,6 @@ namespace Parvula;
 use Exception;
 use Parvula\Exceptions\IOException;
 
-$themes = $app['themes'];
-
 /**
  * @api {get} /themes List of themes
  * @apiDescription Get the list of installed themes
@@ -22,8 +20,8 @@ $themes = $app['themes'];
  *       "othertheme": {...}
  *     }
  */
-$this->get('', function ($req, $res) use ($themes) {
-	return $this->api->json($res, $themes->index());
+$this->get('', function ($req, $res) {
+	return $this->api->json($res, app('themes')->index());
 })->setName('themes.index');
 
 /**
@@ -48,8 +46,8 @@ $this->get('', function ($req, $res) use ($themes) {
  *       }
  *     }
  */
-$this->get('/{name}', function ($req, $res, $args) use ($themes) {
-	if (false === $result = $themes->get($args['name'])) {
+$this->get('/{name}', function ($req, $res, $args) {
+	if (false === $result = app('themes')->get($args['name'])) {
 		return $this->api->json($res, [
 			'error' => 'ThemeNotFound'
 		], 404);
@@ -76,7 +74,8 @@ $this->get('/{name}', function ($req, $res, $args) use ($themes) {
   *       "layouts": {"index": "index.html"}
   *     }
   */
-$this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) use ($themes) {
+$this->get('/{name}/{field}[/{subfield}]', function ($req, $res, $args) {
+	$themes = app('themes');
 	$theme = $themes->get($args['name']);
 
 	$field = $args['field'];
