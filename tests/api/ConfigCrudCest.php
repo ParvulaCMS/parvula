@@ -28,10 +28,33 @@ class ConfigCrudCest extends APITest
 
 	public function createConfig(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
-		$I->sendPOST('/config/newConfigTest', [
-			'foo' => 'bar'
+		$I->sendPOST('/config', [
+			'name' => 'newConfigTest',
+			'data' => [
+				'foo' => 'bar',
+			],
 		]);
 		$I->seeResponseCodeIs(201);
+	}
+
+	public function shouldNotBeAbleToReCreateAConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/config', [
+			'name' => 'newConfigTest',
+			'data' => [
+				'foo' => 'bar2',
+			],
+		]);
+		$I->seeResponseCodeIs(409);
+	}
+
+	public function shouldNotProcessMalformedData(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPOST('/config', [
+			'title' => 'newConfigTest2',
+			'data' => [],
+		]);
+		$I->seeResponseCodeIs(422);
 	}
 
 	public function showNewConfig(APITester $I) {
@@ -41,6 +64,44 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseJsonMatchesJsonPath('$.foo');
 		$I->seeResponseContainsJson([
 			'foo' => 'bar'
+		]);
+	}
+
+	public function shouldUpdateAConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPUT('/config/newConfigTest', [
+			'foo' => 'new bar put'
+		]);
+		$I->seeResponseCodeIs(204);
+	}
+
+	public function testUpdatedConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/newConfigTest');
+		$I->seeResponseCodeIs(200);
+		$I->seeResponseJsonMatchesJsonPath('$.foo');
+		$I->seeResponseContainsJson([
+			'foo' => 'new bar put'
+		]);
+	}
+
+	public function shouldPatchAConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendPATCH('/config/newConfigTest', [[
+			'op' => 'replace',
+			'path' => '/foo',
+			'value' => 'new bar'
+		]]);
+		$I->seeResponseCodeIs(204);
+	}
+
+	public function testPatchedConfig(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/newConfigTest');
+		$I->seeResponseCodeIs(200);
+		$I->seeResponseJsonMatchesJsonPath('$.foo');
+		$I->seeResponseContainsJson([
+			'foo' => 'new bar'
 		]);
 	}
 
@@ -65,6 +126,18 @@ class ConfigCrudCest extends APITest
 	public function shouldNotBePossibleToDeleteInexistingConfig(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
 		$I->sendDELETE('/config/foobartest');
+		$I->seeResponseCodeIs(404);
+	}
+
+	public function shouldGetAField(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/site/title');
+		$I->seeResponseCodeIs(200);
+	}
+
+	public function tryToGetAnNonexistentField(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/site/nothing');
 		$I->seeResponseCodeIs(404);
 	}
 

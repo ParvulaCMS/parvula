@@ -2,7 +2,6 @@
 
 namespace Parvula;
 
-use Parvula\FilesSystem as Files;
 use Rs\Json\Patch;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
@@ -18,20 +17,6 @@ $coreConfigs = [
 ];
 
 /**
- * Return config path if the config file exists
- *
- * @param string $name Config name
- * @return bool|string Config path or false if config does not exists
- */
-function configPath($name) {
-	if (!is_file($path = _CONFIG_ . basename($name . '.yml'))) { // TODO not force .yml config serivce
-		return false;
-	}
-
-	return $path;
-}
-
-/**
  * @api {get} /config/:name Get config
  * @apiName Get Config
  * @apiGroup Config
@@ -42,11 +27,13 @@ function configPath($name) {
  * @apiError (404) ConfigDoesNotExists
  */
 $this->get('/{name}', function ($req, $res, $args) {
-	if (!configPath($args['name'])) {
+	$config = app('configs')->find($args['name']);
+
+	if (!$config) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	return $this->api->json($res, app('fileParser')->read(configPath($args['name'])));
+	return $this->api->json($res, $config);
 })->setName('configs.show');
 
 /**
@@ -62,25 +49,25 @@ $this->get('/{name}', function ($req, $res, $args) {
  * @apiError (404) FieldError The field :field does not exists
  */
 $this->get('/{name}/{field}', function ($req, $res, $args) {
-	if (!$configName = configPath($args['name'])) {
+	$config = app('configs')->find($args['name']);
+
+	if (!$config) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	$config = (object) app('fileParser')->read($configName);
-
 	$field = $args['field'];
-	if (!isset($config->{$field})) {
+	if (!isset($config[$field])) {
 		return $this->api->json($res, [
 			'error' => 'FieldError',
 			'message' => 'The field `' . $field . '` does not exists'
 		], 404);
 	}
 
-	return $this->api->json($res, $config->{$args['field']});
+	return $this->api->json($res, $config[$args['field']]);
 })->setName('configs.show.field');
 
 /**
- * @api {post} /config/:name Create a new config file
+ * @api {post} /config Create a new config file
  * @apiName Create a config file
  * @apiGroup Config
  *
@@ -88,28 +75,35 @@ $this->get('/{name}/{field}', function ($req, $res, $args) {
  *
  * @apiParamExample Request-Example:
  *     {
- *       "field": "value"
+ *       "name": "myConfig",
+ *       "data": {
+ *         "field": "value"
+ *       }
  *     }
  *
  * @apiSuccess (201) ConfigCreate
  * @apiError (409) ConfigAlreadyExists
+ * @apiError (422) DataMalformed
  * @apiError (404) ConfigException If exception
  *
  * @apiSuccessExample ConfigCreated
  *     HTTP/1.1 201 No Content
  */
-$this->post('/{name}', function ($req, $res, $args) {
+$this->post('', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
+	$body = (array) $parsedBody;
+	$repo = app('configs');
 
-	if (configPath($args['name'])) {
+	if (!isset($body['name'], $body['data'])) {
+		return $this->api->json($res, ['error' => 'DataMalformed'], 422);
+	}
+
+	if ($repo->find($body['name'])) {
 		return $this->api->json($res, ['error' => 'ConfigAlreadyExists'], 409);
 	}
 
-	$config = (array) $parsedBody;
-	$path = _CONFIG_ . basename($args['name'] . '.yml'); // TODO not force yml
-
 	try {
-		app('fileParser')->write($path, $config);
+		$repo->create($body);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'ConfigException',
@@ -129,18 +123,20 @@ $this->post('/{name}', function ($req, $res, $args) {
  */
 $this->put('/{name}', function ($req, $res, $args) {
 	$parsedBody = $req->getParsedBody();
+	$repo = app('configs');
 
 	// Config must exists
-	if (!configPath($args['name'])) {
-		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
+	if (!$repo->find($args['name'])) {
+		return $this->api->json($res, [
+			'error' => 'ConfigDoesNotExists',
+			'message' => 'Configuration does not exists'
+		], 404);
 	}
-
-	$path = configPath($args['name']); // TODO
 
 	$config = (array) $parsedBody;
 
 	try {
-		app('fileParser')->write($path, $config);
+		$repo->update($args['name'], $config);
 	} catch (Exception $e) {
 		return $this->api->json($res, [
 			'error' => 'ConfigException',
@@ -148,11 +144,10 @@ $this->put('/{name}', function ($req, $res, $args) {
 		], 404);
 	}
 
-	return $res->withStatus(200);
+	return $res->withStatus(204);
 })->setName('configs.update');
 
 /**
- * TODO - jsonpatch doc
  * @api {patch} /config/:name Update specific field(s) of a config
  * @apiName Patch a config file
  * @apiGroup Config
@@ -160,7 +155,11 @@ $this->put('/{name}', function ($req, $res, $args) {
  * @apiParam {String} name Config name
  *
  * @apiParamExample Request-Example:
- *     myfield=My new value
+ *     [{
+ *       "op": "replace",
+ *       "path": "/field",
+ *       "value": "New Name"
+ *     }]
  *
  * @apiSuccess (204) ConfigPatched
  * @apiError (400) InvalidData Data type must be array or object
@@ -171,27 +170,31 @@ $this->put('/{name}', function ($req, $res, $args) {
  *     HTTP/1.1 204 No Content
  */
 $this->patch('/{name}', function ($req, $res, $args) {
-	$parsedBody = $req->getParsedBody();
 	$bodyJson = json_encode($req->getParsedBody());
 	$name = $args['name'];
 
+	$repo = app('configs');
+
+	$config = $repo->find($name);
+
 	// Config must exists
-	if (!($path = configPath($name))) {
+	if (!$config) {
 		return $this->api->json($res, [
-			'error' => 'ConfigDoesNotExists'
+			'error' => 'ConfigDoesNotExists',
+			'message' => 'Configuration does not exists'
 		], 404);
 	}
 
-	$configJson = json_encode((object) app('fileParser')->read(configPath($name)));
+	$configJson = json_encode((object) $config);
 
 	try {
 		$patch = new Patch($configJson, $bodyJson);
 
 		$patchedDocument = $patch->apply();
 
-		$newConfig = (json_decode($patchedDocument, true));
+		$newConfig = json_decode($patchedDocument, true);
 
-		app('fileParser')->write($path, $newConfig);
+		$repo->update($name, $newConfig);
 
 		return $res->withStatus(204);
 	} catch (InvalidPatchDocumentJsonException $e) {
@@ -218,37 +221,36 @@ $this->patch('/{name}', function ($req, $res, $args) {
  * @apiGroup Config
  *
  * @apiSuccess (204) ConfigDeleted
- * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
- * @apiError (404) ConfigCannotBeDeleted
- * @apiError (404) ConfigCannotBeDeleted
+ * @apiError (404) ConfigDoesNotExists If config does not exists and thus cannot be deleted
+ * @apiError (404) ConfigCannotBeDeleted Core configurations cannot be deleted
+ * @apiError (500) ConfigCannotBeDeleted Server side error
  */
 $this->delete('/{name}', function ($req, $res, $args) use ($coreConfigs) {
-	$file = urldecode($args['name']);
+	$name = urldecode($args['name']);
 
-	if (in_array($file, $coreConfigs)) {
+	if (in_array($name, $coreConfigs)) {
 		return $this->api->json($res, [
 			'error' => 'ConfigCannotBeDeleted',
 			'message' => 'Core configurations cannot be deleted'
 		], 404);
 	}
 
-	$fs = new Files(_CONFIG_);
-	$filename = $file . '.yml';
+	$repo = app('configs');
 
-	if (!$fs->exists($filename)) {
+	// Config must exists
+	if (!$repo->find($name)) {
 		return $this->api->json($res, [
 			'error' => 'ConfigDoesNotExists',
-			'message' => 'Configuration cannot be found'
+			'message' => 'Configuration does not exists'
 		], 404);
 	}
 
-	try {
-		$result = (new Files(_CONFIG_))->delete($filename);
-	} catch (Exception $e) {
+	if (!$repo->delete($name)) {
 		return $this->api->json($res, [
 			'error' => 'ConfigCannotBeDeleted',
 			'message' => $e->getMessage()
-		], 404);
+		], 500);
 	}
+
 	return $res->withStatus(204);
 });

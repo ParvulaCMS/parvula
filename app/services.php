@@ -9,7 +9,6 @@ use DateTime;
 use Exception;
 use RuntimeException;
 use Pimple\Container;
-use Parvula\Config;
 use Parvula\FilesSystem as Files;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -226,7 +225,6 @@ $app['mongodb'] = function (Container $c) {
 };
 
 $app['repositories'] = function (Container $c) {
-	$conf = $c['config:database'];
 	$dbType = $c['config']->get('database');
 
 	$databases = [
@@ -236,15 +234,25 @@ $app['repositories'] = function (Container $c) {
 			},
 			'users' => function () use ($c) {
 				return new Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
-				// return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
+			},
+			'configs' => function () use ($c) {
+				// Flat files only for the moment TODO
+				return new Repositories\Flatfiles\ConfigRepositoryFlatfiles($c['fileParser'], _CONFIG_);
 			}
 		],
 		'flatfiles' => [
-			'pages' => function () use ($c, $conf) {
-				return new Repositories\Flatfiles\PageRepositoryFlatfiles($c['pageRenderer'], _PAGES_, $conf->get('fileExtension'));
+			'pages' => function () use ($c) {
+				return new Repositories\Flatfiles\PageRepositoryFlatfiles(
+					$c['pageRenderer'],
+					_PAGES_,
+					$c['config:database']->get('fileExtension')
+				);
 			},
 			'users' => function () use ($c) {
 				return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
+			},
+			'configs' => function () use ($c) {
+				return new Repositories\Flatfiles\ConfigRepositoryFlatfiles($c['fileParser'], _CONFIG_);
 			}
 		]
 	];
@@ -274,6 +282,8 @@ $app['config:database'] = function (Container $c) {
 $app['pages'] = $app['repositories']['pages'];
 
 $app['users'] = $app['repositories']['users'];
+
+$app['configs'] = $app['repositories']['configs'];
 
 $app['themes'] = function (Container $c) {
 	return new Services\ThemesService(_THEMES_, $c['fileParser']);
