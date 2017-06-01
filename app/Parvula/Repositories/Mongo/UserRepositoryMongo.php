@@ -39,7 +39,7 @@ class UserRepositoryMongo extends BaseRepositoryMongo
 	 * Read a user from ID
 	 *
 	 * @param  string $username
-	 * @throws Exception If the ressource does not exists
+	 * @throws Exception If the resource does not exists
 	 * @return User|bool The user or false if user not found
 	 */
 	public function find($username) {

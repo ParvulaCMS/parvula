@@ -205,7 +205,7 @@ $this->patch('/{slug:.+}', function ($req, $res, $args) {
  * @apiName Delete page
  * @apiGroup Page
  *
- * @apiSuccess (204) PagePatched
+ * @apiSuccess (204) PageDeleted
  * @apiError (404) PageDoesNotExists If page does not exists and thus cannot be deleted
  * @apiError (404) PageException If not ok or exception
  */
