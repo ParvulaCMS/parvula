@@ -1,7 +1,8 @@
 <?php
 
-namespace Parvula;
+namespace Parvula\Models;
 
+use Parvula\ArrayableInterface;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -13,7 +14,7 @@ use Psr\Container\ContainerInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-class Config implements ContainerInterface, ArrayableInterface {
+class Config extends Model implements ContainerInterface, ArrayableInterface {
 
 	/**
 	 * @var array

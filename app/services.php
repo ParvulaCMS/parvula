@@ -9,6 +9,7 @@ use DateTime;
 use Exception;
 use RuntimeException;
 use Pimple\Container;
+use Parvula\Models\Config;
 use Parvula\FilesSystem as Files;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

@@ -61,8 +61,8 @@ userConfig: site.yml
 # Class aliases
 aliases:
     HTML: Parvula\Html
-    Conf: Parvula\Config
     Asset: Parvula\Asset
+    Conf: Parvula\Models\Config
 
 # Class to parse pages (must implement ContentParserInterface), can be null
 contentParser: \Parvula\ContentParser\Markdown
