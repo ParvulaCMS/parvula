@@ -106,19 +106,6 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	}
 
 	/**
-	 *
-	 * @param string $slug Page unique ID
-	 *
-	 */
-	private function exists($slug) {
-		if (empty($this->collection->findOne(['slug' => $slug]))) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
 	 * Create page object in "slug" file
 	 *
 	 * @param array $pageData Page data
@@ -131,11 +118,11 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 			throw new IOException('Page cannot be created. It must have a slug');
 		}
 
-		$page = new Page($pageData);
-
-		if ($this->exists($page->slug)) {
+		if ($this->exists('slug', $pageData['slug'])) {
 			return false;
 		}
+
+		$page = new Page($pageData);
 
 		try {
 			return $this->collection->insertOne($page)->getInsertedCount() > 0 ? true : false;
@@ -155,7 +142,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return bool Return true if page updated
 	 */
 	public function update($slug, array $pageData) {
-		if (!$this->exists($slug)) {
+		if (!$this->exists('slug', $slug)) {
 			throw new PageException('Page `' . $slug . '` does not exists');
 		}
 

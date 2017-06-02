@@ -69,4 +69,13 @@ abstract class BaseRepositoryMongo extends BaseRepository {
 				return new $modelClassName((array) $bsonData);
 			});
 	}
+
+	/**
+	 *
+	 * @param string $slug Page unique ID
+	 * @return bool
+	 */
+	protected function exists($attr, $slug) {
+		return !empty($this->collection->findOne([$attr => $slug]));
+	}
 }
