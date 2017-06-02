@@ -5,7 +5,7 @@ namespace Parvula\Repositories\Flatfiles;
 use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\FilesSystem as Files;
-// use Parvula\Models\Config;
+use Parvula\Models\Config;
 use Parvula\Collections\Collection;
 
 class ConfigRepositoryFlatfiles extends BaseRepositoryFlatfiles
@@ -35,19 +35,19 @@ class ConfigRepositoryFlatfiles extends BaseRepositoryFlatfiles
 	 * {@inheritDoc}
 	 */
 	protected function model() {
-		return null;
+		return Config::class;
 	}
 
 	/**
 	 * Find by field
-	 * @return Model
+	 * @return Config
 	 */
 	public function find($name) {
 		if (!is_file($path = $this->folder . basename($name . $this->extension))) {
 			return false;
 		}
 
-		return (array) $this->parser->read($path);
+		return new Config($this->parser->read($path));
 	}
 
 	/**

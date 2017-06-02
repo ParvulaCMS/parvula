@@ -33,7 +33,7 @@ $this->get('/{name}', function ($req, $res, $args) {
 		return $this->api->json($res, ['error' => 'ConfigDoesNotExists'], 404);
 	}
 
-	return $this->api->json($res, $config);
+	return $this->api->json($res, $config->toArray());
 })->setName('configs.show');
 
 /**
@@ -56,14 +56,14 @@ $this->get('/{name}/{field}', function ($req, $res, $args) {
 	}
 
 	$field = $args['field'];
-	if (!isset($config[$field])) {
+	if (!$config->has($field)) {
 		return $this->api->json($res, [
 			'error' => 'FieldError',
 			'message' => 'The field `' . $field . '` does not exists'
 		], 404);
 	}
 
-	return $this->api->json($res, $config[$args['field']]);
+	return $this->api->json($res, $config->get($args['field']));
 })->setName('configs.show.field');
 
 /**
@@ -185,7 +185,7 @@ $this->patch('/{name}', function ($req, $res, $args) {
 		], 404);
 	}
 
-	$configJson = json_encode((object) $config);
+	$configJson = json_encode($config->toObject());
 
 	try {
 		$patch = new Patch($configJson, $bodyJson);
