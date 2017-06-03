@@ -125,7 +125,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 		$page = new Page($pageData);
 
 		try {
-			return $this->collection->insertOne($page)->getInsertedCount() > 0 ? true : false;
+			return $this->collection->insertOne($page)->getInsertedCount() > 0;
 		} catch (Exception $e) {
 			throw new IOException('Page cannot be created');
 		}
@@ -142,28 +142,11 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return bool Return true if page updated
 	 */
 	public function update($slug, array $pageData) {
-		if (!$this->exists('slug', $slug)) {
-			throw new PageException('Page `' . $slug . '` does not exists');
-		}
-
 		if (!isset($pageData['title'], $pageData['slug'])) {
 			throw new PageException('Page not valid. Must have at least a `title` and a `slug`');
 		}
 
-		$page = new Page($pageData);
-
-		try {
-			$res = $this->collection->replaceOne(
-				['slug' => $slug],
-				$page
-			);
-			if ($res->getModifiedCount() > 0) {
-				return true;
-			}
-			return false;
-		} catch (Exception $e) {
-			return false;
-		}
+		return $this->updateBy('slug', $slug, $pageData);
 	}
 
 	/**
@@ -216,8 +199,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 	 * @return boolean If page is deleted
 	 */
 	public function delete($slug) {
-		$deleteResult = $this->collection->deleteOne(['slug' => $slug]);
-		return $deleteResult->getDeletedCount() > 0;
+		return $this->deleteBy('slug', $slug);
 	}
 
 	/**
