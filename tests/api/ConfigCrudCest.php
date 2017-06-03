@@ -17,14 +17,15 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseCodeIs(404);
 	}
 
-	public function showConfig(APITester $I) {
-		$I->amBearerAuthenticated($this->token);
-		$I->sendGET('/config/site');
-		$I->seeResponseCodeIs(200);
-		$I->seeResponseJsonMatchesJsonPath('$.[*]');
-		$I->seeResponseJsonMatchesJsonPath('$.title');
-		$I->seeResponseJsonMatchesJsonPath('$.theme');
-	}
+	// Only valid with flat files TODO
+	// public function showConfig(APITester $I) {
+	// 	$I->amBearerAuthenticated($this->token);
+	// 	$I->sendGET('/config/site');
+	// 	$I->seeResponseCodeIs(200);
+	// 	$I->seeResponseJsonMatchesJsonPath('$.[*]');
+	// 	$I->seeResponseJsonMatchesJsonPath('$.title');
+	// 	$I->seeResponseJsonMatchesJsonPath('$.theme');
+	// }
 
 	public function createConfig(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
@@ -65,6 +66,19 @@ class ConfigCrudCest extends APITest
 		$I->seeResponseContainsJson([
 			'foo' => 'bar'
 		]);
+	}
+
+	public function shouldGetAField(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/newConfigTest/foo');
+		$I->seeResponseEquals('"bar"');
+		$I->seeResponseCodeIs(200);
+	}
+
+	public function tryToGetAnNonexistentField(APITester $I) {
+		$I->amBearerAuthenticated($this->token);
+		$I->sendGET('/config/newConfigTest/nothing');
+		$I->seeResponseCodeIs(404);
 	}
 
 	public function shouldUpdateAConfig(APITester $I) {
@@ -126,18 +140,6 @@ class ConfigCrudCest extends APITest
 	public function shouldNotBePossibleToDeleteInexistingConfig(APITester $I) {
 		$I->amBearerAuthenticated($this->token);
 		$I->sendDELETE('/config/foobartest');
-		$I->seeResponseCodeIs(404);
-	}
-
-	public function shouldGetAField(APITester $I) {
-		$I->amBearerAuthenticated($this->token);
-		$I->sendGET('/config/site/title');
-		$I->seeResponseCodeIs(200);
-	}
-
-	public function tryToGetAnNonexistentField(APITester $I) {
-		$I->amBearerAuthenticated($this->token);
-		$I->sendGET('/config/site/nothing');
 		$I->seeResponseCodeIs(404);
 	}
 
