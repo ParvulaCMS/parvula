@@ -19,7 +19,14 @@ class Config extends Model implements ContainerInterface, ArrayableInterface {
 	/**
 	 * @var array
 	 */
-	private $config = [];
+	protected $config = [];
+
+	/**
+	 * @var array
+	 */
+	protected $invisible = [
+		'_id'
+	];
 
 	/**
 	 * Populate class with config array

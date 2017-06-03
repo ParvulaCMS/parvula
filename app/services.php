@@ -237,8 +237,7 @@ $app['repositories'] = function (Container $c) {
 				return new Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
 			},
 			'configs' => function () use ($c) {
-				// Flat files only for the moment TODO
-				return new Repositories\Flatfiles\ConfigRepositoryFlatfiles($c['fileParser'], _CONFIG_);
+				return new Repositories\Mongo\ConfigRepositoryMongo($c['fileParser'], $c['mongodb']->configs);
 			}
 		],
 		'flatfiles' => [

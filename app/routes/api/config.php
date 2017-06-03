@@ -90,8 +90,7 @@ $this->get('/{name}/{field}', function ($req, $res, $args) {
  *     HTTP/1.1 201 No Content
  */
 $this->post('', function ($req, $res, $args) {
-	$parsedBody = $req->getParsedBody();
-	$body = (array) $parsedBody;
+	$body = (array) $req->getParsedBody();
 	$repo = app('configs');
 
 	if (!isset($body['name'], $body['data'])) {
@@ -122,7 +121,6 @@ $this->post('', function ($req, $res, $args) {
  * @apiGroup Config
  */
 $this->put('/{name}', function ($req, $res, $args) {
-	$parsedBody = $req->getParsedBody();
 	$repo = app('configs');
 
 	// Config must exists
@@ -133,7 +131,7 @@ $this->put('/{name}', function ($req, $res, $args) {
 		], 404);
 	}
 
-	$config = (array) $parsedBody;
+	$config = (array) $req->getParsedBody();
 
 	try {
 		$repo->update($args['name'], $config);
