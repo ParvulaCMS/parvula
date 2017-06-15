@@ -15,15 +15,20 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 $app['config'] = function (Container $c) {
-	$fp = $c['fileParser'];
-
+	// Core configuration
 	// Populate Config wrapper
-	$config = new Config($fp->read(_CONFIG_ . 'system.yml'));
+	return new Config($c['fileParser']->read(_CONFIG_ . 'system.yml'));
+};
 
-	// Load user config
-	// Append user config to Config wrapper (override if exists)
-	$userConfig = $fp->read(_CONFIG_ . $config->get('userConfig'));
-	return $config->append((array) $userConfig);
+$app['config:site'] = function (Container $c) {
+	$name = $c['config']->get('userConfig');
+	$conf = $c['configs']->find($name);
+
+	if (!$conf) {
+		throw new Exception('Configuration `' . $name . '` does not exists');
+	}
+
+	return $conf;
 };
 
 $app['router'] = function (Container $c) {
@@ -294,7 +299,7 @@ $app['themes'] = function (Container $c) {
 };
 
 $app['theme'] = function (Container $c) {
-	if ($c['themes']->has($themeName = $c['config']->get('theme'))) {
+	if ($c['themes']->has($themeName = $c['config:site']->get('theme'))) {
 		return $c['themes']->get($themeName);
 	} else {
 		throw new Exception('Theme `' . $themeName . '` does not exists');
