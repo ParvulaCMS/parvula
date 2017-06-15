@@ -252,7 +252,11 @@ $app['repositories'] = function (Container $c) {
 				return new Repositories\Flatfiles\UserRepositoryFlatfiles($c['fileParser'], _USERS_ . '/users.php');
 			},
 			'configs' => function () use ($c) {
-				return new Repositories\Flatfiles\ConfigRepositoryFlatfiles($c['fileParser'], _CONFIG_);
+				return new Repositories\Flatfiles\ConfigRepositoryFlatfiles(
+					$c['fileParser'],
+					_CONFIG_,
+					$c['config']->get('configExtension')
+				);
 			}
 		]
 	];

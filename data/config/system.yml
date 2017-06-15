@@ -56,7 +56,10 @@ upload:
     evilExtensions: [php, php3, php4, phtml, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
 # User config file to read
-userConfig: site.yml
+userConfig: site
+
+# Config files extension
+configExtension: yml
 
 # Class aliases
 aliases:

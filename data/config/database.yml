@@ -2,6 +2,7 @@
 # Databases specific settings
 # ------------------------------ #
 
+# Flat files
 flatfiles:
     # Class to parse pages metadata (must implement ParserInterface)
     headParser: Parvula\Parsers\Yaml
@@ -19,6 +20,8 @@ flatfiles:
         # sectionDelimiterMatcher: /\s\-{3}\s([-:\w].*?)\s-{3}\s/s
         sectionDelimiterRender: ---
 
+# Mongodb
+# You need the package 'mongodb/mongodb' to run the mongodb database
 mongodb:
     # Server ip/hostname (default : 127.0.0.1)
     # address: 127.0.0.1

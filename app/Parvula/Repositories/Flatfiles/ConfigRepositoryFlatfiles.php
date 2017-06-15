@@ -20,15 +20,20 @@ class ConfigRepositoryFlatfiles extends BaseRepositoryFlatfiles
 	 */
 	private $folder;
 
-	private $extension = '.yml';
+	/**
+	 * @var string
+	 */
+	private $extension;
 
 	/**
 	 * @param FileParser $parser
 	 * @param string     $configsFolder
+	 * @param string     $extension optional extension (default 'yml')
 	 */
-	public function __construct(FileParser $parser, $configsFolder) {
+	public function __construct(FileParser $parser, $configsFolder, $extension = 'yml') {
 		$this->parser = $parser;
 		$this->folder = $configsFolder;
+		$this->extension = '.' . ltrim($extension, ".\t\n\r\0 ");
 	}
 
 	/**
