@@ -339,10 +339,10 @@ $app['view'] = function (Container $c) {
 		return $excerpt;
 	});
 
-	// Register folder begining with a '_' as Plates folder
+	// Register folder start with a '_' as Plates folder
 	// (Plates will resolve `this->fetch('myFolder::file')` as `_myFolder/file.html`)
 	$filter = function ($current) {
-		// Must be a dir begining with _
+		// Must be a dir start with _
 		return $current->isDir() && $current->getFilename()[0] === '_';
 	};
 

@@ -74,10 +74,6 @@ class FileParser implements IOInterface {
 	 * @return int|bool Returns the number of bytes that were written or false on failure
 	 */
 	public function write($filePath, $data) {
-		// if (!is_file($this->folder . $filePath)) {
-			// return false;
-		// }
-
 		$parser = $this->getParser($this->folder . $filePath);
 
 		$dataStr = $this->encode($parser, $data);
@@ -93,7 +89,6 @@ class FileParser implements IOInterface {
 	 * @return ParserInterface Parser
 	 */
 	private function getParser($filePath) {
-
 		$ext = pathinfo($this->folder. $filePath, PATHINFO_EXTENSION);
 
 		if (!isset($this->parsers[$ext])) {

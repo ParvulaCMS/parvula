@@ -65,7 +65,7 @@ class FilesSystem implements IOInterface {
 			throw new IOException("File `{$filename}` does not exist");
 		}
 
-		$fileInfo = new \SplFileInfo($this->workingDirectory . $filename);
+		$fileInfo = new SplFileInfo($this->workingDirectory . $filename);
 
 		if ($fileInfo->isReadable()) {
 			if ($eval) {
@@ -191,9 +191,8 @@ class FilesSystem implements IOInterface {
 
 		$files = [];
 		foreach ($iterator as $file) {
-			$cdir = substr($file->getPathInfo(), strlen($this->workingDirectory));
-
 			if ($fn) {
+				$cdir = substr($file->getPathInfo(), strlen($this->workingDirectory));
 				$fn($file, $cdir);
 			}
 			$files[] = $file->getFileName();
