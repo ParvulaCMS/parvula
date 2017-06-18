@@ -5,19 +5,18 @@ namespace Parvula;
 use Exception;
 
 function checkTokenScope(array $scope, $token) {
-	if (!count(array_intersect($scope, $token->scope))) {
+	$scopeToken = isset($token->scope) ? $token->scope : [];
+	if (!count(array_intersect($scope, $scopeToken))) {
 		throw new Exception('Bad credentials for this path.', 403);
 	}
 
 	return true;
 }
 
-function checkAuth(array $scope) {
+function checkRole(array $scope) {
 	return function ($req, $res, $next) use ($scope) {
 		checkTokenScope($scope, $req->getAttribute('token'));
-		// checkTokenScope($scope, $this->token);
-		$res = $next($req, $res);
-		return $res;
+		return $next($req, $res);
 	};
 }
 
@@ -31,23 +30,23 @@ $this->group('/pages', function () use ($app) {
 
 $this->group('/pages', function () use ($app) {
 	require 'pages.php';
-})->add(checkAuth(['pages', 'all']));
+})->add(checkRole(['pages', 'all']));
 
 $this->group('/themes', function () use ($app) {
 	require 'themes.php';
-})->add(checkAuth(['themes', 'all']));
+})->add(checkRole(['themes', 'all']));
 
 $this->group('/users', function () use ($app) {
 	require 'users.php';
-})->add(checkAuth(['users', 'all']));
+})->add(checkRole(['users', 'all']));
 
 $this->group('/config', function () use ($app) {
 	require 'config.php';
-})->add(checkAuth(['config', 'all']));
+})->add(checkRole(['config', 'all']));
 
 $this->group('/files', function () use ($app) {
 	require 'files.php';
-})->add(checkAuth(['files', 'all']));
+})->add(checkRole(['files', 'all']));
 
 // If nothing match in the api group and client is not loged
 $this->any('/{r:.*}', function ($req, $res) use ($app) {
