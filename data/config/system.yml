@@ -83,3 +83,8 @@ apiPrefix: /api/0
 # Routes can be cached (exanple: 'routes.php') (optional, false if nothing)
 # Must be set to to a valid filename within a writeable directory
 # routerCacheFile: routes.php
+
+# WARGNING Should be true (empty = true)
+# Option to disable roles and allow a user to access all API routes (optional)
+# (roles are not used in Parvula 0.8)
+# checkRoles: true

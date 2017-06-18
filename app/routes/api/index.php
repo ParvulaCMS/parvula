@@ -13,12 +13,17 @@ function checkTokenScope(array $scope, $token) {
 	return true;
 }
 
-function checkRole(array $scope) {
-	return function ($req, $res, $next) use ($scope) {
-		checkTokenScope($scope, $req->getAttribute('token'));
+$shouldCheckRoles = app('config')->get('checkRoles', true);
+
+$checkRolesMiddleware = function (array $scope) use ($shouldCheckRoles) {
+	return function ($req, $res, $next) use ($scope, $shouldCheckRoles) {
+		// Check role token in JWT if the 'checkRoles' option is true
+		if ($shouldCheckRoles) {
+			checkTokenScope($scope, $req->getAttribute('token'));
+		}
 		return $next($req, $res);
 	};
-}
+};
 
 $this->group('/auth', function () use ($app) {
 	require 'auth.php';
@@ -30,23 +35,23 @@ $this->group('/pages', function () use ($app) {
 
 $this->group('/pages', function () use ($app) {
 	require 'pages.php';
-})->add(checkRole(['pages', 'all']));
+})->add($checkRolesMiddleware(['pages', 'all']));
 
 $this->group('/themes', function () use ($app) {
 	require 'themes.php';
-})->add(checkRole(['themes', 'all']));
+})->add($checkRolesMiddleware(['themes', 'all']));
 
 $this->group('/users', function () use ($app) {
 	require 'users.php';
-})->add(checkRole(['users', 'all']));
+})->add($checkRolesMiddleware(['users', 'all']));
 
 $this->group('/config', function () use ($app) {
 	require 'config.php';
-})->add(checkRole(['config', 'all']));
+})->add($checkRolesMiddleware(['config', 'all']));
 
 $this->group('/files', function () use ($app) {
 	require 'files.php';
-})->add(checkRole(['files', 'all']));
+})->add($checkRolesMiddleware(['files', 'all']));
 
 // If nothing match in the api group and client is not loged
 $this->any('/{r:.*}', function ($req, $res) use ($app) {
