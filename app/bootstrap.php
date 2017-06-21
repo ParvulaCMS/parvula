@@ -21,6 +21,12 @@ $app = Parvula::getContainer();
 
 // Register services and helpers
 require _APP_ . 'services.php';
+
+// If services.php is present in config, it is possible to override core services
+if (is_file(_CONFIG_ . 'services.php')) {
+	require _CONFIG_ . 'services.php';
+}
+
 require _APP_ . 'helpers.php';
 
 $config = $app['config'];
