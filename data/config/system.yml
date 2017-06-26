@@ -88,3 +88,7 @@ apiPrefix: /api/0
 # Option to disable roles and allow a user to access all API routes (optional)
 # (roles are not used in Parvula 0.8)
 # checkRoles: true
+
+# User services (optional)
+# User can load custom services from the given path
+# userServices: public/services.php

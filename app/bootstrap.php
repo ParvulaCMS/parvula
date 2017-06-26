@@ -22,15 +22,19 @@ $app = Parvula::getContainer();
 // Register services and helpers
 require _APP_ . 'services.php';
 
-// If services.php is present in config, it is possible to override core services
-if (is_file(_CONFIG_ . 'services.php')) {
-	require _CONFIG_ . 'services.php';
-}
-
+// Load helpers
 require _APP_ . 'helpers.php';
 
 $config = $app['config'];
 $config->set('__time__', $time);
+
+// Services overloading to override core services
+if ($config->has('userServices')) {
+	require _ROOT_ . $config->get('userServices');
+}
+if (is_file(_CONFIG_ . 'services.php')) {
+	require _CONFIG_ . 'services.php';
+}
 
 // Set timezone (default to UTC)
 date_default_timezone_set($config->get('timezone', 'UTC'));
