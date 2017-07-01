@@ -28,12 +28,8 @@ require _APP_ . 'helpers.php';
 $config = $app['config'];
 $config->set('__time__', $time);
 
-// Services overloading to override core services
-if ($config->has('userServices')) {
-	require _ROOT_ . $config->get('userServices');
-}
-if (is_file(_CONFIG_ . 'services.php')) {
-	require _CONFIG_ . 'services.php';
+if (is_file(_CUSTOM_ . 'services.php')) {
+	require _CUSTOM_ . 'services.php';
 }
 
 // Set timezone (default to UTC)

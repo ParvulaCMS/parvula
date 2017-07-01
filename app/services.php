@@ -15,9 +15,19 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 $app['config'] = function (Container $c) {
-	// Core configuration
 	// Populate Config wrapper
-	return new Config($c['fileParser']->read(_CONFIG_ . 'system.yml'));
+	$confArr = [];
+	if (is_file(_CONFIG_ . 'system.yml')) {
+		// Core configuration
+		$confArr = $c['fileParser']->read(_CONFIG_ . 'system.yml');
+	}
+	if (is_file(_CUSTOM_CONFIG_ . 'system.yml')) {
+		// Custom configuration to extends core
+		$custom = $c['fileParser']->read(_CUSTOM_CONFIG_ . 'system.yml');
+		$confArr = $custom + $confArr;
+	}
+
+	return new Config($confArr);
 };
 
 $app['config:site'] = function (Container $c) {

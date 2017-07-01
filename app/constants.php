@@ -35,7 +35,14 @@ define('_USERS_', _DATA_ . 'users/');
 define('_CACHE_', _STORAGE_ . 'cache/');
 define('_LOGS_', _STORAGE_ . 'logs/');
 
+// Custom path to extends configs or services
+if (!defined('_CUSTOM_')) {
+	define('_CUSTOM_', _DATA_ . 'custom/');
+}
+
+define('_CUSTOM_CONFIG_', _CUSTOM_ . 'config/');
+
 // Main
 define('_APP_', _ROOT_ . 'app/');
 define('_BIN_', _APP_ . 'bin/');
-define('_VERSION_', '0.8.0-DEV.2');
+define('_VERSION_', '0.8.0-BETA.1');
