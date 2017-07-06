@@ -48,10 +48,13 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		$layout = $theme->getLayout(); // Default layout
 	}
 
+	$slashNb = substr_count($theme->getPath(), '/');
+	$prefixThemes = str_repeat('../', max($slashNb, 0));
+
 	// Assign some useful variables
 	$view->addData([
 		'baseUrl'  => url(),
-		'themeUrl' => url($theme->getPath()),
+		'themeUrl' => url($prefixThemes . $theme->getPath()),
 		'pagesArr' =>
 			function ($listHidden = false, $pagesPath = '') use ($pages, $config) {
 				return $pages->all($pagesPath)->visibility(!$listHidden)->
