@@ -40,7 +40,10 @@ abstract class Plugin {
 	public function __construct() {
 		$this->app = app();
 		$this->pluginPath = $this->getPluginPath();
-		$this->pluginUri = $this->getPluginUri();
+
+		$slashNb = substr_count($this->pluginPath, '/');
+		$prefixPlugin = str_repeat('../', max($slashNb, 0));
+		$this->pluginUri = $prefixPlugin . $this->getPluginUri();
 	}
 
 	/**
