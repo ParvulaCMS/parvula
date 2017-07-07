@@ -58,10 +58,7 @@ class Parvula {
 		// Be sure to have a clean path
 		$postUrl = str_replace(['//', '///'], '/', $postUrl);
 
-		$slashNb = 0;
-		if ($postUrl !== '/') {
-			$slashNb = substr_count($postUrl, '/');
-		}
+		$slashNb = substr_count($postUrl, '/') - 1;
 
 		// Add a '../' to URL if there is no URL rewriting
 		if (substr($basePath, -9) === 'index.php') {
