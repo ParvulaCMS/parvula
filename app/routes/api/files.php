@@ -159,6 +159,7 @@ $this->post('/upload', function ($req, $res) use ($app, $fs) {
 
 	return $this->api->json($res, [
 		'filename' => $filename,
+		'urlfilename' => url($filename),
 		'directory' => _UPLOADS_ . $path
 	], 201);
 });
