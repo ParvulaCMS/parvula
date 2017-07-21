@@ -31,6 +31,7 @@ $this->get('', function ($req, $res) use ($fs) {
 			$fs->index('', function (SplFileInfo $file, $cdir) use (&$files) {
 				$files[] = [
 					'filename' => $file->getFileName(),
+					'urlfilename' => url($file->getFileName()),
 					'path' => (string) $cdir,
 					'lastedit' => $file->getMTime(),
 					'size' => $file->getSize(),
