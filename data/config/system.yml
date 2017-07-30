@@ -55,11 +55,14 @@ upload:
     maxSize: 200 # Max upload size per file (in MO) (negative number for no limit)
     evilExtensions: [php, php3, php4, phtml, html, htm, sh] # Evil extensions which will be renamed to *.txt
 
-# User config file to read
-userConfig: site
-
 # Config files extension
 configExtension: yml
+
+# Site config name
+siteConfig: site
+
+# User config name for user custom variables (available in themes too)
+globalUserConfig: global-user
 
 # Class aliases
 aliases:
@@ -68,7 +71,7 @@ aliases:
     Conf: Parvula\Models\Config
 
 # Class to parse pages (must implement ContentParserInterface), can be null
-contentParser: \Parvula\ContentParser\Markdown
+contentParser: Parvula\ContentParser\Markdown
 
 # Give the full url base (example: 'http://yoursite.com/') (optional)
 # This option will disable the relative urls
@@ -84,10 +87,10 @@ apiPrefix: /api/0
 # Must be set to to a valid filename within a writeable directory
 # routerCacheFile: routes.php
 
-# WARGNING Should be true (empty = true)
+# WARNING Should be true (empty = true)
 # Option to disable roles and allow a user to access all API routes (optional)
 # (roles are not used in Parvula 0.8)
-# checkRoles: true
+checkRoles: false
 
 # User services (optional)
 # User can load custom services from the given path
