@@ -2,6 +2,7 @@
 
 namespace Parvula\Models;
 
+use ArrayAccess;
 use Parvula\ArrayableInterface;
 use Psr\Container\ContainerInterface;
 
@@ -14,7 +15,7 @@ use Psr\Container\ContainerInterface;
  * @author Fabien Sa
  * @license MIT License
  */
-class Config extends Model implements ContainerInterface, ArrayableInterface {
+class Config extends Model implements ContainerInterface, ArrayableInterface, ArrayAccess {
 
 	/**
 	 * @var array
@@ -149,4 +150,34 @@ class Config extends Model implements ContainerInterface, ArrayableInterface {
 	public function toObject() {
 		return (object) $this->config;
 	}
+
+    /**
+     * alias for `set`
+	 *
+	 * @see Config::set
+	 */
+    public function offsetSet($key, $value) {
+		$this->set($key, $value);
+    }
+
+    /**
+     * alias for `has`
+	 *
+	 * @see Config::has
+	 */
+    public function offsetExists($key) {
+        return $this->has($key);
+    }
+
+    public function offsetUnset($offset) {
+    }
+
+    /**
+     * alias for `get`
+	 *
+	 * @see Config::get
+	 */
+    public function offsetGet($key) {
+        return $this->get($key);
+    }
 }
