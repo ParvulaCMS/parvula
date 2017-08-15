@@ -64,7 +64,7 @@ class Page extends Model
 	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 */
 	public function __construct(array $info, $content = '', array $sections = []) {
-		// Check if required meta informations are available
+		// Check if required meta information are available
 		if (empty($info['title']) || empty($info['slug'])) {
 			throw new PageException('Page cannot be created, meta must contains `title` and `slug` keys');
 		}
@@ -150,6 +150,11 @@ class Page extends Model
 				$meta[$key] = $value;
 			}
 		}
+
+		if ($this->parent != null) {
+			$meta['parent'] = $this->parent;
+		}
+
 		return $meta;
 	}
 
