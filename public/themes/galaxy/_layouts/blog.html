@@ -24,7 +24,7 @@ if ($page->hasChildren()):
 	//foreach ($children as $child):
 	?>
 	<div class="card mb-2">
-		<div class="card-block">
+		<div class="card-body">
 			<h4 class="card-title"><?= $child->title ?></h4>
 			<h6 class="card-subtitle mb-2 text-muted"><?= $this->e($child, 'pageDateFormat') ?></h6>
 			<p><?= $this->excerpt($child->content) ?>...</p>
