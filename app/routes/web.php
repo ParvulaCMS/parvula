@@ -48,8 +48,7 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		$layout = $theme->getLayout(); // Default layout
 	}
 
-	$slashNb = substr_count($theme->getPath(), '/');
-	$prefixThemes = str_repeat('../', max($slashNb, 0));
+	$prefixThemes = $config->get('themesUrlPrefix', '');
 
 	// Assign some useful variables
 	$view->addData([

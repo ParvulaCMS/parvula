@@ -41,8 +41,7 @@ abstract class Plugin {
 		$this->app = app();
 		$this->pluginPath = $this->getPluginPath();
 
-		$slashNb = substr_count($this->pluginPath, '/');
-		$prefixPlugin = str_repeat('../', max($slashNb, 0));
+		$prefixPlugin = $this->app['config']->get('pluginsUrlPrefix', '');
 		$this->pluginUri = $prefixPlugin . $this->getPluginUri();
 	}
 

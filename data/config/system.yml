@@ -83,6 +83,12 @@ apiPrefix: /api/0
 # Prefix all urls paths (optional)
 # urlPrefix: ../
 
+# Themes URL prefix for theme's assets ($themeUrl) (optional)
+# themesUrlPrefix: 'subfolder/'
+
+# Plugins URL prefix for plugin's assets ($this->pluginUri) (optional)
+# pluginsUrlPrefix: 'subfolder/'
+
 # Routes can be cached (exanple: 'routes.php') (optional, false if nothing)
 # Must be set to to a valid filename within a writeable directory
 # routerCacheFile: routes.php
