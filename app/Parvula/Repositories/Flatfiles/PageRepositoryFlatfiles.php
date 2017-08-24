@@ -217,11 +217,17 @@ class PageRepositoryFlatFiles extends BaseRepositoryFlatfiles {
 	 * @return boolean If page is deleted
 	 */
 	public function delete($pageUID) {
-		// TODO remove parent folder if folder is empty !
 		$pageFullPath = $pageUID . $this->fileExtension;
 
 		$fs = new Files($this->folder);
-		return $fs->delete($pageFullPath);
+		$res = $fs->delete($pageFullPath);
+
+		$folderPath = $this->folder . dirname($pageFullPath);
+		if (count(scandir($folderPath, SCANDIR_SORT_NONE)) <= 2) {
+			$res &= rmdir($folderPath);
+		}
+
+		return $res;
 	}
 
 	/**
