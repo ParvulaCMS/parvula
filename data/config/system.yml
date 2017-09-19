@@ -61,7 +61,7 @@ configExtension: yml
 # Site config name
 siteConfig: site
 
-# User config name for user custom variables (available in themes too)
+# User config name for user custom variables (available in themes too) (optional)
 globalUserConfig: global-user
 
 # Class aliases

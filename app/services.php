@@ -43,10 +43,17 @@ $app['config:site'] = function (Container $c) {
 
 $app['config:globals:user'] = function (Container $c) {
 	$name = $c['config']->get('globalUserConfig');
+
+	// Global user config is optional
+	if ($name === '' || $name === null) {
+		return;
+	}
+
 	$conf = $c['configs']->find($name);
 
+	// Configuration cannot be find
 	if (!$conf) {
-		throw new Exception('Configuration `' . $name . '` does not exists');
+		return;
 	}
 
 	return $conf;
