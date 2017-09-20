@@ -22,9 +22,17 @@ if (!defined('_VENDOR_')) {
 }
 
 // Public (the only accessible point from the outside)
-define('_THEMES_', _PUBLIC_ . 'themes/');
-define('_PLUGINS_', _PUBLIC_ . 'plugins/');
-define('_UPLOADS_', _PUBLIC_ . 'files/');
+if (!defined('_THEMES_')) {
+	define('_THEMES_', _PUBLIC_ . 'themes/');
+}
+
+if (!defined('_PLUGINS_')) {
+	define('_PLUGINS_', _PUBLIC_ . 'plugins/');
+}
+
+if (!defined('_UPLOADS_')) {
+	define('_UPLOADS_', _PUBLIC_ . 'files/');
+}
 
 // Data
 define('_PAGES_', _DATA_ . 'pages/');
