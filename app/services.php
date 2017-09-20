@@ -16,11 +16,12 @@ use Monolog\Handler\StreamHandler;
 
 $app['config'] = function (Container $c) {
 	// Populate Config wrapper
-	$confArr = [];
-	if (is_file(_CONFIG_ . 'system.yml')) {
-		// Core configuration
-		$confArr = $c['fileParser']->read(_CONFIG_ . 'system.yml');
+	if (!is_file(_CONFIG_ . 'system.yml')) {
+		throw new Exception('Configuration `system.yml` does not exists in `' . _CONFIG_ . '`');
 	}
+
+	// Core configuration
+	$confArr = $c['fileParser']->read(_CONFIG_ . 'system.yml');
 	if (is_file(_CUSTOM_CONFIG_ . 'system.yml')) {
 		// Custom configuration to extends core
 		$custom = $c['fileParser']->read(_CUSTOM_CONFIG_ . 'system.yml');
