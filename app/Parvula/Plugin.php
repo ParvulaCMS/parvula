@@ -93,7 +93,7 @@ abstract class Plugin {
 	 * @param  string $append
 	 * @return string Html ouput
 	 */
-	private function appendToElement($element, $html, $append) {
+	protected function appendToElement($element, $html, $append) {
 		// @TODO a bit hacky, need to clean and find correctly the `</head>`
 
 		if (strlen($html) < 10) {
@@ -127,7 +127,7 @@ abstract class Plugin {
 	 * @return string Html ouput
 	 */
 	protected function appendToHeader($html, $append) {
-		return $this->appendToElement('head', $html, $append);
+		return preg_replace("/(< ?\/ ?head)/", $append . "$1", $html);
 	}
 
 	/**
