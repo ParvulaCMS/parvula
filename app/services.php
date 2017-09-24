@@ -15,16 +15,31 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 $app['config'] = function (Container $c) {
-	// Populate Config wrapper
-	if (!is_file(_CONFIG_ . 'system.yml')) {
-		throw new Exception('Configuration `system.yml` does not exists in `' . _CONFIG_ . '`');
+	$base = _CONFIG_ . 'system.';
+	$ext;
+
+	if (is_file($base . 'yml')) {
+		$ext = 'yml';
+	} elseif (is_file($base . 'php')) {
+		$ext = 'php';
+	} elseif (is_file($base . 'json')) {
+		$ext = 'json';
+	} else {
+		throw new Exception('System configuration (`system.yml`) does not exists in `' . _CONFIG_ . '`');
 	}
 
 	// Core configuration
-	$confArr = $c['fileParser']->read(_CONFIG_ . 'system.yml');
-	if (is_file(_CUSTOM_CONFIG_ . 'system.yml')) {
-		// Custom configuration to extends core
-		$custom = $c['fileParser']->read(_CUSTOM_CONFIG_ . 'system.yml');
+	// Populate Config wrapper
+	$confArr = $c['fileParser']->read($base . $ext);
+
+	if (!isset($confArr['configExtension'])) {
+		throw new Exception('`configExtension` field does not exists in system configuration');
+	}
+	$ext = $confArr['configExtension'];
+
+	// Custom configuration to extends core
+	if (is_file(_CUSTOM_CONFIG_ . 'system.' . $ext)) {
+		$custom = $c['fileParser']->read(_CUSTOM_CONFIG_ . 'system.' . $ext);
 		$confArr = $custom + $confArr;
 	}
 
