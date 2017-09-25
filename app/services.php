@@ -286,7 +286,7 @@ $app['repositories'] = function (Container $c) {
 				return new Repositories\Mongo\UserRepositoryMongo($c['mongodb']->users);
 			},
 			'configs' => function () use ($c) {
-				return new Repositories\Mongo\ConfigRepositoryMongo($c['fileParser'], $c['mongodb']->configs);
+				return new Repositories\Mongo\ConfigRepositoryMongo($c['mongodb']->configs);
 			}
 		],
 		'flatfiles' => [

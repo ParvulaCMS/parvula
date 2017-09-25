@@ -13,16 +13,10 @@ use MongoDB\Collection as MongoCollectionBase;
 class ConfigRepositoryMongo extends BaseRepositoryMongo {
 
 	/**
-	 * @var Parvula\FileParser
-	 */
-	private $parser;
-
-	/**
 	 * @param FileParser $parser
 	 * @param string     $configsFolder
 	 */
-	public function __construct(FileParser $parser, MongoCollectionBase $collection) {
-		$this->parser = $parser;
+	public function __construct(MongoCollectionBase $collection) {
 		$this->collection = $collection;
 	}
 
