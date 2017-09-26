@@ -32,10 +32,13 @@ $app['config'] = function (Container $c) {
 	// Populate Config wrapper
 	$confArr = $c['fileParser']->read($base . $ext);
 
-	if (!isset($confArr['configExtension'])) {
+	if (defined('_CUSTOM_EXT_')) {
+		$ext = _CUSTOM_EXT_;
+	} elseif (isset($confArr['configExtension'])) {
+		$ext = $confArr['configExtension'];
+	} else {
 		throw new Exception('`configExtension` field does not exists in system configuration');
 	}
-	$ext = $confArr['configExtension'];
 
 	// Custom configuration to extends core
 	if (is_file(_CUSTOM_CONFIG_ . 'system.' . $ext)) {
