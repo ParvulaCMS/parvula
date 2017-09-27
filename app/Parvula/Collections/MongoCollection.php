@@ -69,7 +69,9 @@ class MongoCollection extends Collection {
 			unset($this->filter['$$aggregate']);
 
 			// Use the filter as a $match for aggregation
-			$aggregate[] = ['$match' => $this->filter];
+			if ($this->filter) {
+				$aggregate[] = ['$match' => $this->filter];
+			}
 
 			// Transform options and append a `$`
 			foreach ($this->options as $key => $option) {
