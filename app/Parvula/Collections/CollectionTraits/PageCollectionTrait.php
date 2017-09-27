@@ -18,7 +18,11 @@ trait PageCollectionTrait {
 	 *
 	 * @return \Parvula\Collections\Collection
 	 */
-	public function visible() {
+	public function visible($showVisible = true) {
+		if (!$showVisible) {
+			return $this->hidden();
+		}
+
 		return $this->filter('hidden', [false, null]);
 	}
 

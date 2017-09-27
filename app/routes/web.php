@@ -56,8 +56,8 @@ $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $re
 		'themeUrl' => url($prefixThemes . $theme->getPath()),
 		'pagesArr' =>
 			function ($listHidden = false, $pagesPath = '') use ($pages, $config) {
-				return $pages->all($pagesPath)->visibility(!$listHidden)->
-					order($config->get('typeOfSort'), $config->get('sortField'))->toArray();
+				return $pages->all($pagesPath)->visible(!$listHidden)->
+					sortBy($config->get('sortField'), $config->get('typeOfSort'))->toArray();
 			},
 		'pages'    => $pages->all()->sortBy($config->get('sortField'), $config->get('typeOfSort')),
 		'plugin'   =>
