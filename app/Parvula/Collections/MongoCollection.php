@@ -34,26 +34,29 @@ class MongoCollection extends Collection {
 
 	/**
 	 * {@inheritDoc}
-	 * @return \Parvula\Collections\MongoCollection
+	 * @return static
 	 */
 	public function sortBy($field, $ascending = true) {
-		if (!isset($this->options['sort'])) {
-			$this->options['sort'] = [];
+		$options = $this->options;
+
+		if (!isset($options['sort'])) {
+			$options['sort'] = [];
 		}
 
-		$this->options['sort'][$field] = $ascending ? 1 : -1;
+		$options['sort'][$field] = $ascending ? 1 : -1;
 
-		return $this->cloneCollection();
+		return new static($this->collection, $this->model, $this->filter, $options);
 	}
 
 	/**
 	 * {@inheritDoc}
-	 * @return \Parvula\Collections\MongoCollection
+	 * @return static
 	 */
 	public function filter($field, array $values = [true]) {
-		$this->filter[$field] = ['$in' => $values];
+		$filter = $this->filter;
+		$filter[$field] = ['$in' => $values];
 
-		return $this->cloneCollection();
+		return new static($this->collection, $this->model, $filter, $this->options);
 	}
 
 	/**
@@ -68,9 +71,12 @@ class MongoCollection extends Collection {
 			// Use the filter as a $match for aggregation
 			$aggregate[] = ['$match' => $this->filter];
 
-			// Use projection in option if exists
-			if (isset($this->options['projection'])) {
-				$aggregate[] = ['$project' => $this->options['projection']];
+			// Transform options and append a `$`
+			foreach ($this->options as $key => $option) {
+				if ($key === 'projection') {
+					$key = 'project';
+				}
+				$aggregate[] = ['$' . $key => $option];
 			}
 
 			return $this->collection->aggregate($aggregate, $this->options);
