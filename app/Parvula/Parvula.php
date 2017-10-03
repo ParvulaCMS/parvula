@@ -26,6 +26,7 @@ class Parvula {
 
 	/**
 	 * Get core container
+	 * Singleton pattern
 	 *
 	 * @return Pimple\Container
 	 */
@@ -55,6 +56,13 @@ class Parvula {
 		$postUrl = static::$request->getUri()->getPath();
 		$basePath = static::$request->getUri()->getBasePath();
 
+		$prefix = '';
+		// If no slash at root (should not happen normally), prefix with the current base path
+		if ($postUrl === '/' && substr(static::$request->getServerParam('PATH_INFO'), -1) !== '/') {
+			$token = explode('/', static::$request->getServerParam('PATH_INFO'));
+			$prefix = $token[count($token) - 1] . '/';
+		}
+
 		// Be sure to have a clean path
 		$postUrl = str_replace(['//', '///'], '/', $postUrl);
 
@@ -65,7 +73,7 @@ class Parvula {
 			++$slashNb;
 		}
 
-		return str_repeat('../', max($slashNb, 0)) . $path;
+		return $prefix . str_repeat('../', max($slashNb, 0)) . $path;
 	}
 
 	/**
