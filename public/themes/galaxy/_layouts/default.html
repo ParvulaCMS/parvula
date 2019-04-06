@@ -5,11 +5,11 @@
 	<?php
 	$breadcrumb = $page->getBreadcrumb();
 	foreach ($breadcrumb as $myPage): ?>
-	<li>
+	<li class="breadcrumb-item">
 		<a href="<?= $baseUrl . $myPage->slug ?>"><?= $myPage->title; ?></a>
 	</li>
 	<?php endforeach; ?>
-	<li class="active"><?= $page->title ?></li>
+	<li class="breadcrumb-item active"><?= $page->title ?></li>
 </ol>
 <?php endif; ?>
 
@@ -24,9 +24,9 @@
 <?php endif; ?>
 
 <?php if ($page->getSections()): ?>
-	<div class="row cols">
+	<div class="row">
 	<?php foreach ($page->sections as $k => $section): ?>
-		<div class="col-md-4" data-section-id="<?= $k ?>" data-editable="<?= $section->name ?>">
+		<div class="col" data-section-id="<?= $k ?>" data-editable="<?= $section->name ?>">
 			<?= $section->content ?>
 		</div>
 	<?php endforeach ?>
