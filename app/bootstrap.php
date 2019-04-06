@@ -12,7 +12,7 @@ $time = -microtime(true);
 
 // Try to load composer autoloader
 if (!is_file($autoload = _VENDOR_ . '/autoload.php')) {
-	throw new RuntimeException('Please install the dependencies with composer: `composer install`');
+	throw new \RuntimeException('Please install the dependencies with composer: `composer install`');
 }
 
 require $autoload;
