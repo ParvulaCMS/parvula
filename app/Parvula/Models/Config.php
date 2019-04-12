@@ -53,7 +53,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	/**
 	 * Get configuration value from key
 	 *
-	 * @param mixed $key
+	 * @param string $key
 	 * @param mixed $default optional Default if value if nothing
 	 * @return mixed Value from config
 	 */
@@ -74,11 +74,11 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	/**
 	 * Set configuration value from key (create a new key if needed)
 	 *
-	 * @param mixed $key
+	 * @param string $key
 	 * @param mixed $value
 	 * @param bool True if value is set
 	 */
-	public function set($key, $value) {
+	public function set(string $key, $value) {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
@@ -95,11 +95,11 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	/**
 	 * Edit configuration value from key (without creating a new key)
 	 *
-	 * @param mixed $key
+	 * @param string $key
 	 * @param mixed $value
 	 * @param bool False if the value does not exists
 	 */
-	public function edit($key, $value) {
+	public function edit(string $key, $value) {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
@@ -117,9 +117,10 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	/**
 	 * Check if key exists
 	 *
+	 * @param string $key
 	 * @return bool
 	 */
-	public function has($key) {
+	public function has($key): bool {
 		$pieces = explode('.', $key);
 		$ptr = &$this->config;
 
@@ -138,7 +139,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	 *
 	 * @return array
 	 */
-	public function toArray() {
+	public function toArray(): array {
 		return $this->config;
 	}
 
@@ -156,7 +157,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	 *
 	 * @see Config::set
 	 */
-    public function offsetSet($key, $value) {
+    public function offsetSet($key, $value): void {
 		$this->set($key, $value);
     }
 
@@ -169,7 +170,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
         return $this->has($key);
     }
 
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset): void {
     }
 
     /**

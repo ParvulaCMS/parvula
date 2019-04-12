@@ -9,7 +9,7 @@ use Exception;
  *
  * Usage example:
  * ```
- * $sess = new Parvula\Session('secret_string');
+ * $sess = new \Parvula\Session('secret_string');
  * $sess->start();
  *
  * $sess->set('user_id', $userID); // Set user_id
@@ -27,7 +27,7 @@ class Session {
 	/**
 	 * Constructor
 	 */
-	public function __construct($sessionName = 'SESSID') {
+	public function __construct(string $sessionName = 'SESSID') {
 		$this->sessionName = $sessionName;
 	}
 
@@ -37,7 +37,7 @@ class Session {
 	 * @param bool $regenerateId
 	 * @return bool If the session has started
 	 */
-	public function start($regenerateId = false) {
+	public function start(bool $regenerateId = false) {
 		if (!headers_sent()) {
 			session_name($this->sessionName);
 
@@ -56,7 +56,7 @@ class Session {
 	/**
 	 * Regenerate session id
 	 */
-	public function regenerateId() {
+	public function regenerateId(): void {
 		session_regenerate_id(true);
 	}
 
@@ -64,10 +64,10 @@ class Session {
 	 * Gets the session value
 	 *
 	 * @param string $index
-	 * @param  mixed $defaultValue (optional) Default value if nothing was found
+	 * @param mixed $defaultValue (optional) Default value if nothing was found
 	 * @return string|null
 	 */
-	public function get($index, $defaultValue = null) {
+	public function get(string $index, $defaultValue = null) {
 		if (!$this->has($index)) {
 			return $defaultValue;
 		}
@@ -79,9 +79,10 @@ class Session {
 	 * Set session value
 	 *
 	 * @param string $index
-	 * @param mixed  $value
+	 * @param mixed $value
+	 * @return mixed
 	 */
-	public function set($index, $value) {
+	public function set(string $index, $value) {
 		return $_SESSION[$index] = $value;
 	}
 
@@ -91,7 +92,7 @@ class Session {
 	 * @param  string  $index
 	 * @return boolean If the session index exists
 	 */
-	public function has($index) {
+	public function has(string $index) {
 		return isset($_SESSION[$index]);
 	}
 
@@ -100,7 +101,7 @@ class Session {
 	 *
 	 * @return bool
 	 */
-	public function destroy() {
+	public function destroy(): bool {
 		if ($this->isActive()) {
 			session_unset();
 
@@ -118,7 +119,7 @@ class Session {
 	 *
 	 * @return boolean
 	 */
-	public function isActive() {
+	public function isActive(): bool {
 		return session_status() === PHP_SESSION_ACTIVE;
 	}
 }

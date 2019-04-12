@@ -7,10 +7,10 @@ use JsonSerializable;
 use IteratorAggregate;
 use Parvula\ArrayableInterface;
 use Parvula\Models\Model;
-use MongoDB\Driver\Manager;
 use Parvula\Models\Page;
+use MongoDB\Driver\Manager;
 
-class Collection implements Countable, IteratorAggregate, JsonSerializable {
+class Collection implements ArrayableInterface, Countable, IteratorAggregate, JsonSerializable {
 
 	use CollectionTraits\PageCollectionTrait;
 
@@ -24,7 +24,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 */
 	protected $model;
 
-	public function __construct($items = [], $model = null) {
+	public function __construct(array $items = [], ?string $model = null) {
 		$this->items = $items;
 		$this->model = $model;
 	}
@@ -36,7 +36,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @param boolean $ascending (optional) Default true
 	 * @return \Parvula\Collections\Collection
 	 */
-	public function sortBy($field, $ascending = true) {
+	public function sortBy(string $field, ?bool $ascending = true): self {
 		$callback = function ($a, $b) use ($field) {
 			if (isset($a->$field, $b->$field)) {
 				return strcmp($a->$field, $b->$field);
@@ -68,7 +68,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @param array $values Values to filter (it will keep items with one of those values)
 	 * @return \Parvula\Collections\Collection New collection
 	 */
-	public function filter($field, array $values) {
+	public function filter(string $field, array $values): self {
 		$filteredItems = array_filter((array) $this->items, function ($item) use ($field, $values) {
 			if (isset($item->$field)) {
 				return in_array($item->$field, $values, true);
@@ -85,7 +85,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 *
 	 * @return int Number of items in the collection
 	 */
-	public function count() {
+	public function count(): int {
 		return count($this->items);
 	}
 
@@ -95,7 +95,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @param callable $fun Callback function
 	 * @return \Parvula\Collections\Collection New collection
 	 */
-	public function map(callable $fun) {
+	public function map(callable $fun): self {
 		$model = $this->model;
 
 		$transformedItems = [];
@@ -116,7 +116,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 *
 	 * @return bool
 	 */
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		return (array) $this->items === [];
 	}
 
@@ -126,7 +126,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 * @param mixed $item
 	 * @return \Parvula\Collections\Collection New collection
 	 */
-	public function add($item) {
+	public function add($item): self {
 		return new static(array_merge($this->items, [$item]), $this->model);
 	}
 
@@ -135,7 +135,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	 *
 	 * @return array
 	 */
-    public function toArray($removeNull = false) {
+	public function toArray(?bool $removeNull = false): array {
 		$accumulator = [];
 		$model = $this->model;
 		foreach ($this->all() as $item) {
@@ -148,7 +148,7 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 		}
 
 		return $accumulator;
-    }
+	}
 
     /**
      * Convert the collection into json
@@ -197,9 +197,9 @@ class Collection implements Countable, IteratorAggregate, JsonSerializable {
 	}
 
 	/**
-	 * @return \Parvula\Collections\Collection
+	 * @return static
 	 */
-	protected function cloneCollection() {
+	protected function cloneCollection(): self {
 		return new static($this->items, $this->model);
 	}
 }

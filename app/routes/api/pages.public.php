@@ -2,8 +2,6 @@
 
 namespace Parvula;
 
-use Exception;
-use Parvula\Exceptions\IOException;
 use Parvula\Transformers\PageHeadTransformer;
 
 /**

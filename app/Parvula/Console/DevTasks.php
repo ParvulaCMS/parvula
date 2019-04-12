@@ -14,7 +14,7 @@ class DevTasks {
 	 *
 	 * @param Event $event
 	 */
-	public static function runDevelopmentServer(Event $event) {
+	public static function runDevelopmentServer(Event $event): void {
 		$address = '127.0.0.1';
 		$port = 8000;
 		$args = $event->getArguments();

@@ -20,7 +20,7 @@ function classAliases(array $aliases) {
  * @param  string $pluginName
  * @return string
  */
-function getPluginClassname($pluginName) {
+function getPluginClassname(string $pluginName) {
 	return 'Plugins\\' . $pluginName . '\\' . $pluginName;
 }
 
@@ -77,27 +77,29 @@ function listPagesRoot(array $pages) {
  * @param  string $path optional
  * @return string
  */
-function url($path = '') {
+function url(string $path = '') {
 	$base = app('config')->get('urlBase');
 	if ($base) {
 		return $base . $path;
 	}
 
 	$prefix = app('config')->get('urlPrefix', '');
+
 	return $prefix . Parvula::getRelativeURIToRoot($path);
 }
 
 /**
  * Get application instance
  *
- * @param  string $key optional
+ * @param  string|null $key optional
  * @return mixed
  */
-function app($key = null) {
+function app(?string $key = null) {
 	$app = Parvula::getContainer();
 	if ($key === null) {
 		return $app;
 	}
+
 	return $app[$key];
 }
 
@@ -107,7 +109,7 @@ function app($key = null) {
  * @param  string $path optional
  * @return string
  */
-function appPath($path = '') {
+function appPath(string $path = '') {
 	return _APP_ . $path;
 }
 
@@ -117,7 +119,7 @@ function appPath($path = '') {
  * @param  string $path optional
  * @return string
  */
-function themesPath($path = '') {
+function themesPath(string $path = '') {
 	return _THEMES_ . $path;
 }
 
@@ -127,7 +129,7 @@ function themesPath($path = '') {
  * @param  string $path optional
  * @return string
  */
-function pluginsPath($path = '') {
+function pluginsPath(string $path = '') {
 	return _PLUGINS_ . $path;
 }
 
@@ -137,22 +139,22 @@ function pluginsPath($path = '') {
  * @param  string $path optional
  * @return string
  */
-function uploadsPath($path = '') {
+function uploadsPath(string $path = '') {
 	return _UPLOADS_ . $path;
 }
 
 /**
  * List pages and children
  *
- * @param $pages Array of Page
- * @param $options Array of options (options available: ul, li, level, liCallback)
+ * @param array $pages Array of Page
+ * @param array $options Array of options (options available: ul, li, level, liCallback)
  * @return string Html list of pages
  */
-function listPagesAndChildren(array $pages, array $options, $level = 9) {
-	$ul = isset($options['ul']) ? $options['ul'] : '';
-	$li = isset($options['li']) ? $options['li'] : '';
-	$liCallback = isset($options['liCallback']) ? $options['liCallback'] : null;
-	$level = isset($options['level']) ? $options['level'] : 9;
+function listPagesAndChildren(array $pages, array $options) {
+	$ul = $options['ul'] ?? '';
+	$li = $options['li'] ?? '';
+	$liCallback = $options['liCallback'] ?? null;
+	$level = $options['level'] ?? 9;
 	if ($level > 0) {
 		$str = '<ul ' . $ul . '>' . PHP_EOL;
 		foreach ($pages as $page) {
@@ -160,7 +162,7 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 			if ($liCallback !== null) {
 				$anch = $liCallback($page);
 			}
-			$str .= '<li '. $li. '>' . $anch;
+			$str .= '<li ' . $li . '>' . $anch;
 			if ($page->getChildren()) {
 				--$options['level'];
 				$str .= listPagesAndChildren($page->getChildren(), $options);
@@ -168,7 +170,9 @@ function listPagesAndChildren(array $pages, array $options, $level = 9) {
 			}
 			$str .= '</li>' . PHP_EOL;
 		}
+
 		return $str . '</ul>' . PHP_EOL;
 	}
+
 	return '';
 }

@@ -51,7 +51,7 @@ class PluginMediator {
 	 * @param string $event Event name
 	 * @param array ($args) Arguments
 	 */
-	public function trigger($event, array $args = []) {
+	public function trigger($event, array $args = []): void {
 		$event = 'on' . ucfirst($event);
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $event)) {

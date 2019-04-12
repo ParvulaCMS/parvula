@@ -2,7 +2,6 @@
 
 namespace Parvula\Http;
 
-use Parvula\Parsers\ParserInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -15,19 +14,18 @@ use Psr\Http\Message\ResponseInterface;
  * @license MIT License
  */
 class APIResponse {
-
 	/**
 	 * Output rendered template
 	 *
 	 * @param  ResponseInterface $response
-	 * @param  array $data Associative array of data to be returned
+	 * @param  array|object $data Associative array of data to be returned
 	 * @param  int $status HTTP status code
 	 * @return ResponseInterface
 	 */
-	public function json(ResponseInterface $res, $data = [], $status = 200) {
-		return $res
+	public function json(ResponseInterface $response, $data = [], int $status = 200) {
+		return $response
 			->withStatus($status)
 			->withHeader('Content-Type', 'application/json')
-			->write(json_encode($data, JSON_PRETTY_PRINT));
+			->write(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 	}
 }

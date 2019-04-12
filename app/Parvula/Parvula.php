@@ -42,7 +42,7 @@ class Parvula {
 	 *
 	 * @param ServerRequestInterface $req
 	 */
-	public static function setRequest(ServerRequestInterface $req) {
+	public static function setRequest(ServerRequestInterface $req): void {
 		static::$request = $req;
 	}
 

@@ -250,7 +250,7 @@ class FilesSystem implements IOInterface {
 	 *
 	 * @param string $workingDirectory
 	 */
-	public function setCurrentWorkingDirectory($workingDirectory) {
+	public function setCurrentWorkingDirectory($workingDirectory): void {
 		$this->workingDirectory = $workingDirectory;
 	}
 }

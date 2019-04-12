@@ -24,14 +24,14 @@ abstract class Model implements ArrayableInterface {
 	/**
 	 * Transform the instance fields to an array
 	 *
-	 * @return array|null Array of instance's fields
+	 * @return array Array of instance's fields
 	 */
-	public function toArray($removeNull = false) {
-		$arr = $this->getVisibleFields($removeNull);
+	public function toArray(): array {
+		$arr = $this->getVisibleFields();
 
 		foreach ($arr as $key => $value) {
 			if ($value instanceof Model) {
-				$arr[$key] = $value->toArray($removeNull);
+				$arr[$key] = $value->toArray();
 			} elseif ($value instanceof Closure) {
 				$arr[$key] = $value();
 			}
@@ -50,9 +50,9 @@ abstract class Model implements ArrayableInterface {
 	/**
 	 * Get all visible fields
 	 *
-	 * @return array|null Visible fields
+	 * @return array Visible fields
 	 */
-	protected function getVisibleFields($removeNull = false) {
+	protected function getVisibleFields(?bool $removeNull = false): array {
 		$fields = $this->getAllFields();
 		$res = [];
 
@@ -101,7 +101,7 @@ abstract class Model implements ArrayableInterface {
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function __get($name) {
+	public function __get(string $name) {
 		if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
 			return $this->lazy[$name]();
 		}
@@ -112,7 +112,7 @@ abstract class Model implements ArrayableInterface {
 	 * @param Closure $val
 	 * @return mixed
 	 */
-	public function __set($name, $val) {
+	public function __set(string $name, $val) {
 		if ($val instanceof Closure) {
 			return $this->lazy[$name] = $val;
 		}
@@ -124,17 +124,17 @@ abstract class Model implements ArrayableInterface {
 	 * @param string $name
 	 * @return mixed
 	 */
-    public function __isset($name) {
-        return isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure;
-    }
+	public function __isset($name) {
+		return isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure;
+	}
 
 	/**
 	 * @param string $name
 	 * @return mixed
 	 */
-    public function __unset($name) {
-        if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
-        	unset($this->lazy[$name]);
+	public function __unset($name) {
+		if (isset($this->lazy[$name]) && $this->lazy[$name] instanceof Closure) {
+			unset($this->lazy[$name]);
 		}
     }
 }

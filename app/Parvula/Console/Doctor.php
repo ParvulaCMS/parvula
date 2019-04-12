@@ -6,7 +6,7 @@ use Composer\Script\Event;
 
 class Doctor {
 
-    static protected $io;
+	protected static $io;
 
 	private static function test($str, $fn) {
 		static::$io->write('# ' . $str);
@@ -22,7 +22,7 @@ class Doctor {
 	 *
 	 * @param Event $event
 	 */
-	public static function analyse(Event $event) {
+	public static function analyse(Event $event): void {
 		error_reporting(E_ALL);
 		$_executeFromComposerScript = true;
 		require 'app/bootstrap.php';

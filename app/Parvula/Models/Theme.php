@@ -89,7 +89,7 @@ class Theme {
 			return $this->extension === $file->getExtension() && $file->getBasename()[0] !== '_';
 		};
 
-		(new FS($this->path))->index($this->layoutsFolder, function ($file, $dir) {
+		(new FS($this->path))->index($this->layoutsFolder, function ($file, $dir): void {
 			$file = $file->getBasename('.' . $file->getExtension());
 			if ($dir) {
 				$dir .= '/';

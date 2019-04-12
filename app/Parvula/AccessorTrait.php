@@ -20,7 +20,7 @@ trait AccessorTrait {
 	 * @param  string $default (optional)
 	 * @return string Field of an object, $default if nothing
 	 */
-	public function get($field, $default = '') {
+	public function get(string $field, $default = '') {
 		if (isset($this->{$field}) && !empty($this->{$field})) {
 			return $this->{$field};
 		}
@@ -33,7 +33,7 @@ trait AccessorTrait {
 	 * @param  string $field
 	 * @return boolean
 	 */
-	public function has($field) {
+	public function has($field): bool {
 		return isset($this->{$field});
 	}
 }

@@ -49,7 +49,7 @@ class Section extends Model
 	 *
 	 * @return array
 	 */
-	public function getMeta() {
+	public function getMeta(): array {
 		$meta = [];
 		foreach ($this->getVisibleFields() as $key => $value) {
 			if ($key[0] !== '_' && $key !== 'content') {
@@ -60,11 +60,11 @@ class Section extends Model
 	}
 
 	/**
-	 * Override `tostring` when print this object
+	 * Override `__toString` when print this object
 	 *
 	 * @return string
 	 */
-	public function __tostring() {
+	public function __toString() {
 		return json_encode($this->toArray());
 	}
 }

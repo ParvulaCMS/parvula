@@ -65,7 +65,7 @@ class Cache implements ContainerInterface {
 	 * @param string $id
 	 * @param mixed $value
 	 */
-	public function set($id, $value) {
+	public function set($id, $value): void {
 		$this->readData();
 
 		$this->data[$id] = $value;

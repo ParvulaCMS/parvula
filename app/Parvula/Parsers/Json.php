@@ -31,7 +31,7 @@ class Json implements ParserInterface {
 	 * @throws LogicException If data could not be encoded
 	 */
 	public function encode($data) {
-		$json = json_encode($data, JSON_PRETTY_PRINT);
+		$json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 		if (json_last_error() !== JSON_ERROR_NONE) {
 			$error = json_last_error_msg();
 			throw new LogicException(sprintf("Failed to encode data, error: '%s'", $error));

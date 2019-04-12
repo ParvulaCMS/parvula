@@ -28,7 +28,7 @@ $this->get('', function ($req, $res) use ($fs) {
 		// Detailed view
 		if (isset($req->getQueryParams()['full'])) {
 			$files = [];
-			$fs->index('', function (SplFileInfo $file, $cdir) use (&$files) {
+			$fs->index('', function (SplFileInfo $file, $cdir) use (&$files, $uriPath): void {
 				$files[] = [
 					'filename' => $file->getFileName(),
 					'urlfilename' => url($file->getFileName()),

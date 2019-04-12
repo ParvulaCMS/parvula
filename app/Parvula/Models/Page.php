@@ -163,7 +163,7 @@ class Page extends Model
 	 *
 	 * @return array array of Section
 	 */
-	public function getSections() {
+	public function getSections(): array {
 		return $this->sections;
 	}
 
@@ -173,7 +173,7 @@ class Page extends Model
 	 * @param  string $name Section name
 	 * @return Section|bool False if no section
 	 */
-	public function getSection($name) {
+	public function getSection(string $name) {
 		foreach ($this->sections as $section) {
 			if ($section->name === $name) {
 				return $section;
@@ -188,7 +188,7 @@ class Page extends Model
 	 * @param Page $child
 	 * @return Page
 	 */
-	public function addChild(Page $child) {
+	public function addChild(Page $child): self {
 		$this->children = $this->children->add($child);
 
 		return $this;
@@ -199,7 +199,7 @@ class Page extends Model
 	 *
 	 * @return bool
 	 */
-	public function hasChildren() {
+	public function hasChildren(): bool {
 		return !$this->children->isEmpty();
 	}
 
@@ -208,7 +208,7 @@ class Page extends Model
 	 *
 	 * @return \Parvula\Collections\Collection Pages
 	 */
-	public function getChildren() {
+	public function getChildren(): ?Collection {
 		if ($this->children) {
 			return $this->children;
 		}
@@ -219,7 +219,7 @@ class Page extends Model
 	 *
 	 * @return Page Parent Page
 	 */
-	public function getParent() {
+	public function getParent(): ?Page {
 		return $this->parent;
 	}
 
@@ -228,7 +228,7 @@ class Page extends Model
 	 *
 	 * @return bool
 	 */
-	public function hasParent() {
+	public function hasParent(): bool {
 		return (bool) $this->parent;
 	}
 
@@ -236,7 +236,7 @@ class Page extends Model
 	 * Get php DateTime object with Page date
 	 * More info https://php.net/manual/en/class.datetime.php
 	 *
-	 * @return DateTime
+	 * @return DateTime|bool
 	 */
 	public function getDateTime() {
 		if (!$this->date) {
@@ -263,7 +263,7 @@ class Page extends Model
 	/**
 	 * {@inheritDoc}
 	 */
-	public function toArray() {
+	public function toArray(): array {
 		$arr = parent::toArray();
 
 		// Convert each section to array
@@ -279,7 +279,7 @@ class Page extends Model
 	 *
 	 * @return string
 	 */
-	public function __tostring() {
+	public function __toString() {
 		return json_encode($this->toArray());
 	}
 }
