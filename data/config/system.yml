@@ -5,7 +5,7 @@
 # Shows errors and exceptions if 'true' (should set to 'false' in production)
 debug: true
 
-# Log errors and exceptions if 'true' (recommanded in production)
+# Log errors and exceptions if 'true' (recommended in production)
 # To use this option, Monolog package is needed (read the doc for more infos)
 # Note: Errors loggin may be blocked if debug is enable
 logErrors: false
@@ -44,7 +44,7 @@ secretToken: YourSuperSecretTokenForTheAPI
 # Force the login to use transport layer protection (SSL/TLS) (MUST be *true* in production)
 # SSL versions 1, 2, and 3 should no longer be used
 # The best practice is to just provide support for the TLS protocols (1.0, 1.1 and 1.2)
-# For more informations https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
+# For more information https://owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
 forceLoginOnTLS: false
 
 # File extensions in media folder
@@ -89,8 +89,8 @@ apiPrefix: /api/0
 # Plugins URL prefix for plugin's assets ($this->pluginUri) (optional)
 # pluginsUrlPrefix: 'subfolder/'
 
-# Routes can be cached (exanple: 'routes.php') (optional, false if nothing)
-# Must be set to to a valid filename within a writeable directory
+# Routes can be cached (example: 'routes.php') (optional, false if nothing)
+# Must be set to to a valid filename within a writable directory
 # routerCacheFile: routes.php
 
 # WARNING Should be true (empty = true)
