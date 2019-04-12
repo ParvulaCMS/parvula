@@ -4,12 +4,12 @@ namespace Parvula\Parsers;
 
 use Symfony\Component\Yaml\Yaml as YamlSymfony;
 
-class Yaml implements ParserInterface {
-
+class Yaml implements ParserInterface
+{
 	/**
-	 * Parse Yaml
+	 * Parse Yaml.
 	 *
-	 * @param string $input The string to parse
+	 * @param  string       $input The string to parse
 	 * @return array|object Appropriate PHP type
 	 */
 	public function decode($yaml) {
@@ -17,10 +17,10 @@ class Yaml implements ParserInterface {
 	}
 
 	/**
-	 * Generate Yaml
+	 * Generate Yaml.
 	 *
-	 * @param array|object $data Data to encode
-	 * @return string The json encoded string
+	 * @param  array|object $data Data to encode
+	 * @return string       The json encoded string
 	 */
 	public function encode($data) {
 		// preg_replace('/^---\n/', '', $dump); // TODO

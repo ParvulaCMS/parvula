@@ -6,15 +6,15 @@ use Pimple\Container;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Parvula
+ * Parvula.
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Parvula {
+class Parvula
+{
 	private static $request;
 	private static $container = null;
 
@@ -26,19 +26,20 @@ class Parvula {
 
 	/**
 	 * Get core container
-	 * Singleton pattern
+	 * Singleton pattern.
 	 *
 	 * @return Pimple\Container
 	 */
 	public static function getContainer() {
 		if (self::$container === null) {
-			self::$container = new Container;
+			self::$container = new Container();
 		}
+
 		return self::$container;
 	}
 
 	/**
-	 * Set Request
+	 * Set Request.
 	 *
 	 * @param ServerRequestInterface $req
 	 */
@@ -47,9 +48,9 @@ class Parvula {
 	}
 
 	/**
-	 * Get relative URI from the root
+	 * Get relative URI from the root.
 	 *
-	 * @param string $path Append a path to the URI
+	 * @param  string $path Append a path to the URI
 	 * @return string
 	 */
 	public static function getRelativeURIToRoot($path = '') {
@@ -77,7 +78,7 @@ class Parvula {
 	}
 
 	/**
-	 * Get request method
+	 * Get request method.
 	 *
 	 * @return string
 	 */

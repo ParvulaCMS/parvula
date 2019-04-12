@@ -2,14 +2,11 @@
 
 namespace Parvula\PageRenderers;
 
-use Parvula\Models\Page;
-use Parvula\Parsers\ParserInterface;
-use Parvula\Exceptions\PageException;
-use Parvula\PageRenderers\PageRendererInterface;
 use Parvula\ContentParser\ContentParserInterface;
+use Parvula\Models\Page;
 
-class DatabasePageRenderer implements PageRendererInterface {
-
+class DatabasePageRenderer implements PageRendererInterface
+{
 	/**
 	 * @var ContentParserInterface
 	 */
@@ -17,10 +14,10 @@ class DatabasePageRenderer implements PageRendererInterface {
 
 	/**
 	 * Constructor
-	 * Available $options keys are delimiterMatcher, sectionMatcher and delimiterRender
+	 * Available $options keys are delimiterMatcher, sectionMatcher and delimiterRender.
 	 *
 	 * @param ContentParserInterface $contentParser
-	 * @param array $options
+	 * @param array                  $options
 	 */
 	public function __construct(ContentParserInterface $contentParser, $options = []) {
 		$this->contentParser = $contentParser;
@@ -28,17 +25,16 @@ class DatabasePageRenderer implements PageRendererInterface {
 	}
 
 	/**
-	 * Render Page object to string
+	 * Render Page object to string.
 	 *
-	 * @param Page $page
+	 * @param  Page   $page
 	 * @return string Rendered page
 	 */
 	public function render(Page $page) {
-		return;
 	}
 
 	/**
-	 * Decode string data to create a Page object
+	 * Decode string data to create a Page object.
 	 *
 	 * @param \MongoDB\Model\BSONDocument $page Page using to create the page
 	 * @param array ($options) default page field(s)
@@ -51,6 +47,7 @@ class DatabasePageRenderer implements PageRendererInterface {
 				if (isset($section->content)) {
 					$section->content = $this->contentParser->parse($section->content);
 				}
+
 				return $section;
 			}, (array) $page->sections);
 		}

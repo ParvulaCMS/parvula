@@ -8,7 +8,8 @@ use Parvula\Models\Page;
 use Parvula\PageRenderers\PageRendererInterface;
 
 // abstract class PageRepository extends BaseRepository implements Iterator, ArrayableInterface {
-trait PageRepositoryTrait {
+trait PageRepositoryTrait
+{
 	// /**
 	//  * @var array Cache (array<string, Page>)
 	//  */
@@ -31,7 +32,7 @@ trait PageRepositoryTrait {
 	// }
 
 	/**
-	 * Get all pages to array
+	 * Get all pages to array.
 	 *
 	 * @return array Return an array of 'Page' (array<Page>)
 	 */
@@ -54,19 +55,19 @@ trait PageRepositoryTrait {
 	}
 
 	/**
-	 * Sort array of objects from a specific field
+	 * Sort array of objects from a specific field.
 	 *
-	 * @param array &$arr An array of objects (array<?>)
-	 * @param string $field Field name to sort
-	 * @param integer $sortType Sorting type (flag)
-	 * @return boolean
+	 * @param  array  &$arr     An array of objects (array<?>)
+	 * @param  string $field    Field name to sort
+	 * @param  int    $sortType Sorting type (flag)
+	 * @return bool
 	 */
 	// TODO remove
 	// private function arraySortByField(array &$arr, $field, $sortType) {
 	// }
 
 	/**
-	 * Set page renderer
+	 * Set page renderer.
 	 *
 	 * @param PageRendererInterface $customRenderer
 	 */

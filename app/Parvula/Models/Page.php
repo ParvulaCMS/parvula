@@ -2,17 +2,14 @@
 
 namespace Parvula\Models;
 
-use Closure;
 use DateTime;
-use Parvula\Models\Section;
 use Parvula\Collections\Collection;
-use Parvula\Repositories\BaseRepository; // TODO PageRepo
+// TODO PageRepo
 use Parvula\Exceptions\PageException;
 
 /**
- * This class represents a Page
+ * This class represents a Page.
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
@@ -49,7 +46,7 @@ class Page extends Model
 	 * @var array
 	 */
 	protected $invisible = [
-		'_id', 'parent', 'lazy'
+		'_id', 'parent', 'lazy',
 	];
 
 	/**
@@ -57,10 +54,10 @@ class Page extends Model
 	 * The parameter $info must contain at least `title` and `slug` fields.
 	 * The `slug` field need to be normalized (a-z0-9-_+/).
 	 *
-	 * @param array $info Array with page information (must contain `title` and `slug` fields)
-	 * @param string $content (optional) Content
-	 * @param array $sections (optional) array of Section
-     * @throws PageException if `$pageInfo` does not have field `title` and `slug`
+	 * @param  array         $info     Array with page information (must contain `title` and `slug` fields)
+	 * @param  string        $content  (optional) Content
+	 * @param  array         $sections (optional) array of Section
+	 * @throws PageException if `$pageInfo` does not have field `title` and `slug`
 	 * @throws PageException if `$pageInfo[slug]` value is not normalized
 	 */
 	public function __construct(array $info, $content = '', array $sections = []) {
@@ -120,17 +117,17 @@ class Page extends Model
 	}
 
 	/**
-	 * Compare this page with an other (compare the slug)
+	 * Compare this page with an other (compare the slug).
 	 *
-	 * @param Page $page2
-	 * @return boolean True if both pages are the same
+	 * @param  Page $page2
+	 * @return bool True if both pages are the same
 	 */
 	public function equals(Page $page2) {
 		return $this->slug === $page2->slug;
 	}
 
 	/**
-	 * Get page's content
+	 * Get page's content.
 	 *
 	 * @return string
 	 */
@@ -139,7 +136,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Get page's metadata
+	 * Get page's metadata.
 	 *
 	 * @return array
 	 */
@@ -159,7 +156,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Get sections
+	 * Get sections.
 	 *
 	 * @return array array of Section
 	 */
@@ -168,9 +165,9 @@ class Page extends Model
 	}
 
 	/**
-	 * Get section
+	 * Get section.
 	 *
-	 * @param  string $name Section name
+	 * @param  string       $name Section name
 	 * @return Section|bool False if no section
 	 */
 	public function getSection(string $name) {
@@ -179,13 +176,14 @@ class Page extends Model
 				return $section;
 			}
 		}
+
 		return false;
 	}
 
 	/**
-	 * Add page child
+	 * Add page child.
 	 *
-	 * @param Page $child
+	 * @param  Page $child
 	 * @return Page
 	 */
 	public function addChild(Page $child): self {
@@ -195,7 +193,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Check if the page has a children
+	 * Check if the page has a children.
 	 *
 	 * @return bool
 	 */
@@ -204,7 +202,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Get page children
+	 * Get page children.
 	 *
 	 * @return \Parvula\Collections\Collection Pages
 	 */
@@ -215,7 +213,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Get page parent
+	 * Get page parent.
 	 *
 	 * @return Page Parent Page
 	 */
@@ -224,7 +222,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Check if the page has a parent
+	 * Check if the page has a parent.
 	 *
 	 * @return bool
 	 */
@@ -234,7 +232,7 @@ class Page extends Model
 
 	/**
 	 * Get php DateTime object with Page date
-	 * More info https://php.net/manual/en/class.datetime.php
+	 * More info https://php.net/manual/en/class.datetime.php.
 	 *
 	 * @return DateTime|bool
 	 */
@@ -242,12 +240,13 @@ class Page extends Model
 		if (!$this->date) {
 			return false;
 		}
+
 		return new DateTime($this->date);
 	}
 
 	/**
 	 * Breadcrumb of parents
-	 * The first element is the oldest parent, the last one, the adjacent
+	 * The first element is the oldest parent, the last one, the adjacent.
 	 *
 	 * @return array Array of Page
 	 */
@@ -257,11 +256,12 @@ class Page extends Model
 		while ($page = $page->getParent()) {
 			$pages[] = $page;
 		}
+
 		return array_reverse($pages);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritdoc}
 	 */
 	public function toArray(): array {
 		$arr = parent::toArray();
@@ -275,7 +275,7 @@ class Page extends Model
 	}
 
 	/**
-	 * Override `tostring` when print this object
+	 * Override `tostring` when print this object.
 	 *
 	 * @return string
 	 */

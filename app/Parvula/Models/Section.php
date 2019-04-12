@@ -2,13 +2,9 @@
 
 namespace Parvula\Models;
 
-use DateTime;
-use Parvula\Exceptions\SectionException;
-
 /**
- * This class represents a Section
+ * This class represents a Section.
  *
- * @package Parvula
  * @version 0.7.0
  * @since 0.7.0
  * @author Patrice Sa
@@ -17,16 +13,15 @@ use Parvula\Exceptions\SectionException;
  */
 class Section extends Model
 {
-
 	/**
 	 * @var array
 	 */
 	protected $invisible = ['_id'];
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param array|object $info Section information
+	 * @param array|object    $info    Section information
 	 * @param \Closure|string $content (optional) Content
 	 */
 	public function __construct(array $info = [], $content = null) {
@@ -45,7 +40,7 @@ class Section extends Model
 	}
 
 	/**
-	 * Get section's metadata
+	 * Get section's metadata.
 	 *
 	 * @return array
 	 */
@@ -56,11 +51,12 @@ class Section extends Model
 				$meta[$key] = $value;
 			}
 		}
+
 		return $meta;
 	}
 
 	/**
-	 * Override `__toString` when print this object
+	 * Override `__toString` when print this object.
 	 *
 	 * @return string
 	 */

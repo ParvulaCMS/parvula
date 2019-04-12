@@ -3,24 +3,23 @@
 namespace Parvula;
 
 /**
- * Assets manager
+ * Assets manager.
  *
- * @package Parvula
  * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Asset {
-
+class Asset
+{
 	/**
 	 * @var string
 	 */
 	private static $basePath = '';
 
 	/**
-	 * Set base path to prefix all assets
-	 * @param type $basePath
+	 * Set base path to prefix all assets.
+	 * @param  type $basePath
 	 * @return type
 	 */
 	public static function setBasePath($basePath) {
@@ -28,7 +27,7 @@ class Asset {
 	}
 
 	/**
-	 * Get assets base path
+	 * Get assets base path.
 	 * @return string Base path
 	 */
 	public static function getBasePath() {
@@ -37,7 +36,7 @@ class Asset {
 
 	/**
 	 * Auto render the ressource file
-	 * Read the extension and automatically load the right type
+	 * Read the extension and automatically load the right type.
 	 * @param string|array $ressource Ressource filename
 	 * @param string ($pattern)
 	 * @return string Html output
@@ -49,13 +48,13 @@ class Asset {
 			return Asset::js($name, $pattern);
 		} elseif ($ext === 'css') {
 			return Asset::css($name, $pattern);
-		} else {
-			return false;
 		}
+
+			return false;
 	}
 
 	/**
-	 * Render CSS
+	 * Render CSS.
 	 * @param string|array $css Css filename
 	 * @param string ($pattern)
 	 * @return string Html output
@@ -73,7 +72,7 @@ class Asset {
 	}
 
 	/**
-	 * Render Javascript
+	 * Render Javascript.
 	 * @param string|array $js Js filename
 	 * @param string ($pattern)
 	 * @return string Html output
@@ -92,10 +91,10 @@ class Asset {
 
 	/**
 	 * Render tag from pattern
-	 * Use {{file}} to replace this with real file path in pattern
-	 * @param string|array $files
-	 * @param string $pattern Pattern to use
-	 * @return string Html output
+	 * Use {{file}} to replace this with real file path in pattern.
+	 * @param  string|array $files
+	 * @param  string       $pattern Pattern to use
+	 * @return string       Html output
 	 */
 	private static function renderTag($files, $pattern) {
 		if (is_string($files)) {

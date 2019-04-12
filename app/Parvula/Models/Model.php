@@ -7,22 +7,21 @@ use Parvula\AccessorTrait;
 use Parvula\ArrayableInterface;
 
 /**
- * This abstract class represents a Model
+ * This abstract class represents a Model.
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.8.0
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Model implements ArrayableInterface {
-
+abstract class Model implements ArrayableInterface
+{
 	use AccessorTrait;
 
 	protected $lazy = [];
 
 	/**
-	 * Transform the instance fields to an array
+	 * Transform the instance fields to an array.
 	 *
 	 * @return array Array of instance's fields
 	 */
@@ -48,7 +47,7 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * Get all visible fields
+	 * Get all visible fields.
 	 *
 	 * @return array Visible fields
 	 */
@@ -75,7 +74,7 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * Get all fields from an instance
+	 * Get all fields from an instance.
 	 *
 	 * @return array
 	 */
@@ -84,13 +83,14 @@ abstract class Model implements ArrayableInterface {
 		foreach ($this as $key => $value) {
 			$acc[$key] = $value;
 		}
+
 		return $acc;
 	}
 
 	/**
-	 * Transform model
+	 * Transform model.
 	 *
-	 * @param callable $fun Callback function for the model
+	 * @param  callable $fun Callback function for the model
 	 * @return mixed
 	 */
 	public function transform(callable $fun) {
@@ -98,7 +98,7 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * @param string $name
+	 * @param  string $name
 	 * @return mixed
 	 */
 	public function __get(string $name) {
@@ -108,8 +108,8 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * @param string $name
-	 * @param Closure $val
+	 * @param  string  $name
+	 * @param  Closure $val
 	 * @return mixed
 	 */
 	public function __set(string $name, $val) {
@@ -121,7 +121,7 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * @param string $name
+	 * @param  string $name
 	 * @return mixed
 	 */
 	public function __isset($name) {
@@ -129,7 +129,7 @@ abstract class Model implements ArrayableInterface {
 	}
 
 	/**
-	 * @param string $name
+	 * @param  string $name
 	 * @return mixed
 	 */
 	public function __unset($name) {

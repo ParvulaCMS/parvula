@@ -4,17 +4,17 @@ namespace Parvula;
 
 /**
  * Helper for Iterable classes
- * This trait will iterate on the `data` field
+ * This trait will iterate on the `data` field.
  *
- * @package Parvula
  * @version 0.7.0
  * @since 0.7.0
  * @author Fabien Sa
  * @license MIT License
  */
-trait IterableTrait {
+trait IterableTrait
+{
 	/**
-	 * Rewind pages internal pointer
+	 * Rewind pages internal pointer.
 	 *
 	 * @return mixed
 	 */
@@ -23,7 +23,7 @@ trait IterableTrait {
 	}
 
 	/**
-	 * Get current page
+	 * Get current page.
 	 *
 	 * @return Page
 	 */
@@ -32,7 +32,7 @@ trait IterableTrait {
 	}
 
 	/**
-	 * Get current key
+	 * Get current key.
 	 *
 	 * @return string
 	 */
@@ -41,7 +41,7 @@ trait IterableTrait {
 	}
 
 	/**
-	 * Get next page
+	 * Get next page.
 	 *
 	 * @return Page
 	 */
@@ -50,7 +50,7 @@ trait IterableTrait {
 	}
 
 	/**
-	 * Check if current pages internal pointer is valid
+	 * Check if current pages internal pointer is valid.
 	 *
 	 * @return bool
 	 */

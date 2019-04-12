@@ -6,7 +6,7 @@ use DOMDocument;
 
 /**
  * Plugin class @TODO
- * Abstract class, need to be inherited to create a new plugin
+ * Abstract class, need to be inherited to create a new plugin.
  *
  * Minimal exemple :
  * ```
@@ -15,13 +15,13 @@ use DOMDocument;
  * class Slider extends \Parvula\Plugin { ... }
  * ```
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-abstract class Plugin {
+abstract class Plugin
+{
 	/**
 	 * @var string Plugin path
 	 */
@@ -46,20 +46,21 @@ abstract class Plugin {
 	}
 
 	/**
-	 * Get the current plugin path, useful for the backend part
+	 * Get the current plugin path, useful for the backend part.
 	 *
-	 * @param string $suffix optional Suffix
+	 * @param  string $suffix optional Suffix
 	 * @return string the current plugin path
 	 */
 	protected function getPath($suffix = '') {
-		$class = str_replace('\\', '/', get_called_class());
+		$class = str_replace('\\', '/', static::class);
 		$class = dirname($class);
 		$class = str_replace('Plugins/', '', $class);
+
 		return _PLUGINS_ . $class . '/' . $suffix;
 	}
 
 	/**
-	 * Alias for getPath
+	 * Alias for getPath.
 	 *
 	 * @see getPath
 	 */
@@ -68,7 +69,7 @@ abstract class Plugin {
 	}
 
 	/**
- 	 * Get the current plugin URI, useful for the client part
+ 	 * Get the current plugin URI, useful for the client part.
  	 *
  	 * @param string $suffix optional Suffix
  	 * @return string the current URI path
@@ -78,7 +79,7 @@ abstract class Plugin {
 	}
 
 	/**
-	 * Alias for getUri
+	 * Alias for getUri.
 	 *
 	 * @see getUri
 	 */
@@ -87,7 +88,7 @@ abstract class Plugin {
 	}
 
 	/**
-	 * Append string to the given element
+	 * Append string to the given element.
 	 *
 	 * @param  string $html
 	 * @param  string $append
@@ -120,24 +121,24 @@ abstract class Plugin {
 	}
 
 	/**
-	 * Append string to the header element (<head>)
+	 * Append string to the header element (<head>).
 	 *
-	 * @param  string $html Html to modify
+	 * @param  string $html   Html to modify
 	 * @param  string $append Html to append
 	 * @return string Html ouput
 	 */
 	protected function appendToHeader($html, $append) {
-		return preg_replace("/(< ?\/ ?head)/", $append . "$1", $html);
+		return preg_replace('/(< ?\\/ ?head)/', $append . '$1', $html);
 	}
 
 	/**
-	 * Append string to the end of the body element (right before </body>)
+	 * Append string to the end of the body element (right before </body>).
 	 *
-	 * @param  string $html Html to modify
+	 * @param  string $html   Html to modify
 	 * @param  string $append Html to append
 	 * @return string Html ouput
 	 */
 	protected function appendToBody($html, $append) {
-		return preg_replace("/(< ?\/ ?body)/", $append . "$1", $html);
+		return preg_replace('/(< ?\\/ ?body)/', $append . '$1', $html);
 	}
 }

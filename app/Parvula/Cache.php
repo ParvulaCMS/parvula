@@ -3,12 +3,10 @@
 namespace Parvula;
 
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Psr\Container\ContainerExceptionInterface;
 
 // DEV TODO
-class Cache implements ContainerInterface {
-
+class Cache implements ContainerInterface
+{
 	private $filename;
 	private $data;
 
@@ -21,8 +19,10 @@ class Cache implements ContainerInterface {
 			if (file_exists($this->filename)) {
 				$raw = file_get_contents($this->filename);
 				$this->data = json_decode($raw, true);
+
 				return true;
 			}
+
 			return false;
 		}
 	}
@@ -30,12 +30,12 @@ class Cache implements ContainerInterface {
 	/**
 	 * Finds an entry of the container by its identifier and returns it.
 	 *
-	 * @param string $id Identifier of the entry to look for.
+	 * @param string $id identifier of the entry to look for
 	 *
-	 * @throws NotFoundException  No entry was found for this identifier.
-	 * @throws ContainerException Error while retrieving the entry.
+	 * @throws NotFoundException  no entry was found for this identifier
+	 * @throws ContainerException error while retrieving the entry
 	 *
-	 * @return mixed Entry.
+	 * @return mixed entry
 	 */
 	public function get($id) {
 		$this->readData();
@@ -43,6 +43,7 @@ class Cache implements ContainerInterface {
 		if (!isset($this->data[$id])) {
 			throw new NotFoundException('No entry was found for this identifier.');
 		}
+
 		return $this->data[$id];
 	}
 
@@ -50,20 +51,21 @@ class Cache implements ContainerInterface {
 	 * Returns true if the container can return an entry for the given identifier.
 	 * Returns false otherwise.
 	 *
-	 * @param string $id Identifier of the entry to look for.
+	 * @param string $id identifier of the entry to look for
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function has($id) {
 		$this->readData();
+
 		return isset($this->data[$id]);
 	}
 
 	/**
-	 * Set a value
+	 * Set a value.
 	 *
 	 * @param string $id
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function set($id, $value): void {
 		$this->readData();

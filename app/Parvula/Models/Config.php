@@ -7,16 +7,15 @@ use Parvula\ArrayableInterface;
 use Psr\Container\ContainerInterface;
 
 /**
- * Configuration wrapper for config array
+ * Configuration wrapper for config array.
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Config extends Model implements ContainerInterface, ArrayableInterface, ArrayAccess {
-
+class Config extends Model implements ContainerInterface, ArrayableInterface, ArrayAccess
+{
 	/**
 	 * @var array
 	 */
@@ -30,7 +29,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	];
 
 	/**
-	 * Populate class with config array
+	 * Populate class with config array.
 	 *
 	 * @param array $config
 	 */
@@ -39,9 +38,9 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Append config to Config class
+	 * Append config to Config class.
 	 *
-	 * @param array $config
+	 * @param  array  $config
 	 * @return Config
 	 */
 	public function append(array $config) {
@@ -51,11 +50,11 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Get configuration value from key
+	 * Get configuration value from key.
 	 *
-	 * @param string $key
-	 * @param mixed $default optional Default if value if nothing
-	 * @return mixed Value from config
+	 * @param  string $key
+	 * @param  mixed  $default optional Default if value if nothing
+	 * @return mixed  Value from config
 	 */
 	public function get($key, $default = null) {
 		$pieces = explode('.', $key);
@@ -72,10 +71,10 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Set configuration value from key (create a new key if needed)
+	 * Set configuration value from key (create a new key if needed).
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @param bool True if value is set
 	 */
 	public function set(string $key, $value) {
@@ -93,10 +92,10 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Edit configuration value from key (without creating a new key)
+	 * Edit configuration value from key (without creating a new key).
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @param bool False if the value does not exists
 	 */
 	public function edit(string $key, $value) {
@@ -111,13 +110,14 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 		}
 
 		$ptr = $value;
+
 		return true;
 	}
 
 	/**
-	 * Check if key exists
+	 * Check if key exists.
 	 *
-	 * @param string $key
+	 * @param  string $key
 	 * @return bool
 	 */
 	public function has($key): bool {
@@ -135,7 +135,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Get the configuration as an array
+	 * Get the configuration as an array.
 	 *
 	 * @return array
 	 */
@@ -144,7 +144,7 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 	}
 
 	/**
-	 * Get the configuration as an object
+	 * Get the configuration as an object.
 	 *
 	 * @return object
 	 */
@@ -152,33 +152,33 @@ class Config extends Model implements ContainerInterface, ArrayableInterface, Ar
 		return (object) $this->config;
 	}
 
-    /**
-     * alias for `set`
+	/**
+	 * alias for `set`.
 	 *
 	 * @see Config::set
 	 */
-    public function offsetSet($key, $value): void {
+	public function offsetSet($key, $value): void {
 		$this->set($key, $value);
-    }
+	}
 
-    /**
-     * alias for `has`
+	/**
+	 * alias for `has`.
 	 *
 	 * @see Config::has
 	 */
-    public function offsetExists($key) {
-        return $this->has($key);
-    }
+	public function offsetExists($key) {
+		return $this->has($key);
+	}
 
-    public function offsetUnset($offset): void {
-    }
+	public function offsetUnset($offset): void {
+	}
 
-    /**
-     * alias for `get`
+	/**
+	 * alias for `get`.
 	 *
 	 * @see Config::get
 	 */
-    public function offsetGet($key) {
-        return $this->get($key);
-    }
+	public function offsetGet($key) {
+		return $this->get($key);
+	}
 }

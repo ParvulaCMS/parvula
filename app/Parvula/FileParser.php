@@ -2,22 +2,19 @@
 
 namespace Parvula;
 
-use Parvula\Parsers\ParserInterface;
-use Parvula\FilesSystem as Files;
-use Parvula\IOInterface;
 use Parvula\Exceptions\ParseException;
+use Parvula\Parsers\ParserInterface;
 
 /**
- * File Parser
+ * File Parser.
  *
- * @package Parvula
  * @version 0.5.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-class FileParser implements IOInterface {
-
+class FileParser implements IOInterface
+{
 	/**
 	 * @var array array<string, ParserInterface>
 	 */
@@ -29,13 +26,13 @@ class FileParser implements IOInterface {
 	protected $folder;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * Example:
 	 * `new FileParser(['json' => new JsonParser, 'yaml' => new Yaml]);`
 	 *
-	 * @param array $parser Extensions associated to the right parser
-	 *                      (the parser must implements ParserInterface)
+	 * @param array  $parser Extensions associated to the right parser
+	 *                       (the parser must implements ParserInterface)
 	 * @param string $folder To prefix all paths
 	 */
 	public function __construct(array $parsers, $folder = '') {
@@ -44,17 +41,17 @@ class FileParser implements IOInterface {
 	}
 
 	/**
-	 * Read the given file
+	 * Read the given file.
 	 *
 	 * @param  string $filePath File path
-	 * @return mixed Returns data if the file was parsed, false on failure
+	 * @return mixed  Returns data if the file was parsed, false on failure
 	 */
 	public function read($filePath) {
 		if (!is_file($this->folder . $filePath)) {
 			return false;
 		}
 
-		$parser = $this->getParser($this->folder. $filePath);
+		$parser = $this->getParser($this->folder . $filePath);
 
 		// Read method
 		if (isset($parser->include) && $parser->include) {
@@ -67,10 +64,10 @@ class FileParser implements IOInterface {
 	}
 
 	/**
-	 * Write the given data to filePath
+	 * Write the given data to filePath.
 	 *
-	 * @param  string $filePath File path
-	 * @param  mixed $data Data
+	 * @param  string   $filePath File path
+	 * @param  mixed    $data     Data
 	 * @return int|bool Returns the number of bytes that were written or false on failure
 	 */
 	public function write($filePath, $data) {
@@ -82,17 +79,18 @@ class FileParser implements IOInterface {
 	}
 
 	/**
-	 * Get the right parser (given the file extension)
+	 * Get the right parser (given the file extension).
 	 *
-	 * @param  string $filePath File path
-	 * @throws ParseException If file type cannot be parsed
+	 * @param  string          $filePath File path
+	 * @throws ParseException  If file type cannot be parsed
 	 * @return ParserInterface Parser
 	 */
 	private function getParser($filePath) {
-		$ext = pathinfo($this->folder. $filePath, PATHINFO_EXTENSION);
+		$ext = pathinfo($this->folder . $filePath, PATHINFO_EXTENSION);
 
 		if (!isset($this->parsers[$ext])) {
 			throw new ParseException('`' . htmlspecialchars($ext) . '` files cannot be parsed');
+
 			return;
 		}
 
@@ -100,22 +98,22 @@ class FileParser implements IOInterface {
 	}
 
 	/**
-	 * Decode serialized data
+	 * Decode serialized data.
 	 *
 	 * @param  ParserInterface $parser
-	 * @param  string $raw Raw data
-	 * @return mixed Decoded raw data
+	 * @param  string          $raw    Raw data
+	 * @return mixed           Decoded raw data
 	 */
 	private function decode(ParserInterface $parser, $raw) {
 		return $parser->decode($raw);
 	}
 
 	/**
-	 * Encode structured data
+	 * Encode structured data.
 	 *
 	 * @param  ParserInterface $parser
-	 * @param  mixed $data Structured data
-	 * @return string Encoded data
+	 * @param  mixed           $data   Structured data
+	 * @return string          Encoded data
 	 */
 	private function encode(ParserInterface $parser, $data) {
 		return $parser->encode($data);

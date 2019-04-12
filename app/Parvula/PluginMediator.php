@@ -5,25 +5,26 @@ namespace Parvula;
 use Parvula\Exceptions\BadObjectCallException;
 
 /**
- * Plugin Mediator class to handle plugins
+ * Plugin Mediator class to handle plugins.
  *
- * @package Parvula
  * @version 0.5.0
  * @since 0.4.0
  * @author Fabien Sa
  * @license MIT License
  */
-class PluginMediator {
+class PluginMediator
+{
 	/**
 	 * @var array Plugins container
 	 */
 	protected $plugins = [];
 
 	/**
-	 * Attach new plugins
+	 * Attach new plugins.
 	 *
-	 * @param array $plugins
+	 * @param  array                  $plugins
 	 * @throws BadObjectCallException
+	 * @return PluginMediator
 	 */
 	public function attach(array $plugins) {
 		foreach ($plugins as $plugin) {
@@ -31,7 +32,7 @@ class PluginMediator {
 				if (!class_exists($plugin)) {
 					throw new BadObjectCallException('Plugin class `' . $plugin . '` not found');
 				}
-				$plugin = new $plugin;
+				$plugin = new $plugin();
 			}
 
 			if (is_object($plugin)) {
@@ -46,7 +47,7 @@ class PluginMediator {
 	}
 
 	/**
-	 * Trigger an event
+	 * Trigger an event.
 	 *
 	 * @param string $event Event name
 	 * @param array ($args) Arguments
@@ -61,9 +62,9 @@ class PluginMediator {
 	}
 
 	/**
-	 * Get specific plugin
+	 * Get specific plugin.
 	 *
-	 * @param string $className
+	 * @param  string $className
 	 * @return Plugin Specific plugin
 	 */
 	public function &getPlugin($className) {

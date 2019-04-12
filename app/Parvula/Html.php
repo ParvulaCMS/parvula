@@ -3,38 +3,39 @@
 namespace Parvula;
 
 /**
- * HTML utils
+ * HTML utils.
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Html {
-
+class Html
+{
 	/**
-	 * Html anchor
+	 * Html anchor.
 	 *
-	 * @param string $value
-	 * @param string $href
-	 * @param array $attr
+	 * @param  string $value
+	 * @param  string $href
+	 * @param  array  $attr
 	 * @return string Html anchor
 	 */
 	public static function anchor($value, $href = '#', $attr = []) {
 		$attr = implode(' ', $attr);
+
 		return sprintf('<a href="%s" %s>%s</a>', $href, $attr, $value);
 	}
 
 	/**
-	 * Html image
+	 * Html image.
 	 *
-	 * @param string $src Image source
-	 * @param array $attr Image attributs
+	 * @param  string $src  Image source
+	 * @param  array  $attr Image attributs
 	 * @return string Html image
 	 */
 	public static function img($src, $attr = []) {
 		$attr = implode(' ', $attr);
+
 		return sprintf('<img src="%s" %s>', $src, $attr);
 	}
 
@@ -42,8 +43,8 @@ class Html {
 	 * Secure echo. Return $var if exists, else return $else and encode special
 	 * html chars.
 	 *
-	 * @param mixed $var Value to print
-	 * @param mixed $else (optional) Value to print if variable doesn't exists
+	 * @param  mixed  $var  Value to print
+	 * @param  mixed  $else (optional) Value to print if variable doesn't exists
 	 * @return string Secure string from XSS
 	 */
 	public static function escape($var, $else = '') {
@@ -57,9 +58,9 @@ class Html {
 	}
 
 	/**
-	 * Secure echo. Return '$value . $then' if $value exists
-	 * @param mixed &$var
-	 * @param mixed $then
+	 * Secure echo. Return '$value . $then' if $value exists.
+	 * @param  mixed  &$var
+	 * @param  mixed  $then
 	 * @return string Secure string from XSS
 	 */
 	public static function escapeThen($var, $then) {
@@ -73,16 +74,16 @@ class Html {
 	}
 
 	/**
-	 * Create html nav from array [TMP]
-	 * @param array $items
-	 * @param integer $level
+	 * Create html nav from array [TMP].
+	 * @param  array  $items
+	 * @param  int    $level
 	 * @return string Html nav
 	 */
 	public static function nav($items, $level = 0) {
-		$ret = "";
-		$indent = str_repeat(" ", $level * 2);
+		$ret = '';
+		$indent = str_repeat(' ', $level * 2);
 		$ret .= sprintf("%s<ul>\n", $indent);
-		$indent = str_repeat(" ", ++$level * 2);
+		$indent = str_repeat(' ', ++$level * 2);
 		foreach ($items as $subitems) {
 			if (is_array($subitems)) {
 				$ret .= "\n";
@@ -93,8 +94,9 @@ class Html {
 			}
 			$ret .= sprintf("</li>\n", $indent);
 		}
-		$indent = str_repeat(" ", --$level * 2);
+		$indent = str_repeat(' ', --$level * 2);
 		$ret .= sprintf("%s</ul>\n", $indent);
+
 		return $ret;
 	}
 }

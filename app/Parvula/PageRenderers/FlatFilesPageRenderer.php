@@ -2,15 +2,15 @@
 
 namespace Parvula\PageRenderers;
 
+use Parvula\ContentParser\ContentParserInterface;
+use Parvula\Exceptions\PageException;
 use Parvula\Models\Page;
 use Parvula\Models\Section;
 use Parvula\Parsers\ParserInterface;
-use Parvula\Exceptions\PageException;
-use Parvula\ContentParser\ContentParserInterface;
 
 /**
  * Parvula page renderer
- * This renderer allow you to create sections
+ * This renderer allow you to create sections.
  *
  * Page example:
  * ```
@@ -28,7 +28,8 @@ use Parvula\ContentParser\ContentParserInterface;
  *
  * You can then access this section with `$page->sections->{'My section'};`
  */
-class FlatFilesPageRenderer implements PageRendererInterface {
+class FlatFilesPageRenderer implements PageRendererInterface
+{
 // class ParvulaPageRenderer extends SimplePageRenderer implements PageRendererInterface {
 
 	/**
@@ -58,11 +59,11 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 
 	/**
 	 * Constructor
-	 * Available $options keys are delimiterMatcher, sectionMatcher and delimiterRender
+	 * Available $options keys are delimiterMatcher, sectionMatcher and delimiterRender.
 	 *
-	 * @param ParserInterface $metadataParser
+	 * @param ParserInterface        $metadataParser
 	 * @param ContentParserInterface $contentParser
-	 * @param array $options
+	 * @param array                  $options
 	 */
 	public function __construct(
 		ParserInterface $metadataParser,
@@ -76,7 +77,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 			'delimiterMatcher' => '/\s-{3,}\s+/',
 			'delimiterRender' => '---',
 			'sectionDelimiterMatcher' => '/\s\-{3}\s([\{\[>\-:\w].*?)\s-{3}\s/s',
-			'sectionDelimiterRender' => '---'
+			'sectionDelimiterRender' => '---',
 		];
 
 		$options += $defaultOptions;
@@ -88,9 +89,9 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	}
 
 	/**
-	 * Render Page object to string
+	 * Render Page object to string.
 	 *
-	 * @param Page $page
+	 * @param  Page   $page
 	 * @return string Rendered page
 	 */
 	public function render(Page $page) {
@@ -129,7 +130,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 	}
 
 	/**
-	 * Decode string data to create a Page object
+	 * Decode string data to create a Page object.
 	 *
 	 * @param string $data Data using to create the page
 	 * @param array ($options) default page field(s)
@@ -156,7 +157,7 @@ class FlatFilesPageRenderer implements PageRendererInterface {
 				for ($i = 1; $i < $len; ++$i) {
 					if ($i % 2 === 1) {
 						$metaRaw = trim($content[$i]);
-						$lines = explode("\n", str_replace(["\r\n","\n\r","\r"], "\n", $metaRaw), 2);
+						$lines = explode("\n", str_replace(["\r\n", "\n\r", "\r"], "\n", $metaRaw), 2);
 						$sectionMeta = ['name' => $lines[0]];
 
 						if (count($lines) === 2) {

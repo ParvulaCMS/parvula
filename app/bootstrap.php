@@ -12,7 +12,7 @@ $time = -microtime(true);
 
 // Try to load composer autoloader
 if (!is_file($autoload = _VENDOR_ . '/autoload.php')) {
-	throw new \RuntimeException('Please install the dependencies with composer: `composer install`');
+	throw new \RuntimeException('Please install the dependencies with composer: `composer i`');
 }
 
 require $autoload;
@@ -54,10 +54,8 @@ if ($config->get('debug', false)) {
 classAliases($config->get('aliases'));
 
 // Command line script loader
-if (php_sapi_name() === 'cli' && isset($_executeFromComposerScript)) {
-	if ($_executeFromComposerScript) {
-		return;
-	}
+if (php_sapi_name() === 'cli' && isset($_executeFromComposerScript) && $_executeFromComposerScript) {
+	return;
 }
 
 $router = $app['router'];

@@ -2,7 +2,6 @@
 
 namespace Parvula\Repositories\Mongo;
 
-use IteratorIterator;
 use MongoDB\Collection as MongoCollectionBase;
 use Parvula\BaseRepository;
 use Parvula\Models\Page;
@@ -16,14 +15,13 @@ use Parvula\Repositories\PageRepositoryTrait;
 /**
  * Mongo pages mapper
  *
- * @package Parvula
  * @version 0.8.0
  * @since 0.7.0
  * @author psych0pat
  * @license MIT License
  */
-class PageRepositoryMongo extends BaseRepositoryMongo {
-
+class PageRepositoryMongo extends BaseRepositoryMongo
+{
 	use PageRepositoryTrait;
 
 	protected $iter;
@@ -76,7 +74,7 @@ class PageRepositoryMongo extends BaseRepositoryMongo {
 				]
 			]
 		], [
-			'projection' => ['_id' => 0],
+			'projection' => ['_id' => 0]
 		]);
 	}
 

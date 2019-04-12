@@ -2,14 +2,14 @@
 
 namespace Parvula\Parsers;
 
-class Php implements ParserInterface {
-
+class Php implements ParserInterface
+{
 	public $include = true;
 
 	/**
-	 * This method simply return the php
+	 * This method simply return the php.
 	 *
-	 * @param mixed $input
+	 * @param  mixed $input
 	 * @return mixed (same as $input)
 	 */
 	public function decode($php) {
@@ -17,11 +17,11 @@ class Php implements ParserInterface {
 	}
 
 	/**
-	 * Generate php
+	 * Generate php.
 	 *
-	 * @param array|object $data Data to encode
-	 * @param bool $phpTag (optional) If `<?php ` tag needs to be output
-	 * @return string The php string
+	 * @param  array|object $data   Data to encode
+	 * @param  bool         $phpTag (optional) If `<?php ` tag needs to be output
+	 * @return string       The php string
 	 */
 	public function encode($php, $phpTag = true) {
 		return ($phpTag ? '<?php' . PHP_EOL : '') . var_export($php, true) . ';';

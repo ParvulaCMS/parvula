@@ -61,7 +61,7 @@ function getPluginList(array $except = []) {
  * List parent pages.
  *
  * @depreciated
- * @param $pages Array of Page
+ * @param  array $pages Array of Page
  * @return array of pages
  */
 function listPagesRoot(array $pages) {

@@ -3,7 +3,7 @@
 namespace Parvula;
 
 /**
- * Session
+ * Session.
  *
  * Usage example:
  * ```
@@ -14,25 +14,24 @@ namespace Parvula;
  * $sess->get('user_id'); // Get previous value
  * ```
  *
- * @package Parvula
  * @author Fabien Sa
  * @license MIT License
  */
-class Session {
-
+class Session
+{
 	private $sessionName;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public function __construct(string $sessionName = 'SESSID') {
 		$this->sessionName = $sessionName;
 	}
 
 	/**
-	 * Starts the session
+	 * Starts the session.
 	 *
-	 * @param bool $regenerateId
+	 * @param  bool $regenerateId
 	 * @return bool If the session has started
 	 */
 	public function start(bool $regenerateId = false) {
@@ -52,17 +51,17 @@ class Session {
 	}
 
 	/**
-	 * Regenerate session id
+	 * Regenerate session id.
 	 */
 	public function regenerateId(): void {
 		session_regenerate_id(true);
 	}
 
 	/**
-	 * Gets the session value
+	 * Gets the session value.
 	 *
-	 * @param string $index
-	 * @param mixed $defaultValue (optional) Default value if nothing was found
+	 * @param  string      $index
+	 * @param  mixed       $defaultValue (optional) Default value if nothing was found
 	 * @return string|null
 	 */
 	public function get(string $index, $defaultValue = null) {
@@ -74,10 +73,10 @@ class Session {
 	}
 
 	/**
-	 * Set session value
+	 * Set session value.
 	 *
-	 * @param string $index
-	 * @param mixed $value
+	 * @param  string $index
+	 * @param  mixed  $value
 	 * @return mixed
 	 */
 	public function set(string $index, $value) {
@@ -85,17 +84,17 @@ class Session {
 	}
 
 	/**
-	 * Check if session has a given index
+	 * Check if session has a given index.
 	 *
-	 * @param  string  $index
-	 * @return boolean If the session index exists
+	 * @param  string $index
+	 * @return bool   If the session index exists
 	 */
 	public function has(string $index) {
 		return isset($_SESSION[$index]);
 	}
 
 	/**
-	 * Destroy all data registered to this session
+	 * Destroy all data registered to this session.
 	 *
 	 * @return bool
 	 */
@@ -113,9 +112,9 @@ class Session {
 	}
 
 	/**
-	 * Check if the session is already started
+	 * Check if the session is already started.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function isActive(): bool {
 		return session_status() === PHP_SESSION_ACTIVE;
