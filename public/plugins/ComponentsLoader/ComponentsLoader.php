@@ -5,6 +5,7 @@ namespace Plugins\ComponentsLoader;
 use Exception;
 use Parvula\Plugin;
 use Parvula\Models\Page;
+use function Parvula\pluginsPath;
 
 if (!defined('_APP_')) exit;
 

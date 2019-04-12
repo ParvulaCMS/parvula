@@ -1,9 +1,7 @@
 <?php
 
-namespace Parvula\Repositories\Mongo;
+namespace App\Repositories\Mongo;
 
-use Parvula\ArrayTrait;
-use Parvula\FileParser;
 use Parvula\Models\User;
 use MongoDB\Collection as MongoCollectionBase;
 

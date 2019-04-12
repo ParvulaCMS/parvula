@@ -1,11 +1,6 @@
 <?php
 
-namespace Parvula;
-
-use DateTime;
-use Exception;
 use Firebase\JWT\JWT;
-use Parvula\Exceptions\IOException;
 
 /**
  * @api {get} /auth Login
@@ -72,7 +67,7 @@ $this->map(['GET', 'POST'], '', function ($req, $res, $args) use ($app) {
 			'exp' => $future->getTimeStamp(), // expiration time
 			'jti' => JWT::urlsafeB64Encode(random_bytes(32)), // unique identifier
 			'sub' => $username, // subject
-			'scope' => $user->getRoles()
+			'scope' => $user->getRoles(),
 		];
 	} catch (Exception $e) {
 		die('Could not generate a random string. Is our OS secure?');

@@ -2,9 +2,6 @@
 
 namespace Parvula\Repositories;
 
-use Iterator;
-use Parvula\ArrayableInterface;
-use Parvula\Models\Page;
 use Parvula\PageRenderers\PageRendererInterface;
 
 // abstract class PageRepository extends BaseRepository implements Iterator, ArrayableInterface {

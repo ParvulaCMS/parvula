@@ -1,8 +1,8 @@
 <?php
 
-namespace Parvula;
-
+use Parvula\Models\Page;
 use Parvula\Transformers\PageHeadTransformer;
+use function Parvula\app;
 
 /**
  * @api {get} /pages Get all pages
@@ -80,14 +80,14 @@ $this->get('/{slug:.+}', function ($req, $res, $args) {
 		], 404);
 	}
 
-	return $this->api->json($res, $result->transform(function (Models\Page $page) {
+	return $this->api->json($res, $result->transform(function (Page $page) {
 		$pageArr = $page->toArray();
 
 		if ($page->hasParent()) {
 			$pageArr += [
 				'parent' => [
 					'href' => '/pages/' . $page->parent->slug
-				]
+				],
 			];
 		}
 

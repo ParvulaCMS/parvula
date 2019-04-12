@@ -1,8 +1,9 @@
 <?php
 
-namespace Parvula;
-
 // Pages handler (slug must be `a-z0-9-_+/` (will be rewritten to lowercase if needed))
+use function Parvula\app;
+use function Parvula\url;
+
 $router->map(['GET', 'POST'], '/{slug:[a-zA-Z0-9\-_\+\/]*}', function ($req, $res, $args) use ($app) {
 	$view = $app['view'];
 	$pages = $app['pages'];

@@ -1,6 +1,6 @@
 <?php
 
-use Parvula\Parvula;
+namespace Parvula;
 
 /**
  * Create multiple class aliases.

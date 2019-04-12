@@ -3,16 +3,27 @@
 // Register services
 // ----------------------------- //
 
-namespace Parvula;
+namespace App;
 
 use DateTime;
 use Exception;
 use RuntimeException;
-use Pimple\Container;
+use Parvula\Models\Page;
 use Parvula\Models\Config;
+use Parvula\FileParser;
+use Parvula\Http\APIResponse;
+use Parvula\PluginMediator;
+use Parvula\Session;
+use Pimple\Container;
+use Parvula\Parsers;
+use Parvula\Services;
+use Parvula\ContentParser;
 use Parvula\FilesSystem as Files;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use function Parvula\listPagesRoot;
+use function Parvula\getPluginList;
+use function Parvula\listPagesAndChildren;
 
 $app['config'] = function (Container $c) {
 	$base = _CONFIG_ . 'system.';
@@ -89,7 +100,7 @@ $app['router'] = function (Container $c) {
 			'routerCacheFile' => $cacheFile,
 			'displayErrorDetails' => $c['config']->get('debug', false)
 		],
-		'api' => new Http\APIResponse(),
+		'api' => new APIResponse(),
 		'logger' => $c['loggerHandler']
 	];
 
@@ -208,7 +219,7 @@ $app['session'] = function (Container $c) {
 };
 
 $app['auth'] = function (Container $c) {
-	return new Service\AuthenticationService($c['session'], hash('sha1', '@TODO'));
+	return new Services\AuthenticationService($c['session'], hash('sha1', '@TODO'));
 	// Service\AuthenticationService($c['session'], hash('sha1', $c['request']->ip . $c['request']->userAgent));
 };
 
@@ -373,7 +384,7 @@ $app['view'] = function (Container $c) {
 	});
 
 	// System date format
-	$view->registerFunction('pageDateFormat', function (Models\Page $page) use ($config) {
+	$view->registerFunction('pageDateFormat', function (Page $page) use ($config) {
 		return $page->getDateTime()->format($config->get('dateFormat'));
 	});
 

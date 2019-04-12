@@ -1,9 +1,8 @@
 <?php
 
-namespace Parvula\Repositories\Mongo;
+namespace App\Repositories\Mongo;
 
 use MongoDB\Collection as MongoCollectionBase;
-use Parvula\BaseRepository;
 use Parvula\Models\Page;
 use Parvula\Exceptions\IOException;
 use Parvula\Exceptions\PageException;

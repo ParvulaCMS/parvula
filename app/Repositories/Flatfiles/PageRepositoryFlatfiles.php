@@ -1,6 +1,6 @@
 <?php
 
-namespace Parvula\Repositories\Flatfiles;
+namespace App\Repositories\Flatfiles;
 
 use SplFileInfo;
 use Parvula\Models\Page;

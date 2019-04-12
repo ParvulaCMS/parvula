@@ -1,8 +1,6 @@
 <?php
 
-namespace Parvula;
-
-use Exception;
+use function Parvula\app;
 
 function checkTokenScope(array $scope, $token) {
 	$scopeToken = isset($token->scope) ? $token->scope : [];

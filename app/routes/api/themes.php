@@ -1,9 +1,6 @@
 <?php
 
-namespace Parvula;
-
-use Exception;
-use Parvula\Exceptions\IOException;
+use function Parvula\app;
 
 /**
  * @api {get} /themes List of themes

@@ -1,10 +1,7 @@
 <?php
 
-namespace Parvula;
-
-use Exception;
-use Parvula\Exceptions\IOException;
 use Parvula\Models\User;
+use function Parvula\app;
 
 /**
  * @api {get} /users List of users usernames

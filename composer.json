@@ -42,9 +42,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Parvula\\": "app/Parvula",
+            "App\\": "app",
+            "Parvula\\": "core",
             "Plugins\\": "public/plugins"
-        }
+        },
+        "files": [
+            "core/helpers.php"
+        ]
     },
     "config": {
         "preferred-install": "dist"

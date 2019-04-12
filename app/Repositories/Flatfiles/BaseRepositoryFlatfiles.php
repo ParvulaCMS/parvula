@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Repositories\Flatfiles;
+namespace App\Repositories\Flatfiles;
 
 use Parvula\Repositories\BaseRepository;
 
-abstract class BaseRepositoryFlatfiles extends BaseRepository {
-
+abstract class BaseRepositoryFlatfiles extends BaseRepository
+{
 	/**
 	 * Collection
 	 * @var Parvula\Collections\Collection Collection of model

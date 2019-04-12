@@ -1,12 +1,10 @@
 <?php
 
-namespace Parvula\Repositories\Flatfiles;
+namespace App\Repositories\Flatfiles;
 
-use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\FilesSystem as Files;
 use Parvula\Models\Config;
-use Parvula\Collections\Collection;
 
 class ConfigRepositoryFlatfiles extends BaseRepositoryFlatfiles
 {

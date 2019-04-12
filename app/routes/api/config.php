@@ -1,11 +1,10 @@
 <?php
 
-namespace Parvula;
-
 use Rs\Json\Patch;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
 use Rs\Json\Patch\InvalidOperationException;
+use function Parvula\app;
 
 // @ALPHA
 

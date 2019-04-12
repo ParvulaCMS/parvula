@@ -1,6 +1,7 @@
 <?php
 
-namespace Parvula;
+use Parvula\Parvula;
+use function Parvula\classAliases;
 
 require 'constants.php';
 
@@ -21,9 +22,6 @@ $app = Parvula::getContainer();
 
 // Register services and helpers
 require _APP_ . 'services.php';
-
-// Load helpers
-require _APP_ . 'helpers.php';
 
 $config = $app['config'];
 $config->set('__time__', $time);

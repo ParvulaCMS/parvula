@@ -2,8 +2,8 @@
 
 namespace Parvula\Repositories;
 
-abstract class BaseRepository {
-
+abstract class BaseRepository
+{
 	/**
 	 * The repository current's class name model
 	 *

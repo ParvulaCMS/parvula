@@ -1,11 +1,11 @@
 <?php
 
-namespace Parvula\Service;
+namespace Parvula\Services;
 
-use Parvula\Models\User;
+use Parvula\Session;
 
-class AuthenticationService {
-
+class AuthenticationService
+{
 	/**
 	 * @var mixed Token
 	 */

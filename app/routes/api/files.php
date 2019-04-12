@@ -1,12 +1,8 @@
 <?php
 
-namespace Parvula;
-
-use Exception;
-use SplFileInfo;
-use RuntimeException;
 use Parvula\FilesSystem;
 use Parvula\Exceptions\IOException;
+use function Parvula\url;
 
 // @ALPHA.2
 

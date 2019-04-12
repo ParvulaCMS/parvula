@@ -1,5 +1,6 @@
 <?php
-namespace Parvula\Repositories\Mongo;
+
+namespace App\Repositories\Mongo;
 
 use Exception;
 use Parvula\Collections\MongoCollection;

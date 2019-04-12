@@ -1,8 +1,8 @@
 <?php
 
-use Parvula\Parvula;
-use Parvula\Parvula\Core\Config;
-use Parvula\Parvula\Core\Models\Pages;
+use function Parvula\app;
+use function Parvula\url;
+use function Parvula\themesPath;
 
 $templates = new League\Plates\Engine(__DIR__ . '/view', 'html');
 

@@ -1,8 +1,7 @@
 <?php
 
-namespace Parvula\Repositories\Flatfiles;
+namespace App\Repositories\Flatfiles;
 
-use Parvula\ArrayTrait;
 use Parvula\FileParser;
 use Parvula\Models\User;
 use Parvula\Collections\Collection;

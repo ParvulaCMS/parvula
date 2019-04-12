@@ -3,6 +3,7 @@
 namespace Parvula\ContentParser;
 
 use ParsedownExtra;
+use function Parvula\url;
 
 /**
  * Extends ParsedownExtra to add link functionalities.

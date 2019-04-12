@@ -1,15 +1,10 @@
 <?php
 
-namespace Parvula;
-
-use Exception;
-use Parvula\Models\Page;
-use Parvula\Models\PagesFlatFiles;
-use Parvula\Exceptions\IOException;
 use Rs\Json\Patch;
 use Rs\Json\Patch\InvalidOperationException;
 use Rs\Json\Patch\InvalidPatchDocumentJsonException;
 use Rs\Json\Patch\InvalidTargetDocumentJsonException;
+use function Parvula\app;
 
 /**
  * @api {post} /pages Create a new page
