@@ -148,7 +148,7 @@ $app['errorHandler'] = function (Container $c) {
 		$runner = new \League\BooBoo\Runner();
 
 		$accept = $c['router']->getContainer()['request']->getHeader('Accept');
-		$accept = join(' ', $accept);
+		$accept = implode(' ', $accept);
 
 		// If we accept html, show html, else show json
 		if (strpos($accept, 'html') !== false) {

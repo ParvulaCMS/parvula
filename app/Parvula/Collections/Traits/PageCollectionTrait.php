@@ -1,9 +1,12 @@
 <?php
 
-namespace Parvula\Collections\CollectionTraits;
+namespace Parvula\Collections\Traits;
 
-trait PageCollectionTrait {
-
+/**
+ * @mixin \Parvula\Collections\Collection
+ */
+trait PageCollectionTrait
+{
 	/**
 	 * Show pages without a parent
 	 *
@@ -27,7 +30,7 @@ trait PageCollectionTrait {
 	}
 
 	/**
-	 * Show hiddden pages
+	 * Show hidden pages
 	 *
 	 * @return \Parvula\Collections\Collection
 	 */

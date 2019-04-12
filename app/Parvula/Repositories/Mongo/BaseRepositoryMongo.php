@@ -1,5 +1,4 @@
 <?php
-
 namespace Parvula\Repositories\Mongo;
 
 use Exception;
@@ -64,7 +63,7 @@ abstract class BaseRepositoryMongo extends BaseRepository {
 		$modelClassName = $this->model();
 		return (new MongoCollection($this->collection, $this->model(), [
 			// 'projection' => ['_id' => 0]
-		]))
+			]))
 			->map(function ($bsonData) use ($modelClassName) {
 				return new $modelClassName((array) $bsonData);
 			});

@@ -3,35 +3,34 @@
 namespace Parvula;
 
 /**
- * Helper for instances
+ * Helper for instances.
  *
- * @package Parvula
  * @version 0.7.0
  * @since 0.7.0
- * @author Fabien Sa
  * @license MIT License
  */
-trait AccessorTrait {
-
+trait AccessorTrait
+{
 	/**
-	 * Get given field of an object if exists and not empty
+	 * Get given field of an object if exists and not empty.
 	 *
 	 * @param  string $field
-	 * @param  string $default (optional)
-	 * @return string Field of an object, $default if nothing
+	 * @param  mixed  $default (optional)
+	 * @return mixed  Field of an object, $default if nothing
 	 */
 	public function get(string $field, $default = '') {
 		if (isset($this->{$field}) && !empty($this->{$field})) {
 			return $this->{$field};
 		}
+
 		return $default;
 	}
 
 	/**
-	 * Check if the given object has a specific field
+	 * Check if the given object has a specific field.
 	 *
 	 * @param  string $field
-	 * @return boolean
+	 * @return bool
 	 */
 	public function has($field): bool {
 		return isset($this->{$field});

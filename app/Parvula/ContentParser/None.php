@@ -3,22 +3,21 @@
 namespace Parvula\ContentParser;
 
 /**
- * None content parser
+ * None content parser.
  *
- * @package Parvula
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-class None implements ContentParserInterface {
-
+class None implements ContentParserInterface
+{
 	/**
-	 * Parse data
+	 * Parse data.
 	 *
-	 * @param string $data
+	 * @param  string $data
 	 * @return string
 	 */
-	public function parse($data = '') {
+	public function parse($data = ''): string {
 		return $data;
 	}
 }

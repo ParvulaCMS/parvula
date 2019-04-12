@@ -2,27 +2,26 @@
 
 namespace Parvula;
 
-use SplFileInfo;
 use Parvula\Exceptions\IOException;
+use SplFileInfo;
 
 /**
- * Files System
+ * Files System.
  *
- * @package Parvula
  * @version 0.5.0
  * @since 0.1.0
  * @author Fabien Sa
  * @license MIT License
  */
-class FilesSystem implements IOInterface {
-
+class FilesSystem implements IOInterface
+{
 	/**
 	 * @var string
 	 */
 	private $workingDirectory;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param string $workingDirectory
 	 */
@@ -31,34 +30,34 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Check if a file or directory exists
+	 * Check if a file or directory exists.
 	 *
-	 * @param string $filename File name
-	 * @return boolean If file exists
+	 * @param  string $filename File name
+	 * @return bool   If file exists
 	 */
 	public function exists($filename) {
 		return file_exists($this->workingDirectory . $filename);
 	}
 
 	/**
-	 * Check if it is a directory
+	 * Check if it is a directory.
 	 *
-	 * @param string $dirname Directory name
-	 * @return boolean If direcorty exists
+	 * @param  string $dirname Directory name
+	 * @return bool   If direcorty exists
 	 */
 	public function isDir($dirname) {
 		return is_dir($this->workingDirectory . $dirname);
 	}
 
 	/**
-	 * Read data from file
+	 * Read data from file.
 	 *
 	 * @param string $filename File name
 	 * @param callable ($fn) Apply function to file data (\SplFileInfo $file, string $data)
-	 * @param boolean ($eval) Evaluate PHP
+	 * @param bool ($eval) Evaluate PHP
 	 * @throws IOException If the file does not exists
 	 * @throws IOException If the file is empty
-	 * @return mixed File data
+	 * @return mixed       File data
 	 */
 	public function read($filename, callable $fn = null, $eval = false) {
 		if (!$this->exists($filename)) {
@@ -89,10 +88,10 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Write data to file
+	 * Write data to file.
 	 *
 	 * @param string $filename File name
-	 * @param mixed $data
+	 * @param mixed  $data
 	 * @param callable ($fn) Apply function to data
 	 * @throws IOException if file is not writable
 	 */
@@ -111,11 +110,11 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Delete file
+	 * Delete file.
 	 *
-	 * @param string $filename File to delete
+	 * @param  string      $filename File to delete
 	 * @throws IOException If the file does not exists
-	 * @return boolean If filename is deleted
+	 * @return bool        If filename is deleted
 	 */
 	public function delete($filename) {
 		if (!$this->exists($filename)) {
@@ -126,31 +125,31 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Check if file is writable
+	 * Check if file is writable.
 	 *
-	 * @param string $filename File name
-	 * @return boolean If file is writable
+	 * @param  string $filename File name
+	 * @return bool   If file is writable
 	 */
 	public function isWritable($filename = '') {
 		return is_writable($this->workingDirectory . $filename);
 	}
 
 	/**
-	 * Rename file
+	 * Rename file.
 	 *
-	 * @param string $oldName Old file name
-	 * @param string $newName New file name
-	 * @return boolean
+	 * @param  string $oldName Old file name
+	 * @param  string $newName New file name
+	 * @return bool
 	 */
 	public function rename($oldName, $newName) {
 		return rename($this->workingDirectory . $oldName, $this->workingDirectory . $newName);
 	}
 
 	/**
-	 * Makes directory (including sub directories)
+	 * Makes directory (including sub directories).
 	 *
-	 * @param  string  $path Directory to create
-	 * @param  integer $mode Optional
+	 * @param  string $path Directory to create
+	 * @param  int    $mode Optional
 	 * @return bool
 	 */
 	public function makeDirectory($path, $mode = 0777) {
@@ -158,10 +157,10 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Try to change the mode of the specified file to that given in mode
+	 * Try to change the mode of the specified file to that given in mode.
 	 *
 	 * @param  string $filename
-	 * @param  int $mode Mode should be an *octal value* (prefixed with a 0)
+	 * @param  int    $mode     Mode should be an *octal value* (prefixed with a 0)
 	 * @return bool
 	 */
 	public function chmod($filename, $mode) {
@@ -169,12 +168,12 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Index files recursively in a directory
+	 * Index files recursively in a directory.
 	 *
-	 * @param  string $dir
-	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
+	 * @param  string   $dir
+	 * @param  callable $fn     callback for each file `(\SplFileInfo $file, $dir)`
 	 * @param  callable $filter callback filter for each file
-	 * @return array Files
+	 * @return array    Files
 	 */
 	// TODO flags maxDepth
 	public function indexAll($dir = '', callable $fn = null, callable $filter = null) {
@@ -202,12 +201,12 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Index files recursively in a directory (without hidden files)
+	 * Index files recursively in a directory (without hidden files).
 	 *
-	 * @param  string $dir
-	 * @param  callable $fn callback for each file `(\SplFileInfo $file, $dir)`
+	 * @param  string   $dir
+	 * @param  callable $fn     callback for each file `(\SplFileInfo $file, $dir)`
 	 * @param  callable $filter callback filter for each file
-	 * @return array Files
+	 * @return array    Files
 	 */
 	public function index($dir = '', callable $fn = null, $filter = null) {
 		if ($filter === null) {
@@ -220,17 +219,17 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Get file modification time
+	 * Get file modification time.
 	 *
-	 * @param string $filename
-	 * @return int Timestamp
+	 * @param  string $filename
+	 * @return int    Timestamp
 	 */
 	public function modificationTime($filename = '') {
 		return filemtime($this->workingDirectory . $filename);
 	}
 
 	/**
-	 * Get working directory
+	 * Get working directory.
 	 *
 	 * @return string Current working directory
 	 */
@@ -246,7 +245,7 @@ class FilesSystem implements IOInterface {
 	}
 
 	/**
-	 * Set working directory
+	 * Set working directory.
 	 *
 	 * @param string $workingDirectory
 	 */

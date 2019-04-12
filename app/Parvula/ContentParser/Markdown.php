@@ -3,23 +3,23 @@
 namespace Parvula\ContentParser;
 
 /**
- * Markdown content parser
+ * Markdown content parser.
  *
- * @package Parvula
  * @since 0.4.0
  * @author Fabien Sa
  * @license MIT License
  */
-class Markdown implements ContentParserInterface {
-
+class Markdown implements ContentParserInterface
+{
 	/**
-	 * Parse data
+	 * Parse data.
 	 *
-	 * @param string $data
+	 * @param  string     $data
+	 * @throws \Exception
 	 * @return string
 	 */
-	public function parse($data = '') {
-		$parser = new ParvulaParsedownExtra;
+	public function parse($data = ''): string {
+		$parser = new ParvulaParsedownExtra();
 
 		return $parser->text($data);
 	}

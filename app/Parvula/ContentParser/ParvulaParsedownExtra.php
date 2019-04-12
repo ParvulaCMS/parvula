@@ -3,22 +3,17 @@
 namespace Parvula\ContentParser;
 
 use ParsedownExtra;
-use Parvula\Parvula;
 
 /**
- * ParvulaParsedownExtra class, extends ParsedownExtra
+ * Extends ParsedownExtra to add link functionalities.
  *
- * @package Parvula
  * @version 0.5.0
  * @since 0.5.0
  * @author Fabien Sa
  * @license MIT License
  */
-class ParvulaParsedownExtra extends ParsedownExtra {
-
-	/**
-	 * @inheritdoc
-	 */
+class ParvulaParsedownExtra extends ParsedownExtra
+{
 	protected function inlineLink($excerpt) {
 		$link = parent::inlineLink($excerpt);
 

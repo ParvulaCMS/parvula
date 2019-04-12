@@ -1,10 +1,9 @@
 <?php
 
 use Parvula\Parvula;
-use Symfony\Component\Yaml\Yaml;
 
 /**
- * Create multiple class aliases
+ * Create multiple class aliases.
  *
  * @param array $aliases
  */
@@ -15,7 +14,7 @@ function classAliases(array $aliases) {
 }
 
 /**
- * Get plugin fully qualified class name
+ * Get plugin fully qualified class name.
  *
  * @param  string $pluginName
  * @return string
@@ -26,7 +25,7 @@ function getPluginClassname(string $pluginName) {
 
 //@TODO to clean
 /**
- * Get plugins list
+ * Get plugins list.
  *
  * @param  array $except
  * @return array
@@ -59,7 +58,7 @@ function getPluginList(array $except = []) {
 }
 
 /**
- * List parent pages
+ * List parent pages.
  *
  * @depreciated
  * @param $pages Array of Page
@@ -72,7 +71,7 @@ function listPagesRoot(array $pages) {
 }
 
 /**
- * Url will generates a fully qualified URL
+ * Url will generates a fully qualified URL.
  *
  * @param  string $path optional
  * @return string
@@ -89,7 +88,7 @@ function url(string $path = '') {
 }
 
 /**
- * Get application instance
+ * Get application instance.
  *
  * @param  string|null $key optional
  * @return mixed
@@ -104,7 +103,7 @@ function app(?string $key = null) {
 }
 
 /**
- * Get main app folder path
+ * Get main app folder path.
  *
  * @param  string $path optional
  * @return string
@@ -114,7 +113,7 @@ function appPath(string $path = '') {
 }
 
 /**
- * Get themes folder path
+ * Get themes folder path.
  *
  * @param  string $path optional
  * @return string
@@ -124,7 +123,7 @@ function themesPath(string $path = '') {
 }
 
 /**
- * Get plugins folder path
+ * Get plugins folder path.
  *
  * @param  string $path optional
  * @return string
@@ -134,7 +133,7 @@ function pluginsPath(string $path = '') {
 }
 
 /**
- * Get uploads folder path
+ * Get uploads folder path.
  *
  * @param  string $path optional
  * @return string
@@ -144,7 +143,7 @@ function uploadsPath(string $path = '') {
 }
 
 /**
- * List pages and children
+ * List pages and children.
  *
  * @param array $pages Array of Page
  * @param array $options Array of options (options available: ul, li, level, liCallback)

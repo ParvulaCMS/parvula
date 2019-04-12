@@ -2,8 +2,6 @@
 
 namespace Parvula;
 
-use Exception;
-
 /**
  * Session
  *

@@ -4,12 +4,13 @@ namespace Parvula\Transformers;
 
 use Parvula\Models\Page;
 
-class PageHeadTransformer extends Transformer {
+class PageHeadTransformer extends Transformer
+{
 	public function apply(Page $page) {
 		$arr = $page->getMeta();
 
 		$arr['content'] = [
-			'href' => '/pages/' . $page->slug
+			'href' => '/pages/' . $page->slug,
 		];
 
 		if ($page->hasChildren()) {
@@ -18,7 +19,7 @@ class PageHeadTransformer extends Transformer {
 
 		if ($page->sections !== []) {
 			$arr['sections'] = [
-				'href' => '/pages/' . $page->slug
+				'href' => '/pages/' . $page->slug,
 			];
 		}
 

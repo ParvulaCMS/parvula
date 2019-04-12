@@ -6,13 +6,10 @@ use Countable;
 use JsonSerializable;
 use IteratorAggregate;
 use Parvula\ArrayableInterface;
-use Parvula\Models\Model;
-use Parvula\Models\Page;
-use MongoDB\Driver\Manager;
 
-class Collection implements ArrayableInterface, Countable, IteratorAggregate, JsonSerializable {
-
-	use CollectionTraits\PageCollectionTrait;
+class Collection implements ArrayableInterface, Countable, IteratorAggregate, JsonSerializable
+{
+	use Traits\PageCollectionTrait;
 
 	/**
 	 * @var array
@@ -34,9 +31,9 @@ class Collection implements ArrayableInterface, Countable, IteratorAggregate, Js
 	 *
 	 * @param string $field
 	 * @param boolean $ascending (optional) Default true
-	 * @return \Parvula\Collections\Collection
+	 * @return static
 	 */
-	public function sortBy(string $field, ?bool $ascending = true): self {
+	public function sortBy(string $field, ?bool $ascending = true) {
 		$callback = function ($a, $b) use ($field) {
 			if (isset($a->$field, $b->$field)) {
 				return strcmp($a->$field, $b->$field);
@@ -66,9 +63,9 @@ class Collection implements ArrayableInterface, Countable, IteratorAggregate, Js
 	 *
 	 * @param string $field
 	 * @param array $values Values to filter (it will keep items with one of those values)
-	 * @return \Parvula\Collections\Collection New collection
+	 * @return static New collection
 	 */
-	public function filter(string $field, array $values): self {
+	public function filter(string $field, array $values = []) {
 		$filteredItems = array_filter((array) $this->items, function ($item) use ($field, $values) {
 			if (isset($item->$field)) {
 				return in_array($item->$field, $values, true);
@@ -199,7 +196,7 @@ class Collection implements ArrayableInterface, Countable, IteratorAggregate, Js
 	/**
 	 * @return static
 	 */
-	protected function cloneCollection(): self {
+	protected function cloneCollection() {
 		return new static($this->items, $this->model);
 	}
 }

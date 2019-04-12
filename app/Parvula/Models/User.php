@@ -2,12 +2,9 @@
 
 namespace Parvula\Models;
 
-use Exception;
-
 /**
- * This class represents a user
+ * This class represents a user.
  *
- * @package Parvula
  * @version 0.7.0
  * @since 0.5.0
  * @author Fabien Sa
@@ -15,7 +12,6 @@ use Exception;
  */
 class User extends Model
 {
-
 	/**
 	 * @var string Username
 	 */
@@ -49,15 +45,15 @@ class User extends Model
 
 		// TODO
 		// if (password_get_info($this->password)['algo'] === 0) {
-		// 	throw new Exception('Password must be hashed with password_hash');
+		// throw new Exception('Password must be hashed with password_hash');
 		// }
 	}
 
 	/**
-	 * Check if it is the right password
+	 * Check if it is the right password.
 	 *
 	 * @param  string $password Password
-	 * @return bool If the password is ok
+	 * @return bool   If the password is ok
 	 */
 	public function login($password) {
 		if (strlen($this->password) < 50) {
@@ -68,8 +64,9 @@ class User extends Model
 	}
 
 	// TODO
+
 	/**
-	 * Get user's roles
+	 * Get user's roles.
 	 *
 	 * @return array Roles
 	 */
@@ -79,9 +76,9 @@ class User extends Model
 
 	/**
 	 * Check if the user has the given role
-	 * [Always true for Parvula 0.5+ @next]
+	 * [Always true for Parvula 0.5+ @next].
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function hasRole($role) {
 		return true;

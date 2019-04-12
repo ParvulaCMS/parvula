@@ -2,14 +2,10 @@
 
 namespace Parvula\Collections;
 
-use IteratorAggregate;
 use MongoDB\Collection as MongoCollectionBase;
-use Parvula\ArrayableInterface;
-use Parvula\Models\Model;
-use Parvula\Models\Page;
 
-class MongoCollection extends Collection {
-
+class MongoCollection extends Collection
+{
 	/**
 	 * @var \MongoDB\Collection
 	 */
@@ -32,11 +28,7 @@ class MongoCollection extends Collection {
 		$this->options = $options;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return static
-	 */
-	public function sortBy($field, $ascending = true) {
+	public function sortBy(string $field, ?bool $ascending = true) {
 		$options = $this->options;
 
 		if (!isset($options['sort'])) {
@@ -48,11 +40,7 @@ class MongoCollection extends Collection {
 		return new static($this->collection, $this->model, $this->filter, $options);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @return static
-	 */
-	public function filter($field, array $values = [true]) {
+	public function filter(string $field, array $values = [true]) {
 		$filter = $this->filter;
 		$filter[$field] = ['$in' => $values];
 
@@ -83,19 +71,14 @@ class MongoCollection extends Collection {
 
 			return $this->collection->aggregate($aggregate, $this->options);
 		}
+
 		return $this->collection->find($this->filter, $this->options);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function count() {
+	public function count(): int {
 		return count($this->collection->count());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	protected function cloneCollection() {
 		return new static($this->collection, $this->model, $this->filter, $this->options);
 	}
