@@ -14,6 +14,7 @@
         <exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed" />
         <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine" />
         <exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine" />
+        <exclude name="Generic.WhiteSpace.DisallowTabIndent.NonIndentTabsUsed" />
         <!-- <exclude name="PSR2.Namespaces.UseDeclaration.MultipleDeclarations" /> -->
     </rule>
 
